@@ -1,0 +1,74 @@
+App de mensajeria reglas de negocio
+FUNCIONALIDADES
+
+- Usuarios
+Crear
+LogIn
+Obtener usuario por id.
+Obtener usuario por username.
+
+- Autenticación
+Crear token
+Filtrar token de las cabeceras.
+Gestionar los permisos de usuario.
+
+- Otros
+Gestión de claves del protocolo signal
+Guardar SignedPreKey publica.
+Emitir PreKeyBundle.
+Guardar PreKeys.
+
+
+-Mensajeria.
+Guardar mensajes.
+Listar mensajes sin leer.
+Marcar como visto.
+Eliminar un mensaje por id.
+Eliminar todos los mensajes entre dos usuarios.
+Eliminar todos los mensajes.
+
+- Contactos.
+Añadir contacto.
+Listar todos los contactos  del usuario.
+Bloquear/desbloquear contacto.
+Verificar si el contacto está bloqueado.
+Listar todos lo contactos bloqueados.
+Buscar contactos por username.
+
+- Notificaciones.
+Crear
+Eliminar
+Eliminar todos.
+Listar notificaciones no vistas por username.
+Emitir via websockt evento notificación
+Emitir via websockets evento mensaje visto.
+Escucha de eventos(mensaje visto, enviado, nuevo contacto)
+
+FrontEnd
+Registrar usuario
+Loguear usuario.
+Generar claves de signal.
+Enviar/recibir mensajes
+Eliminar todos los mensajes.
+Guardar mensajes en local.
+Recibir notificaciones por ws.
+
+
+
+
+
+Usuarios
+REGISTRO
+email debe ser único, username también.
+contraseña mínima 8 caracteres.
+fecha nac obligatoria.
+nombre obligatorio mínimo 3 caracteres.
+
+LOGIN
+máximo 5 intentos permitidos
+
+- Mensajes
+No se puede enviar un mensaje a un contacto bloqueado.
+
+
+
