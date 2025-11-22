@@ -12,7 +12,7 @@
 	<artifactId>chat-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>chat-service</name>
-	<description>Demo project for Spring Boot</description>
+	<description>Servicio que se encarga de la mensajería del sistema</description>
 	<url/>
 	<licenses>
 		<license/>
@@ -95,6 +95,26 @@
 					</excludes>
 				</configuration>
 			</plugin>
+
+			<!-- Plugin para compilar archivos .proto -->
+			<plugin>
+  				<groupId>org.xolstice.maven.plugins</groupId>
+  				<artifactId>protobuf-maven-plugin</artifactId>
+  				<version>0.6.1</version>
+  				<configuration>
+    				<protocArtifact>
+      					com.google.protobuf:protoc:3.21.12:exe:${os.detected.classifier}
+    				</protocArtifact>
+  				</configuration>
+  				<executions>
+    				<execution>
+      					<goals>
+        					<goal>compile</goal>
+      					</goals>
+    				</execution>
+  				</executions>
+			</plugin>
+
 		</plugins>
 	</build>
 

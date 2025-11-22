@@ -36,20 +36,20 @@ public class MessageService {
          * }
          */
         Message ms = new Message();
-        ms.setSender(dto.getSender());
-        ms.setReceiver(dto.getReceiver());
-        ms.setContent(dto.getContent());
+        ms.setFromUserId(dto.getSender());
+        ms.setToUserId(dto.getReceiver());
+        ms.setData(dto.getContent().getBytes());
 
         LocalDateTime dateTime = LocalDateTime.ofInstant(
-                Instant.ofEpochMilli(dto.getCreated_at()),
+                Instant.ofEpochMilli(System.currentTimeMillis()),
                 ZoneId.systemDefault() // o ZoneId.of("UTC")
         );
-        ms.setCreated_at(dateTime);
-        ms.setSeen(false);
+        ms.setTimestamp(dateTime);
 
         messageRepository.save(ms);
     }
 
+    /* 
     public List<MessageDTO> getUnreadMessages(String username) {
 
         if (messageRepository.existsByReceiver(username) == false) {
@@ -75,7 +75,9 @@ public class MessageService {
         }
         return messageDTOs;
     }
+    */
 
+    /* 
     @Transactional
     public int markRead(List<Long> messageIds, String receiver) {
         if (messageIds == null || messageIds.isEmpty())
@@ -90,18 +92,21 @@ public class MessageService {
         }
         return totalUpdated;
     }
-
+*/
+/* 
     public void deleteMessage(Long messageId, String receiver) {
-        /*
+        
          * if (!messageRepository.existMessageByReceiverIdAndMessageId(receiverId,
          * messageId)) {
          * throw new
          * IllegalArgumentException("El mensaje no existe o no pertenece al receptor.");
          * }
-         */
+         
         messageRepository.deleteById(messageId);
     }
+*/
 
+/* 
     // Elimina todos los mensajes entre dos usuarios
     @Transactional
     public void deleteAllMessagesBetweenUsers(String sender, String receiver) {
@@ -111,5 +116,5 @@ public class MessageService {
     public void deleteAllMessages(String username) {
         messageRepository.deleteAllMessagesByReceiver(username);
     }
-
+*/
 }

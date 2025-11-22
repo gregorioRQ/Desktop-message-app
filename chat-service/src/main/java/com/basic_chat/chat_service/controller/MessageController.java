@@ -30,24 +30,25 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @RequestMapping("/message")
 public class MessageController {
     private final MessageService messageService;
-    private final RabbitTemplate rabbitTemplate;
+    //private final RabbitTemplate rabbitTemplate;
     private final RestClient restClient;
     private final SimpMessagingTemplate messagingTemplate;
 
     public MessageController(MessageService messageService, RabbitTemplate rabbitTemplate, RestClient restClient,
             SimpMessagingTemplate messagingTemplate) {
         this.messageService = messageService;
-        this.rabbitTemplate = rabbitTemplate;
+        //this.rabbitTemplate = rabbitTemplate;
         this.restClient = restClient;
         this.messagingTemplate = messagingTemplate;
     }
 
     @PostMapping
     public void sendMessage(@RequestBody MessageDTO dto) {
-        rabbitTemplate.convertAndSend("message.sent", new MessageSentEvent(dto.getSender(), dto.getReceiver()));
+        //rabbitTemplate.convertAndSend("message.sent", new MessageSentEvent(dto.getSender(), dto.getReceiver()));
         messageService.saveMessage(dto);
     }
 
+    /* 
     @PostMapping("/send-with-image")
     public ResponseEntity<String> sendMessageWithImage(@RequestParam("msg") String msg,
             @RequestParam("file") MultipartFile file) {
@@ -71,13 +72,16 @@ public class MessageController {
             System.out.println("Error al enviar el mensaje: " + e.getMessage());
             return new ResponseEntity<>("Error al enviar el mensaje", HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    }
+    }*/
 
+    /* 
     @GetMapping("/messages-unread/{username}")
     public ResponseEntity<List<MessageDTO>> getUnreadMessages(@PathVariable String username) {
         return new ResponseEntity<>(messageService.getUnreadMessages(username), HttpStatus.OK);
     }
+*/
 
+/* 
     @PostMapping("/read")
     public ResponseEntity<String> markReadBatch(@RequestBody MessageSeenRequest req) {
         // validación básica: receiver no nulo y lista no vacía
@@ -112,5 +116,5 @@ public class MessageController {
         messageService.deleteAllMessagesBetweenUsers(sender, receiver);
         return ResponseEntity.ok("Todos los mensajes entre " + sender + " y " + receiver + " eliminados correctamente");
     }
-
+*/
 }

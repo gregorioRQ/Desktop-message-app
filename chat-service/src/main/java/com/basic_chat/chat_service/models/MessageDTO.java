@@ -3,19 +3,9 @@ package com.basic_chat.chat_service.models;
 public class MessageDTO {
     String sender;
     String receiver;
-    byte[] content;
-    long created_at;
-    String imageUrl;
+    String content;
 
     public MessageDTO() {
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
     }
 
     public String getSender() {
@@ -34,20 +24,13 @@ public class MessageDTO {
         this.receiver = receiver;
     }
 
-    public byte[] getContent() {
+    public String getContent() {
         return content;
     }
 
-    public void setContent(byte[] content) {
+    public void setContent(String content) {
         this.content = content;
     }
 
-    public long getCreated_at() {
-        return created_at;
-    }
-
-    public void setCreated_at(long created_at) {
-        this.created_at = created_at;
-    }
-
+    
 }

@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package com.chat.proto;
+
+message ChatMessage {
+  string id = 1;
+  string fromUserId = 2;
+  string toUserId = 3;
+  string content = 4;
+  int64 timestamp = 5;
+}
