@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package com.basic_chat.chat_service.proto;
+
+option java_multiple_files = true;
+option java_package = "com.basic_chat.chat_service.proto";
+option java_outer_classname = "ChatMessageProto";
+
+message ChatMessage {
+  string id = 1;
+  string fromUserId = 2;
+  string toUserId = 3;
+  string content = 4;
+  int64 timestamp = 5;
+}

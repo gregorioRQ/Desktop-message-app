@@ -76,6 +76,9 @@ public class MessageService {
         return messageDTOs;
     }
     */
+    public List<Message> findByToUserId(String toUserId) {
+        return messageRepository.findByToUserId(toUserId);
+    }
 
     /* 
     @Transactional

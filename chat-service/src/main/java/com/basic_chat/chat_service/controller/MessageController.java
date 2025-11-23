@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.basic_chat.chat_service.client.RestClient;
+import com.basic_chat.chat_service.models.Message;
 import com.basic_chat.chat_service.models.MessageDTO;
 import com.basic_chat.chat_service.models.MessageSeenEvent;
 import com.basic_chat.chat_service.models.MessageSeenRequest;
@@ -79,7 +80,26 @@ public class MessageController {
     public ResponseEntity<List<MessageDTO>> getUnreadMessages(@PathVariable String username) {
         return new ResponseEntity<>(messageService.getUnreadMessages(username), HttpStatus.OK);
     }
-*/
+    */
+
+    @GetMapping("/{userId}")
+    public List<MessageDTO> getMessages(@PathVariable String userId) {
+        List<Message> entities = messageService.findByToUserId(userId);
+        return entities.stream()
+            .map(e -> {
+                try {
+                    return new MessageDTO(
+                        e.getFromUserId(),
+                        e.getToUserId(),
+                        new String(e.getData())
+                    );
+                } catch (Exception ex) {
+                    throw new RuntimeException(ex);
+                }
+            })
+            .toList();
+    }
+
 
 /* 
     @PostMapping("/read")

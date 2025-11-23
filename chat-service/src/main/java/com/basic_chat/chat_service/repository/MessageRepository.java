@@ -26,4 +26,7 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
     @Transactional
     @Query("UPDATE Message m SET m.isSeen = true WHERE m.receiver = :receiver AND m.id IN :ids")
     int markMessagesAsRead(@Param("receiver") String receiver, @Param("ids") List<Long> ids);*/
+
+    // Obtiene todos los mensajes para un receptor específico
+    List<Message> findByToUserId(String toUserId);
 }
