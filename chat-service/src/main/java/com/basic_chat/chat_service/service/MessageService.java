@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
@@ -25,7 +26,7 @@ public class MessageService {
         this.messageRepository = messageRepository;
         this.contactClient = contactClient;
     }
-
+/* 
     public void saveMessage(MessageDTO dto) {
         /*
          * if (contactClient.isUserBlocked(message.getReceiverId(),
@@ -34,11 +35,20 @@ public class MessageService {
          * IllegalArgumentException("No puedes enviar mensajes a un contacto bloqueado."
          * );
          * }
-         */
+         
+
+        ChatMessage chatMessage = ChatMessage.newBuilder()
+                .setId(UUID.randomUUID().toString())
+                .setFromUserId(dto.getSender())
+                .setToUserId(dto.getReceiver())
+                .setContent(dto.getContent())
+                .setTimestamp(System.currentTimeMillis())
+                .build();
+
         Message ms = new Message();
-        ms.setFromUserId(dto.getSender());
-        ms.setToUserId(dto.getReceiver());
-        ms.setData(dto.getContent().getBytes());
+        ms.setFromUserId(chatMessage.getFromUserId());
+        ms.setToUserId(chatMessage.getToUserId());
+        ms.setData(chatMessage.toByteArray());
 
         LocalDateTime dateTime = LocalDateTime.ofInstant(
                 Instant.ofEpochMilli(System.currentTimeMillis()),
@@ -48,7 +58,7 @@ public class MessageService {
 
         messageRepository.save(ms);
     }
-
+*/
     /* 
     public List<MessageDTO> getUnreadMessages(String username) {
 
@@ -75,10 +85,20 @@ public class MessageService {
         }
         return messageDTOs;
     }
-    */
-    public List<Message> findByToUserId(String toUserId) {
-        return messageRepository.findByToUserId(toUserId);
-    }
+    
+    public List<ChatMessage> findByToUserId(String toUserId) {
+        List<Message> messages = messageRepository.findByToUserId(toUserId);
+        return messages.stream()
+                .map(message -> {
+                    try {
+                        return ChatMessage.parseFrom(message.getData());
+                    } catch (Exception e) {
+                        // Considera un manejo de excepciones más robusto aquí
+                        throw new RuntimeException("Error al parsear el mensaje de Protobuf", e);
+                    }
+                })
+                .toList();
+    }*/
 
     /* 
     @Transactional

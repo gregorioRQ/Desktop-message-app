@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package com.basic_chat;
+
+// Opciones para optimizar la generación en Java
+option java_multiple_files = true;
+option java_package = "com.basic_chat.proto";
+option java_outer_classname = "MensajeProto";
+
+message PaqueteDatos {
+  string usuario_id = 1;
+  string contenido = 2;
+  int64 timestamp = 3;
+  
+  enum Tipo {
+    CHAT = 0;
+    ALERTA = 1;
+    LOGIN = 2;
+  }
+  Tipo tipo = 4;
+}

@@ -3,16 +3,14 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.5.3</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<groupId>com.basic-chat</groupId>
+    	<artifactId>app-chat-parent</artifactId>
+    	<version>1.0.0-SNAPSHOT</version>
 	</parent>
 	<groupId>com.basic-chat</groupId>
-	<artifactId>chat-service</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>chat-service</name>
-	<description>Servicio que se encarga de la mensajería del sistema</description>
+		<artifactId>chat-service</artifactId>
+		<name>chat-service</name>
+		<description>Servicio que se encarga de la mensajería del sistema</description>
 	<url/>
 	<licenses>
 		<license/>
@@ -67,61 +65,31 @@
     		<groupId>org.springframework.boot</groupId>
     		<artifactId>spring-boot-starter-websocket</artifactId>
 		</dependency>
+	
 		<dependency>
-      		<groupId>com.google.protobuf</groupId>
-      		<artifactId>protobuf-java</artifactId>
-      		<version>3.21.12</version>
-    	</dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.basic-chat</groupId>
+            <artifactId>schemas-module</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 	</dependencies>
 
 	
 
 	<build>
 
-	<pluginManagement>
-			<plugins>
-				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
-				<plugin>
-					<groupId>org.eclipse.m2e</groupId>
-					<artifactId>lifecycle-mapping</artifactId>
-					<version>1.0.0</version>
-					<configuration>
-						<lifecycleMappingMetadata>
-							<pluginExecutions>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>
-											org.xolstice.maven.plugins
-										</groupId>
-										<artifactId>
-											protobuf-maven-plugin
-										</artifactId>
-										<versionRange>
-											[0.6.1,)
-										</versionRange>
-										<goals>
-											<goal>compile</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore></ignore>
-									</action>
-								</pluginExecution>
-							</pluginExecutions>
-						</lifecycleMappingMetadata>
-					</configuration>
-				</plugin>
-			</plugins>
-		</pluginManagement>
-
-	<!-- Plugin para detectar el sistema operativo y descargar el binario adecuado de protoc -->
+	<!-- Plugin para detectar el sistema operativo y descargar el binario adecuado de protoc 
 	<extensions>
         <extension>
             <groupId>kr.motd.maven</groupId>
             <artifactId>os-maven-plugin</artifactId>
             <version>1.7.1</version>
         </extension>
-    </extensions>
+    </extensions>-->
 
 		<plugins>
 			<plugin>
@@ -150,6 +118,7 @@
 			</plugin>
 
 			<!-- Plugin para compilar archivos .proto a clases java -->
+			<!--
 			<plugin>
   				<groupId>org.xolstice.maven.plugins</groupId>
   				<artifactId>protobuf-maven-plugin</artifactId>
@@ -167,9 +136,9 @@
       					</goals>
     				</execution>
   				</executions>
-			</plugin>
+			</plugin>-->
 
-			<!-- Plugin para añadir el directorio de las clases generadas al build path, útil ya que permite al classpah hallar las clases generadas por el compilador de protobuf -->
+			<!-- Plugin para añadir el directorio de las clases generadas al build path, útil ya que permite al classpah hallar las clases generadas por el compilador de protobuf 
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>build-helper-maven-plugin</artifactId>
@@ -186,7 +155,7 @@
 						</configuration>
 					</execution>
 				</executions>
-			</plugin>
+			</plugin>-->
 
 		</plugins>
 	</build>

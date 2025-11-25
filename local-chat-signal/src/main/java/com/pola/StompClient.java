@@ -25,7 +25,7 @@ public class StompClient {
     // Preferred constructor: inject a MessageHandler
     public StompClient(String username) throws Exception {
         this.username = username;
-        this.connect("ws://localhost:8084/ws");
+        this.connect("ws://localhost:8085/ws-chat");
     }
 
     public void connect(String uri) throws Exception {

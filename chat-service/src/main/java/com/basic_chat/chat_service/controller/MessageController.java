@@ -42,13 +42,13 @@ public class MessageController {
         this.restClient = restClient;
         this.messagingTemplate = messagingTemplate;
     }
-
+    /* 
     @PostMapping
     public void sendMessage(@RequestBody MessageDTO dto) {
         //rabbitTemplate.convertAndSend("message.sent", new MessageSentEvent(dto.getSender(), dto.getReceiver()));
         messageService.saveMessage(dto);
     }
-
+*/
     /* 
     @PostMapping("/send-with-image")
     public ResponseEntity<String> sendMessageWithImage(@RequestParam("msg") String msg,
@@ -81,25 +81,19 @@ public class MessageController {
         return new ResponseEntity<>(messageService.getUnreadMessages(username), HttpStatus.OK);
     }
     */
-
+    /* 
     @GetMapping("/{userId}")
     public List<MessageDTO> getMessages(@PathVariable String userId) {
-        List<Message> entities = messageService.findByToUserId(userId);
-        return entities.stream()
-            .map(e -> {
-                try {
-                    return new MessageDTO(
-                        e.getFromUserId(),
-                        e.getToUserId(),
-                        new String(e.getData())
-                    );
-                } catch (Exception ex) {
-                    throw new RuntimeException(ex);
-                }
-            })
-            .toList();
+        List<ChatMessage> chatMessages = messageService.findByToUserId(userId);
+        return chatMessages.stream()
+                .map(chatMessage -> new MessageDTO(
+                        chatMessage.getFromUserId(),
+                        chatMessage.getToUserId(),
+                        chatMessage.getContent()
+                ))
+                .toList();
     }
-
+*/
 
 /* 
     @PostMapping("/read")
