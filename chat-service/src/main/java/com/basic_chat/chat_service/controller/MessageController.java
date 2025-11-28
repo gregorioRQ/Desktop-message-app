@@ -19,36 +19,44 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.basic_chat.chat_service.client.RestClient;
+import com.basic_chat.chat_service.handler.ChatWebSocketHandler;
 import com.basic_chat.chat_service.models.Message;
 import com.basic_chat.chat_service.models.MessageDTO;
 import com.basic_chat.chat_service.models.MessageSeenEvent;
 import com.basic_chat.chat_service.models.MessageSeenRequest;
 import com.basic_chat.chat_service.models.MessageSentEvent;
 import com.basic_chat.chat_service.service.MessageService;
+import com.basic_chat.proto.PaqueteDatos;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
 @RequestMapping("/message")
 public class MessageController {
     private final MessageService messageService;
-    //private final RabbitTemplate rabbitTemplate;
+    private final RabbitTemplate rabbitTemplate;
     private final RestClient restClient;
-    private final SimpMessagingTemplate messagingTemplate;
+    private final ChatWebSocketHandler webSocketHandler;
 
     public MessageController(MessageService messageService, RabbitTemplate rabbitTemplate, RestClient restClient,
-            SimpMessagingTemplate messagingTemplate) {
+            ChatWebSocketHandler webSocketHandler) {
         this.messageService = messageService;
-        //this.rabbitTemplate = rabbitTemplate;
+        this.rabbitTemplate = rabbitTemplate;
         this.restClient = restClient;
-        this.messagingTemplate = messagingTemplate;
+        this.webSocketHandler = webSocketHandler;
     }
-    /* 
     @PostMapping
     public void sendMessage(@RequestBody MessageDTO dto) {
-        //rabbitTemplate.convertAndSend("message.sent", new MessageSentEvent(dto.getSender(), dto.getReceiver()));
-        messageService.saveMessage(dto);
+        //messageService.saveMessage(dto);
+        
+        PaqueteDatos chatMessage = PaqueteDatos.newBuilder()
+            .setUsuarioId(dto.getSender())
+            .setContenido(dto.getContent())
+            .setTimestamp(System.currentTimeMillis())
+            .setTipo(PaqueteDatos.Tipo.CHAT)
+            .build();
+            
+        //webSocketHandler.broadcast(chatMessage);
     }
-*/
     /* 
     @PostMapping("/send-with-image")
     public ResponseEntity<String> sendMessageWithImage(@RequestParam("msg") String msg,

@@ -9,6 +9,7 @@
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
+    <description>Este módulo se encarga de crear y compilar los archivos .proto para compartir con sus módulos hermanos</description>
     <artifactId>schemas-module</artifactId>
     <packaging>jar</packaging>
 

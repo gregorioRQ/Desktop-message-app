@@ -13,6 +13,8 @@
         <module>chat-service</module>
         <module>profile-service</module>
         <module>local-chat</module>
+        <module>chat-client-test</module>
+        <module>cliente1</module>
     </modules>
 
     <properties>
