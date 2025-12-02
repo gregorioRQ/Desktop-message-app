@@ -26,7 +26,7 @@ public class MessageService {
         this.messageRepository = messageRepository;
         this.contactClient = contactClient;
     }
-/* 
+/*  
     public void saveMessage(MessageDTO dto) {
         /*
          * if (contactClient.isUserBlocked(message.getReceiverId(),
@@ -57,8 +57,8 @@ public class MessageService {
         ms.setTimestamp(dateTime);
 
         messageRepository.save(ms);
-    }
-*/
+    }*/
+
     /* 
     public List<MessageDTO> getUnreadMessages(String username) {
 
