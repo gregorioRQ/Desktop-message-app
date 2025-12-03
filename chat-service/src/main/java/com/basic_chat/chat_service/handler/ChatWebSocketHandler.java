@@ -14,10 +14,9 @@ import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.BinaryWebSocketHandler;
 
-import com.basic_chat.proto.PaqueteDatos;
-import com.basic_chat.proto.PaqueteDatos.Tipo;
 import com.google.protobuf.InvalidProtocolBufferException;
 
+/* 
 @Component
 public class ChatWebSocketHandler extends BinaryWebSocketHandler {
 
@@ -106,3 +105,5 @@ public class ChatWebSocketHandler extends BinaryWebSocketHandler {
         System.err.println("Transport error for session " + session.getId() + ": " + exception.getMessage());
     }
 }
+    */
+    

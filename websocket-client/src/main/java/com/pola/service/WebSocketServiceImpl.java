@@ -8,7 +8,7 @@ import java.util.function.Consumer;
 import org.glassfish.tyrus.client.ClientManager;
 
 import com.pola.config.WebSocketConfig;
-import com.pola.proto2.MessagesProto.WsMessage;
+import com.pola.proto.MessagesProto.WsMessage;
 
 import jakarta.websocket.ClientEndpoint;
 import jakarta.websocket.CloseReason;

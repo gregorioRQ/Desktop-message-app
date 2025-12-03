@@ -1,0 +1,63 @@
+syntax = "proto3";
+
+package com.basic_chat;
+
+option java_package = "com.basic_chat.proto";
+option java_outer_classname = "MessagesProto";
+
+// Tipo de mensaje
+enum MessageType {
+  TEXT = 0;
+  LOGIN = 1;
+  LOGOUT = 2;
+  USER_LIST = 3;
+  TYPING = 4;
+  DELIVERY_RECEIPT = 5;
+  ALERT = 6;
+  CHAT = 7;
+}
+
+// Mensaje de chat
+message ChatMessage {
+  string id = 1;
+  MessageType type = 2;
+  string sender = 3;
+  string recipient = 4;
+  string content = 5;
+  int64 timestamp = 6;
+}
+
+// Solicitud de login
+message LoginRequest {
+  string username = 1;
+  string password = 2;
+}
+
+// Respuesta de login
+message LoginResponse {
+  bool success = 1;
+  string message = 2;
+  string userId = 3;
+}
+
+// Lista de usuarios
+message UserList {
+  repeated User users = 1;
+}
+
+// Usuario
+message User {
+  string id = 1;
+  string username = 2;
+  bool online = 3;
+}
+
+// Wrapper para todos los mensajes
+message WsMessage {
+  oneof payload {
+    ChatMessage chat_message = 1;
+    LoginRequest login_request = 2;
+    LoginResponse login_response = 3;
+    UserList user_list = 4;
+  }
+}

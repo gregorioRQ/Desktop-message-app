@@ -4,6 +4,7 @@
   <groupId>com.pola</groupId>
   <artifactId>websocket-client</artifactId>
   <version>1.0.0-SNAPSHOT</version>
+  <description>Cliente WebSocket para transmision de mensajes Protobuf</description>
   <build>
     <extensions>
       <extension>

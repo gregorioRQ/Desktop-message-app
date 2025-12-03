@@ -3,29 +3,21 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>com.basic-chat</groupId>
-    	<artifactId>app-chat-parent</artifactId>
-    	<version>1.0.0-SNAPSHOT</version>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>3.5.3</version>
+		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
+	
 	<groupId>com.basic-chat</groupId>
 		<artifactId>chat-service</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
 		<name>chat-service</name>
 		<description>Servicio que se encarga de la mensajería del sistema</description>
-	<url/>
-	<licenses>
-		<license/>
-	</licenses>
-	<developers>
-		<developer/>
-	</developers>
-	<scm>
-		<connection/>
-		<developerConnection/>
-		<tag/>
-		<url/>
-	</scm>
+	
 	<properties>
 		<java.version>21</java.version>
+		<protobuf.version>3.25.1</protobuf.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -70,7 +62,7 @@
 		<dependency>
 			<groupId>com.google.protobuf</groupId>
 			<artifactId>protobuf-java</artifactId>
-			<version>3.24.4</version>
+			<version>${protobuf.version}</version>
 		</dependency>
 	
 		<dependency>
@@ -78,25 +70,20 @@
             <artifactId>spring-boot-starter-webflux</artifactId>
         </dependency>
         
-        <dependency>
-            <groupId>com.basic-chat</groupId>
-            <artifactId>schemas-module</artifactId>
-            <version>${project.version}</version>
-        </dependency>
 	</dependencies>
 
 	
 
 	<build>
 
-	<!-- Plugin para detectar el sistema operativo y descargar el binario adecuado de protoc 
+	<!-- Plugin para detectar el sistema operativo y descargar el binario adecuado de protoc -->
 	<extensions>
         <extension>
             <groupId>kr.motd.maven</groupId>
             <artifactId>os-maven-plugin</artifactId>
             <version>1.7.1</version>
         </extension>
-    </extensions>-->
+    </extensions>
 
 		<plugins>
 			<plugin>
@@ -125,14 +112,14 @@
 			</plugin>
 
 			<!-- Plugin para compilar archivos .proto a clases java -->
-			<!--
+		
 			<plugin>
   				<groupId>org.xolstice.maven.plugins</groupId>
   				<artifactId>protobuf-maven-plugin</artifactId>
   				<version>0.6.1</version>
   				<configuration>
     				<protocArtifact>
-      					com.google.protobuf:protoc:3.21.12:exe:${os.detected.classifier}
+      					com.google.protobuf:protoc:${protobuf.version}:exe:${os.detected.classifier}
     				</protocArtifact>
 					<protoSourceRoot>${project.basedir}/src/main/proto</protoSourceRoot>
   				</configuration>
@@ -143,9 +130,10 @@
       					</goals>
     				</execution>
   				</executions>
-			</plugin>-->
+			</plugin>
 
-			<!-- Plugin para añadir el directorio de las clases generadas al build path, útil ya que permite al classpah hallar las clases generadas por el compilador de protobuf 
+			<!-- Plugin para añadir el directorio de las clases generadas por protoc al build path, 
+			algunas veces el directorio "targe/generated-sources/protobuf/java" no es visible aunque exista.  -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>build-helper-maven-plugin</artifactId>
@@ -162,7 +150,7 @@
 						</configuration>
 					</execution>
 				</executions>
-			</plugin>-->
+			</plugin>
 
 		</plugins>
 	</build>

@@ -4,9 +4,9 @@ import java.time.Instant;
 import java.util.UUID;
 
 import com.pola.model.Message;
-import com.pola.proto2.MessagesProto.ChatMessage;
-import com.pola.proto2.MessagesProto.MessageType;
-import com.pola.proto2.MessagesProto.WsMessage;
+import com.pola.proto.MessagesProto.ChatMessage;
+import com.pola.proto.MessagesProto.MessageType;
+import com.pola.proto.MessagesProto.WsMessage;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

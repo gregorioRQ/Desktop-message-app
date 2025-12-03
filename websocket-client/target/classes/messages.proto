@@ -13,6 +13,8 @@ enum MessageType {
   USER_LIST = 3;
   TYPING = 4;
   DELIVERY_RECEIPT = 5;
+  ALERT = 6;
+  CHAT = 7;
 }
 
 // Mensaje de chat

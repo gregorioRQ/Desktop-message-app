@@ -48,6 +48,14 @@ public final class MessagesProto {
      * <code>DELIVERY_RECEIPT = 5;</code>
      */
     DELIVERY_RECEIPT(5),
+    /**
+     * <code>ALERT = 6;</code>
+     */
+    ALERT(6),
+    /**
+     * <code>CHAT = 7;</code>
+     */
+    CHAT(7),
     UNRECOGNIZED(-1),
     ;
 
@@ -75,6 +83,14 @@ public final class MessagesProto {
      * <code>DELIVERY_RECEIPT = 5;</code>
      */
     public static final int DELIVERY_RECEIPT_VALUE = 5;
+    /**
+     * <code>ALERT = 6;</code>
+     */
+    public static final int ALERT_VALUE = 6;
+    /**
+     * <code>CHAT = 7;</code>
+     */
+    public static final int CHAT_VALUE = 7;
 
 
     public final int getNumber() {
@@ -107,6 +123,8 @@ public final class MessagesProto {
         case 3: return USER_LIST;
         case 4: return TYPING;
         case 5: return DELIVERY_RECEIPT;
+        case 6: return ALERT;
+        case 7: return CHAT;
         default: return null;
       }
     }
@@ -5839,11 +5857,11 @@ public final class MessagesProto {
       "/\n\rlogin_request\030\002 \001(\0132\026.com.pola.LoginR" +
       "equestH\000\0221\n\016login_response\030\003 \001(\0132\027.com.p" +
       "ola.LoginResponseH\000\022\'\n\tuser_list\030\004 \001(\0132\022" +
-      ".com.pola.UserListH\000B\t\n\007payload*_\n\013Messa" +
+      ".com.pola.UserListH\000B\t\n\007payload*t\n\013Messa" +
       "geType\022\010\n\004TEXT\020\000\022\t\n\005LOGIN\020\001\022\n\n\006LOGOUT\020\002\022" +
       "\r\n\tUSER_LIST\020\003\022\n\n\006TYPING\020\004\022\024\n\020DELIVERY_R" +
-      "ECEIPT\020\005B\037\n\016com.pola.protoB\rMessagesProt" +
-      "ob\006proto3"
+      "ECEIPT\020\005\022\t\n\005ALERT\020\006\022\010\n\004CHAT\020\007B\037\n\016com.pol" +
+      "a.protoB\rMessagesProtob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

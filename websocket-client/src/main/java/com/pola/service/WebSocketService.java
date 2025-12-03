@@ -2,7 +2,9 @@ package com.pola.service;
 
 import java.util.function.Consumer;
 
-import com.pola.proto2.MessagesProto.WsMessage;
+import com.pola.proto.MessagesProto.WsMessage;
+
+
 
 /**
  * Interface para el servicio WebSocket

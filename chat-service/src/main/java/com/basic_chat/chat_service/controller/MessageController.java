@@ -19,16 +19,15 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.basic_chat.chat_service.client.RestClient;
-import com.basic_chat.chat_service.handler.ChatWebSocketHandler;
+//import com.basic_chat.chat_service.handler.ChatWebSocketHandler;
 import com.basic_chat.chat_service.models.Message;
 import com.basic_chat.chat_service.models.MessageDTO;
 import com.basic_chat.chat_service.models.MessageSeenEvent;
 import com.basic_chat.chat_service.models.MessageSeenRequest;
 import com.basic_chat.chat_service.models.MessageSentEvent;
 import com.basic_chat.chat_service.service.MessageService;
-import com.basic_chat.proto.PaqueteDatos;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
+/* 
 @RestController
 @RequestMapping("/message")
 public class MessageController {
@@ -138,5 +137,6 @@ public class MessageController {
         messageService.deleteAllMessagesBetweenUsers(sender, receiver);
         return ResponseEntity.ok("Todos los mensajes entre " + sender + " y " + receiver + " eliminados correctamente");
     }
-*/
+
 }
+*/

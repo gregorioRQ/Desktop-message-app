@@ -5,8 +5,9 @@ import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 
-import com.basic_chat.chat_service.handler.ChatWebSocketHandler;
 
+//import com.basic_chat.chat_service.handler.ChatWebSocketHandler;
+/* 
 @Configuration
 @EnableWebSocket
 public class WebSocketConfig implements WebSocketConfigurer {
@@ -22,4 +23,4 @@ public class WebSocketConfig implements WebSocketConfigurer {
         registry.addHandler(chatWebSocketHandler, "/ws-chat")
                 .setAllowedOriginPatterns("*");
     }
-}
+}*/
