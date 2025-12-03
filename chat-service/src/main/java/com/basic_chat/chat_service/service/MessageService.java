@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
@@ -25,7 +26,7 @@ public class MessageService {
         this.messageRepository = messageRepository;
         this.contactClient = contactClient;
     }
-
+/*  
     public void saveMessage(MessageDTO dto) {
         /*
          * if (contactClient.isUserBlocked(message.getReceiverId(),
@@ -34,22 +35,31 @@ public class MessageService {
          * IllegalArgumentException("No puedes enviar mensajes a un contacto bloqueado."
          * );
          * }
-         */
+         
+
+        ChatMessage chatMessage = ChatMessage.newBuilder()
+                .setId(UUID.randomUUID().toString())
+                .setFromUserId(dto.getSender())
+                .setToUserId(dto.getReceiver())
+                .setContent(dto.getContent())
+                .setTimestamp(System.currentTimeMillis())
+                .build();
+
         Message ms = new Message();
-        ms.setSender(dto.getSender());
-        ms.setReceiver(dto.getReceiver());
-        ms.setContent(dto.getContent());
+        ms.setFromUserId(chatMessage.getFromUserId());
+        ms.setToUserId(chatMessage.getToUserId());
+        ms.setData(chatMessage.toByteArray());
 
         LocalDateTime dateTime = LocalDateTime.ofInstant(
-                Instant.ofEpochMilli(dto.getCreated_at()),
+                Instant.ofEpochMilli(System.currentTimeMillis()),
                 ZoneId.systemDefault() // o ZoneId.of("UTC")
         );
-        ms.setCreated_at(dateTime);
-        ms.setSeen(false);
+        ms.setTimestamp(dateTime);
 
         messageRepository.save(ms);
-    }
+    }*/
 
+    /* 
     public List<MessageDTO> getUnreadMessages(String username) {
 
         if (messageRepository.existsByReceiver(username) == false) {
@@ -75,7 +85,22 @@ public class MessageService {
         }
         return messageDTOs;
     }
+    
+    public List<ChatMessage> findByToUserId(String toUserId) {
+        List<Message> messages = messageRepository.findByToUserId(toUserId);
+        return messages.stream()
+                .map(message -> {
+                    try {
+                        return ChatMessage.parseFrom(message.getData());
+                    } catch (Exception e) {
+                        // Considera un manejo de excepciones más robusto aquí
+                        throw new RuntimeException("Error al parsear el mensaje de Protobuf", e);
+                    }
+                })
+                .toList();
+    }*/
 
+    /* 
     @Transactional
     public int markRead(List<Long> messageIds, String receiver) {
         if (messageIds == null || messageIds.isEmpty())
@@ -90,18 +115,21 @@ public class MessageService {
         }
         return totalUpdated;
     }
-
+*/
+/* 
     public void deleteMessage(Long messageId, String receiver) {
-        /*
+        
          * if (!messageRepository.existMessageByReceiverIdAndMessageId(receiverId,
          * messageId)) {
          * throw new
          * IllegalArgumentException("El mensaje no existe o no pertenece al receptor.");
          * }
-         */
+         
         messageRepository.deleteById(messageId);
     }
+*/
 
+/* 
     // Elimina todos los mensajes entre dos usuarios
     @Transactional
     public void deleteAllMessagesBetweenUsers(String sender, String receiver) {
@@ -111,5 +139,5 @@ public class MessageService {
     public void deleteAllMessages(String username) {
         messageRepository.deleteAllMessagesByReceiver(username);
     }
-
+*/
 }

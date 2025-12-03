@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.pola.controller.ChatController"
+            styleClass="chat-container">
+    
+    <!-- Header -->
+    <top>
+        <VBox spacing="10" styleClass="header">
+            <padding>
+                <Insets top="10" right="15" bottom="10" left="15"/>
+            </padding>
+            
+            <HBox alignment="CENTER_LEFT" spacing="15">
+                <Label fx:id="usernameLabel" text="Usuario: " styleClass="username-label"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label fx:id="statusLabel" text="Desconectado" styleClass="status-label"/>
+            </HBox>
+            
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Button fx:id="connectButton" text="Conectar" styleClass="connect-button"/>
+                <Button fx:id="disconnectButton" text="Desconectar" 
+                        styleClass="disconnect-button" disable="true"/>
+            </HBox>
+            
+            <Separator/>
+        </VBox>
+    </top>
+    
+    <!-- Centro: Chat -->
+    <center>
+        <VBox spacing="10" VBox.vgrow="ALWAYS">
+            <padding>
+                <Insets top="10" right="15" bottom="10" left="15"/>
+            </padding>
+            
+            <!-- Panel de mensajes -->
+            <Label text="Mensajes:" styleClass="section-label"/>
+            <ListView fx:id="messageListView" VBox.vgrow="ALWAYS" 
+                     styleClass="message-list"/>
+            
+            <!-- Campo de entrada -->
+            <Label text="Escribir mensaje:" styleClass="section-label"/>
+            <HBox spacing="10">
+                <TextArea fx:id="messageInput" promptText="Escribe tu mensaje aquí..."
+                         wrapText="true" prefRowCount="3" HBox.hgrow="ALWAYS"/>
+                <Button fx:id="sendButton" text="Enviar" styleClass="send-button"
+                       prefHeight="70"/>
+            </HBox>
+        </VBox>
+    </center>
+    
+    <!-- Panel derecho: Contactos (opcional) -->
+    <right>
+        <VBox fx:id="contactsPanel" spacing="10" prefWidth="200" 
+              styleClass="contacts-panel" visible="false" managed="false">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+            
+            <Label text="Contactos:" styleClass="section-label"/>
+            <ListView styleClass="contacts-list" VBox.vgrow="ALWAYS"/>
+        </VBox>
+    </right>
+    
+</BorderPane>
