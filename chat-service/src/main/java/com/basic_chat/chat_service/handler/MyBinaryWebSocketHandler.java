@@ -42,7 +42,7 @@ public class MyBinaryWebSocketHandler extends AbstractWebSocketHandler {
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-        System.out.println("\n✓ Nueva conexión WebSocket: " + session.getId());
+        System.out.println("\n ** Nueva conexión WebSocket: " + session.getId());
         
         // Nota: El userId se establecerá cuando el cliente envíe su primer mensaje LOGIN
         // Por ahora solo registramos la sesión
@@ -84,7 +84,7 @@ public class MyBinaryWebSocketHandler extends AbstractWebSocketHandler {
                     break;
                     
                 default:
-                    System.out.println("⚠ Tipo de mensaje desconocido: " + mensajeRecibido.getChatMessage().getType().name());
+                    System.out.println("Tipo de mensaje desconocido: " + mensajeRecibido.getChatMessage().getType().name());
             }
 
         } catch (Exception e) {
@@ -158,6 +158,16 @@ public class MyBinaryWebSocketHandler extends AbstractWebSocketHandler {
         // 2. Persistir en DB
         // 3. Enviar notificación push si está offline
         //messageService.processMessage(mensaje, session.getId());
+
+        if(sessionManager.isUserOnline(mensaje.getRecipient())){
+            try {
+            session.sendMessage(new BinaryMessage(Objects.requireNonNull(mensaje.toByteArray())));
+            } catch (Exception e) {
+            System.err.println("Error enviando el mensaje: " + e.getMessage());
+            }
+        }else{
+            messageService.saveMessage(mensaje);
+        }
         
         // Enviar ACK al remitente
         //sendAck(session, mensaje);

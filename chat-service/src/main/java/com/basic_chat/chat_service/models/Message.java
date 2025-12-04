@@ -1,5 +1,6 @@
 package com.basic_chat.chat_service.models;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -27,4 +28,5 @@ public class Message {
     private String fromUserId;
     private String toUserId;
     private LocalDateTime timestamp;
+    private Long creationTime;
 }    

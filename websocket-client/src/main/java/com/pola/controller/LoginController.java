@@ -1,7 +1,11 @@
 package com.pola.controller;
 
+import com.pola.proto.MessagesProto.LoginRequest;
+import com.pola.proto.MessagesProto.LoginResponse;
+import com.pola.service.HttpService;
 import com.pola.view.ViewManager;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -29,9 +33,14 @@ public class LoginController {
     private Label statusLabel;
     
     private ViewManager viewManager;
+    private HttpService httpService;
     
     public void setViewManager(ViewManager viewManager) {
         this.viewManager = viewManager;
+    }
+
+    public void setHttpService(HttpService httpService){
+        this.httpService = httpService;
     }
     
     @FXML
@@ -56,17 +65,67 @@ public class LoginController {
             statusLabel.setStyle("-fx-text-fill: red;");
             return;
         }
+
+         if (password.isEmpty()) {
+            showError("Por favor ingrese una contraseña");
+            return;
+        }
+
+        // Deshabilitar botones mientras se procesa
+            setButtonsEnabled(false);
+            showInfo("Iniciando sesión...");
+
+        LoginRequest loginRequest = LoginRequest.newBuilder()
+                .setUsername(username)
+                .setPassword(password)
+                .build();
         
-        // Por ahora solo validamos que haya username
-        // En el futuro se puede agregar autenticación real
-        statusLabel.setText("Iniciando sesión...");
-        statusLabel.setStyle("-fx-text-fill: blue;");
-        
-        viewManager.showChatView(username);
+        httpService.login(loginRequest, LoginResponse.class)
+                    .thenAccept(response -> {
+                    Platform.runLater(() -> {
+                        if (response.getSuccess()) {
+                            showSuccess("Login exitoso");
+                            viewManager.showChatView(username);
+                        } else {
+                            showError("Error: " + response.getMessage());
+                            setButtonsEnabled(true);
+                        }
+                    });
+                })
+                .exceptionally(error -> {
+                    Platform.runLater(() -> {
+                        showError("Error de conexión: " + error.getMessage());
+                        setButtonsEnabled(true);
+                    });
+                    return null;
+                });
+      
     }
     
     private void handleSkip() {
         // Ir directamente al chat con usuario "Guest"
         viewManager.showChatView("Guest");
+    }
+
+    private void setButtonsEnabled(boolean enabled) {
+        loginButton.setDisable(!enabled);
+        skipButton.setDisable(!enabled);
+        usernameField.setDisable(!enabled);
+        passwordField.setDisable(!enabled);
+    }
+
+    private void showError(String message) {
+        statusLabel.setText(message);
+        statusLabel.setStyle("-fx-text-fill: red;");
+    }
+    
+    private void showInfo(String message) {
+        statusLabel.setText(message);
+        statusLabel.setStyle("-fx-text-fill: blue;");
+    }
+    
+    private void showSuccess(String message) {
+        statusLabel.setText(message);
+        statusLabel.setStyle("-fx-text-fill: green;");
     }
 }

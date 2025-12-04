@@ -13,6 +13,7 @@ import com.basic_chat.chat_service.client.RestClient;
 import com.basic_chat.chat_service.models.Message;
 import com.basic_chat.chat_service.models.MessageDTO;
 import com.basic_chat.chat_service.repository.MessageRepository;
+import com.basic_chat.proto.MessagesProto;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -26,38 +27,29 @@ public class MessageService {
         this.messageRepository = messageRepository;
         this.contactClient = contactClient;
     }
-/*  
-    public void saveMessage(MessageDTO dto) {
-        /*
+
+    public void saveMessage(MessagesProto.ChatMessage message) {
+        /* 
          * if (contactClient.isUserBlocked(message.getReceiverId(),
          * message.getSenderId())) {
          * throw new
          * IllegalArgumentException("No puedes enviar mensajes a un contacto bloqueado."
          * );
-         * }
-         
-
-        ChatMessage chatMessage = ChatMessage.newBuilder()
-                .setId(UUID.randomUUID().toString())
-                .setFromUserId(dto.getSender())
-                .setToUserId(dto.getReceiver())
-                .setContent(dto.getContent())
-                .setTimestamp(System.currentTimeMillis())
-                .build();
+         * }*/
 
         Message ms = new Message();
-        ms.setFromUserId(chatMessage.getFromUserId());
-        ms.setToUserId(chatMessage.getToUserId());
-        ms.setData(chatMessage.toByteArray());
+        ms.setFromUserId(message.getSender());
+        ms.setToUserId(message.getRecipient());
+        ms.setData(message.getContent().getBytes());
 
         LocalDateTime dateTime = LocalDateTime.ofInstant(
                 Instant.ofEpochMilli(System.currentTimeMillis()),
                 ZoneId.systemDefault() // o ZoneId.of("UTC")
         );
         ms.setTimestamp(dateTime);
-
+        ms.setCreationTime(message.getTimestamp());
         messageRepository.save(ms);
-    }*/
+    }
 
     /* 
     public List<MessageDTO> getUnreadMessages(String username) {

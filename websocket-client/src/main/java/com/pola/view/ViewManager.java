@@ -4,6 +4,8 @@ import java.io.IOException;
 
 import com.pola.controller.ChatController;
 import com.pola.controller.LoginController;
+import com.pola.service.HttpService;
+import com.pola.service.HttpServiceImpl;
 import com.pola.service.MessageService;
 import com.pola.service.WebSocketService;
 import com.pola.service.WebSocketServiceImpl;
@@ -20,12 +22,13 @@ public class ViewManager {
     private final Stage stage;
     private final WebSocketService webSocketService;
     private final MessageService messageService;
+    private final HttpService httpService;
     
     public ViewManager(Stage stage) {
         this.stage = stage;
         this.webSocketService = new WebSocketServiceImpl();
         this.messageService = new MessageService(webSocketService);
-        
+        this.httpService = new HttpServiceImpl();
         configureStage();
     }
     
@@ -48,6 +51,7 @@ public class ViewManager {
             
             LoginController controller = loader.getController();
             controller.setViewManager(this);
+            controller.setHttpService(httpService);
             
             stage.setScene(scene);
             stage.show();

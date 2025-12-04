@@ -30,7 +30,7 @@ public class MessageService {
     public void sendTextMessage(String content, String sender, String recipient) {
         ChatMessage chatMessage = ChatMessage.newBuilder()
                 .setId(UUID.randomUUID().toString())
-                .setType(MessageType.TEXT)
+                .setType(MessageType.CHAT)
                 .setSender(sender)
                 .setRecipient(recipient)
                 .setContent(content)
