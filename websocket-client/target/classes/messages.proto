@@ -27,18 +27,6 @@ message ChatMessage {
   int64 timestamp = 6;
 }
 
-// Solicitud de login
-message LoginRequest {
-  string username = 1;
-  string password = 2;
-}
-
-// Respuesta de login
-message LoginResponse {
-  bool success = 1;
-  string message = 2;
-  string userId = 3;
-}
 
 // Lista de usuarios
 message UserList {
@@ -56,8 +44,6 @@ message User {
 message WsMessage {
   oneof payload {
     ChatMessage chat_message = 1;
-    LoginRequest login_request = 2;
-    LoginResponse login_response = 3;
-    UserList user_list = 4;
+    UserList user_list = 2;
   }
 }

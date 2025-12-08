@@ -2,15 +2,19 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+
 	<parent>
-		<groupId>com.basic-chat</groupId>
-    	<artifactId>app-chat-parent</artifactId>
-    	<version>1.0.0-SNAPSHOT</version>
-	</parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.2.0</version>
+        <relativePath/>
+    </parent>
+	
 	<groupId>com.basic-chat</groupId>
 	<artifactId>profile-service</artifactId>
 	<name>profile-service</name>
-	<description>Demo project for Spring Boot</description>
+	<version>1.0.0-SNAPSHOT</version>
+	<description>Servicio encargado de la gestión de los perfiles.</description>
 	<url/>
 	<licenses>
 		<license/>
@@ -26,14 +30,10 @@
 	</scm>
 	<properties>
 		<java.version>21</java.version>
+		<protobuf.version>3.25.1</protobuf.version>
+		<lombok.version>1.18.38</lombok.version>
 	</properties>
 	<dependencies>
-
-		<dependency>
-        	<groupId>com.basic-chat</groupId>
-        	<artifactId>schemas-module</artifactId>
-			<version>${project.version}</version>
-    	</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -60,6 +60,7 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
+			<version>${lombok.version}</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
@@ -72,9 +73,31 @@
 			<artifactId>spring-rabbit-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+		<!-- Protobuf Java -->
+        <dependency>
+            <groupId>com.google.protobuf</groupId>
+            <artifactId>protobuf-java</artifactId>
+            <version>${protobuf.version}</version>
+        </dependency>
+
+		<!-- Spring Security (para BCrypt) -->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-crypto</artifactId>
+        </dependency>
 	</dependencies>
 
 	<build>
+
+		<extensions> 
+            <extension>
+                <groupId>kr.motd.maven</groupId>
+                <artifactId>os-maven-plugin</artifactId>
+                <version>1.7.1</version> 
+            </extension> 
+        </extensions>
+
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -84,6 +107,7 @@
 						<path>
 							<groupId>org.projectlombok</groupId>
 							<artifactId>lombok</artifactId>
+							<version>${lombok.version}</version>
 						</path>
 					</annotationProcessorPaths>
 				</configuration>
@@ -100,6 +124,46 @@
 					</excludes>
 				</configuration>
 			</plugin>
+
+			<!-- Compilador protoc para compilar arhivos .proto a clases Java -->
+            <plugin>
+                <groupId>org.xolstice.maven.plugins</groupId>
+                <artifactId>protobuf-maven-plugin</artifactId>
+                <version>0.6.1</version>
+                <configuration>
+                    <protocArtifact>com.google.protobuf:protoc:${protobuf.version}:exe:${os.detected.classifier}</protocArtifact>
+                    <outputDirectory>${project.basedir}/src/generated/java</outputDirectory>
+                    <clearOutputDirectory>false</clearOutputDirectory>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+			<!-- Plugin para agregar las fuentes generadas al classpath -->
+        <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>build-helper-maven-plugin</artifactId>
+            <version>3.4.0</version>
+            <executions>
+                <execution>
+                    <id>add-source</id>
+                    <phase>generate-sources</phase>
+                    <goals>
+                        <goal>add-source</goal>
+                    </goals>
+                    <configuration>
+                        <sources>
+                            <source>${project.basedir}/src/generated/java</source>
+                        </sources>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
 		</plugins>
 	</build>
 

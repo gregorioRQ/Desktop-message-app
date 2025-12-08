@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.pola.controller.RegisterController"
+      alignment="CENTER"
+      spacing="20"
+      styleClass="login-container">
+    
+    <padding>
+        <Insets top="50" right="50" bottom="50" left="50"/>
+    </padding>
+    
+    <!-- Título -->
+    <Label text="Crear Cuenta" styleClass="title">
+        <font>
+            <Font name="System Bold" size="28"/>
+        </font>
+    </Label>
+    
+    <!-- Formulario de registro -->
+    <VBox spacing="15" maxWidth="350">
+        <Label text="Nombre de usuario:" styleClass="field-label"/>
+        <TextField fx:id="usernameField" promptText="Ingrese su usuario"/>
+        
+        <Label text="Contraseña:" styleClass="field-label"/>
+        <PasswordField fx:id="passwordField" promptText="Ingrese su contraseña"/>
+        
+        <Label text="Confirmar contraseña:" styleClass="field-label"/>
+        <PasswordField fx:id="confirmPasswordField" promptText="Confirme su contraseña"/>
+        
+        <!-- Área de mensajes de error/éxito -->
+        <VBox fx:id="messageContainer" spacing="5" visible="false" managed="false">
+            <Label fx:id="messageLabel" wrapText="true" styleClass="message-label"/>
+        </VBox>
+        
+        <!-- Botones -->
+        <HBox spacing="10" alignment="CENTER">
+            <Button fx:id="registerButton" text="Registrarse" styleClass="primary-button"/>
+            <Button fx:id="backButton" text="Volver" styleClass="secondary-button"/>
+        </HBox>
+        
+        <!-- Estado -->
+        <Label fx:id="statusLabel" text="" styleClass="status-label"/>
+    </VBox>
+    
+</VBox>

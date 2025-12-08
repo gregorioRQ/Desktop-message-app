@@ -39,6 +39,14 @@
         
         <!-- Estado -->
         <Label fx:id="statusLabel" text="" styleClass="status-label"/>
+
+        <!-- Link a registro -->
+        <HBox alignment="CENTER" spacing="5">
+            <Label text="¿No tienes cuenta?" styleClass="field-label"/>
+            <Label fx:id="registerLink" text="Regístrate aquí" 
+                   styleClass="link-label" 
+                   onMouseClicked="#handleRegisterLink"/>
+        </HBox>
     </VBox>
     
 </VBox>

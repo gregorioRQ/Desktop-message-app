@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package com.basic_chat;
+
+option java_package = "com.basic_chat.proto";
+option java_outer_classname = "LoginProto";
+
+// solicitud de registro.
+message LoginRequest{
+    string username = 1;
+    string password = 2;
+}
+
+// Respuesta de registro
+message LoginResponse{
+    bool success = 1;
+    string message = 2;
+}
+
+message LoginUser{
+    oneof payload{
+        LoginRequest register_request = 1;
+        LoginResponse register_response = 2;
+    }
+}

@@ -6,7 +6,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
+/* 
 @Configuration
 public class RabbitMQconfig {
     private static final String IMAGE_PROFILE_SAVED_QUEUE = "image.profile.saved";
@@ -29,3 +29,4 @@ public class RabbitMQconfig {
         return template;
     }
 }
+*/

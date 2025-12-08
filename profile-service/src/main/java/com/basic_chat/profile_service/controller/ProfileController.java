@@ -2,60 +2,73 @@ package com.basic_chat.profile_service.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.basic_chat.profile_service.models.Profile;
 import com.basic_chat.profile_service.service.ProfileService;
+import com.basic_chat.proto.LoginProto.LoginRequest;
+import com.basic_chat.proto.LoginProto.LoginResponse;
+import com.basic_chat.proto.RegisterProto.RegisterRequest;
+import com.basic_chat.proto.RegisterProto.RegisterResponse;
 
-import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Controlador REST para registro de usuarios
+ * Principio SOLID: Single Responsibility - Solo maneja requests HTTP
+ */
 @RestController
-@RequestMapping("/profile")
+@RequestMapping("/profile/api/v1")
+@RequiredArgsConstructor
+@Slf4j
 public class ProfileController {
 
     private final ProfileService profileService;
 
-    public ProfileController(ProfileService profileService) {
-        this.profileService = profileService;
+    /**
+     * Endpoint para registrar un nuevo usuario
+     * POST /api/v1/register
+     * Content-Type: application/x-protobuf
+     * Body: RegisterRequest (Protobuf)
+     * 
+     * @param request Solicitud de registro en formato Protobuf
+     * @return Respuesta de registro en formato Protobuf
+     */
+    @PostMapping(value = "/register", 
+                 consumes = "application/x-protobuf",
+                 produces = "application/x-protobuf")
+    public ResponseEntity<RegisterResponse> register(@RequestBody RegisterRequest request) {
+        
+        log.info("Recibida solicitud de registro para usuario: {}", request.getUsername());
+        
+        RegisterResponse response = profileService.registerUser(request);
+        
+        if (response.getSuccess()) {
+            log.info("Registro exitoso para usuario: {}", request.getUsername());
+            return ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body(response);
+        } else {
+            log.warn("Registro fallido para usuario: {} - Razón: {}", 
+                    request.getUsername(), response.getMessage());
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(response);
+        }
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<Profile> createProfile(@RequestBody Profile profile) {
-        if (profile == null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    @PostMapping(value = "auth/login",
+                consumes = "application/x-protobuf",
+                produces =  "application/x-protobuf")
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request){
+        LoginResponse response = profileService.login(request);
+        if(response.getSuccess()){
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }else{
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
-        try {
-            Profile createdProfile = profileService.createProfile(profile);
-            return new ResponseEntity<>(createdProfile, HttpStatus.CREATED);
-
-        } catch (EntityNotFoundException ex) {
-            System.out.println(ex.getMessage());
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } catch (Exception ex) {
-            System.out.println(ex.getMessage());
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
-    }
-
-    @GetMapping("/get-by-id")
-    public ResponseEntity<Profile> getProfileById(@RequestParam Long userId) {
-        try {
-            if (userId == null) {
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            }
-            Profile profile = profileService.getProfileById(userId);
-            return new ResponseEntity<>(profile, HttpStatus.OK);
-        } catch (Exception ex) {
-            System.out.println(ex.getMessage());
-            ex.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
     }
 }

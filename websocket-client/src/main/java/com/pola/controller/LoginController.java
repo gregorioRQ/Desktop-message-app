@@ -1,7 +1,7 @@
 package com.pola.controller;
 
-import com.pola.proto.MessagesProto.LoginRequest;
-import com.pola.proto.MessagesProto.LoginResponse;
+import com.pola.proto.LoginProto.LoginRequest;
+import com.pola.proto.LoginProto.LoginResponse;
 import com.pola.service.HttpService;
 import com.pola.view.ViewManager;
 
@@ -31,6 +31,9 @@ public class LoginController {
     
     @FXML
     private Label statusLabel;
+
+    @FXML
+    private Label registerLink;
     
     private ViewManager viewManager;
     private HttpService httpService;
@@ -54,6 +57,17 @@ public class LoginController {
         
         // Enter en password hace login
         passwordField.setOnAction(event -> handleLogin());
+
+        // Efecto hover en el link de registro
+        registerLink.setOnMouseEntered(event -> 
+            registerLink.setStyle("-fx-text-fill: #ffffff; -fx-underline: true; -fx-cursor: hand;"));
+        registerLink.setOnMouseExited(event -> 
+            registerLink.setStyle("-fx-text-fill: #e0e0e0; -fx-underline: true; -fx-cursor: hand;"));
+    }
+
+    @FXML
+    private void handleRegisterLink(){
+        viewManager.showRegisterView();
     }
     
     private void handleLogin() {

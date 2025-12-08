@@ -26,7 +26,7 @@ public class HttpServiceImpl implements HttpService{
 
     @Override
     public <T, R> CompletableFuture<R> createProfile(T request, Class<R> responseClass) {
-        return sendPostRequest("/profiles", request, responseClass);
+        return sendPostRequest("/register", request, responseClass);
     }
 
     @Override

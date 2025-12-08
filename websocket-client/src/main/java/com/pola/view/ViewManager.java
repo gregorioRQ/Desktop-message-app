@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import com.pola.controller.ChatController;
 import com.pola.controller.LoginController;
+import com.pola.controller.RegisterController;
 import com.pola.service.HttpService;
 import com.pola.service.HttpServiceImpl;
 import com.pola.service.MessageService;
@@ -70,6 +71,24 @@ public class ViewManager {
             
             ChatController controller = loader.getController();
             controller.initialize(username, webSocketService, messageService);
+            
+            stage.setScene(scene);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void showRegisterView() {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/fxml/register.fxml"));
+            Scene scene = new Scene(loader.load());
+            scene.getStylesheets().add(
+                    getClass().getResource("/css/styles.css").toExternalForm());
+            
+            RegisterController controller = loader.getController();
+            controller.setViewManager(this);
+            controller.setHttpService(httpService);
             
             stage.setScene(scene);
         } catch (IOException e) {

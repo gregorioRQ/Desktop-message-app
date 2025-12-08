@@ -19,6 +19,13 @@
     -fx-font-size: 12px;
 }
 
+.link-label {
+    -fx-text-fill: #e0e0e0;
+    -fx-font-size: 12px;
+    -fx-underline: true;
+    -fx-cursor: hand;
+}
+
 .text-field, .password-field {
     -fx-background-radius: 5;
     -fx-padding: 10;
