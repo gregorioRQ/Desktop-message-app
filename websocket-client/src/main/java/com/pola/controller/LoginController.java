@@ -50,7 +50,6 @@ public class LoginController {
     private void initialize() {
         // Configurar acciones de los botones
         loginButton.setOnAction(event -> handleLogin());
-        skipButton.setOnAction(event -> handleSkip());
         
         // Enter en username va a password
         usernameField.setOnAction(event -> passwordField.requestFocus());
@@ -99,7 +98,8 @@ public class LoginController {
                     Platform.runLater(() -> {
                         if (response.getSuccess()) {
                             showSuccess("Login exitoso");
-                            viewManager.showChatView(username);
+                            // pasa el token a viewmanager
+                            viewManager.showChatView(username, response.getUserId(), response.getToken());
                         } else {
                             showError("Error: " + response.getMessage());
                             setButtonsEnabled(true);
@@ -115,11 +115,7 @@ public class LoginController {
                 });
       
     }
-    
-    private void handleSkip() {
-        // Ir directamente al chat con usuario "Guest"
-        viewManager.showChatView("Guest");
-    }
+
 
     private void setButtonsEnabled(boolean enabled) {
         loginButton.setDisable(!enabled);

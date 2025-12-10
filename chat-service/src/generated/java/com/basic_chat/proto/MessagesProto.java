@@ -2,7 +2,7 @@
 // source: messages.proto
 
 // Protobuf Java Version: 3.25.1
-package com.pola.proto;
+package com.basic_chat.proto;
 
 public final class MessagesProto {
   private MessagesProto() {}
@@ -20,7 +20,7 @@ public final class MessagesProto {
    * Tipo de mensaje
    * </pre>
    *
-   * Protobuf enum {@code com.pola.MessageType}
+   * Protobuf enum {@code com.basic_chat.MessageType}
    */
   public enum MessageType
       implements com.google.protobuf.ProtocolMessageEnum {
@@ -155,7 +155,7 @@ public final class MessagesProto {
     }
     public static final com.google.protobuf.Descriptors.EnumDescriptor
         getDescriptor() {
-      return com.pola.proto.MessagesProto.getDescriptor().getEnumTypes().get(0);
+      return com.basic_chat.proto.MessagesProto.getDescriptor().getEnumTypes().get(0);
     }
 
     private static final MessageType[] VALUES = values();
@@ -178,11 +178,11 @@ public final class MessagesProto {
       this.value = value;
     }
 
-    // @@protoc_insertion_point(enum_scope:com.pola.MessageType)
+    // @@protoc_insertion_point(enum_scope:com.basic_chat.MessageType)
   }
 
   public interface ChatMessageOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:com.pola.ChatMessage)
+      // @@protoc_insertion_point(interface_extends:com.basic_chat.ChatMessage)
       com.google.protobuf.MessageOrBuilder {
 
     /**
@@ -198,15 +198,15 @@ public final class MessagesProto {
         getIdBytes();
 
     /**
-     * <code>.com.pola.MessageType type = 2;</code>
+     * <code>.com.basic_chat.MessageType type = 2;</code>
      * @return The enum numeric value on the wire for type.
      */
     int getTypeValue();
     /**
-     * <code>.com.pola.MessageType type = 2;</code>
+     * <code>.com.basic_chat.MessageType type = 2;</code>
      * @return The type.
      */
-    com.pola.proto.MessagesProto.MessageType getType();
+    com.basic_chat.proto.MessagesProto.MessageType getType();
 
     /**
      * <code>string sender = 3;</code>
@@ -255,11 +255,11 @@ public final class MessagesProto {
    * Mensaje de chat
    * </pre>
    *
-   * Protobuf type {@code com.pola.ChatMessage}
+   * Protobuf type {@code com.basic_chat.ChatMessage}
    */
   public static final class ChatMessage extends
       com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:com.pola.ChatMessage)
+      // @@protoc_insertion_point(message_implements:com.basic_chat.ChatMessage)
       ChatMessageOrBuilder {
   private static final long serialVersionUID = 0L;
     // Use ChatMessage.newBuilder() to construct.
@@ -283,15 +283,15 @@ public final class MessagesProto {
 
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.pola.proto.MessagesProto.internal_static_com_pola_ChatMessage_descriptor;
+      return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_ChatMessage_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.pola.proto.MessagesProto.internal_static_com_pola_ChatMessage_fieldAccessorTable
+      return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_ChatMessage_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              com.pola.proto.MessagesProto.ChatMessage.class, com.pola.proto.MessagesProto.ChatMessage.Builder.class);
+              com.basic_chat.proto.MessagesProto.ChatMessage.class, com.basic_chat.proto.MessagesProto.ChatMessage.Builder.class);
     }
 
     public static final int ID_FIELD_NUMBER = 1;
@@ -336,19 +336,19 @@ public final class MessagesProto {
     public static final int TYPE_FIELD_NUMBER = 2;
     private int type_ = 0;
     /**
-     * <code>.com.pola.MessageType type = 2;</code>
+     * <code>.com.basic_chat.MessageType type = 2;</code>
      * @return The enum numeric value on the wire for type.
      */
     @java.lang.Override public int getTypeValue() {
       return type_;
     }
     /**
-     * <code>.com.pola.MessageType type = 2;</code>
+     * <code>.com.basic_chat.MessageType type = 2;</code>
      * @return The type.
      */
-    @java.lang.Override public com.pola.proto.MessagesProto.MessageType getType() {
-      com.pola.proto.MessagesProto.MessageType result = com.pola.proto.MessagesProto.MessageType.forNumber(type_);
-      return result == null ? com.pola.proto.MessagesProto.MessageType.UNRECOGNIZED : result;
+    @java.lang.Override public com.basic_chat.proto.MessagesProto.MessageType getType() {
+      com.basic_chat.proto.MessagesProto.MessageType result = com.basic_chat.proto.MessagesProto.MessageType.forNumber(type_);
+      return result == null ? com.basic_chat.proto.MessagesProto.MessageType.UNRECOGNIZED : result;
     }
 
     public static final int SENDER_FIELD_NUMBER = 3;
@@ -496,7 +496,7 @@ public final class MessagesProto {
       if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(id_)) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 1, id_);
       }
-      if (type_ != com.pola.proto.MessagesProto.MessageType.TEXT.getNumber()) {
+      if (type_ != com.basic_chat.proto.MessagesProto.MessageType.TEXT.getNumber()) {
         output.writeEnum(2, type_);
       }
       if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(sender_)) {
@@ -523,7 +523,7 @@ public final class MessagesProto {
       if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(id_)) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, id_);
       }
-      if (type_ != com.pola.proto.MessagesProto.MessageType.TEXT.getNumber()) {
+      if (type_ != com.basic_chat.proto.MessagesProto.MessageType.TEXT.getNumber()) {
         size += com.google.protobuf.CodedOutputStream
           .computeEnumSize(2, type_);
       }
@@ -550,10 +550,10 @@ public final class MessagesProto {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof com.pola.proto.MessagesProto.ChatMessage)) {
+      if (!(obj instanceof com.basic_chat.proto.MessagesProto.ChatMessage)) {
         return super.equals(obj);
       }
-      com.pola.proto.MessagesProto.ChatMessage other = (com.pola.proto.MessagesProto.ChatMessage) obj;
+      com.basic_chat.proto.MessagesProto.ChatMessage other = (com.basic_chat.proto.MessagesProto.ChatMessage) obj;
 
       if (!getId()
           .equals(other.getId())) return false;
@@ -595,44 +595,44 @@ public final class MessagesProto {
       return hash;
     }
 
-    public static com.pola.proto.MessagesProto.ChatMessage parseFrom(
+    public static com.basic_chat.proto.MessagesProto.ChatMessage parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.pola.proto.MessagesProto.ChatMessage parseFrom(
+    public static com.basic_chat.proto.MessagesProto.ChatMessage parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.pola.proto.MessagesProto.ChatMessage parseFrom(
+    public static com.basic_chat.proto.MessagesProto.ChatMessage parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.pola.proto.MessagesProto.ChatMessage parseFrom(
+    public static com.basic_chat.proto.MessagesProto.ChatMessage parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.pola.proto.MessagesProto.ChatMessage parseFrom(byte[] data)
+    public static com.basic_chat.proto.MessagesProto.ChatMessage parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.pola.proto.MessagesProto.ChatMessage parseFrom(
+    public static com.basic_chat.proto.MessagesProto.ChatMessage parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.pola.proto.MessagesProto.ChatMessage parseFrom(java.io.InputStream input)
+    public static com.basic_chat.proto.MessagesProto.ChatMessage parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.pola.proto.MessagesProto.ChatMessage parseFrom(
+    public static com.basic_chat.proto.MessagesProto.ChatMessage parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -640,26 +640,26 @@ public final class MessagesProto {
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
-    public static com.pola.proto.MessagesProto.ChatMessage parseDelimitedFrom(java.io.InputStream input)
+    public static com.basic_chat.proto.MessagesProto.ChatMessage parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
 
-    public static com.pola.proto.MessagesProto.ChatMessage parseDelimitedFrom(
+    public static com.basic_chat.proto.MessagesProto.ChatMessage parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.pola.proto.MessagesProto.ChatMessage parseFrom(
+    public static com.basic_chat.proto.MessagesProto.ChatMessage parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.pola.proto.MessagesProto.ChatMessage parseFrom(
+    public static com.basic_chat.proto.MessagesProto.ChatMessage parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -672,7 +672,7 @@ public final class MessagesProto {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(com.pola.proto.MessagesProto.ChatMessage prototype) {
+    public static Builder newBuilder(com.basic_chat.proto.MessagesProto.ChatMessage prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     @java.lang.Override
@@ -692,26 +692,26 @@ public final class MessagesProto {
      * Mensaje de chat
      * </pre>
      *
-     * Protobuf type {@code com.pola.ChatMessage}
+     * Protobuf type {@code com.basic_chat.ChatMessage}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:com.pola.ChatMessage)
-        com.pola.proto.MessagesProto.ChatMessageOrBuilder {
+        // @@protoc_insertion_point(builder_implements:com.basic_chat.ChatMessage)
+        com.basic_chat.proto.MessagesProto.ChatMessageOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.pola.proto.MessagesProto.internal_static_com_pola_ChatMessage_descriptor;
+        return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_ChatMessage_descriptor;
       }
 
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.pola.proto.MessagesProto.internal_static_com_pola_ChatMessage_fieldAccessorTable
+        return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_ChatMessage_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                com.pola.proto.MessagesProto.ChatMessage.class, com.pola.proto.MessagesProto.ChatMessage.Builder.class);
+                com.basic_chat.proto.MessagesProto.ChatMessage.class, com.basic_chat.proto.MessagesProto.ChatMessage.Builder.class);
       }
 
-      // Construct using com.pola.proto.MessagesProto.ChatMessage.newBuilder()
+      // Construct using com.basic_chat.proto.MessagesProto.ChatMessage.newBuilder()
       private Builder() {
 
       }
@@ -737,17 +737,17 @@ public final class MessagesProto {
       @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.pola.proto.MessagesProto.internal_static_com_pola_ChatMessage_descriptor;
+        return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_ChatMessage_descriptor;
       }
 
       @java.lang.Override
-      public com.pola.proto.MessagesProto.ChatMessage getDefaultInstanceForType() {
-        return com.pola.proto.MessagesProto.ChatMessage.getDefaultInstance();
+      public com.basic_chat.proto.MessagesProto.ChatMessage getDefaultInstanceForType() {
+        return com.basic_chat.proto.MessagesProto.ChatMessage.getDefaultInstance();
       }
 
       @java.lang.Override
-      public com.pola.proto.MessagesProto.ChatMessage build() {
-        com.pola.proto.MessagesProto.ChatMessage result = buildPartial();
+      public com.basic_chat.proto.MessagesProto.ChatMessage build() {
+        com.basic_chat.proto.MessagesProto.ChatMessage result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -755,14 +755,14 @@ public final class MessagesProto {
       }
 
       @java.lang.Override
-      public com.pola.proto.MessagesProto.ChatMessage buildPartial() {
-        com.pola.proto.MessagesProto.ChatMessage result = new com.pola.proto.MessagesProto.ChatMessage(this);
+      public com.basic_chat.proto.MessagesProto.ChatMessage buildPartial() {
+        com.basic_chat.proto.MessagesProto.ChatMessage result = new com.basic_chat.proto.MessagesProto.ChatMessage(this);
         if (bitField0_ != 0) { buildPartial0(result); }
         onBuilt();
         return result;
       }
 
-      private void buildPartial0(com.pola.proto.MessagesProto.ChatMessage result) {
+      private void buildPartial0(com.basic_chat.proto.MessagesProto.ChatMessage result) {
         int from_bitField0_ = bitField0_;
         if (((from_bitField0_ & 0x00000001) != 0)) {
           result.id_ = id_;
@@ -818,16 +818,16 @@ public final class MessagesProto {
       }
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.pola.proto.MessagesProto.ChatMessage) {
-          return mergeFrom((com.pola.proto.MessagesProto.ChatMessage)other);
+        if (other instanceof com.basic_chat.proto.MessagesProto.ChatMessage) {
+          return mergeFrom((com.basic_chat.proto.MessagesProto.ChatMessage)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(com.pola.proto.MessagesProto.ChatMessage other) {
-        if (other == com.pola.proto.MessagesProto.ChatMessage.getDefaultInstance()) return this;
+      public Builder mergeFrom(com.basic_chat.proto.MessagesProto.ChatMessage other) {
+        if (other == com.basic_chat.proto.MessagesProto.ChatMessage.getDefaultInstance()) return this;
         if (!other.getId().isEmpty()) {
           id_ = other.id_;
           bitField0_ |= 0x00000001;
@@ -1001,14 +1001,14 @@ public final class MessagesProto {
 
       private int type_ = 0;
       /**
-       * <code>.com.pola.MessageType type = 2;</code>
+       * <code>.com.basic_chat.MessageType type = 2;</code>
        * @return The enum numeric value on the wire for type.
        */
       @java.lang.Override public int getTypeValue() {
         return type_;
       }
       /**
-       * <code>.com.pola.MessageType type = 2;</code>
+       * <code>.com.basic_chat.MessageType type = 2;</code>
        * @param value The enum numeric value on the wire for type to set.
        * @return This builder for chaining.
        */
@@ -1019,20 +1019,20 @@ public final class MessagesProto {
         return this;
       }
       /**
-       * <code>.com.pola.MessageType type = 2;</code>
+       * <code>.com.basic_chat.MessageType type = 2;</code>
        * @return The type.
        */
       @java.lang.Override
-      public com.pola.proto.MessagesProto.MessageType getType() {
-        com.pola.proto.MessagesProto.MessageType result = com.pola.proto.MessagesProto.MessageType.forNumber(type_);
-        return result == null ? com.pola.proto.MessagesProto.MessageType.UNRECOGNIZED : result;
+      public com.basic_chat.proto.MessagesProto.MessageType getType() {
+        com.basic_chat.proto.MessagesProto.MessageType result = com.basic_chat.proto.MessagesProto.MessageType.forNumber(type_);
+        return result == null ? com.basic_chat.proto.MessagesProto.MessageType.UNRECOGNIZED : result;
       }
       /**
-       * <code>.com.pola.MessageType type = 2;</code>
+       * <code>.com.basic_chat.MessageType type = 2;</code>
        * @param value The type to set.
        * @return This builder for chaining.
        */
-      public Builder setType(com.pola.proto.MessagesProto.MessageType value) {
+      public Builder setType(com.basic_chat.proto.MessagesProto.MessageType value) {
         if (value == null) {
           throw new NullPointerException();
         }
@@ -1042,7 +1042,7 @@ public final class MessagesProto {
         return this;
       }
       /**
-       * <code>.com.pola.MessageType type = 2;</code>
+       * <code>.com.basic_chat.MessageType type = 2;</code>
        * @return This builder for chaining.
        */
       public Builder clearType() {
@@ -1312,16 +1312,16 @@ public final class MessagesProto {
       }
 
 
-      // @@protoc_insertion_point(builder_scope:com.pola.ChatMessage)
+      // @@protoc_insertion_point(builder_scope:com.basic_chat.ChatMessage)
     }
 
-    // @@protoc_insertion_point(class_scope:com.pola.ChatMessage)
-    private static final com.pola.proto.MessagesProto.ChatMessage DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:com.basic_chat.ChatMessage)
+    private static final com.basic_chat.proto.MessagesProto.ChatMessage DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new com.pola.proto.MessagesProto.ChatMessage();
+      DEFAULT_INSTANCE = new com.basic_chat.proto.MessagesProto.ChatMessage();
     }
 
-    public static com.pola.proto.MessagesProto.ChatMessage getDefaultInstance() {
+    public static com.basic_chat.proto.MessagesProto.ChatMessage getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
@@ -1357,14 +1357,1585 @@ public final class MessagesProto {
     }
 
     @java.lang.Override
-    public com.pola.proto.MessagesProto.ChatMessage getDefaultInstanceForType() {
+    public com.basic_chat.proto.MessagesProto.ChatMessage getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface UserListOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:com.basic_chat.UserList)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>repeated .com.basic_chat.User users = 1;</code>
+     */
+    java.util.List<com.basic_chat.proto.MessagesProto.User> 
+        getUsersList();
+    /**
+     * <code>repeated .com.basic_chat.User users = 1;</code>
+     */
+    com.basic_chat.proto.MessagesProto.User getUsers(int index);
+    /**
+     * <code>repeated .com.basic_chat.User users = 1;</code>
+     */
+    int getUsersCount();
+    /**
+     * <code>repeated .com.basic_chat.User users = 1;</code>
+     */
+    java.util.List<? extends com.basic_chat.proto.MessagesProto.UserOrBuilder> 
+        getUsersOrBuilderList();
+    /**
+     * <code>repeated .com.basic_chat.User users = 1;</code>
+     */
+    com.basic_chat.proto.MessagesProto.UserOrBuilder getUsersOrBuilder(
+        int index);
+  }
+  /**
+   * <pre>
+   * Lista de usuarios
+   * </pre>
+   *
+   * Protobuf type {@code com.basic_chat.UserList}
+   */
+  public static final class UserList extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:com.basic_chat.UserList)
+      UserListOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use UserList.newBuilder() to construct.
+    private UserList(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private UserList() {
+      users_ = java.util.Collections.emptyList();
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new UserList();
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_UserList_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_UserList_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.basic_chat.proto.MessagesProto.UserList.class, com.basic_chat.proto.MessagesProto.UserList.Builder.class);
+    }
+
+    public static final int USERS_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private java.util.List<com.basic_chat.proto.MessagesProto.User> users_;
+    /**
+     * <code>repeated .com.basic_chat.User users = 1;</code>
+     */
+    @java.lang.Override
+    public java.util.List<com.basic_chat.proto.MessagesProto.User> getUsersList() {
+      return users_;
+    }
+    /**
+     * <code>repeated .com.basic_chat.User users = 1;</code>
+     */
+    @java.lang.Override
+    public java.util.List<? extends com.basic_chat.proto.MessagesProto.UserOrBuilder> 
+        getUsersOrBuilderList() {
+      return users_;
+    }
+    /**
+     * <code>repeated .com.basic_chat.User users = 1;</code>
+     */
+    @java.lang.Override
+    public int getUsersCount() {
+      return users_.size();
+    }
+    /**
+     * <code>repeated .com.basic_chat.User users = 1;</code>
+     */
+    @java.lang.Override
+    public com.basic_chat.proto.MessagesProto.User getUsers(int index) {
+      return users_.get(index);
+    }
+    /**
+     * <code>repeated .com.basic_chat.User users = 1;</code>
+     */
+    @java.lang.Override
+    public com.basic_chat.proto.MessagesProto.UserOrBuilder getUsersOrBuilder(
+        int index) {
+      return users_.get(index);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      for (int i = 0; i < users_.size(); i++) {
+        output.writeMessage(1, users_.get(i));
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      for (int i = 0; i < users_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, users_.get(i));
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.basic_chat.proto.MessagesProto.UserList)) {
+        return super.equals(obj);
+      }
+      com.basic_chat.proto.MessagesProto.UserList other = (com.basic_chat.proto.MessagesProto.UserList) obj;
+
+      if (!getUsersList()
+          .equals(other.getUsersList())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (getUsersCount() > 0) {
+        hash = (37 * hash) + USERS_FIELD_NUMBER;
+        hash = (53 * hash) + getUsersList().hashCode();
+      }
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.basic_chat.proto.MessagesProto.UserList parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.basic_chat.proto.MessagesProto.UserList parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.basic_chat.proto.MessagesProto.UserList parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.basic_chat.proto.MessagesProto.UserList parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.basic_chat.proto.MessagesProto.UserList parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.basic_chat.proto.MessagesProto.UserList parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.basic_chat.proto.MessagesProto.UserList parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.basic_chat.proto.MessagesProto.UserList parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static com.basic_chat.proto.MessagesProto.UserList parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static com.basic_chat.proto.MessagesProto.UserList parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.basic_chat.proto.MessagesProto.UserList parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.basic_chat.proto.MessagesProto.UserList parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.basic_chat.proto.MessagesProto.UserList prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * Lista de usuarios
+     * </pre>
+     *
+     * Protobuf type {@code com.basic_chat.UserList}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:com.basic_chat.UserList)
+        com.basic_chat.proto.MessagesProto.UserListOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_UserList_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_UserList_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.basic_chat.proto.MessagesProto.UserList.class, com.basic_chat.proto.MessagesProto.UserList.Builder.class);
+      }
+
+      // Construct using com.basic_chat.proto.MessagesProto.UserList.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        if (usersBuilder_ == null) {
+          users_ = java.util.Collections.emptyList();
+        } else {
+          users_ = null;
+          usersBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000001);
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_UserList_descriptor;
+      }
+
+      @java.lang.Override
+      public com.basic_chat.proto.MessagesProto.UserList getDefaultInstanceForType() {
+        return com.basic_chat.proto.MessagesProto.UserList.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public com.basic_chat.proto.MessagesProto.UserList build() {
+        com.basic_chat.proto.MessagesProto.UserList result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public com.basic_chat.proto.MessagesProto.UserList buildPartial() {
+        com.basic_chat.proto.MessagesProto.UserList result = new com.basic_chat.proto.MessagesProto.UserList(this);
+        buildPartialRepeatedFields(result);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartialRepeatedFields(com.basic_chat.proto.MessagesProto.UserList result) {
+        if (usersBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) != 0)) {
+            users_ = java.util.Collections.unmodifiableList(users_);
+            bitField0_ = (bitField0_ & ~0x00000001);
+          }
+          result.users_ = users_;
+        } else {
+          result.users_ = usersBuilder_.build();
+        }
+      }
+
+      private void buildPartial0(com.basic_chat.proto.MessagesProto.UserList result) {
+        int from_bitField0_ = bitField0_;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.basic_chat.proto.MessagesProto.UserList) {
+          return mergeFrom((com.basic_chat.proto.MessagesProto.UserList)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.basic_chat.proto.MessagesProto.UserList other) {
+        if (other == com.basic_chat.proto.MessagesProto.UserList.getDefaultInstance()) return this;
+        if (usersBuilder_ == null) {
+          if (!other.users_.isEmpty()) {
+            if (users_.isEmpty()) {
+              users_ = other.users_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+            } else {
+              ensureUsersIsMutable();
+              users_.addAll(other.users_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.users_.isEmpty()) {
+            if (usersBuilder_.isEmpty()) {
+              usersBuilder_.dispose();
+              usersBuilder_ = null;
+              users_ = other.users_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+              usersBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getUsersFieldBuilder() : null;
+            } else {
+              usersBuilder_.addAllMessages(other.users_);
+            }
+          }
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                com.basic_chat.proto.MessagesProto.User m =
+                    input.readMessage(
+                        com.basic_chat.proto.MessagesProto.User.parser(),
+                        extensionRegistry);
+                if (usersBuilder_ == null) {
+                  ensureUsersIsMutable();
+                  users_.add(m);
+                } else {
+                  usersBuilder_.addMessage(m);
+                }
+                break;
+              } // case 10
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.util.List<com.basic_chat.proto.MessagesProto.User> users_ =
+        java.util.Collections.emptyList();
+      private void ensureUsersIsMutable() {
+        if (!((bitField0_ & 0x00000001) != 0)) {
+          users_ = new java.util.ArrayList<com.basic_chat.proto.MessagesProto.User>(users_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          com.basic_chat.proto.MessagesProto.User, com.basic_chat.proto.MessagesProto.User.Builder, com.basic_chat.proto.MessagesProto.UserOrBuilder> usersBuilder_;
+
+      /**
+       * <code>repeated .com.basic_chat.User users = 1;</code>
+       */
+      public java.util.List<com.basic_chat.proto.MessagesProto.User> getUsersList() {
+        if (usersBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(users_);
+        } else {
+          return usersBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <code>repeated .com.basic_chat.User users = 1;</code>
+       */
+      public int getUsersCount() {
+        if (usersBuilder_ == null) {
+          return users_.size();
+        } else {
+          return usersBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .com.basic_chat.User users = 1;</code>
+       */
+      public com.basic_chat.proto.MessagesProto.User getUsers(int index) {
+        if (usersBuilder_ == null) {
+          return users_.get(index);
+        } else {
+          return usersBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .com.basic_chat.User users = 1;</code>
+       */
+      public Builder setUsers(
+          int index, com.basic_chat.proto.MessagesProto.User value) {
+        if (usersBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureUsersIsMutable();
+          users_.set(index, value);
+          onChanged();
+        } else {
+          usersBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .com.basic_chat.User users = 1;</code>
+       */
+      public Builder setUsers(
+          int index, com.basic_chat.proto.MessagesProto.User.Builder builderForValue) {
+        if (usersBuilder_ == null) {
+          ensureUsersIsMutable();
+          users_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          usersBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .com.basic_chat.User users = 1;</code>
+       */
+      public Builder addUsers(com.basic_chat.proto.MessagesProto.User value) {
+        if (usersBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureUsersIsMutable();
+          users_.add(value);
+          onChanged();
+        } else {
+          usersBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .com.basic_chat.User users = 1;</code>
+       */
+      public Builder addUsers(
+          int index, com.basic_chat.proto.MessagesProto.User value) {
+        if (usersBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureUsersIsMutable();
+          users_.add(index, value);
+          onChanged();
+        } else {
+          usersBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .com.basic_chat.User users = 1;</code>
+       */
+      public Builder addUsers(
+          com.basic_chat.proto.MessagesProto.User.Builder builderForValue) {
+        if (usersBuilder_ == null) {
+          ensureUsersIsMutable();
+          users_.add(builderForValue.build());
+          onChanged();
+        } else {
+          usersBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .com.basic_chat.User users = 1;</code>
+       */
+      public Builder addUsers(
+          int index, com.basic_chat.proto.MessagesProto.User.Builder builderForValue) {
+        if (usersBuilder_ == null) {
+          ensureUsersIsMutable();
+          users_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          usersBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .com.basic_chat.User users = 1;</code>
+       */
+      public Builder addAllUsers(
+          java.lang.Iterable<? extends com.basic_chat.proto.MessagesProto.User> values) {
+        if (usersBuilder_ == null) {
+          ensureUsersIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, users_);
+          onChanged();
+        } else {
+          usersBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .com.basic_chat.User users = 1;</code>
+       */
+      public Builder clearUsers() {
+        if (usersBuilder_ == null) {
+          users_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+          onChanged();
+        } else {
+          usersBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .com.basic_chat.User users = 1;</code>
+       */
+      public Builder removeUsers(int index) {
+        if (usersBuilder_ == null) {
+          ensureUsersIsMutable();
+          users_.remove(index);
+          onChanged();
+        } else {
+          usersBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .com.basic_chat.User users = 1;</code>
+       */
+      public com.basic_chat.proto.MessagesProto.User.Builder getUsersBuilder(
+          int index) {
+        return getUsersFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .com.basic_chat.User users = 1;</code>
+       */
+      public com.basic_chat.proto.MessagesProto.UserOrBuilder getUsersOrBuilder(
+          int index) {
+        if (usersBuilder_ == null) {
+          return users_.get(index);  } else {
+          return usersBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <code>repeated .com.basic_chat.User users = 1;</code>
+       */
+      public java.util.List<? extends com.basic_chat.proto.MessagesProto.UserOrBuilder> 
+           getUsersOrBuilderList() {
+        if (usersBuilder_ != null) {
+          return usersBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(users_);
+        }
+      }
+      /**
+       * <code>repeated .com.basic_chat.User users = 1;</code>
+       */
+      public com.basic_chat.proto.MessagesProto.User.Builder addUsersBuilder() {
+        return getUsersFieldBuilder().addBuilder(
+            com.basic_chat.proto.MessagesProto.User.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .com.basic_chat.User users = 1;</code>
+       */
+      public com.basic_chat.proto.MessagesProto.User.Builder addUsersBuilder(
+          int index) {
+        return getUsersFieldBuilder().addBuilder(
+            index, com.basic_chat.proto.MessagesProto.User.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .com.basic_chat.User users = 1;</code>
+       */
+      public java.util.List<com.basic_chat.proto.MessagesProto.User.Builder> 
+           getUsersBuilderList() {
+        return getUsersFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          com.basic_chat.proto.MessagesProto.User, com.basic_chat.proto.MessagesProto.User.Builder, com.basic_chat.proto.MessagesProto.UserOrBuilder> 
+          getUsersFieldBuilder() {
+        if (usersBuilder_ == null) {
+          usersBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              com.basic_chat.proto.MessagesProto.User, com.basic_chat.proto.MessagesProto.User.Builder, com.basic_chat.proto.MessagesProto.UserOrBuilder>(
+                  users_,
+                  ((bitField0_ & 0x00000001) != 0),
+                  getParentForChildren(),
+                  isClean());
+          users_ = null;
+        }
+        return usersBuilder_;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:com.basic_chat.UserList)
+    }
+
+    // @@protoc_insertion_point(class_scope:com.basic_chat.UserList)
+    private static final com.basic_chat.proto.MessagesProto.UserList DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.basic_chat.proto.MessagesProto.UserList();
+    }
+
+    public static com.basic_chat.proto.MessagesProto.UserList getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<UserList>
+        PARSER = new com.google.protobuf.AbstractParser<UserList>() {
+      @java.lang.Override
+      public UserList parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<UserList> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<UserList> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.basic_chat.proto.MessagesProto.UserList getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface UserOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:com.basic_chat.User)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string id = 1;</code>
+     * @return The id.
+     */
+    java.lang.String getId();
+    /**
+     * <code>string id = 1;</code>
+     * @return The bytes for id.
+     */
+    com.google.protobuf.ByteString
+        getIdBytes();
+
+    /**
+     * <code>string username = 2;</code>
+     * @return The username.
+     */
+    java.lang.String getUsername();
+    /**
+     * <code>string username = 2;</code>
+     * @return The bytes for username.
+     */
+    com.google.protobuf.ByteString
+        getUsernameBytes();
+
+    /**
+     * <code>bool online = 3;</code>
+     * @return The online.
+     */
+    boolean getOnline();
+  }
+  /**
+   * <pre>
+   * Usuario
+   * </pre>
+   *
+   * Protobuf type {@code com.basic_chat.User}
+   */
+  public static final class User extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:com.basic_chat.User)
+      UserOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use User.newBuilder() to construct.
+    private User(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private User() {
+      id_ = "";
+      username_ = "";
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new User();
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_User_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_User_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.basic_chat.proto.MessagesProto.User.class, com.basic_chat.proto.MessagesProto.User.Builder.class);
+    }
+
+    public static final int ID_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object id_ = "";
+    /**
+     * <code>string id = 1;</code>
+     * @return The id.
+     */
+    @java.lang.Override
+    public java.lang.String getId() {
+      java.lang.Object ref = id_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        id_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string id = 1;</code>
+     * @return The bytes for id.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getIdBytes() {
+      java.lang.Object ref = id_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        id_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int USERNAME_FIELD_NUMBER = 2;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object username_ = "";
+    /**
+     * <code>string username = 2;</code>
+     * @return The username.
+     */
+    @java.lang.Override
+    public java.lang.String getUsername() {
+      java.lang.Object ref = username_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        username_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string username = 2;</code>
+     * @return The bytes for username.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getUsernameBytes() {
+      java.lang.Object ref = username_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        username_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int ONLINE_FIELD_NUMBER = 3;
+    private boolean online_ = false;
+    /**
+     * <code>bool online = 3;</code>
+     * @return The online.
+     */
+    @java.lang.Override
+    public boolean getOnline() {
+      return online_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(id_)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, id_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(username_)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, username_);
+      }
+      if (online_ != false) {
+        output.writeBool(3, online_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(id_)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, id_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(username_)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, username_);
+      }
+      if (online_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(3, online_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.basic_chat.proto.MessagesProto.User)) {
+        return super.equals(obj);
+      }
+      com.basic_chat.proto.MessagesProto.User other = (com.basic_chat.proto.MessagesProto.User) obj;
+
+      if (!getId()
+          .equals(other.getId())) return false;
+      if (!getUsername()
+          .equals(other.getUsername())) return false;
+      if (getOnline()
+          != other.getOnline()) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + ID_FIELD_NUMBER;
+      hash = (53 * hash) + getId().hashCode();
+      hash = (37 * hash) + USERNAME_FIELD_NUMBER;
+      hash = (53 * hash) + getUsername().hashCode();
+      hash = (37 * hash) + ONLINE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getOnline());
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.basic_chat.proto.MessagesProto.User parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.basic_chat.proto.MessagesProto.User parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.basic_chat.proto.MessagesProto.User parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.basic_chat.proto.MessagesProto.User parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.basic_chat.proto.MessagesProto.User parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.basic_chat.proto.MessagesProto.User parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.basic_chat.proto.MessagesProto.User parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.basic_chat.proto.MessagesProto.User parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static com.basic_chat.proto.MessagesProto.User parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static com.basic_chat.proto.MessagesProto.User parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.basic_chat.proto.MessagesProto.User parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.basic_chat.proto.MessagesProto.User parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.basic_chat.proto.MessagesProto.User prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * Usuario
+     * </pre>
+     *
+     * Protobuf type {@code com.basic_chat.User}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:com.basic_chat.User)
+        com.basic_chat.proto.MessagesProto.UserOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_User_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_User_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.basic_chat.proto.MessagesProto.User.class, com.basic_chat.proto.MessagesProto.User.Builder.class);
+      }
+
+      // Construct using com.basic_chat.proto.MessagesProto.User.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        id_ = "";
+        username_ = "";
+        online_ = false;
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_User_descriptor;
+      }
+
+      @java.lang.Override
+      public com.basic_chat.proto.MessagesProto.User getDefaultInstanceForType() {
+        return com.basic_chat.proto.MessagesProto.User.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public com.basic_chat.proto.MessagesProto.User build() {
+        com.basic_chat.proto.MessagesProto.User result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public com.basic_chat.proto.MessagesProto.User buildPartial() {
+        com.basic_chat.proto.MessagesProto.User result = new com.basic_chat.proto.MessagesProto.User(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(com.basic_chat.proto.MessagesProto.User result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.id_ = id_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.username_ = username_;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.online_ = online_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.basic_chat.proto.MessagesProto.User) {
+          return mergeFrom((com.basic_chat.proto.MessagesProto.User)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.basic_chat.proto.MessagesProto.User other) {
+        if (other == com.basic_chat.proto.MessagesProto.User.getDefaultInstance()) return this;
+        if (!other.getId().isEmpty()) {
+          id_ = other.id_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        if (!other.getUsername().isEmpty()) {
+          username_ = other.username_;
+          bitField0_ |= 0x00000002;
+          onChanged();
+        }
+        if (other.getOnline() != false) {
+          setOnline(other.getOnline());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                id_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 18: {
+                username_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 18
+              case 24: {
+                online_ = input.readBool();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 24
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object id_ = "";
+      /**
+       * <code>string id = 1;</code>
+       * @return The id.
+       */
+      public java.lang.String getId() {
+        java.lang.Object ref = id_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          id_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string id = 1;</code>
+       * @return The bytes for id.
+       */
+      public com.google.protobuf.ByteString
+          getIdBytes() {
+        java.lang.Object ref = id_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          id_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string id = 1;</code>
+       * @param value The id to set.
+       * @return This builder for chaining.
+       */
+      public Builder setId(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        id_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string id = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearId() {
+        id_ = getDefaultInstance().getId();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string id = 1;</code>
+       * @param value The bytes for id to set.
+       * @return This builder for chaining.
+       */
+      public Builder setIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        id_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object username_ = "";
+      /**
+       * <code>string username = 2;</code>
+       * @return The username.
+       */
+      public java.lang.String getUsername() {
+        java.lang.Object ref = username_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          username_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string username = 2;</code>
+       * @return The bytes for username.
+       */
+      public com.google.protobuf.ByteString
+          getUsernameBytes() {
+        java.lang.Object ref = username_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          username_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string username = 2;</code>
+       * @param value The username to set.
+       * @return This builder for chaining.
+       */
+      public Builder setUsername(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        username_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string username = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearUsername() {
+        username_ = getDefaultInstance().getUsername();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string username = 2;</code>
+       * @param value The bytes for username to set.
+       * @return This builder for chaining.
+       */
+      public Builder setUsernameBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        username_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+
+      private boolean online_ ;
+      /**
+       * <code>bool online = 3;</code>
+       * @return The online.
+       */
+      @java.lang.Override
+      public boolean getOnline() {
+        return online_;
+      }
+      /**
+       * <code>bool online = 3;</code>
+       * @param value The online to set.
+       * @return This builder for chaining.
+       */
+      public Builder setOnline(boolean value) {
+
+        online_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bool online = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearOnline() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        online_ = false;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:com.basic_chat.User)
+    }
+
+    // @@protoc_insertion_point(class_scope:com.basic_chat.User)
+    private static final com.basic_chat.proto.MessagesProto.User DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.basic_chat.proto.MessagesProto.User();
+    }
+
+    public static com.basic_chat.proto.MessagesProto.User getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<User>
+        PARSER = new com.google.protobuf.AbstractParser<User>() {
+      @java.lang.Override
+      public User parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<User> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<User> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.basic_chat.proto.MessagesProto.User getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
   }
 
   public interface AuthMessageOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:com.pola.AuthMessage)
+      // @@protoc_insertion_point(interface_extends:com.basic_chat.AuthMessage)
       com.google.protobuf.MessageOrBuilder {
 
     /**
@@ -1380,15 +2951,11 @@ public final class MessagesProto {
         getTokenBytes();
   }
   /**
-   * <pre>
-   * Mensaje de autenticación WebSocket
-   * </pre>
-   *
-   * Protobuf type {@code com.pola.AuthMessage}
+   * Protobuf type {@code com.basic_chat.AuthMessage}
    */
   public static final class AuthMessage extends
       com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:com.pola.AuthMessage)
+      // @@protoc_insertion_point(message_implements:com.basic_chat.AuthMessage)
       AuthMessageOrBuilder {
   private static final long serialVersionUID = 0L;
     // Use AuthMessage.newBuilder() to construct.
@@ -1408,15 +2975,15 @@ public final class MessagesProto {
 
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.pola.proto.MessagesProto.internal_static_com_pola_AuthMessage_descriptor;
+      return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_AuthMessage_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.pola.proto.MessagesProto.internal_static_com_pola_AuthMessage_fieldAccessorTable
+      return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_AuthMessage_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              com.pola.proto.MessagesProto.AuthMessage.class, com.pola.proto.MessagesProto.AuthMessage.Builder.class);
+              com.basic_chat.proto.MessagesProto.AuthMessage.class, com.basic_chat.proto.MessagesProto.AuthMessage.Builder.class);
     }
 
     public static final int TOKEN_FIELD_NUMBER = 1;
@@ -1497,10 +3064,10 @@ public final class MessagesProto {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof com.pola.proto.MessagesProto.AuthMessage)) {
+      if (!(obj instanceof com.basic_chat.proto.MessagesProto.AuthMessage)) {
         return super.equals(obj);
       }
-      com.pola.proto.MessagesProto.AuthMessage other = (com.pola.proto.MessagesProto.AuthMessage) obj;
+      com.basic_chat.proto.MessagesProto.AuthMessage other = (com.basic_chat.proto.MessagesProto.AuthMessage) obj;
 
       if (!getToken()
           .equals(other.getToken())) return false;
@@ -1522,44 +3089,44 @@ public final class MessagesProto {
       return hash;
     }
 
-    public static com.pola.proto.MessagesProto.AuthMessage parseFrom(
+    public static com.basic_chat.proto.MessagesProto.AuthMessage parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.pola.proto.MessagesProto.AuthMessage parseFrom(
+    public static com.basic_chat.proto.MessagesProto.AuthMessage parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.pola.proto.MessagesProto.AuthMessage parseFrom(
+    public static com.basic_chat.proto.MessagesProto.AuthMessage parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.pola.proto.MessagesProto.AuthMessage parseFrom(
+    public static com.basic_chat.proto.MessagesProto.AuthMessage parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.pola.proto.MessagesProto.AuthMessage parseFrom(byte[] data)
+    public static com.basic_chat.proto.MessagesProto.AuthMessage parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.pola.proto.MessagesProto.AuthMessage parseFrom(
+    public static com.basic_chat.proto.MessagesProto.AuthMessage parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.pola.proto.MessagesProto.AuthMessage parseFrom(java.io.InputStream input)
+    public static com.basic_chat.proto.MessagesProto.AuthMessage parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.pola.proto.MessagesProto.AuthMessage parseFrom(
+    public static com.basic_chat.proto.MessagesProto.AuthMessage parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -1567,26 +3134,26 @@ public final class MessagesProto {
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
-    public static com.pola.proto.MessagesProto.AuthMessage parseDelimitedFrom(java.io.InputStream input)
+    public static com.basic_chat.proto.MessagesProto.AuthMessage parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
 
-    public static com.pola.proto.MessagesProto.AuthMessage parseDelimitedFrom(
+    public static com.basic_chat.proto.MessagesProto.AuthMessage parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.pola.proto.MessagesProto.AuthMessage parseFrom(
+    public static com.basic_chat.proto.MessagesProto.AuthMessage parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.pola.proto.MessagesProto.AuthMessage parseFrom(
+    public static com.basic_chat.proto.MessagesProto.AuthMessage parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -1599,7 +3166,7 @@ public final class MessagesProto {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(com.pola.proto.MessagesProto.AuthMessage prototype) {
+    public static Builder newBuilder(com.basic_chat.proto.MessagesProto.AuthMessage prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     @java.lang.Override
@@ -1615,30 +3182,26 @@ public final class MessagesProto {
       return builder;
     }
     /**
-     * <pre>
-     * Mensaje de autenticación WebSocket
-     * </pre>
-     *
-     * Protobuf type {@code com.pola.AuthMessage}
+     * Protobuf type {@code com.basic_chat.AuthMessage}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:com.pola.AuthMessage)
-        com.pola.proto.MessagesProto.AuthMessageOrBuilder {
+        // @@protoc_insertion_point(builder_implements:com.basic_chat.AuthMessage)
+        com.basic_chat.proto.MessagesProto.AuthMessageOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.pola.proto.MessagesProto.internal_static_com_pola_AuthMessage_descriptor;
+        return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_AuthMessage_descriptor;
       }
 
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.pola.proto.MessagesProto.internal_static_com_pola_AuthMessage_fieldAccessorTable
+        return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_AuthMessage_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                com.pola.proto.MessagesProto.AuthMessage.class, com.pola.proto.MessagesProto.AuthMessage.Builder.class);
+                com.basic_chat.proto.MessagesProto.AuthMessage.class, com.basic_chat.proto.MessagesProto.AuthMessage.Builder.class);
       }
 
-      // Construct using com.pola.proto.MessagesProto.AuthMessage.newBuilder()
+      // Construct using com.basic_chat.proto.MessagesProto.AuthMessage.newBuilder()
       private Builder() {
 
       }
@@ -1659,17 +3222,17 @@ public final class MessagesProto {
       @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.pola.proto.MessagesProto.internal_static_com_pola_AuthMessage_descriptor;
+        return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_AuthMessage_descriptor;
       }
 
       @java.lang.Override
-      public com.pola.proto.MessagesProto.AuthMessage getDefaultInstanceForType() {
-        return com.pola.proto.MessagesProto.AuthMessage.getDefaultInstance();
+      public com.basic_chat.proto.MessagesProto.AuthMessage getDefaultInstanceForType() {
+        return com.basic_chat.proto.MessagesProto.AuthMessage.getDefaultInstance();
       }
 
       @java.lang.Override
-      public com.pola.proto.MessagesProto.AuthMessage build() {
-        com.pola.proto.MessagesProto.AuthMessage result = buildPartial();
+      public com.basic_chat.proto.MessagesProto.AuthMessage build() {
+        com.basic_chat.proto.MessagesProto.AuthMessage result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -1677,14 +3240,14 @@ public final class MessagesProto {
       }
 
       @java.lang.Override
-      public com.pola.proto.MessagesProto.AuthMessage buildPartial() {
-        com.pola.proto.MessagesProto.AuthMessage result = new com.pola.proto.MessagesProto.AuthMessage(this);
+      public com.basic_chat.proto.MessagesProto.AuthMessage buildPartial() {
+        com.basic_chat.proto.MessagesProto.AuthMessage result = new com.basic_chat.proto.MessagesProto.AuthMessage(this);
         if (bitField0_ != 0) { buildPartial0(result); }
         onBuilt();
         return result;
       }
 
-      private void buildPartial0(com.pola.proto.MessagesProto.AuthMessage result) {
+      private void buildPartial0(com.basic_chat.proto.MessagesProto.AuthMessage result) {
         int from_bitField0_ = bitField0_;
         if (((from_bitField0_ & 0x00000001) != 0)) {
           result.token_ = token_;
@@ -1725,16 +3288,16 @@ public final class MessagesProto {
       }
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.pola.proto.MessagesProto.AuthMessage) {
-          return mergeFrom((com.pola.proto.MessagesProto.AuthMessage)other);
+        if (other instanceof com.basic_chat.proto.MessagesProto.AuthMessage) {
+          return mergeFrom((com.basic_chat.proto.MessagesProto.AuthMessage)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(com.pola.proto.MessagesProto.AuthMessage other) {
-        if (other == com.pola.proto.MessagesProto.AuthMessage.getDefaultInstance()) return this;
+      public Builder mergeFrom(com.basic_chat.proto.MessagesProto.AuthMessage other) {
+        if (other == com.basic_chat.proto.MessagesProto.AuthMessage.getDefaultInstance()) return this;
         if (!other.getToken().isEmpty()) {
           token_ = other.token_;
           bitField0_ |= 0x00000001;
@@ -1872,16 +3435,16 @@ public final class MessagesProto {
       }
 
 
-      // @@protoc_insertion_point(builder_scope:com.pola.AuthMessage)
+      // @@protoc_insertion_point(builder_scope:com.basic_chat.AuthMessage)
     }
 
-    // @@protoc_insertion_point(class_scope:com.pola.AuthMessage)
-    private static final com.pola.proto.MessagesProto.AuthMessage DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:com.basic_chat.AuthMessage)
+    private static final com.basic_chat.proto.MessagesProto.AuthMessage DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new com.pola.proto.MessagesProto.AuthMessage();
+      DEFAULT_INSTANCE = new com.basic_chat.proto.MessagesProto.AuthMessage();
     }
 
-    public static com.pola.proto.MessagesProto.AuthMessage getDefaultInstance() {
+    public static com.basic_chat.proto.MessagesProto.AuthMessage getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
@@ -1917,14 +3480,14 @@ public final class MessagesProto {
     }
 
     @java.lang.Override
-    public com.pola.proto.MessagesProto.AuthMessage getDefaultInstanceForType() {
+    public com.basic_chat.proto.MessagesProto.AuthMessage getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
   }
 
   public interface AuthResponseOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:com.pola.AuthResponse)
+      // @@protoc_insertion_point(interface_extends:com.basic_chat.AuthResponse)
       com.google.protobuf.MessageOrBuilder {
 
     /**
@@ -1970,15 +3533,11 @@ public final class MessagesProto {
         getUsernameBytes();
   }
   /**
-   * <pre>
-   * Respuesta de autenticación
-   * </pre>
-   *
-   * Protobuf type {@code com.pola.AuthResponse}
+   * Protobuf type {@code com.basic_chat.AuthResponse}
    */
   public static final class AuthResponse extends
       com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:com.pola.AuthResponse)
+      // @@protoc_insertion_point(message_implements:com.basic_chat.AuthResponse)
       AuthResponseOrBuilder {
   private static final long serialVersionUID = 0L;
     // Use AuthResponse.newBuilder() to construct.
@@ -2000,15 +3559,15 @@ public final class MessagesProto {
 
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.pola.proto.MessagesProto.internal_static_com_pola_AuthResponse_descriptor;
+      return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_AuthResponse_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.pola.proto.MessagesProto.internal_static_com_pola_AuthResponse_fieldAccessorTable
+      return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_AuthResponse_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              com.pola.proto.MessagesProto.AuthResponse.class, com.pola.proto.MessagesProto.AuthResponse.Builder.class);
+              com.basic_chat.proto.MessagesProto.AuthResponse.class, com.basic_chat.proto.MessagesProto.AuthResponse.Builder.class);
     }
 
     public static final int SUCCESS_FIELD_NUMBER = 1;
@@ -2197,10 +3756,10 @@ public final class MessagesProto {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof com.pola.proto.MessagesProto.AuthResponse)) {
+      if (!(obj instanceof com.basic_chat.proto.MessagesProto.AuthResponse)) {
         return super.equals(obj);
       }
-      com.pola.proto.MessagesProto.AuthResponse other = (com.pola.proto.MessagesProto.AuthResponse) obj;
+      com.basic_chat.proto.MessagesProto.AuthResponse other = (com.basic_chat.proto.MessagesProto.AuthResponse) obj;
 
       if (getSuccess()
           != other.getSuccess()) return false;
@@ -2235,44 +3794,44 @@ public final class MessagesProto {
       return hash;
     }
 
-    public static com.pola.proto.MessagesProto.AuthResponse parseFrom(
+    public static com.basic_chat.proto.MessagesProto.AuthResponse parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.pola.proto.MessagesProto.AuthResponse parseFrom(
+    public static com.basic_chat.proto.MessagesProto.AuthResponse parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.pola.proto.MessagesProto.AuthResponse parseFrom(
+    public static com.basic_chat.proto.MessagesProto.AuthResponse parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.pola.proto.MessagesProto.AuthResponse parseFrom(
+    public static com.basic_chat.proto.MessagesProto.AuthResponse parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.pola.proto.MessagesProto.AuthResponse parseFrom(byte[] data)
+    public static com.basic_chat.proto.MessagesProto.AuthResponse parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.pola.proto.MessagesProto.AuthResponse parseFrom(
+    public static com.basic_chat.proto.MessagesProto.AuthResponse parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.pola.proto.MessagesProto.AuthResponse parseFrom(java.io.InputStream input)
+    public static com.basic_chat.proto.MessagesProto.AuthResponse parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.pola.proto.MessagesProto.AuthResponse parseFrom(
+    public static com.basic_chat.proto.MessagesProto.AuthResponse parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -2280,26 +3839,26 @@ public final class MessagesProto {
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
-    public static com.pola.proto.MessagesProto.AuthResponse parseDelimitedFrom(java.io.InputStream input)
+    public static com.basic_chat.proto.MessagesProto.AuthResponse parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
 
-    public static com.pola.proto.MessagesProto.AuthResponse parseDelimitedFrom(
+    public static com.basic_chat.proto.MessagesProto.AuthResponse parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.pola.proto.MessagesProto.AuthResponse parseFrom(
+    public static com.basic_chat.proto.MessagesProto.AuthResponse parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.pola.proto.MessagesProto.AuthResponse parseFrom(
+    public static com.basic_chat.proto.MessagesProto.AuthResponse parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -2312,7 +3871,7 @@ public final class MessagesProto {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(com.pola.proto.MessagesProto.AuthResponse prototype) {
+    public static Builder newBuilder(com.basic_chat.proto.MessagesProto.AuthResponse prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     @java.lang.Override
@@ -2328,30 +3887,26 @@ public final class MessagesProto {
       return builder;
     }
     /**
-     * <pre>
-     * Respuesta de autenticación
-     * </pre>
-     *
-     * Protobuf type {@code com.pola.AuthResponse}
+     * Protobuf type {@code com.basic_chat.AuthResponse}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:com.pola.AuthResponse)
-        com.pola.proto.MessagesProto.AuthResponseOrBuilder {
+        // @@protoc_insertion_point(builder_implements:com.basic_chat.AuthResponse)
+        com.basic_chat.proto.MessagesProto.AuthResponseOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.pola.proto.MessagesProto.internal_static_com_pola_AuthResponse_descriptor;
+        return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_AuthResponse_descriptor;
       }
 
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.pola.proto.MessagesProto.internal_static_com_pola_AuthResponse_fieldAccessorTable
+        return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_AuthResponse_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                com.pola.proto.MessagesProto.AuthResponse.class, com.pola.proto.MessagesProto.AuthResponse.Builder.class);
+                com.basic_chat.proto.MessagesProto.AuthResponse.class, com.basic_chat.proto.MessagesProto.AuthResponse.Builder.class);
       }
 
-      // Construct using com.pola.proto.MessagesProto.AuthResponse.newBuilder()
+      // Construct using com.basic_chat.proto.MessagesProto.AuthResponse.newBuilder()
       private Builder() {
 
       }
@@ -2375,17 +3930,17 @@ public final class MessagesProto {
       @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.pola.proto.MessagesProto.internal_static_com_pola_AuthResponse_descriptor;
+        return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_AuthResponse_descriptor;
       }
 
       @java.lang.Override
-      public com.pola.proto.MessagesProto.AuthResponse getDefaultInstanceForType() {
-        return com.pola.proto.MessagesProto.AuthResponse.getDefaultInstance();
+      public com.basic_chat.proto.MessagesProto.AuthResponse getDefaultInstanceForType() {
+        return com.basic_chat.proto.MessagesProto.AuthResponse.getDefaultInstance();
       }
 
       @java.lang.Override
-      public com.pola.proto.MessagesProto.AuthResponse build() {
-        com.pola.proto.MessagesProto.AuthResponse result = buildPartial();
+      public com.basic_chat.proto.MessagesProto.AuthResponse build() {
+        com.basic_chat.proto.MessagesProto.AuthResponse result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -2393,14 +3948,14 @@ public final class MessagesProto {
       }
 
       @java.lang.Override
-      public com.pola.proto.MessagesProto.AuthResponse buildPartial() {
-        com.pola.proto.MessagesProto.AuthResponse result = new com.pola.proto.MessagesProto.AuthResponse(this);
+      public com.basic_chat.proto.MessagesProto.AuthResponse buildPartial() {
+        com.basic_chat.proto.MessagesProto.AuthResponse result = new com.basic_chat.proto.MessagesProto.AuthResponse(this);
         if (bitField0_ != 0) { buildPartial0(result); }
         onBuilt();
         return result;
       }
 
-      private void buildPartial0(com.pola.proto.MessagesProto.AuthResponse result) {
+      private void buildPartial0(com.basic_chat.proto.MessagesProto.AuthResponse result) {
         int from_bitField0_ = bitField0_;
         if (((from_bitField0_ & 0x00000001) != 0)) {
           result.success_ = success_;
@@ -2450,16 +4005,16 @@ public final class MessagesProto {
       }
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.pola.proto.MessagesProto.AuthResponse) {
-          return mergeFrom((com.pola.proto.MessagesProto.AuthResponse)other);
+        if (other instanceof com.basic_chat.proto.MessagesProto.AuthResponse) {
+          return mergeFrom((com.basic_chat.proto.MessagesProto.AuthResponse)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(com.pola.proto.MessagesProto.AuthResponse other) {
-        if (other == com.pola.proto.MessagesProto.AuthResponse.getDefaultInstance()) return this;
+      public Builder mergeFrom(com.basic_chat.proto.MessagesProto.AuthResponse other) {
+        if (other == com.basic_chat.proto.MessagesProto.AuthResponse.getDefaultInstance()) return this;
         if (other.getSuccess() != false) {
           setSuccess(other.getSuccess());
         }
@@ -2801,16 +4356,16 @@ public final class MessagesProto {
       }
 
 
-      // @@protoc_insertion_point(builder_scope:com.pola.AuthResponse)
+      // @@protoc_insertion_point(builder_scope:com.basic_chat.AuthResponse)
     }
 
-    // @@protoc_insertion_point(class_scope:com.pola.AuthResponse)
-    private static final com.pola.proto.MessagesProto.AuthResponse DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:com.basic_chat.AuthResponse)
+    private static final com.basic_chat.proto.MessagesProto.AuthResponse DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new com.pola.proto.MessagesProto.AuthResponse();
+      DEFAULT_INSTANCE = new com.basic_chat.proto.MessagesProto.AuthResponse();
     }
 
-    public static com.pola.proto.MessagesProto.AuthResponse getDefaultInstance() {
+    public static com.basic_chat.proto.MessagesProto.AuthResponse getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
@@ -2846,1659 +4401,88 @@ public final class MessagesProto {
     }
 
     @java.lang.Override
-    public com.pola.proto.MessagesProto.AuthResponse getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
-  }
-
-  public interface UserListOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:com.pola.UserList)
-      com.google.protobuf.MessageOrBuilder {
-
-    /**
-     * <code>repeated .com.pola.User users = 1;</code>
-     */
-    java.util.List<com.pola.proto.MessagesProto.User> 
-        getUsersList();
-    /**
-     * <code>repeated .com.pola.User users = 1;</code>
-     */
-    com.pola.proto.MessagesProto.User getUsers(int index);
-    /**
-     * <code>repeated .com.pola.User users = 1;</code>
-     */
-    int getUsersCount();
-    /**
-     * <code>repeated .com.pola.User users = 1;</code>
-     */
-    java.util.List<? extends com.pola.proto.MessagesProto.UserOrBuilder> 
-        getUsersOrBuilderList();
-    /**
-     * <code>repeated .com.pola.User users = 1;</code>
-     */
-    com.pola.proto.MessagesProto.UserOrBuilder getUsersOrBuilder(
-        int index);
-  }
-  /**
-   * <pre>
-   * Lista de usuarios
-   * </pre>
-   *
-   * Protobuf type {@code com.pola.UserList}
-   */
-  public static final class UserList extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:com.pola.UserList)
-      UserListOrBuilder {
-  private static final long serialVersionUID = 0L;
-    // Use UserList.newBuilder() to construct.
-    private UserList(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-      super(builder);
-    }
-    private UserList() {
-      users_ = java.util.Collections.emptyList();
-    }
-
-    @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-        UnusedPrivateParameter unused) {
-      return new UserList();
-    }
-
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return com.pola.proto.MessagesProto.internal_static_com_pola_UserList_descriptor;
-    }
-
-    @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return com.pola.proto.MessagesProto.internal_static_com_pola_UserList_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              com.pola.proto.MessagesProto.UserList.class, com.pola.proto.MessagesProto.UserList.Builder.class);
-    }
-
-    public static final int USERS_FIELD_NUMBER = 1;
-    @SuppressWarnings("serial")
-    private java.util.List<com.pola.proto.MessagesProto.User> users_;
-    /**
-     * <code>repeated .com.pola.User users = 1;</code>
-     */
-    @java.lang.Override
-    public java.util.List<com.pola.proto.MessagesProto.User> getUsersList() {
-      return users_;
-    }
-    /**
-     * <code>repeated .com.pola.User users = 1;</code>
-     */
-    @java.lang.Override
-    public java.util.List<? extends com.pola.proto.MessagesProto.UserOrBuilder> 
-        getUsersOrBuilderList() {
-      return users_;
-    }
-    /**
-     * <code>repeated .com.pola.User users = 1;</code>
-     */
-    @java.lang.Override
-    public int getUsersCount() {
-      return users_.size();
-    }
-    /**
-     * <code>repeated .com.pola.User users = 1;</code>
-     */
-    @java.lang.Override
-    public com.pola.proto.MessagesProto.User getUsers(int index) {
-      return users_.get(index);
-    }
-    /**
-     * <code>repeated .com.pola.User users = 1;</code>
-     */
-    @java.lang.Override
-    public com.pola.proto.MessagesProto.UserOrBuilder getUsersOrBuilder(
-        int index) {
-      return users_.get(index);
-    }
-
-    private byte memoizedIsInitialized = -1;
-    @java.lang.Override
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
-
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      for (int i = 0; i < users_.size(); i++) {
-        output.writeMessage(1, users_.get(i));
-      }
-      getUnknownFields().writeTo(output);
-    }
-
-    @java.lang.Override
-    public int getSerializedSize() {
-      int size = memoizedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      for (int i = 0; i < users_.size(); i++) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(1, users_.get(i));
-      }
-      size += getUnknownFields().getSerializedSize();
-      memoizedSize = size;
-      return size;
-    }
-
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof com.pola.proto.MessagesProto.UserList)) {
-        return super.equals(obj);
-      }
-      com.pola.proto.MessagesProto.UserList other = (com.pola.proto.MessagesProto.UserList) obj;
-
-      if (!getUsersList()
-          .equals(other.getUsersList())) return false;
-      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
-      return true;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptor().hashCode();
-      if (getUsersCount() > 0) {
-        hash = (37 * hash) + USERS_FIELD_NUMBER;
-        hash = (53 * hash) + getUsersList().hashCode();
-      }
-      hash = (29 * hash) + getUnknownFields().hashCode();
-      memoizedHashCode = hash;
-      return hash;
-    }
-
-    public static com.pola.proto.MessagesProto.UserList parseFrom(
-        java.nio.ByteBuffer data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static com.pola.proto.MessagesProto.UserList parseFrom(
-        java.nio.ByteBuffer data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static com.pola.proto.MessagesProto.UserList parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static com.pola.proto.MessagesProto.UserList parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static com.pola.proto.MessagesProto.UserList parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static com.pola.proto.MessagesProto.UserList parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static com.pola.proto.MessagesProto.UserList parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static com.pola.proto.MessagesProto.UserList parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    public static com.pola.proto.MessagesProto.UserList parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
-    }
-
-    public static com.pola.proto.MessagesProto.UserList parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static com.pola.proto.MessagesProto.UserList parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static com.pola.proto.MessagesProto.UserList parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
-    public static Builder newBuilder(com.pola.proto.MessagesProto.UserList prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-    @java.lang.Override
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * <pre>
-     * Lista de usuarios
-     * </pre>
-     *
-     * Protobuf type {@code com.pola.UserList}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:com.pola.UserList)
-        com.pola.proto.MessagesProto.UserListOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return com.pola.proto.MessagesProto.internal_static_com_pola_UserList_descriptor;
-      }
-
-      @java.lang.Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return com.pola.proto.MessagesProto.internal_static_com_pola_UserList_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                com.pola.proto.MessagesProto.UserList.class, com.pola.proto.MessagesProto.UserList.Builder.class);
-      }
-
-      // Construct using com.pola.proto.MessagesProto.UserList.newBuilder()
-      private Builder() {
-
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        super(parent);
-
-      }
-      @java.lang.Override
-      public Builder clear() {
-        super.clear();
-        bitField0_ = 0;
-        if (usersBuilder_ == null) {
-          users_ = java.util.Collections.emptyList();
-        } else {
-          users_ = null;
-          usersBuilder_.clear();
-        }
-        bitField0_ = (bitField0_ & ~0x00000001);
-        return this;
-      }
-
-      @java.lang.Override
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return com.pola.proto.MessagesProto.internal_static_com_pola_UserList_descriptor;
-      }
-
-      @java.lang.Override
-      public com.pola.proto.MessagesProto.UserList getDefaultInstanceForType() {
-        return com.pola.proto.MessagesProto.UserList.getDefaultInstance();
-      }
-
-      @java.lang.Override
-      public com.pola.proto.MessagesProto.UserList build() {
-        com.pola.proto.MessagesProto.UserList result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      @java.lang.Override
-      public com.pola.proto.MessagesProto.UserList buildPartial() {
-        com.pola.proto.MessagesProto.UserList result = new com.pola.proto.MessagesProto.UserList(this);
-        buildPartialRepeatedFields(result);
-        if (bitField0_ != 0) { buildPartial0(result); }
-        onBuilt();
-        return result;
-      }
-
-      private void buildPartialRepeatedFields(com.pola.proto.MessagesProto.UserList result) {
-        if (usersBuilder_ == null) {
-          if (((bitField0_ & 0x00000001) != 0)) {
-            users_ = java.util.Collections.unmodifiableList(users_);
-            bitField0_ = (bitField0_ & ~0x00000001);
-          }
-          result.users_ = users_;
-        } else {
-          result.users_ = usersBuilder_.build();
-        }
-      }
-
-      private void buildPartial0(com.pola.proto.MessagesProto.UserList result) {
-        int from_bitField0_ = bitField0_;
-      }
-
-      @java.lang.Override
-      public Builder clone() {
-        return super.clone();
-      }
-      @java.lang.Override
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.setField(field, value);
-      }
-      @java.lang.Override
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return super.clearField(field);
-      }
-      @java.lang.Override
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return super.clearOneof(oneof);
-      }
-      @java.lang.Override
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
-        return super.setRepeatedField(field, index, value);
-      }
-      @java.lang.Override
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.addRepeatedField(field, value);
-      }
-      @java.lang.Override
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.pola.proto.MessagesProto.UserList) {
-          return mergeFrom((com.pola.proto.MessagesProto.UserList)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(com.pola.proto.MessagesProto.UserList other) {
-        if (other == com.pola.proto.MessagesProto.UserList.getDefaultInstance()) return this;
-        if (usersBuilder_ == null) {
-          if (!other.users_.isEmpty()) {
-            if (users_.isEmpty()) {
-              users_ = other.users_;
-              bitField0_ = (bitField0_ & ~0x00000001);
-            } else {
-              ensureUsersIsMutable();
-              users_.addAll(other.users_);
-            }
-            onChanged();
-          }
-        } else {
-          if (!other.users_.isEmpty()) {
-            if (usersBuilder_.isEmpty()) {
-              usersBuilder_.dispose();
-              usersBuilder_ = null;
-              users_ = other.users_;
-              bitField0_ = (bitField0_ & ~0x00000001);
-              usersBuilder_ = 
-                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                   getUsersFieldBuilder() : null;
-            } else {
-              usersBuilder_.addAllMessages(other.users_);
-            }
-          }
-        }
-        this.mergeUnknownFields(other.getUnknownFields());
-        onChanged();
-        return this;
-      }
-
-      @java.lang.Override
-      public final boolean isInitialized() {
-        return true;
-      }
-
-      @java.lang.Override
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        if (extensionRegistry == null) {
-          throw new java.lang.NullPointerException();
-        }
-        try {
-          boolean done = false;
-          while (!done) {
-            int tag = input.readTag();
-            switch (tag) {
-              case 0:
-                done = true;
-                break;
-              case 10: {
-                com.pola.proto.MessagesProto.User m =
-                    input.readMessage(
-                        com.pola.proto.MessagesProto.User.parser(),
-                        extensionRegistry);
-                if (usersBuilder_ == null) {
-                  ensureUsersIsMutable();
-                  users_.add(m);
-                } else {
-                  usersBuilder_.addMessage(m);
-                }
-                break;
-              } // case 10
-              default: {
-                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
-                  done = true; // was an endgroup tag
-                }
-                break;
-              } // default:
-            } // switch (tag)
-          } // while (!done)
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          throw e.unwrapIOException();
-        } finally {
-          onChanged();
-        } // finally
-        return this;
-      }
-      private int bitField0_;
-
-      private java.util.List<com.pola.proto.MessagesProto.User> users_ =
-        java.util.Collections.emptyList();
-      private void ensureUsersIsMutable() {
-        if (!((bitField0_ & 0x00000001) != 0)) {
-          users_ = new java.util.ArrayList<com.pola.proto.MessagesProto.User>(users_);
-          bitField0_ |= 0x00000001;
-         }
-      }
-
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          com.pola.proto.MessagesProto.User, com.pola.proto.MessagesProto.User.Builder, com.pola.proto.MessagesProto.UserOrBuilder> usersBuilder_;
-
-      /**
-       * <code>repeated .com.pola.User users = 1;</code>
-       */
-      public java.util.List<com.pola.proto.MessagesProto.User> getUsersList() {
-        if (usersBuilder_ == null) {
-          return java.util.Collections.unmodifiableList(users_);
-        } else {
-          return usersBuilder_.getMessageList();
-        }
-      }
-      /**
-       * <code>repeated .com.pola.User users = 1;</code>
-       */
-      public int getUsersCount() {
-        if (usersBuilder_ == null) {
-          return users_.size();
-        } else {
-          return usersBuilder_.getCount();
-        }
-      }
-      /**
-       * <code>repeated .com.pola.User users = 1;</code>
-       */
-      public com.pola.proto.MessagesProto.User getUsers(int index) {
-        if (usersBuilder_ == null) {
-          return users_.get(index);
-        } else {
-          return usersBuilder_.getMessage(index);
-        }
-      }
-      /**
-       * <code>repeated .com.pola.User users = 1;</code>
-       */
-      public Builder setUsers(
-          int index, com.pola.proto.MessagesProto.User value) {
-        if (usersBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureUsersIsMutable();
-          users_.set(index, value);
-          onChanged();
-        } else {
-          usersBuilder_.setMessage(index, value);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .com.pola.User users = 1;</code>
-       */
-      public Builder setUsers(
-          int index, com.pola.proto.MessagesProto.User.Builder builderForValue) {
-        if (usersBuilder_ == null) {
-          ensureUsersIsMutable();
-          users_.set(index, builderForValue.build());
-          onChanged();
-        } else {
-          usersBuilder_.setMessage(index, builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .com.pola.User users = 1;</code>
-       */
-      public Builder addUsers(com.pola.proto.MessagesProto.User value) {
-        if (usersBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureUsersIsMutable();
-          users_.add(value);
-          onChanged();
-        } else {
-          usersBuilder_.addMessage(value);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .com.pola.User users = 1;</code>
-       */
-      public Builder addUsers(
-          int index, com.pola.proto.MessagesProto.User value) {
-        if (usersBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureUsersIsMutable();
-          users_.add(index, value);
-          onChanged();
-        } else {
-          usersBuilder_.addMessage(index, value);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .com.pola.User users = 1;</code>
-       */
-      public Builder addUsers(
-          com.pola.proto.MessagesProto.User.Builder builderForValue) {
-        if (usersBuilder_ == null) {
-          ensureUsersIsMutable();
-          users_.add(builderForValue.build());
-          onChanged();
-        } else {
-          usersBuilder_.addMessage(builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .com.pola.User users = 1;</code>
-       */
-      public Builder addUsers(
-          int index, com.pola.proto.MessagesProto.User.Builder builderForValue) {
-        if (usersBuilder_ == null) {
-          ensureUsersIsMutable();
-          users_.add(index, builderForValue.build());
-          onChanged();
-        } else {
-          usersBuilder_.addMessage(index, builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .com.pola.User users = 1;</code>
-       */
-      public Builder addAllUsers(
-          java.lang.Iterable<? extends com.pola.proto.MessagesProto.User> values) {
-        if (usersBuilder_ == null) {
-          ensureUsersIsMutable();
-          com.google.protobuf.AbstractMessageLite.Builder.addAll(
-              values, users_);
-          onChanged();
-        } else {
-          usersBuilder_.addAllMessages(values);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .com.pola.User users = 1;</code>
-       */
-      public Builder clearUsers() {
-        if (usersBuilder_ == null) {
-          users_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000001);
-          onChanged();
-        } else {
-          usersBuilder_.clear();
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .com.pola.User users = 1;</code>
-       */
-      public Builder removeUsers(int index) {
-        if (usersBuilder_ == null) {
-          ensureUsersIsMutable();
-          users_.remove(index);
-          onChanged();
-        } else {
-          usersBuilder_.remove(index);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .com.pola.User users = 1;</code>
-       */
-      public com.pola.proto.MessagesProto.User.Builder getUsersBuilder(
-          int index) {
-        return getUsersFieldBuilder().getBuilder(index);
-      }
-      /**
-       * <code>repeated .com.pola.User users = 1;</code>
-       */
-      public com.pola.proto.MessagesProto.UserOrBuilder getUsersOrBuilder(
-          int index) {
-        if (usersBuilder_ == null) {
-          return users_.get(index);  } else {
-          return usersBuilder_.getMessageOrBuilder(index);
-        }
-      }
-      /**
-       * <code>repeated .com.pola.User users = 1;</code>
-       */
-      public java.util.List<? extends com.pola.proto.MessagesProto.UserOrBuilder> 
-           getUsersOrBuilderList() {
-        if (usersBuilder_ != null) {
-          return usersBuilder_.getMessageOrBuilderList();
-        } else {
-          return java.util.Collections.unmodifiableList(users_);
-        }
-      }
-      /**
-       * <code>repeated .com.pola.User users = 1;</code>
-       */
-      public com.pola.proto.MessagesProto.User.Builder addUsersBuilder() {
-        return getUsersFieldBuilder().addBuilder(
-            com.pola.proto.MessagesProto.User.getDefaultInstance());
-      }
-      /**
-       * <code>repeated .com.pola.User users = 1;</code>
-       */
-      public com.pola.proto.MessagesProto.User.Builder addUsersBuilder(
-          int index) {
-        return getUsersFieldBuilder().addBuilder(
-            index, com.pola.proto.MessagesProto.User.getDefaultInstance());
-      }
-      /**
-       * <code>repeated .com.pola.User users = 1;</code>
-       */
-      public java.util.List<com.pola.proto.MessagesProto.User.Builder> 
-           getUsersBuilderList() {
-        return getUsersFieldBuilder().getBuilderList();
-      }
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          com.pola.proto.MessagesProto.User, com.pola.proto.MessagesProto.User.Builder, com.pola.proto.MessagesProto.UserOrBuilder> 
-          getUsersFieldBuilder() {
-        if (usersBuilder_ == null) {
-          usersBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              com.pola.proto.MessagesProto.User, com.pola.proto.MessagesProto.User.Builder, com.pola.proto.MessagesProto.UserOrBuilder>(
-                  users_,
-                  ((bitField0_ & 0x00000001) != 0),
-                  getParentForChildren(),
-                  isClean());
-          users_ = null;
-        }
-        return usersBuilder_;
-      }
-      @java.lang.Override
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      @java.lang.Override
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
-
-      // @@protoc_insertion_point(builder_scope:com.pola.UserList)
-    }
-
-    // @@protoc_insertion_point(class_scope:com.pola.UserList)
-    private static final com.pola.proto.MessagesProto.UserList DEFAULT_INSTANCE;
-    static {
-      DEFAULT_INSTANCE = new com.pola.proto.MessagesProto.UserList();
-    }
-
-    public static com.pola.proto.MessagesProto.UserList getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    private static final com.google.protobuf.Parser<UserList>
-        PARSER = new com.google.protobuf.AbstractParser<UserList>() {
-      @java.lang.Override
-      public UserList parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        Builder builder = newBuilder();
-        try {
-          builder.mergeFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          throw e.setUnfinishedMessage(builder.buildPartial());
-        } catch (com.google.protobuf.UninitializedMessageException e) {
-          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-        } catch (java.io.IOException e) {
-          throw new com.google.protobuf.InvalidProtocolBufferException(e)
-              .setUnfinishedMessage(builder.buildPartial());
-        }
-        return builder.buildPartial();
-      }
-    };
-
-    public static com.google.protobuf.Parser<UserList> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<UserList> getParserForType() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.pola.proto.MessagesProto.UserList getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
-  }
-
-  public interface UserOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:com.pola.User)
-      com.google.protobuf.MessageOrBuilder {
-
-    /**
-     * <code>string id = 1;</code>
-     * @return The id.
-     */
-    java.lang.String getId();
-    /**
-     * <code>string id = 1;</code>
-     * @return The bytes for id.
-     */
-    com.google.protobuf.ByteString
-        getIdBytes();
-
-    /**
-     * <code>string username = 2;</code>
-     * @return The username.
-     */
-    java.lang.String getUsername();
-    /**
-     * <code>string username = 2;</code>
-     * @return The bytes for username.
-     */
-    com.google.protobuf.ByteString
-        getUsernameBytes();
-
-    /**
-     * <code>bool online = 3;</code>
-     * @return The online.
-     */
-    boolean getOnline();
-  }
-  /**
-   * <pre>
-   * Usuario
-   * </pre>
-   *
-   * Protobuf type {@code com.pola.User}
-   */
-  public static final class User extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:com.pola.User)
-      UserOrBuilder {
-  private static final long serialVersionUID = 0L;
-    // Use User.newBuilder() to construct.
-    private User(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-      super(builder);
-    }
-    private User() {
-      id_ = "";
-      username_ = "";
-    }
-
-    @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-        UnusedPrivateParameter unused) {
-      return new User();
-    }
-
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return com.pola.proto.MessagesProto.internal_static_com_pola_User_descriptor;
-    }
-
-    @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return com.pola.proto.MessagesProto.internal_static_com_pola_User_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              com.pola.proto.MessagesProto.User.class, com.pola.proto.MessagesProto.User.Builder.class);
-    }
-
-    public static final int ID_FIELD_NUMBER = 1;
-    @SuppressWarnings("serial")
-    private volatile java.lang.Object id_ = "";
-    /**
-     * <code>string id = 1;</code>
-     * @return The id.
-     */
-    @java.lang.Override
-    public java.lang.String getId() {
-      java.lang.Object ref = id_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        id_ = s;
-        return s;
-      }
-    }
-    /**
-     * <code>string id = 1;</code>
-     * @return The bytes for id.
-     */
-    @java.lang.Override
-    public com.google.protobuf.ByteString
-        getIdBytes() {
-      java.lang.Object ref = id_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        id_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int USERNAME_FIELD_NUMBER = 2;
-    @SuppressWarnings("serial")
-    private volatile java.lang.Object username_ = "";
-    /**
-     * <code>string username = 2;</code>
-     * @return The username.
-     */
-    @java.lang.Override
-    public java.lang.String getUsername() {
-      java.lang.Object ref = username_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        username_ = s;
-        return s;
-      }
-    }
-    /**
-     * <code>string username = 2;</code>
-     * @return The bytes for username.
-     */
-    @java.lang.Override
-    public com.google.protobuf.ByteString
-        getUsernameBytes() {
-      java.lang.Object ref = username_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        username_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int ONLINE_FIELD_NUMBER = 3;
-    private boolean online_ = false;
-    /**
-     * <code>bool online = 3;</code>
-     * @return The online.
-     */
-    @java.lang.Override
-    public boolean getOnline() {
-      return online_;
-    }
-
-    private byte memoizedIsInitialized = -1;
-    @java.lang.Override
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
-
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(id_)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, id_);
-      }
-      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(username_)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, username_);
-      }
-      if (online_ != false) {
-        output.writeBool(3, online_);
-      }
-      getUnknownFields().writeTo(output);
-    }
-
-    @java.lang.Override
-    public int getSerializedSize() {
-      int size = memoizedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(id_)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, id_);
-      }
-      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(username_)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, username_);
-      }
-      if (online_ != false) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(3, online_);
-      }
-      size += getUnknownFields().getSerializedSize();
-      memoizedSize = size;
-      return size;
-    }
-
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof com.pola.proto.MessagesProto.User)) {
-        return super.equals(obj);
-      }
-      com.pola.proto.MessagesProto.User other = (com.pola.proto.MessagesProto.User) obj;
-
-      if (!getId()
-          .equals(other.getId())) return false;
-      if (!getUsername()
-          .equals(other.getUsername())) return false;
-      if (getOnline()
-          != other.getOnline()) return false;
-      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
-      return true;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (37 * hash) + ID_FIELD_NUMBER;
-      hash = (53 * hash) + getId().hashCode();
-      hash = (37 * hash) + USERNAME_FIELD_NUMBER;
-      hash = (53 * hash) + getUsername().hashCode();
-      hash = (37 * hash) + ONLINE_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-          getOnline());
-      hash = (29 * hash) + getUnknownFields().hashCode();
-      memoizedHashCode = hash;
-      return hash;
-    }
-
-    public static com.pola.proto.MessagesProto.User parseFrom(
-        java.nio.ByteBuffer data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static com.pola.proto.MessagesProto.User parseFrom(
-        java.nio.ByteBuffer data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static com.pola.proto.MessagesProto.User parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static com.pola.proto.MessagesProto.User parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static com.pola.proto.MessagesProto.User parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static com.pola.proto.MessagesProto.User parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static com.pola.proto.MessagesProto.User parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static com.pola.proto.MessagesProto.User parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    public static com.pola.proto.MessagesProto.User parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
-    }
-
-    public static com.pola.proto.MessagesProto.User parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static com.pola.proto.MessagesProto.User parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static com.pola.proto.MessagesProto.User parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
-    public static Builder newBuilder(com.pola.proto.MessagesProto.User prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-    @java.lang.Override
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * <pre>
-     * Usuario
-     * </pre>
-     *
-     * Protobuf type {@code com.pola.User}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:com.pola.User)
-        com.pola.proto.MessagesProto.UserOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return com.pola.proto.MessagesProto.internal_static_com_pola_User_descriptor;
-      }
-
-      @java.lang.Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return com.pola.proto.MessagesProto.internal_static_com_pola_User_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                com.pola.proto.MessagesProto.User.class, com.pola.proto.MessagesProto.User.Builder.class);
-      }
-
-      // Construct using com.pola.proto.MessagesProto.User.newBuilder()
-      private Builder() {
-
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        super(parent);
-
-      }
-      @java.lang.Override
-      public Builder clear() {
-        super.clear();
-        bitField0_ = 0;
-        id_ = "";
-        username_ = "";
-        online_ = false;
-        return this;
-      }
-
-      @java.lang.Override
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return com.pola.proto.MessagesProto.internal_static_com_pola_User_descriptor;
-      }
-
-      @java.lang.Override
-      public com.pola.proto.MessagesProto.User getDefaultInstanceForType() {
-        return com.pola.proto.MessagesProto.User.getDefaultInstance();
-      }
-
-      @java.lang.Override
-      public com.pola.proto.MessagesProto.User build() {
-        com.pola.proto.MessagesProto.User result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      @java.lang.Override
-      public com.pola.proto.MessagesProto.User buildPartial() {
-        com.pola.proto.MessagesProto.User result = new com.pola.proto.MessagesProto.User(this);
-        if (bitField0_ != 0) { buildPartial0(result); }
-        onBuilt();
-        return result;
-      }
-
-      private void buildPartial0(com.pola.proto.MessagesProto.User result) {
-        int from_bitField0_ = bitField0_;
-        if (((from_bitField0_ & 0x00000001) != 0)) {
-          result.id_ = id_;
-        }
-        if (((from_bitField0_ & 0x00000002) != 0)) {
-          result.username_ = username_;
-        }
-        if (((from_bitField0_ & 0x00000004) != 0)) {
-          result.online_ = online_;
-        }
-      }
-
-      @java.lang.Override
-      public Builder clone() {
-        return super.clone();
-      }
-      @java.lang.Override
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.setField(field, value);
-      }
-      @java.lang.Override
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return super.clearField(field);
-      }
-      @java.lang.Override
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return super.clearOneof(oneof);
-      }
-      @java.lang.Override
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
-        return super.setRepeatedField(field, index, value);
-      }
-      @java.lang.Override
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
-        return super.addRepeatedField(field, value);
-      }
-      @java.lang.Override
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.pola.proto.MessagesProto.User) {
-          return mergeFrom((com.pola.proto.MessagesProto.User)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(com.pola.proto.MessagesProto.User other) {
-        if (other == com.pola.proto.MessagesProto.User.getDefaultInstance()) return this;
-        if (!other.getId().isEmpty()) {
-          id_ = other.id_;
-          bitField0_ |= 0x00000001;
-          onChanged();
-        }
-        if (!other.getUsername().isEmpty()) {
-          username_ = other.username_;
-          bitField0_ |= 0x00000002;
-          onChanged();
-        }
-        if (other.getOnline() != false) {
-          setOnline(other.getOnline());
-        }
-        this.mergeUnknownFields(other.getUnknownFields());
-        onChanged();
-        return this;
-      }
-
-      @java.lang.Override
-      public final boolean isInitialized() {
-        return true;
-      }
-
-      @java.lang.Override
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        if (extensionRegistry == null) {
-          throw new java.lang.NullPointerException();
-        }
-        try {
-          boolean done = false;
-          while (!done) {
-            int tag = input.readTag();
-            switch (tag) {
-              case 0:
-                done = true;
-                break;
-              case 10: {
-                id_ = input.readStringRequireUtf8();
-                bitField0_ |= 0x00000001;
-                break;
-              } // case 10
-              case 18: {
-                username_ = input.readStringRequireUtf8();
-                bitField0_ |= 0x00000002;
-                break;
-              } // case 18
-              case 24: {
-                online_ = input.readBool();
-                bitField0_ |= 0x00000004;
-                break;
-              } // case 24
-              default: {
-                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
-                  done = true; // was an endgroup tag
-                }
-                break;
-              } // default:
-            } // switch (tag)
-          } // while (!done)
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          throw e.unwrapIOException();
-        } finally {
-          onChanged();
-        } // finally
-        return this;
-      }
-      private int bitField0_;
-
-      private java.lang.Object id_ = "";
-      /**
-       * <code>string id = 1;</code>
-       * @return The id.
-       */
-      public java.lang.String getId() {
-        java.lang.Object ref = id_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          id_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>string id = 1;</code>
-       * @return The bytes for id.
-       */
-      public com.google.protobuf.ByteString
-          getIdBytes() {
-        java.lang.Object ref = id_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          id_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>string id = 1;</code>
-       * @param value The id to set.
-       * @return This builder for chaining.
-       */
-      public Builder setId(
-          java.lang.String value) {
-        if (value == null) { throw new NullPointerException(); }
-        id_ = value;
-        bitField0_ |= 0x00000001;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string id = 1;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearId() {
-        id_ = getDefaultInstance().getId();
-        bitField0_ = (bitField0_ & ~0x00000001);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string id = 1;</code>
-       * @param value The bytes for id to set.
-       * @return This builder for chaining.
-       */
-      public Builder setIdBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) { throw new NullPointerException(); }
-        checkByteStringIsUtf8(value);
-        id_ = value;
-        bitField0_ |= 0x00000001;
-        onChanged();
-        return this;
-      }
-
-      private java.lang.Object username_ = "";
-      /**
-       * <code>string username = 2;</code>
-       * @return The username.
-       */
-      public java.lang.String getUsername() {
-        java.lang.Object ref = username_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          username_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>string username = 2;</code>
-       * @return The bytes for username.
-       */
-      public com.google.protobuf.ByteString
-          getUsernameBytes() {
-        java.lang.Object ref = username_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          username_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>string username = 2;</code>
-       * @param value The username to set.
-       * @return This builder for chaining.
-       */
-      public Builder setUsername(
-          java.lang.String value) {
-        if (value == null) { throw new NullPointerException(); }
-        username_ = value;
-        bitField0_ |= 0x00000002;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string username = 2;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearUsername() {
-        username_ = getDefaultInstance().getUsername();
-        bitField0_ = (bitField0_ & ~0x00000002);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string username = 2;</code>
-       * @param value The bytes for username to set.
-       * @return This builder for chaining.
-       */
-      public Builder setUsernameBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) { throw new NullPointerException(); }
-        checkByteStringIsUtf8(value);
-        username_ = value;
-        bitField0_ |= 0x00000002;
-        onChanged();
-        return this;
-      }
-
-      private boolean online_ ;
-      /**
-       * <code>bool online = 3;</code>
-       * @return The online.
-       */
-      @java.lang.Override
-      public boolean getOnline() {
-        return online_;
-      }
-      /**
-       * <code>bool online = 3;</code>
-       * @param value The online to set.
-       * @return This builder for chaining.
-       */
-      public Builder setOnline(boolean value) {
-
-        online_ = value;
-        bitField0_ |= 0x00000004;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>bool online = 3;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearOnline() {
-        bitField0_ = (bitField0_ & ~0x00000004);
-        online_ = false;
-        onChanged();
-        return this;
-      }
-      @java.lang.Override
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      @java.lang.Override
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
-
-      // @@protoc_insertion_point(builder_scope:com.pola.User)
-    }
-
-    // @@protoc_insertion_point(class_scope:com.pola.User)
-    private static final com.pola.proto.MessagesProto.User DEFAULT_INSTANCE;
-    static {
-      DEFAULT_INSTANCE = new com.pola.proto.MessagesProto.User();
-    }
-
-    public static com.pola.proto.MessagesProto.User getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    private static final com.google.protobuf.Parser<User>
-        PARSER = new com.google.protobuf.AbstractParser<User>() {
-      @java.lang.Override
-      public User parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        Builder builder = newBuilder();
-        try {
-          builder.mergeFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          throw e.setUnfinishedMessage(builder.buildPartial());
-        } catch (com.google.protobuf.UninitializedMessageException e) {
-          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
-        } catch (java.io.IOException e) {
-          throw new com.google.protobuf.InvalidProtocolBufferException(e)
-              .setUnfinishedMessage(builder.buildPartial());
-        }
-        return builder.buildPartial();
-      }
-    };
-
-    public static com.google.protobuf.Parser<User> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<User> getParserForType() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.pola.proto.MessagesProto.User getDefaultInstanceForType() {
+    public com.basic_chat.proto.MessagesProto.AuthResponse getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
   }
 
   public interface WsMessageOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:com.pola.WsMessage)
+      // @@protoc_insertion_point(interface_extends:com.basic_chat.WsMessage)
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>.com.pola.ChatMessage chat_message = 1;</code>
+     * <code>.com.basic_chat.ChatMessage chat_message = 1;</code>
      * @return Whether the chatMessage field is set.
      */
     boolean hasChatMessage();
     /**
-     * <code>.com.pola.ChatMessage chat_message = 1;</code>
+     * <code>.com.basic_chat.ChatMessage chat_message = 1;</code>
      * @return The chatMessage.
      */
-    com.pola.proto.MessagesProto.ChatMessage getChatMessage();
+    com.basic_chat.proto.MessagesProto.ChatMessage getChatMessage();
     /**
-     * <code>.com.pola.ChatMessage chat_message = 1;</code>
+     * <code>.com.basic_chat.ChatMessage chat_message = 1;</code>
      */
-    com.pola.proto.MessagesProto.ChatMessageOrBuilder getChatMessageOrBuilder();
+    com.basic_chat.proto.MessagesProto.ChatMessageOrBuilder getChatMessageOrBuilder();
 
     /**
-     * <code>.com.pola.UserList user_list = 2;</code>
+     * <code>.com.basic_chat.UserList user_list = 2;</code>
      * @return Whether the userList field is set.
      */
     boolean hasUserList();
     /**
-     * <code>.com.pola.UserList user_list = 2;</code>
+     * <code>.com.basic_chat.UserList user_list = 2;</code>
      * @return The userList.
      */
-    com.pola.proto.MessagesProto.UserList getUserList();
+    com.basic_chat.proto.MessagesProto.UserList getUserList();
     /**
-     * <code>.com.pola.UserList user_list = 2;</code>
+     * <code>.com.basic_chat.UserList user_list = 2;</code>
      */
-    com.pola.proto.MessagesProto.UserListOrBuilder getUserListOrBuilder();
+    com.basic_chat.proto.MessagesProto.UserListOrBuilder getUserListOrBuilder();
 
     /**
-     * <code>.com.pola.AuthMessage auth_message = 3;</code>
+     * <code>.com.basic_chat.AuthMessage auth_message = 3;</code>
      * @return Whether the authMessage field is set.
      */
     boolean hasAuthMessage();
     /**
-     * <code>.com.pola.AuthMessage auth_message = 3;</code>
+     * <code>.com.basic_chat.AuthMessage auth_message = 3;</code>
      * @return The authMessage.
      */
-    com.pola.proto.MessagesProto.AuthMessage getAuthMessage();
+    com.basic_chat.proto.MessagesProto.AuthMessage getAuthMessage();
     /**
-     * <code>.com.pola.AuthMessage auth_message = 3;</code>
+     * <code>.com.basic_chat.AuthMessage auth_message = 3;</code>
      */
-    com.pola.proto.MessagesProto.AuthMessageOrBuilder getAuthMessageOrBuilder();
+    com.basic_chat.proto.MessagesProto.AuthMessageOrBuilder getAuthMessageOrBuilder();
 
     /**
-     * <code>.com.pola.AuthResponse auth_response = 4;</code>
+     * <code>.com.basic_chat.AuthResponse auth_response = 4;</code>
      * @return Whether the authResponse field is set.
      */
     boolean hasAuthResponse();
     /**
-     * <code>.com.pola.AuthResponse auth_response = 4;</code>
+     * <code>.com.basic_chat.AuthResponse auth_response = 4;</code>
      * @return The authResponse.
      */
-    com.pola.proto.MessagesProto.AuthResponse getAuthResponse();
+    com.basic_chat.proto.MessagesProto.AuthResponse getAuthResponse();
     /**
-     * <code>.com.pola.AuthResponse auth_response = 4;</code>
+     * <code>.com.basic_chat.AuthResponse auth_response = 4;</code>
      */
-    com.pola.proto.MessagesProto.AuthResponseOrBuilder getAuthResponseOrBuilder();
+    com.basic_chat.proto.MessagesProto.AuthResponseOrBuilder getAuthResponseOrBuilder();
 
-    com.pola.proto.MessagesProto.WsMessage.PayloadCase getPayloadCase();
+    com.basic_chat.proto.MessagesProto.WsMessage.PayloadCase getPayloadCase();
   }
   /**
    * <pre>
    * Wrapper para todos los mensajes
    * </pre>
    *
-   * Protobuf type {@code com.pola.WsMessage}
+   * Protobuf type {@code com.basic_chat.WsMessage}
    */
   public static final class WsMessage extends
       com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:com.pola.WsMessage)
+      // @@protoc_insertion_point(message_implements:com.basic_chat.WsMessage)
       WsMessageOrBuilder {
   private static final long serialVersionUID = 0L;
     // Use WsMessage.newBuilder() to construct.
@@ -4517,15 +4501,15 @@ public final class MessagesProto {
 
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.pola.proto.MessagesProto.internal_static_com_pola_WsMessage_descriptor;
+      return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_WsMessage_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.pola.proto.MessagesProto.internal_static_com_pola_WsMessage_fieldAccessorTable
+      return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_WsMessage_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              com.pola.proto.MessagesProto.WsMessage.class, com.pola.proto.MessagesProto.WsMessage.Builder.class);
+              com.basic_chat.proto.MessagesProto.WsMessage.class, com.basic_chat.proto.MessagesProto.WsMessage.Builder.class);
     }
 
     private int payloadCase_ = 0;
@@ -4576,7 +4560,7 @@ public final class MessagesProto {
 
     public static final int CHAT_MESSAGE_FIELD_NUMBER = 1;
     /**
-     * <code>.com.pola.ChatMessage chat_message = 1;</code>
+     * <code>.com.basic_chat.ChatMessage chat_message = 1;</code>
      * @return Whether the chatMessage field is set.
      */
     @java.lang.Override
@@ -4584,30 +4568,30 @@ public final class MessagesProto {
       return payloadCase_ == 1;
     }
     /**
-     * <code>.com.pola.ChatMessage chat_message = 1;</code>
+     * <code>.com.basic_chat.ChatMessage chat_message = 1;</code>
      * @return The chatMessage.
      */
     @java.lang.Override
-    public com.pola.proto.MessagesProto.ChatMessage getChatMessage() {
+    public com.basic_chat.proto.MessagesProto.ChatMessage getChatMessage() {
       if (payloadCase_ == 1) {
-         return (com.pola.proto.MessagesProto.ChatMessage) payload_;
+         return (com.basic_chat.proto.MessagesProto.ChatMessage) payload_;
       }
-      return com.pola.proto.MessagesProto.ChatMessage.getDefaultInstance();
+      return com.basic_chat.proto.MessagesProto.ChatMessage.getDefaultInstance();
     }
     /**
-     * <code>.com.pola.ChatMessage chat_message = 1;</code>
+     * <code>.com.basic_chat.ChatMessage chat_message = 1;</code>
      */
     @java.lang.Override
-    public com.pola.proto.MessagesProto.ChatMessageOrBuilder getChatMessageOrBuilder() {
+    public com.basic_chat.proto.MessagesProto.ChatMessageOrBuilder getChatMessageOrBuilder() {
       if (payloadCase_ == 1) {
-         return (com.pola.proto.MessagesProto.ChatMessage) payload_;
+         return (com.basic_chat.proto.MessagesProto.ChatMessage) payload_;
       }
-      return com.pola.proto.MessagesProto.ChatMessage.getDefaultInstance();
+      return com.basic_chat.proto.MessagesProto.ChatMessage.getDefaultInstance();
     }
 
     public static final int USER_LIST_FIELD_NUMBER = 2;
     /**
-     * <code>.com.pola.UserList user_list = 2;</code>
+     * <code>.com.basic_chat.UserList user_list = 2;</code>
      * @return Whether the userList field is set.
      */
     @java.lang.Override
@@ -4615,30 +4599,30 @@ public final class MessagesProto {
       return payloadCase_ == 2;
     }
     /**
-     * <code>.com.pola.UserList user_list = 2;</code>
+     * <code>.com.basic_chat.UserList user_list = 2;</code>
      * @return The userList.
      */
     @java.lang.Override
-    public com.pola.proto.MessagesProto.UserList getUserList() {
+    public com.basic_chat.proto.MessagesProto.UserList getUserList() {
       if (payloadCase_ == 2) {
-         return (com.pola.proto.MessagesProto.UserList) payload_;
+         return (com.basic_chat.proto.MessagesProto.UserList) payload_;
       }
-      return com.pola.proto.MessagesProto.UserList.getDefaultInstance();
+      return com.basic_chat.proto.MessagesProto.UserList.getDefaultInstance();
     }
     /**
-     * <code>.com.pola.UserList user_list = 2;</code>
+     * <code>.com.basic_chat.UserList user_list = 2;</code>
      */
     @java.lang.Override
-    public com.pola.proto.MessagesProto.UserListOrBuilder getUserListOrBuilder() {
+    public com.basic_chat.proto.MessagesProto.UserListOrBuilder getUserListOrBuilder() {
       if (payloadCase_ == 2) {
-         return (com.pola.proto.MessagesProto.UserList) payload_;
+         return (com.basic_chat.proto.MessagesProto.UserList) payload_;
       }
-      return com.pola.proto.MessagesProto.UserList.getDefaultInstance();
+      return com.basic_chat.proto.MessagesProto.UserList.getDefaultInstance();
     }
 
     public static final int AUTH_MESSAGE_FIELD_NUMBER = 3;
     /**
-     * <code>.com.pola.AuthMessage auth_message = 3;</code>
+     * <code>.com.basic_chat.AuthMessage auth_message = 3;</code>
      * @return Whether the authMessage field is set.
      */
     @java.lang.Override
@@ -4646,30 +4630,30 @@ public final class MessagesProto {
       return payloadCase_ == 3;
     }
     /**
-     * <code>.com.pola.AuthMessage auth_message = 3;</code>
+     * <code>.com.basic_chat.AuthMessage auth_message = 3;</code>
      * @return The authMessage.
      */
     @java.lang.Override
-    public com.pola.proto.MessagesProto.AuthMessage getAuthMessage() {
+    public com.basic_chat.proto.MessagesProto.AuthMessage getAuthMessage() {
       if (payloadCase_ == 3) {
-         return (com.pola.proto.MessagesProto.AuthMessage) payload_;
+         return (com.basic_chat.proto.MessagesProto.AuthMessage) payload_;
       }
-      return com.pola.proto.MessagesProto.AuthMessage.getDefaultInstance();
+      return com.basic_chat.proto.MessagesProto.AuthMessage.getDefaultInstance();
     }
     /**
-     * <code>.com.pola.AuthMessage auth_message = 3;</code>
+     * <code>.com.basic_chat.AuthMessage auth_message = 3;</code>
      */
     @java.lang.Override
-    public com.pola.proto.MessagesProto.AuthMessageOrBuilder getAuthMessageOrBuilder() {
+    public com.basic_chat.proto.MessagesProto.AuthMessageOrBuilder getAuthMessageOrBuilder() {
       if (payloadCase_ == 3) {
-         return (com.pola.proto.MessagesProto.AuthMessage) payload_;
+         return (com.basic_chat.proto.MessagesProto.AuthMessage) payload_;
       }
-      return com.pola.proto.MessagesProto.AuthMessage.getDefaultInstance();
+      return com.basic_chat.proto.MessagesProto.AuthMessage.getDefaultInstance();
     }
 
     public static final int AUTH_RESPONSE_FIELD_NUMBER = 4;
     /**
-     * <code>.com.pola.AuthResponse auth_response = 4;</code>
+     * <code>.com.basic_chat.AuthResponse auth_response = 4;</code>
      * @return Whether the authResponse field is set.
      */
     @java.lang.Override
@@ -4677,25 +4661,25 @@ public final class MessagesProto {
       return payloadCase_ == 4;
     }
     /**
-     * <code>.com.pola.AuthResponse auth_response = 4;</code>
+     * <code>.com.basic_chat.AuthResponse auth_response = 4;</code>
      * @return The authResponse.
      */
     @java.lang.Override
-    public com.pola.proto.MessagesProto.AuthResponse getAuthResponse() {
+    public com.basic_chat.proto.MessagesProto.AuthResponse getAuthResponse() {
       if (payloadCase_ == 4) {
-         return (com.pola.proto.MessagesProto.AuthResponse) payload_;
+         return (com.basic_chat.proto.MessagesProto.AuthResponse) payload_;
       }
-      return com.pola.proto.MessagesProto.AuthResponse.getDefaultInstance();
+      return com.basic_chat.proto.MessagesProto.AuthResponse.getDefaultInstance();
     }
     /**
-     * <code>.com.pola.AuthResponse auth_response = 4;</code>
+     * <code>.com.basic_chat.AuthResponse auth_response = 4;</code>
      */
     @java.lang.Override
-    public com.pola.proto.MessagesProto.AuthResponseOrBuilder getAuthResponseOrBuilder() {
+    public com.basic_chat.proto.MessagesProto.AuthResponseOrBuilder getAuthResponseOrBuilder() {
       if (payloadCase_ == 4) {
-         return (com.pola.proto.MessagesProto.AuthResponse) payload_;
+         return (com.basic_chat.proto.MessagesProto.AuthResponse) payload_;
       }
-      return com.pola.proto.MessagesProto.AuthResponse.getDefaultInstance();
+      return com.basic_chat.proto.MessagesProto.AuthResponse.getDefaultInstance();
     }
 
     private byte memoizedIsInitialized = -1;
@@ -4713,16 +4697,16 @@ public final class MessagesProto {
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       if (payloadCase_ == 1) {
-        output.writeMessage(1, (com.pola.proto.MessagesProto.ChatMessage) payload_);
+        output.writeMessage(1, (com.basic_chat.proto.MessagesProto.ChatMessage) payload_);
       }
       if (payloadCase_ == 2) {
-        output.writeMessage(2, (com.pola.proto.MessagesProto.UserList) payload_);
+        output.writeMessage(2, (com.basic_chat.proto.MessagesProto.UserList) payload_);
       }
       if (payloadCase_ == 3) {
-        output.writeMessage(3, (com.pola.proto.MessagesProto.AuthMessage) payload_);
+        output.writeMessage(3, (com.basic_chat.proto.MessagesProto.AuthMessage) payload_);
       }
       if (payloadCase_ == 4) {
-        output.writeMessage(4, (com.pola.proto.MessagesProto.AuthResponse) payload_);
+        output.writeMessage(4, (com.basic_chat.proto.MessagesProto.AuthResponse) payload_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -4735,19 +4719,19 @@ public final class MessagesProto {
       size = 0;
       if (payloadCase_ == 1) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(1, (com.pola.proto.MessagesProto.ChatMessage) payload_);
+          .computeMessageSize(1, (com.basic_chat.proto.MessagesProto.ChatMessage) payload_);
       }
       if (payloadCase_ == 2) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(2, (com.pola.proto.MessagesProto.UserList) payload_);
+          .computeMessageSize(2, (com.basic_chat.proto.MessagesProto.UserList) payload_);
       }
       if (payloadCase_ == 3) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(3, (com.pola.proto.MessagesProto.AuthMessage) payload_);
+          .computeMessageSize(3, (com.basic_chat.proto.MessagesProto.AuthMessage) payload_);
       }
       if (payloadCase_ == 4) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(4, (com.pola.proto.MessagesProto.AuthResponse) payload_);
+          .computeMessageSize(4, (com.basic_chat.proto.MessagesProto.AuthResponse) payload_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -4759,10 +4743,10 @@ public final class MessagesProto {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof com.pola.proto.MessagesProto.WsMessage)) {
+      if (!(obj instanceof com.basic_chat.proto.MessagesProto.WsMessage)) {
         return super.equals(obj);
       }
-      com.pola.proto.MessagesProto.WsMessage other = (com.pola.proto.MessagesProto.WsMessage) obj;
+      com.basic_chat.proto.MessagesProto.WsMessage other = (com.basic_chat.proto.MessagesProto.WsMessage) obj;
 
       if (!getPayloadCase().equals(other.getPayloadCase())) return false;
       switch (payloadCase_) {
@@ -4821,44 +4805,44 @@ public final class MessagesProto {
       return hash;
     }
 
-    public static com.pola.proto.MessagesProto.WsMessage parseFrom(
+    public static com.basic_chat.proto.MessagesProto.WsMessage parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.pola.proto.MessagesProto.WsMessage parseFrom(
+    public static com.basic_chat.proto.MessagesProto.WsMessage parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.pola.proto.MessagesProto.WsMessage parseFrom(
+    public static com.basic_chat.proto.MessagesProto.WsMessage parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.pola.proto.MessagesProto.WsMessage parseFrom(
+    public static com.basic_chat.proto.MessagesProto.WsMessage parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.pola.proto.MessagesProto.WsMessage parseFrom(byte[] data)
+    public static com.basic_chat.proto.MessagesProto.WsMessage parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.pola.proto.MessagesProto.WsMessage parseFrom(
+    public static com.basic_chat.proto.MessagesProto.WsMessage parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.pola.proto.MessagesProto.WsMessage parseFrom(java.io.InputStream input)
+    public static com.basic_chat.proto.MessagesProto.WsMessage parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.pola.proto.MessagesProto.WsMessage parseFrom(
+    public static com.basic_chat.proto.MessagesProto.WsMessage parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -4866,26 +4850,26 @@ public final class MessagesProto {
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
-    public static com.pola.proto.MessagesProto.WsMessage parseDelimitedFrom(java.io.InputStream input)
+    public static com.basic_chat.proto.MessagesProto.WsMessage parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
 
-    public static com.pola.proto.MessagesProto.WsMessage parseDelimitedFrom(
+    public static com.basic_chat.proto.MessagesProto.WsMessage parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.pola.proto.MessagesProto.WsMessage parseFrom(
+    public static com.basic_chat.proto.MessagesProto.WsMessage parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.pola.proto.MessagesProto.WsMessage parseFrom(
+    public static com.basic_chat.proto.MessagesProto.WsMessage parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -4898,7 +4882,7 @@ public final class MessagesProto {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(com.pola.proto.MessagesProto.WsMessage prototype) {
+    public static Builder newBuilder(com.basic_chat.proto.MessagesProto.WsMessage prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     @java.lang.Override
@@ -4918,26 +4902,26 @@ public final class MessagesProto {
      * Wrapper para todos los mensajes
      * </pre>
      *
-     * Protobuf type {@code com.pola.WsMessage}
+     * Protobuf type {@code com.basic_chat.WsMessage}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:com.pola.WsMessage)
-        com.pola.proto.MessagesProto.WsMessageOrBuilder {
+        // @@protoc_insertion_point(builder_implements:com.basic_chat.WsMessage)
+        com.basic_chat.proto.MessagesProto.WsMessageOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.pola.proto.MessagesProto.internal_static_com_pola_WsMessage_descriptor;
+        return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_WsMessage_descriptor;
       }
 
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.pola.proto.MessagesProto.internal_static_com_pola_WsMessage_fieldAccessorTable
+        return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_WsMessage_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                com.pola.proto.MessagesProto.WsMessage.class, com.pola.proto.MessagesProto.WsMessage.Builder.class);
+                com.basic_chat.proto.MessagesProto.WsMessage.class, com.basic_chat.proto.MessagesProto.WsMessage.Builder.class);
       }
 
-      // Construct using com.pola.proto.MessagesProto.WsMessage.newBuilder()
+      // Construct using com.basic_chat.proto.MessagesProto.WsMessage.newBuilder()
       private Builder() {
 
       }
@@ -4971,17 +4955,17 @@ public final class MessagesProto {
       @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.pola.proto.MessagesProto.internal_static_com_pola_WsMessage_descriptor;
+        return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_WsMessage_descriptor;
       }
 
       @java.lang.Override
-      public com.pola.proto.MessagesProto.WsMessage getDefaultInstanceForType() {
-        return com.pola.proto.MessagesProto.WsMessage.getDefaultInstance();
+      public com.basic_chat.proto.MessagesProto.WsMessage getDefaultInstanceForType() {
+        return com.basic_chat.proto.MessagesProto.WsMessage.getDefaultInstance();
       }
 
       @java.lang.Override
-      public com.pola.proto.MessagesProto.WsMessage build() {
-        com.pola.proto.MessagesProto.WsMessage result = buildPartial();
+      public com.basic_chat.proto.MessagesProto.WsMessage build() {
+        com.basic_chat.proto.MessagesProto.WsMessage result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -4989,19 +4973,19 @@ public final class MessagesProto {
       }
 
       @java.lang.Override
-      public com.pola.proto.MessagesProto.WsMessage buildPartial() {
-        com.pola.proto.MessagesProto.WsMessage result = new com.pola.proto.MessagesProto.WsMessage(this);
+      public com.basic_chat.proto.MessagesProto.WsMessage buildPartial() {
+        com.basic_chat.proto.MessagesProto.WsMessage result = new com.basic_chat.proto.MessagesProto.WsMessage(this);
         if (bitField0_ != 0) { buildPartial0(result); }
         buildPartialOneofs(result);
         onBuilt();
         return result;
       }
 
-      private void buildPartial0(com.pola.proto.MessagesProto.WsMessage result) {
+      private void buildPartial0(com.basic_chat.proto.MessagesProto.WsMessage result) {
         int from_bitField0_ = bitField0_;
       }
 
-      private void buildPartialOneofs(com.pola.proto.MessagesProto.WsMessage result) {
+      private void buildPartialOneofs(com.basic_chat.proto.MessagesProto.WsMessage result) {
         result.payloadCase_ = payloadCase_;
         result.payload_ = this.payload_;
         if (payloadCase_ == 1 &&
@@ -5056,16 +5040,16 @@ public final class MessagesProto {
       }
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.pola.proto.MessagesProto.WsMessage) {
-          return mergeFrom((com.pola.proto.MessagesProto.WsMessage)other);
+        if (other instanceof com.basic_chat.proto.MessagesProto.WsMessage) {
+          return mergeFrom((com.basic_chat.proto.MessagesProto.WsMessage)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(com.pola.proto.MessagesProto.WsMessage other) {
-        if (other == com.pola.proto.MessagesProto.WsMessage.getDefaultInstance()) return this;
+      public Builder mergeFrom(com.basic_chat.proto.MessagesProto.WsMessage other) {
+        if (other == com.basic_chat.proto.MessagesProto.WsMessage.getDefaultInstance()) return this;
         switch (other.getPayloadCase()) {
           case CHAT_MESSAGE: {
             mergeChatMessage(other.getChatMessage());
@@ -5174,9 +5158,9 @@ public final class MessagesProto {
       private int bitField0_;
 
       private com.google.protobuf.SingleFieldBuilderV3<
-          com.pola.proto.MessagesProto.ChatMessage, com.pola.proto.MessagesProto.ChatMessage.Builder, com.pola.proto.MessagesProto.ChatMessageOrBuilder> chatMessageBuilder_;
+          com.basic_chat.proto.MessagesProto.ChatMessage, com.basic_chat.proto.MessagesProto.ChatMessage.Builder, com.basic_chat.proto.MessagesProto.ChatMessageOrBuilder> chatMessageBuilder_;
       /**
-       * <code>.com.pola.ChatMessage chat_message = 1;</code>
+       * <code>.com.basic_chat.ChatMessage chat_message = 1;</code>
        * @return Whether the chatMessage field is set.
        */
       @java.lang.Override
@@ -5184,27 +5168,27 @@ public final class MessagesProto {
         return payloadCase_ == 1;
       }
       /**
-       * <code>.com.pola.ChatMessage chat_message = 1;</code>
+       * <code>.com.basic_chat.ChatMessage chat_message = 1;</code>
        * @return The chatMessage.
        */
       @java.lang.Override
-      public com.pola.proto.MessagesProto.ChatMessage getChatMessage() {
+      public com.basic_chat.proto.MessagesProto.ChatMessage getChatMessage() {
         if (chatMessageBuilder_ == null) {
           if (payloadCase_ == 1) {
-            return (com.pola.proto.MessagesProto.ChatMessage) payload_;
+            return (com.basic_chat.proto.MessagesProto.ChatMessage) payload_;
           }
-          return com.pola.proto.MessagesProto.ChatMessage.getDefaultInstance();
+          return com.basic_chat.proto.MessagesProto.ChatMessage.getDefaultInstance();
         } else {
           if (payloadCase_ == 1) {
             return chatMessageBuilder_.getMessage();
           }
-          return com.pola.proto.MessagesProto.ChatMessage.getDefaultInstance();
+          return com.basic_chat.proto.MessagesProto.ChatMessage.getDefaultInstance();
         }
       }
       /**
-       * <code>.com.pola.ChatMessage chat_message = 1;</code>
+       * <code>.com.basic_chat.ChatMessage chat_message = 1;</code>
        */
-      public Builder setChatMessage(com.pola.proto.MessagesProto.ChatMessage value) {
+      public Builder setChatMessage(com.basic_chat.proto.MessagesProto.ChatMessage value) {
         if (chatMessageBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -5218,10 +5202,10 @@ public final class MessagesProto {
         return this;
       }
       /**
-       * <code>.com.pola.ChatMessage chat_message = 1;</code>
+       * <code>.com.basic_chat.ChatMessage chat_message = 1;</code>
        */
       public Builder setChatMessage(
-          com.pola.proto.MessagesProto.ChatMessage.Builder builderForValue) {
+          com.basic_chat.proto.MessagesProto.ChatMessage.Builder builderForValue) {
         if (chatMessageBuilder_ == null) {
           payload_ = builderForValue.build();
           onChanged();
@@ -5232,13 +5216,13 @@ public final class MessagesProto {
         return this;
       }
       /**
-       * <code>.com.pola.ChatMessage chat_message = 1;</code>
+       * <code>.com.basic_chat.ChatMessage chat_message = 1;</code>
        */
-      public Builder mergeChatMessage(com.pola.proto.MessagesProto.ChatMessage value) {
+      public Builder mergeChatMessage(com.basic_chat.proto.MessagesProto.ChatMessage value) {
         if (chatMessageBuilder_ == null) {
           if (payloadCase_ == 1 &&
-              payload_ != com.pola.proto.MessagesProto.ChatMessage.getDefaultInstance()) {
-            payload_ = com.pola.proto.MessagesProto.ChatMessage.newBuilder((com.pola.proto.MessagesProto.ChatMessage) payload_)
+              payload_ != com.basic_chat.proto.MessagesProto.ChatMessage.getDefaultInstance()) {
+            payload_ = com.basic_chat.proto.MessagesProto.ChatMessage.newBuilder((com.basic_chat.proto.MessagesProto.ChatMessage) payload_)
                 .mergeFrom(value).buildPartial();
           } else {
             payload_ = value;
@@ -5255,7 +5239,7 @@ public final class MessagesProto {
         return this;
       }
       /**
-       * <code>.com.pola.ChatMessage chat_message = 1;</code>
+       * <code>.com.basic_chat.ChatMessage chat_message = 1;</code>
        */
       public Builder clearChatMessage() {
         if (chatMessageBuilder_ == null) {
@@ -5274,38 +5258,38 @@ public final class MessagesProto {
         return this;
       }
       /**
-       * <code>.com.pola.ChatMessage chat_message = 1;</code>
+       * <code>.com.basic_chat.ChatMessage chat_message = 1;</code>
        */
-      public com.pola.proto.MessagesProto.ChatMessage.Builder getChatMessageBuilder() {
+      public com.basic_chat.proto.MessagesProto.ChatMessage.Builder getChatMessageBuilder() {
         return getChatMessageFieldBuilder().getBuilder();
       }
       /**
-       * <code>.com.pola.ChatMessage chat_message = 1;</code>
+       * <code>.com.basic_chat.ChatMessage chat_message = 1;</code>
        */
       @java.lang.Override
-      public com.pola.proto.MessagesProto.ChatMessageOrBuilder getChatMessageOrBuilder() {
+      public com.basic_chat.proto.MessagesProto.ChatMessageOrBuilder getChatMessageOrBuilder() {
         if ((payloadCase_ == 1) && (chatMessageBuilder_ != null)) {
           return chatMessageBuilder_.getMessageOrBuilder();
         } else {
           if (payloadCase_ == 1) {
-            return (com.pola.proto.MessagesProto.ChatMessage) payload_;
+            return (com.basic_chat.proto.MessagesProto.ChatMessage) payload_;
           }
-          return com.pola.proto.MessagesProto.ChatMessage.getDefaultInstance();
+          return com.basic_chat.proto.MessagesProto.ChatMessage.getDefaultInstance();
         }
       }
       /**
-       * <code>.com.pola.ChatMessage chat_message = 1;</code>
+       * <code>.com.basic_chat.ChatMessage chat_message = 1;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
-          com.pola.proto.MessagesProto.ChatMessage, com.pola.proto.MessagesProto.ChatMessage.Builder, com.pola.proto.MessagesProto.ChatMessageOrBuilder> 
+          com.basic_chat.proto.MessagesProto.ChatMessage, com.basic_chat.proto.MessagesProto.ChatMessage.Builder, com.basic_chat.proto.MessagesProto.ChatMessageOrBuilder> 
           getChatMessageFieldBuilder() {
         if (chatMessageBuilder_ == null) {
           if (!(payloadCase_ == 1)) {
-            payload_ = com.pola.proto.MessagesProto.ChatMessage.getDefaultInstance();
+            payload_ = com.basic_chat.proto.MessagesProto.ChatMessage.getDefaultInstance();
           }
           chatMessageBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              com.pola.proto.MessagesProto.ChatMessage, com.pola.proto.MessagesProto.ChatMessage.Builder, com.pola.proto.MessagesProto.ChatMessageOrBuilder>(
-                  (com.pola.proto.MessagesProto.ChatMessage) payload_,
+              com.basic_chat.proto.MessagesProto.ChatMessage, com.basic_chat.proto.MessagesProto.ChatMessage.Builder, com.basic_chat.proto.MessagesProto.ChatMessageOrBuilder>(
+                  (com.basic_chat.proto.MessagesProto.ChatMessage) payload_,
                   getParentForChildren(),
                   isClean());
           payload_ = null;
@@ -5316,9 +5300,9 @@ public final class MessagesProto {
       }
 
       private com.google.protobuf.SingleFieldBuilderV3<
-          com.pola.proto.MessagesProto.UserList, com.pola.proto.MessagesProto.UserList.Builder, com.pola.proto.MessagesProto.UserListOrBuilder> userListBuilder_;
+          com.basic_chat.proto.MessagesProto.UserList, com.basic_chat.proto.MessagesProto.UserList.Builder, com.basic_chat.proto.MessagesProto.UserListOrBuilder> userListBuilder_;
       /**
-       * <code>.com.pola.UserList user_list = 2;</code>
+       * <code>.com.basic_chat.UserList user_list = 2;</code>
        * @return Whether the userList field is set.
        */
       @java.lang.Override
@@ -5326,27 +5310,27 @@ public final class MessagesProto {
         return payloadCase_ == 2;
       }
       /**
-       * <code>.com.pola.UserList user_list = 2;</code>
+       * <code>.com.basic_chat.UserList user_list = 2;</code>
        * @return The userList.
        */
       @java.lang.Override
-      public com.pola.proto.MessagesProto.UserList getUserList() {
+      public com.basic_chat.proto.MessagesProto.UserList getUserList() {
         if (userListBuilder_ == null) {
           if (payloadCase_ == 2) {
-            return (com.pola.proto.MessagesProto.UserList) payload_;
+            return (com.basic_chat.proto.MessagesProto.UserList) payload_;
           }
-          return com.pola.proto.MessagesProto.UserList.getDefaultInstance();
+          return com.basic_chat.proto.MessagesProto.UserList.getDefaultInstance();
         } else {
           if (payloadCase_ == 2) {
             return userListBuilder_.getMessage();
           }
-          return com.pola.proto.MessagesProto.UserList.getDefaultInstance();
+          return com.basic_chat.proto.MessagesProto.UserList.getDefaultInstance();
         }
       }
       /**
-       * <code>.com.pola.UserList user_list = 2;</code>
+       * <code>.com.basic_chat.UserList user_list = 2;</code>
        */
-      public Builder setUserList(com.pola.proto.MessagesProto.UserList value) {
+      public Builder setUserList(com.basic_chat.proto.MessagesProto.UserList value) {
         if (userListBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -5360,10 +5344,10 @@ public final class MessagesProto {
         return this;
       }
       /**
-       * <code>.com.pola.UserList user_list = 2;</code>
+       * <code>.com.basic_chat.UserList user_list = 2;</code>
        */
       public Builder setUserList(
-          com.pola.proto.MessagesProto.UserList.Builder builderForValue) {
+          com.basic_chat.proto.MessagesProto.UserList.Builder builderForValue) {
         if (userListBuilder_ == null) {
           payload_ = builderForValue.build();
           onChanged();
@@ -5374,13 +5358,13 @@ public final class MessagesProto {
         return this;
       }
       /**
-       * <code>.com.pola.UserList user_list = 2;</code>
+       * <code>.com.basic_chat.UserList user_list = 2;</code>
        */
-      public Builder mergeUserList(com.pola.proto.MessagesProto.UserList value) {
+      public Builder mergeUserList(com.basic_chat.proto.MessagesProto.UserList value) {
         if (userListBuilder_ == null) {
           if (payloadCase_ == 2 &&
-              payload_ != com.pola.proto.MessagesProto.UserList.getDefaultInstance()) {
-            payload_ = com.pola.proto.MessagesProto.UserList.newBuilder((com.pola.proto.MessagesProto.UserList) payload_)
+              payload_ != com.basic_chat.proto.MessagesProto.UserList.getDefaultInstance()) {
+            payload_ = com.basic_chat.proto.MessagesProto.UserList.newBuilder((com.basic_chat.proto.MessagesProto.UserList) payload_)
                 .mergeFrom(value).buildPartial();
           } else {
             payload_ = value;
@@ -5397,7 +5381,7 @@ public final class MessagesProto {
         return this;
       }
       /**
-       * <code>.com.pola.UserList user_list = 2;</code>
+       * <code>.com.basic_chat.UserList user_list = 2;</code>
        */
       public Builder clearUserList() {
         if (userListBuilder_ == null) {
@@ -5416,38 +5400,38 @@ public final class MessagesProto {
         return this;
       }
       /**
-       * <code>.com.pola.UserList user_list = 2;</code>
+       * <code>.com.basic_chat.UserList user_list = 2;</code>
        */
-      public com.pola.proto.MessagesProto.UserList.Builder getUserListBuilder() {
+      public com.basic_chat.proto.MessagesProto.UserList.Builder getUserListBuilder() {
         return getUserListFieldBuilder().getBuilder();
       }
       /**
-       * <code>.com.pola.UserList user_list = 2;</code>
+       * <code>.com.basic_chat.UserList user_list = 2;</code>
        */
       @java.lang.Override
-      public com.pola.proto.MessagesProto.UserListOrBuilder getUserListOrBuilder() {
+      public com.basic_chat.proto.MessagesProto.UserListOrBuilder getUserListOrBuilder() {
         if ((payloadCase_ == 2) && (userListBuilder_ != null)) {
           return userListBuilder_.getMessageOrBuilder();
         } else {
           if (payloadCase_ == 2) {
-            return (com.pola.proto.MessagesProto.UserList) payload_;
+            return (com.basic_chat.proto.MessagesProto.UserList) payload_;
           }
-          return com.pola.proto.MessagesProto.UserList.getDefaultInstance();
+          return com.basic_chat.proto.MessagesProto.UserList.getDefaultInstance();
         }
       }
       /**
-       * <code>.com.pola.UserList user_list = 2;</code>
+       * <code>.com.basic_chat.UserList user_list = 2;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
-          com.pola.proto.MessagesProto.UserList, com.pola.proto.MessagesProto.UserList.Builder, com.pola.proto.MessagesProto.UserListOrBuilder> 
+          com.basic_chat.proto.MessagesProto.UserList, com.basic_chat.proto.MessagesProto.UserList.Builder, com.basic_chat.proto.MessagesProto.UserListOrBuilder> 
           getUserListFieldBuilder() {
         if (userListBuilder_ == null) {
           if (!(payloadCase_ == 2)) {
-            payload_ = com.pola.proto.MessagesProto.UserList.getDefaultInstance();
+            payload_ = com.basic_chat.proto.MessagesProto.UserList.getDefaultInstance();
           }
           userListBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              com.pola.proto.MessagesProto.UserList, com.pola.proto.MessagesProto.UserList.Builder, com.pola.proto.MessagesProto.UserListOrBuilder>(
-                  (com.pola.proto.MessagesProto.UserList) payload_,
+              com.basic_chat.proto.MessagesProto.UserList, com.basic_chat.proto.MessagesProto.UserList.Builder, com.basic_chat.proto.MessagesProto.UserListOrBuilder>(
+                  (com.basic_chat.proto.MessagesProto.UserList) payload_,
                   getParentForChildren(),
                   isClean());
           payload_ = null;
@@ -5458,9 +5442,9 @@ public final class MessagesProto {
       }
 
       private com.google.protobuf.SingleFieldBuilderV3<
-          com.pola.proto.MessagesProto.AuthMessage, com.pola.proto.MessagesProto.AuthMessage.Builder, com.pola.proto.MessagesProto.AuthMessageOrBuilder> authMessageBuilder_;
+          com.basic_chat.proto.MessagesProto.AuthMessage, com.basic_chat.proto.MessagesProto.AuthMessage.Builder, com.basic_chat.proto.MessagesProto.AuthMessageOrBuilder> authMessageBuilder_;
       /**
-       * <code>.com.pola.AuthMessage auth_message = 3;</code>
+       * <code>.com.basic_chat.AuthMessage auth_message = 3;</code>
        * @return Whether the authMessage field is set.
        */
       @java.lang.Override
@@ -5468,27 +5452,27 @@ public final class MessagesProto {
         return payloadCase_ == 3;
       }
       /**
-       * <code>.com.pola.AuthMessage auth_message = 3;</code>
+       * <code>.com.basic_chat.AuthMessage auth_message = 3;</code>
        * @return The authMessage.
        */
       @java.lang.Override
-      public com.pola.proto.MessagesProto.AuthMessage getAuthMessage() {
+      public com.basic_chat.proto.MessagesProto.AuthMessage getAuthMessage() {
         if (authMessageBuilder_ == null) {
           if (payloadCase_ == 3) {
-            return (com.pola.proto.MessagesProto.AuthMessage) payload_;
+            return (com.basic_chat.proto.MessagesProto.AuthMessage) payload_;
           }
-          return com.pola.proto.MessagesProto.AuthMessage.getDefaultInstance();
+          return com.basic_chat.proto.MessagesProto.AuthMessage.getDefaultInstance();
         } else {
           if (payloadCase_ == 3) {
             return authMessageBuilder_.getMessage();
           }
-          return com.pola.proto.MessagesProto.AuthMessage.getDefaultInstance();
+          return com.basic_chat.proto.MessagesProto.AuthMessage.getDefaultInstance();
         }
       }
       /**
-       * <code>.com.pola.AuthMessage auth_message = 3;</code>
+       * <code>.com.basic_chat.AuthMessage auth_message = 3;</code>
        */
-      public Builder setAuthMessage(com.pola.proto.MessagesProto.AuthMessage value) {
+      public Builder setAuthMessage(com.basic_chat.proto.MessagesProto.AuthMessage value) {
         if (authMessageBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -5502,10 +5486,10 @@ public final class MessagesProto {
         return this;
       }
       /**
-       * <code>.com.pola.AuthMessage auth_message = 3;</code>
+       * <code>.com.basic_chat.AuthMessage auth_message = 3;</code>
        */
       public Builder setAuthMessage(
-          com.pola.proto.MessagesProto.AuthMessage.Builder builderForValue) {
+          com.basic_chat.proto.MessagesProto.AuthMessage.Builder builderForValue) {
         if (authMessageBuilder_ == null) {
           payload_ = builderForValue.build();
           onChanged();
@@ -5516,13 +5500,13 @@ public final class MessagesProto {
         return this;
       }
       /**
-       * <code>.com.pola.AuthMessage auth_message = 3;</code>
+       * <code>.com.basic_chat.AuthMessage auth_message = 3;</code>
        */
-      public Builder mergeAuthMessage(com.pola.proto.MessagesProto.AuthMessage value) {
+      public Builder mergeAuthMessage(com.basic_chat.proto.MessagesProto.AuthMessage value) {
         if (authMessageBuilder_ == null) {
           if (payloadCase_ == 3 &&
-              payload_ != com.pola.proto.MessagesProto.AuthMessage.getDefaultInstance()) {
-            payload_ = com.pola.proto.MessagesProto.AuthMessage.newBuilder((com.pola.proto.MessagesProto.AuthMessage) payload_)
+              payload_ != com.basic_chat.proto.MessagesProto.AuthMessage.getDefaultInstance()) {
+            payload_ = com.basic_chat.proto.MessagesProto.AuthMessage.newBuilder((com.basic_chat.proto.MessagesProto.AuthMessage) payload_)
                 .mergeFrom(value).buildPartial();
           } else {
             payload_ = value;
@@ -5539,7 +5523,7 @@ public final class MessagesProto {
         return this;
       }
       /**
-       * <code>.com.pola.AuthMessage auth_message = 3;</code>
+       * <code>.com.basic_chat.AuthMessage auth_message = 3;</code>
        */
       public Builder clearAuthMessage() {
         if (authMessageBuilder_ == null) {
@@ -5558,38 +5542,38 @@ public final class MessagesProto {
         return this;
       }
       /**
-       * <code>.com.pola.AuthMessage auth_message = 3;</code>
+       * <code>.com.basic_chat.AuthMessage auth_message = 3;</code>
        */
-      public com.pola.proto.MessagesProto.AuthMessage.Builder getAuthMessageBuilder() {
+      public com.basic_chat.proto.MessagesProto.AuthMessage.Builder getAuthMessageBuilder() {
         return getAuthMessageFieldBuilder().getBuilder();
       }
       /**
-       * <code>.com.pola.AuthMessage auth_message = 3;</code>
+       * <code>.com.basic_chat.AuthMessage auth_message = 3;</code>
        */
       @java.lang.Override
-      public com.pola.proto.MessagesProto.AuthMessageOrBuilder getAuthMessageOrBuilder() {
+      public com.basic_chat.proto.MessagesProto.AuthMessageOrBuilder getAuthMessageOrBuilder() {
         if ((payloadCase_ == 3) && (authMessageBuilder_ != null)) {
           return authMessageBuilder_.getMessageOrBuilder();
         } else {
           if (payloadCase_ == 3) {
-            return (com.pola.proto.MessagesProto.AuthMessage) payload_;
+            return (com.basic_chat.proto.MessagesProto.AuthMessage) payload_;
           }
-          return com.pola.proto.MessagesProto.AuthMessage.getDefaultInstance();
+          return com.basic_chat.proto.MessagesProto.AuthMessage.getDefaultInstance();
         }
       }
       /**
-       * <code>.com.pola.AuthMessage auth_message = 3;</code>
+       * <code>.com.basic_chat.AuthMessage auth_message = 3;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
-          com.pola.proto.MessagesProto.AuthMessage, com.pola.proto.MessagesProto.AuthMessage.Builder, com.pola.proto.MessagesProto.AuthMessageOrBuilder> 
+          com.basic_chat.proto.MessagesProto.AuthMessage, com.basic_chat.proto.MessagesProto.AuthMessage.Builder, com.basic_chat.proto.MessagesProto.AuthMessageOrBuilder> 
           getAuthMessageFieldBuilder() {
         if (authMessageBuilder_ == null) {
           if (!(payloadCase_ == 3)) {
-            payload_ = com.pola.proto.MessagesProto.AuthMessage.getDefaultInstance();
+            payload_ = com.basic_chat.proto.MessagesProto.AuthMessage.getDefaultInstance();
           }
           authMessageBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              com.pola.proto.MessagesProto.AuthMessage, com.pola.proto.MessagesProto.AuthMessage.Builder, com.pola.proto.MessagesProto.AuthMessageOrBuilder>(
-                  (com.pola.proto.MessagesProto.AuthMessage) payload_,
+              com.basic_chat.proto.MessagesProto.AuthMessage, com.basic_chat.proto.MessagesProto.AuthMessage.Builder, com.basic_chat.proto.MessagesProto.AuthMessageOrBuilder>(
+                  (com.basic_chat.proto.MessagesProto.AuthMessage) payload_,
                   getParentForChildren(),
                   isClean());
           payload_ = null;
@@ -5600,9 +5584,9 @@ public final class MessagesProto {
       }
 
       private com.google.protobuf.SingleFieldBuilderV3<
-          com.pola.proto.MessagesProto.AuthResponse, com.pola.proto.MessagesProto.AuthResponse.Builder, com.pola.proto.MessagesProto.AuthResponseOrBuilder> authResponseBuilder_;
+          com.basic_chat.proto.MessagesProto.AuthResponse, com.basic_chat.proto.MessagesProto.AuthResponse.Builder, com.basic_chat.proto.MessagesProto.AuthResponseOrBuilder> authResponseBuilder_;
       /**
-       * <code>.com.pola.AuthResponse auth_response = 4;</code>
+       * <code>.com.basic_chat.AuthResponse auth_response = 4;</code>
        * @return Whether the authResponse field is set.
        */
       @java.lang.Override
@@ -5610,27 +5594,27 @@ public final class MessagesProto {
         return payloadCase_ == 4;
       }
       /**
-       * <code>.com.pola.AuthResponse auth_response = 4;</code>
+       * <code>.com.basic_chat.AuthResponse auth_response = 4;</code>
        * @return The authResponse.
        */
       @java.lang.Override
-      public com.pola.proto.MessagesProto.AuthResponse getAuthResponse() {
+      public com.basic_chat.proto.MessagesProto.AuthResponse getAuthResponse() {
         if (authResponseBuilder_ == null) {
           if (payloadCase_ == 4) {
-            return (com.pola.proto.MessagesProto.AuthResponse) payload_;
+            return (com.basic_chat.proto.MessagesProto.AuthResponse) payload_;
           }
-          return com.pola.proto.MessagesProto.AuthResponse.getDefaultInstance();
+          return com.basic_chat.proto.MessagesProto.AuthResponse.getDefaultInstance();
         } else {
           if (payloadCase_ == 4) {
             return authResponseBuilder_.getMessage();
           }
-          return com.pola.proto.MessagesProto.AuthResponse.getDefaultInstance();
+          return com.basic_chat.proto.MessagesProto.AuthResponse.getDefaultInstance();
         }
       }
       /**
-       * <code>.com.pola.AuthResponse auth_response = 4;</code>
+       * <code>.com.basic_chat.AuthResponse auth_response = 4;</code>
        */
-      public Builder setAuthResponse(com.pola.proto.MessagesProto.AuthResponse value) {
+      public Builder setAuthResponse(com.basic_chat.proto.MessagesProto.AuthResponse value) {
         if (authResponseBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -5644,10 +5628,10 @@ public final class MessagesProto {
         return this;
       }
       /**
-       * <code>.com.pola.AuthResponse auth_response = 4;</code>
+       * <code>.com.basic_chat.AuthResponse auth_response = 4;</code>
        */
       public Builder setAuthResponse(
-          com.pola.proto.MessagesProto.AuthResponse.Builder builderForValue) {
+          com.basic_chat.proto.MessagesProto.AuthResponse.Builder builderForValue) {
         if (authResponseBuilder_ == null) {
           payload_ = builderForValue.build();
           onChanged();
@@ -5658,13 +5642,13 @@ public final class MessagesProto {
         return this;
       }
       /**
-       * <code>.com.pola.AuthResponse auth_response = 4;</code>
+       * <code>.com.basic_chat.AuthResponse auth_response = 4;</code>
        */
-      public Builder mergeAuthResponse(com.pola.proto.MessagesProto.AuthResponse value) {
+      public Builder mergeAuthResponse(com.basic_chat.proto.MessagesProto.AuthResponse value) {
         if (authResponseBuilder_ == null) {
           if (payloadCase_ == 4 &&
-              payload_ != com.pola.proto.MessagesProto.AuthResponse.getDefaultInstance()) {
-            payload_ = com.pola.proto.MessagesProto.AuthResponse.newBuilder((com.pola.proto.MessagesProto.AuthResponse) payload_)
+              payload_ != com.basic_chat.proto.MessagesProto.AuthResponse.getDefaultInstance()) {
+            payload_ = com.basic_chat.proto.MessagesProto.AuthResponse.newBuilder((com.basic_chat.proto.MessagesProto.AuthResponse) payload_)
                 .mergeFrom(value).buildPartial();
           } else {
             payload_ = value;
@@ -5681,7 +5665,7 @@ public final class MessagesProto {
         return this;
       }
       /**
-       * <code>.com.pola.AuthResponse auth_response = 4;</code>
+       * <code>.com.basic_chat.AuthResponse auth_response = 4;</code>
        */
       public Builder clearAuthResponse() {
         if (authResponseBuilder_ == null) {
@@ -5700,38 +5684,38 @@ public final class MessagesProto {
         return this;
       }
       /**
-       * <code>.com.pola.AuthResponse auth_response = 4;</code>
+       * <code>.com.basic_chat.AuthResponse auth_response = 4;</code>
        */
-      public com.pola.proto.MessagesProto.AuthResponse.Builder getAuthResponseBuilder() {
+      public com.basic_chat.proto.MessagesProto.AuthResponse.Builder getAuthResponseBuilder() {
         return getAuthResponseFieldBuilder().getBuilder();
       }
       /**
-       * <code>.com.pola.AuthResponse auth_response = 4;</code>
+       * <code>.com.basic_chat.AuthResponse auth_response = 4;</code>
        */
       @java.lang.Override
-      public com.pola.proto.MessagesProto.AuthResponseOrBuilder getAuthResponseOrBuilder() {
+      public com.basic_chat.proto.MessagesProto.AuthResponseOrBuilder getAuthResponseOrBuilder() {
         if ((payloadCase_ == 4) && (authResponseBuilder_ != null)) {
           return authResponseBuilder_.getMessageOrBuilder();
         } else {
           if (payloadCase_ == 4) {
-            return (com.pola.proto.MessagesProto.AuthResponse) payload_;
+            return (com.basic_chat.proto.MessagesProto.AuthResponse) payload_;
           }
-          return com.pola.proto.MessagesProto.AuthResponse.getDefaultInstance();
+          return com.basic_chat.proto.MessagesProto.AuthResponse.getDefaultInstance();
         }
       }
       /**
-       * <code>.com.pola.AuthResponse auth_response = 4;</code>
+       * <code>.com.basic_chat.AuthResponse auth_response = 4;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
-          com.pola.proto.MessagesProto.AuthResponse, com.pola.proto.MessagesProto.AuthResponse.Builder, com.pola.proto.MessagesProto.AuthResponseOrBuilder> 
+          com.basic_chat.proto.MessagesProto.AuthResponse, com.basic_chat.proto.MessagesProto.AuthResponse.Builder, com.basic_chat.proto.MessagesProto.AuthResponseOrBuilder> 
           getAuthResponseFieldBuilder() {
         if (authResponseBuilder_ == null) {
           if (!(payloadCase_ == 4)) {
-            payload_ = com.pola.proto.MessagesProto.AuthResponse.getDefaultInstance();
+            payload_ = com.basic_chat.proto.MessagesProto.AuthResponse.getDefaultInstance();
           }
           authResponseBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              com.pola.proto.MessagesProto.AuthResponse, com.pola.proto.MessagesProto.AuthResponse.Builder, com.pola.proto.MessagesProto.AuthResponseOrBuilder>(
-                  (com.pola.proto.MessagesProto.AuthResponse) payload_,
+              com.basic_chat.proto.MessagesProto.AuthResponse, com.basic_chat.proto.MessagesProto.AuthResponse.Builder, com.basic_chat.proto.MessagesProto.AuthResponseOrBuilder>(
+                  (com.basic_chat.proto.MessagesProto.AuthResponse) payload_,
                   getParentForChildren(),
                   isClean());
           payload_ = null;
@@ -5753,16 +5737,16 @@ public final class MessagesProto {
       }
 
 
-      // @@protoc_insertion_point(builder_scope:com.pola.WsMessage)
+      // @@protoc_insertion_point(builder_scope:com.basic_chat.WsMessage)
     }
 
-    // @@protoc_insertion_point(class_scope:com.pola.WsMessage)
-    private static final com.pola.proto.MessagesProto.WsMessage DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:com.basic_chat.WsMessage)
+    private static final com.basic_chat.proto.MessagesProto.WsMessage DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new com.pola.proto.MessagesProto.WsMessage();
+      DEFAULT_INSTANCE = new com.basic_chat.proto.MessagesProto.WsMessage();
     }
 
-    public static com.pola.proto.MessagesProto.WsMessage getDefaultInstance() {
+    public static com.basic_chat.proto.MessagesProto.WsMessage getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
@@ -5798,42 +5782,42 @@ public final class MessagesProto {
     }
 
     @java.lang.Override
-    public com.pola.proto.MessagesProto.WsMessage getDefaultInstanceForType() {
+    public com.basic_chat.proto.MessagesProto.WsMessage getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
   }
 
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_com_pola_ChatMessage_descriptor;
+    internal_static_com_basic_chat_ChatMessage_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_com_pola_ChatMessage_fieldAccessorTable;
+      internal_static_com_basic_chat_ChatMessage_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_com_pola_AuthMessage_descriptor;
+    internal_static_com_basic_chat_UserList_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_com_pola_AuthMessage_fieldAccessorTable;
+      internal_static_com_basic_chat_UserList_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_com_pola_AuthResponse_descriptor;
+    internal_static_com_basic_chat_User_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_com_pola_AuthResponse_fieldAccessorTable;
+      internal_static_com_basic_chat_User_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_com_pola_UserList_descriptor;
+    internal_static_com_basic_chat_AuthMessage_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_com_pola_UserList_fieldAccessorTable;
+      internal_static_com_basic_chat_AuthMessage_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_com_pola_User_descriptor;
+    internal_static_com_basic_chat_AuthResponse_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_com_pola_User_fieldAccessorTable;
+      internal_static_com_basic_chat_AuthResponse_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_com_pola_WsMessage_descriptor;
+    internal_static_com_basic_chat_WsMessage_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_com_pola_WsMessage_fieldAccessorTable;
+      internal_static_com_basic_chat_WsMessage_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -5843,65 +5827,66 @@ public final class MessagesProto {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\016messages.proto\022\010com.pola\"\205\001\n\013ChatMessa" +
-      "ge\022\n\n\002id\030\001 \001(\t\022#\n\004type\030\002 \001(\0162\025.com.pola." +
-      "MessageType\022\016\n\006sender\030\003 \001(\t\022\021\n\trecipient" +
-      "\030\004 \001(\t\022\017\n\007content\030\005 \001(\t\022\021\n\ttimestamp\030\006 \001" +
-      "(\003\"\034\n\013AuthMessage\022\r\n\005token\030\001 \001(\t\"R\n\014Auth" +
-      "Response\022\017\n\007success\030\001 \001(\010\022\017\n\007message\030\002 \001" +
-      "(\t\022\016\n\006userId\030\003 \001(\t\022\020\n\010username\030\004 \001(\t\")\n\010" +
-      "UserList\022\035\n\005users\030\001 \003(\0132\016.com.pola.User\"" +
-      "4\n\004User\022\n\n\002id\030\001 \001(\t\022\020\n\010username\030\002 \001(\t\022\016\n" +
-      "\006online\030\003 \001(\010\"\316\001\n\tWsMessage\022-\n\014chat_mess" +
-      "age\030\001 \001(\0132\025.com.pola.ChatMessageH\000\022\'\n\tus" +
-      "er_list\030\002 \001(\0132\022.com.pola.UserListH\000\022-\n\014a" +
-      "uth_message\030\003 \001(\0132\025.com.pola.AuthMessage" +
-      "H\000\022/\n\rauth_response\030\004 \001(\0132\026.com.pola.Aut" +
-      "hResponseH\000B\t\n\007payload*t\n\013MessageType\022\010\n" +
-      "\004TEXT\020\000\022\t\n\005LOGIN\020\001\022\n\n\006LOGOUT\020\002\022\r\n\tUSER_L" +
-      "IST\020\003\022\n\n\006TYPING\020\004\022\024\n\020DELIVERY_RECEIPT\020\005\022" +
-      "\t\n\005ALERT\020\006\022\010\n\004CHAT\020\007B\037\n\016com.pola.protoB\r" +
-      "MessagesProtob\006proto3"
+      "\n\016messages.proto\022\016com.basic_chat\"\213\001\n\013Cha" +
+      "tMessage\022\n\n\002id\030\001 \001(\t\022)\n\004type\030\002 \001(\0162\033.com" +
+      ".basic_chat.MessageType\022\016\n\006sender\030\003 \001(\t\022" +
+      "\021\n\trecipient\030\004 \001(\t\022\017\n\007content\030\005 \001(\t\022\021\n\tt" +
+      "imestamp\030\006 \001(\003\"/\n\010UserList\022#\n\005users\030\001 \003(" +
+      "\0132\024.com.basic_chat.User\"4\n\004User\022\n\n\002id\030\001 " +
+      "\001(\t\022\020\n\010username\030\002 \001(\t\022\016\n\006online\030\003 \001(\010\"\034\n" +
+      "\013AuthMessage\022\r\n\005token\030\001 \001(\t\"R\n\014AuthRespo" +
+      "nse\022\017\n\007success\030\001 \001(\010\022\017\n\007message\030\002 \001(\t\022\016\n" +
+      "\006userId\030\003 \001(\t\022\020\n\010username\030\004 \001(\t\"\346\001\n\tWsMe" +
+      "ssage\0223\n\014chat_message\030\001 \001(\0132\033.com.basic_" +
+      "chat.ChatMessageH\000\022-\n\tuser_list\030\002 \001(\0132\030." +
+      "com.basic_chat.UserListH\000\0223\n\014auth_messag" +
+      "e\030\003 \001(\0132\033.com.basic_chat.AuthMessageH\000\0225" +
+      "\n\rauth_response\030\004 \001(\0132\034.com.basic_chat.A" +
+      "uthResponseH\000B\t\n\007payload*t\n\013MessageType\022" +
+      "\010\n\004TEXT\020\000\022\t\n\005LOGIN\020\001\022\n\n\006LOGOUT\020\002\022\r\n\tUSER" +
+      "_LIST\020\003\022\n\n\006TYPING\020\004\022\024\n\020DELIVERY_RECEIPT\020" +
+      "\005\022\t\n\005ALERT\020\006\022\010\n\004CHAT\020\007B%\n\024com.basic_chat" +
+      ".protoB\rMessagesProtob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
         });
-    internal_static_com_pola_ChatMessage_descriptor =
+    internal_static_com_basic_chat_ChatMessage_descriptor =
       getDescriptor().getMessageTypes().get(0);
-    internal_static_com_pola_ChatMessage_fieldAccessorTable = new
+    internal_static_com_basic_chat_ChatMessage_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_com_pola_ChatMessage_descriptor,
+        internal_static_com_basic_chat_ChatMessage_descriptor,
         new java.lang.String[] { "Id", "Type", "Sender", "Recipient", "Content", "Timestamp", });
-    internal_static_com_pola_AuthMessage_descriptor =
+    internal_static_com_basic_chat_UserList_descriptor =
       getDescriptor().getMessageTypes().get(1);
-    internal_static_com_pola_AuthMessage_fieldAccessorTable = new
+    internal_static_com_basic_chat_UserList_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_com_pola_AuthMessage_descriptor,
-        new java.lang.String[] { "Token", });
-    internal_static_com_pola_AuthResponse_descriptor =
-      getDescriptor().getMessageTypes().get(2);
-    internal_static_com_pola_AuthResponse_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_com_pola_AuthResponse_descriptor,
-        new java.lang.String[] { "Success", "Message", "UserId", "Username", });
-    internal_static_com_pola_UserList_descriptor =
-      getDescriptor().getMessageTypes().get(3);
-    internal_static_com_pola_UserList_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_com_pola_UserList_descriptor,
+        internal_static_com_basic_chat_UserList_descriptor,
         new java.lang.String[] { "Users", });
-    internal_static_com_pola_User_descriptor =
-      getDescriptor().getMessageTypes().get(4);
-    internal_static_com_pola_User_fieldAccessorTable = new
+    internal_static_com_basic_chat_User_descriptor =
+      getDescriptor().getMessageTypes().get(2);
+    internal_static_com_basic_chat_User_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_com_pola_User_descriptor,
+        internal_static_com_basic_chat_User_descriptor,
         new java.lang.String[] { "Id", "Username", "Online", });
-    internal_static_com_pola_WsMessage_descriptor =
-      getDescriptor().getMessageTypes().get(5);
-    internal_static_com_pola_WsMessage_fieldAccessorTable = new
+    internal_static_com_basic_chat_AuthMessage_descriptor =
+      getDescriptor().getMessageTypes().get(3);
+    internal_static_com_basic_chat_AuthMessage_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_com_pola_WsMessage_descriptor,
+        internal_static_com_basic_chat_AuthMessage_descriptor,
+        new java.lang.String[] { "Token", });
+    internal_static_com_basic_chat_AuthResponse_descriptor =
+      getDescriptor().getMessageTypes().get(4);
+    internal_static_com_basic_chat_AuthResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_com_basic_chat_AuthResponse_descriptor,
+        new java.lang.String[] { "Success", "Message", "UserId", "Username", });
+    internal_static_com_basic_chat_WsMessage_descriptor =
+      getDescriptor().getMessageTypes().get(5);
+    internal_static_com_basic_chat_WsMessage_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_com_basic_chat_WsMessage_descriptor,
         new java.lang.String[] { "ChatMessage", "UserList", "AuthMessage", "AuthResponse", "Payload", });
   }
 

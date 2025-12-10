@@ -1,6 +1,8 @@
 package com.pola.controller;
 
 import com.pola.model.Message;
+import com.pola.proto.MessagesProto.AuthMessage;
+import com.pola.proto.MessagesProto.WsMessage;
 import com.pola.service.MessageService;
 import com.pola.service.WebSocketService;
 
@@ -44,10 +46,14 @@ public class ChatController {
     private WebSocketService webSocketService;
     private MessageService messageService;
     private String currentUsername;
+    private String currentUserId;
+    private String authToken;
     
-    public void initialize(String username, WebSocketService webSocketService, 
+    public void initialize(String username, String userId, String token, WebSocketService webSocketService, 
                           MessageService messageService) {
         this.currentUsername = username;
+        this.currentUserId = userId;
+        this.authToken = token;
         this.webSocketService = webSocketService;
         this.messageService = messageService;
         
@@ -122,6 +128,9 @@ public class ChatController {
         new Thread(() -> {
             try {
                 webSocketService.connect();
+
+                // enviar el mensaje de autenticacion cuando se conecta
+                Platform.runLater(()-> sendAuthMessage());
             } catch (Exception e) {
                 Platform.runLater(() -> {
                     statusLabel.setText("Error al conectar: " + e.getMessage());
@@ -129,6 +138,23 @@ public class ChatController {
                 });
             }
         }).start();
+    }
+
+    private void sendAuthMessage(){
+        try{
+            AuthMessage authMessage = AuthMessage.newBuilder()
+                .setToken(authToken)
+                .build();
+                
+            WsMessage wsMessage = WsMessage.newBuilder()
+                .setAuthMessage(authMessage)
+                .build();
+
+            // envia el token a chat-service
+            webSocketService.sendMessage(wsMessage);
+        }catch(Exception e){
+            statusLabel.setText("Error en la autenticación");
+        }
     }
     
     private void handleDisconnect() {

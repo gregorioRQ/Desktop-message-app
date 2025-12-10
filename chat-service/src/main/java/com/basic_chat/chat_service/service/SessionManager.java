@@ -24,7 +24,7 @@ public class SessionManager {
     /**
      * Registra una nueva sesión cuando un usuario se conecta
      */
-    public void registerSession(String userId, WebSocketSession session) {
+    public void registerSession(String userId, String sessionId, String  username,WebSocketSession session) {
         // Remover sesión anterior si existe (usuario reconectándose)
         removeUserSession(userId);
         
@@ -33,6 +33,10 @@ public class SessionManager {
         
         System.out.println("✓ Usuario registrado: " + userId + " (Session: " + session.getId() + ")");
         System.out.println("  Total usuarios online: " + userSessions.size());
+    }
+
+    public boolean isAuthenticated(String sessionId){
+        return sessionToUser.containsKey(sessionId);
     }
 
      /**

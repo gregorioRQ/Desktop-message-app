@@ -69,6 +69,25 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webflux</artifactId>
         </dependency>
+
+			<!-- JWT -->
+		<dependency>
+    		<groupId>io.jsonwebtoken</groupId>
+    		<artifactId>jjwt-api</artifactId>
+    		<version>0.12.3</version>
+		</dependency>
+		<dependency>
+    		<groupId>io.jsonwebtoken</groupId>
+    		<artifactId>jjwt-impl</artifactId>
+    		<version>0.12.3</version>
+    		<scope>runtime</scope>
+		</dependency>
+		<dependency>
+    		<groupId>io.jsonwebtoken</groupId>
+    		<artifactId>jjwt-jackson</artifactId>
+    		<version>0.12.3</version>
+    		<scope>runtime</scope>
+		</dependency>
         
 	</dependencies>
 
@@ -113,44 +132,48 @@
 
 			<!-- Plugin para compilar archivos .proto a clases java -->
 		
-			<plugin>
-  				<groupId>org.xolstice.maven.plugins</groupId>
-  				<artifactId>protobuf-maven-plugin</artifactId>
-  				<version>0.6.1</version>
-  				<configuration>
-    				<protocArtifact>
-      					com.google.protobuf:protoc:${protobuf.version}:exe:${os.detected.classifier}
-    				</protocArtifact>
-					<protoSourceRoot>${project.basedir}/src/main/proto</protoSourceRoot>
-  				</configuration>
-  				<executions>
-    				<execution>
-      					<goals>
-        					<goal>compile</goal>
-      					</goals>
-    				</execution>
-  				</executions>
-			</plugin>
+			<!-- Compilador protoc para compilar arhivos .proto a clases Java -->
+            <plugin>
+                <groupId>org.xolstice.maven.plugins</groupId>
+                <artifactId>protobuf-maven-plugin</artifactId>
+                <version>0.6.1</version>
+                <configuration>
+                    <protocArtifact>com.google.protobuf:protoc:${protobuf.version}:exe:${os.detected.classifier}</protocArtifact>
+                 
+                    <outputDirectory>${project.basedir}/src/generated/java</outputDirectory>
+                    <clearOutputDirectory>false</clearOutputDirectory>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 
 			<!-- Plugin para añadir el directorio de las clases generadas por protoc al build path, 
 			algunas veces el directorio "targe/generated-sources/protobuf/java" no es visible aunque exista.  -->
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>build-helper-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>add-source</goal>
-						</goals>
-						<configuration>
-							<sources>
-								<source>${project.build.directory}/generated-sources/protobuf/java</source>
-							</sources>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
+			<!-- Plugin para agregar las fuentes generadas al classpath -->
+        	<plugin>
+            	<groupId>org.codehaus.mojo</groupId>
+            	<artifactId>build-helper-maven-plugin</artifactId>
+            	<version>3.4.0</version>
+            	<executions>
+                	<execution>
+                    <id>add-source</id>
+                    <phase>generate-sources</phase>
+                    <goals>
+                        <goal>add-source</goal>
+                    </goals>
+                    <configuration>
+                        <sources>
+                            <source>${project.basedir}/src/generated/java</source>
+                        </sources>
+                    </configuration>
+                	</execution>
+            	</executions>
+        	</plugin>
 
 		</plugins>
 	</build>

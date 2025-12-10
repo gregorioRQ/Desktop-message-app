@@ -27,19 +27,6 @@ message ChatMessage {
   int64 timestamp = 6;
 }
 
-// Solicitud de login
-message LoginRequest {
-  string username = 1;
-  string password = 2;
-}
-
-// Respuesta de login
-message LoginResponse {
-  bool success = 1;
-  string message = 2;
-  string userId = 3;
-}
-
 // Lista de usuarios
 message UserList {
   repeated User users = 1;
@@ -52,12 +39,23 @@ message User {
   bool online = 3;
 }
 
+message AuthMessage{
+  string token = 1;
+}
+
+message AuthResponse{
+  bool success = 1;
+  string message = 2;
+  string userId = 3;
+  string username = 4;
+}
+
 // Wrapper para todos los mensajes
 message WsMessage {
   oneof payload {
     ChatMessage chat_message = 1;
-    LoginRequest login_request = 2;
-    LoginResponse login_response = 3;
-    UserList user_list = 4;
+    UserList user_list = 2;
+    AuthMessage auth_message = 3;
+    AuthResponse auth_response = 4;
   }
 }

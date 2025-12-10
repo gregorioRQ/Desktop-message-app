@@ -9,7 +9,6 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
-import com.basic_chat.chat_service.client.RestClient;
 import com.basic_chat.chat_service.models.Message;
 import com.basic_chat.chat_service.models.MessageDTO;
 import com.basic_chat.chat_service.repository.MessageRepository;
@@ -21,11 +20,9 @@ import jakarta.transaction.Transactional;
 @Service
 public class MessageService {
     private final MessageRepository messageRepository;
-    private final RestClient contactClient;
 
-    public MessageService(MessageRepository messageRepository, RestClient contactClient) {
+    public MessageService(MessageRepository messageRepository) {
         this.messageRepository = messageRepository;
-        this.contactClient = contactClient;
     }
 
     public void saveMessage(MessagesProto.ChatMessage message) {

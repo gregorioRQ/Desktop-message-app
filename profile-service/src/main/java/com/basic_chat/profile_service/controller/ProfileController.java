@@ -68,7 +68,7 @@ public class ProfileController {
         if(response.getSuccess()){
             return ResponseEntity.status(HttpStatus.OK).body(response);
         }else{
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
         }
     }
 }

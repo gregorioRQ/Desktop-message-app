@@ -61,7 +61,7 @@ public class ViewManager {
         }
     }
 
-    public void showChatView(String username) {
+    public void showChatView(String username, String userId, String token) {
         try {
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/fxml/chat.fxml"));
@@ -70,7 +70,7 @@ public class ViewManager {
                     getClass().getResource("/css/styles.css").toExternalForm());
             
             ChatController controller = loader.getController();
-            controller.initialize(username, webSocketService, messageService);
+            controller.initialize(username, userId, token, webSocketService, messageService);
             
             stage.setScene(scene);
         } catch (IOException e) {

@@ -8,6 +8,7 @@ import com.basic_chat.profile_service.exception.UserAlreadyExistsException;
 import java.util.Optional;
 import com.basic_chat.profile_service.models.User;
 import com.basic_chat.profile_service.repository.UserRepository;
+import com.basic_chat.proto.AuthProto.AuthResponse;
 import com.basic_chat.proto.LoginProto.LoginRequest;
 import com.basic_chat.proto.LoginProto.LoginResponse;
 import com.basic_chat.proto.RegisterProto.RegisterRequest;
@@ -24,6 +25,7 @@ public class ProfileServiceImpl implements ProfileService{
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
     @Override
     @Transactional
@@ -99,43 +101,34 @@ public class ProfileServiceImpl implements ProfileService{
 
     @Override
     public LoginResponse login(LoginRequest request) {
-        log.info("Intento de login para el usuario: {}", request.getUsername());
+        String username = request.getUsername();
+        String password = request.getPassword();
 
-        Optional<User> userOptional = userRepository.findByUsername(request.getUsername());
-
-        // 1. Verificar si el usuario existe
-        if (userOptional.isEmpty()) {
-            log.warn("Intento de login para usuario no existente: {}", request.getUsername());
+        Optional<User> userOpt = userRepository.findByUsername(username);
+        if(userOpt.isEmpty()){
             return LoginResponse.newBuilder()
-                    .setSuccess(false)
-                    .setMessage("Usuario o contraseña incorrectos")
-                    .build();
-        }
-
-        User user = userOptional.get();
-
-        // 2. Verificar si la contraseña coincide
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            log.warn("Contraseña incorrecta para el usuario: {}", request.getUsername());
-            return LoginResponse.newBuilder()
-                    .setSuccess(false)
-                    .setMessage("Usuario o contraseña incorrectos")
-                    .build();
-        }
-
-        // 3. Verificar si el usuario está activo
-        if (user.getIsActive() == null || !user.getIsActive()) {
-            log.warn("Intento de login para usuario inactivo: {}", request.getUsername());
-            return LoginResponse.newBuilder()
-                    .setSuccess(false)
-                    .setMessage("La cuenta de usuario está inactiva")
-                    .build();
-        }
-
-        log.info("Login exitoso para el usuario: {}", request.getUsername());
-        return LoginResponse.newBuilder()
-                .setSuccess(true)
-                .setMessage("Login exitoso")
+                .setSuccess(false)
+                .setMessage("Usuario o contraseña incorrectos")
                 .build();
+        }
+
+        User user = userOpt.get();
+
+        if(!passwordEncoder.matches(password, user.getPassword())){
+            return LoginResponse.newBuilder()
+                .setSuccess(false)
+                .setMessage("Usuario o contraseña incorrectos")
+                .build();
+        }
+
+        String token = jwtService.generateToken(user.getId(), user.getUsername());
+        
+        return LoginResponse.newBuilder()
+            .setSuccess(true)
+            .setMessage("Login exitoso")
+            .setUserId(user.getId())
+            .setToken(token)
+            .build();
+
     }
 }

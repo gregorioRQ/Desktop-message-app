@@ -15,7 +15,10 @@ message LoginRequest{
 message LoginResponse{
     bool success = 1;
     string message = 2;
+    string userId = 3;
+    string token = 4;
 }
+
 
 message LoginUser{
     oneof payload{

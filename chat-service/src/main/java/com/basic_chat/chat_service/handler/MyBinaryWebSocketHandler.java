@@ -1,13 +1,18 @@
 package com.basic_chat.chat_service.handler;
 
+import com.basic_chat.chat_service.security.JwtValidator;
 import com.basic_chat.chat_service.service.MessageService;
 import com.basic_chat.chat_service.service.SessionManager;
 import com.basic_chat.proto.MessagesProto;
+import com.basic_chat.proto.MessagesProto.AuthMessage;
+import com.basic_chat.proto.MessagesProto.AuthResponse;
 import com.basic_chat.proto.MessagesProto.ChatMessage;
-import com.basic_chat.proto.MessagesProto.LoginResponse;
 import com.basic_chat.proto.MessagesProto.MessageType;
 import com.basic_chat.proto.MessagesProto.WsMessage;
 
+import io.jsonwebtoken.Claims;
+
+import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties.Jwt;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.BinaryMessage;
 import org.springframework.web.socket.CloseStatus;
@@ -15,6 +20,7 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.AbstractWebSocketHandler;
 
+import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -34,10 +40,12 @@ public class MyBinaryWebSocketHandler extends AbstractWebSocketHandler {
     
     private final SessionManager sessionManager;
     private final MessageService messageService;
+    private final JwtValidator jwtValidator;
 
-    public MyBinaryWebSocketHandler(SessionManager sessionManager, MessageService messageService) {
+    public MyBinaryWebSocketHandler(SessionManager sessionManager, MessageService messageService, JwtValidator jwtValidator) {
         this.sessionManager = sessionManager;
         this.messageService = messageService;
+        this.jwtValidator = jwtValidator;
     }
 
     @Override
@@ -55,44 +63,28 @@ public class MyBinaryWebSocketHandler extends AbstractWebSocketHandler {
             byte[] payload = message.getPayload().array();
             MessagesProto.WsMessage mensajeRecibido = MessagesProto.WsMessage.parseFrom(payload);
 
-            // Formatear timestamp para log
-            LocalDateTime dateTime = LocalDateTime.ofInstant(
-                Instant.ofEpochMilli(mensajeRecibido.getChatMessage().getTimestamp()),
-                ZoneId.systemDefault()
-            );
+            // verificar si el mensaje es de autenticacion
+            if(mensajeRecibido.hasAuthMessage()){
+                handleAuthentication(session, mensajeRecibido.getAuthMessage());
+                return;
+            }
 
-            System.out.println("\n=== Mensaje Recibido ===");
-            System.out.println("Sesión: " + session.getId());
-            System.out.println("Usuario ID: " + mensajeRecibido.getChatMessage().getSender());
-            System.out.println("Contenido: " + mensajeRecibido.getChatMessage().getContent());
-            System.out.println("Tipo: " + mensajeRecibido.getChatMessage().getType().name());
-            System.out.println("Timestamp: " + dateTime.format(formatter));
-            System.out.println("========================\n");
+            // Para otros mensajes, verificar que esté autenticado
+            if(!sessionManager.isAuthenticated(session.getId())){
+                sendAuthError(session, "Debe autenticarse primero");
+                session.close();
+                return;
+            }
 
-            // Procesar según el tipo de mensaje
-            switch (mensajeRecibido.getChatMessage().getType()) {
-                case LOGIN:
-                    handleLogin(session, mensajeRecibido);
-                    break;
-                    
-                case CHAT:
-                    handleChatMessage(session, mensajeRecibido.getChatMessage());
-                    break;
-                    
-                case ALERT:
-                    handleAlert(session, mensajeRecibido.getChatMessage());
-                    break;
-                    
-                default:
-                    System.out.println("Tipo de mensaje desconocido: " + mensajeRecibido.getChatMessage().getType().name());
+            // procesar mensaje normal
+            if(mensajeRecibido.hasChatMessage()){
+                handleChatMessage(session, mensajeRecibido.getChatMessage());
             }
 
         } catch (Exception e) {
             System.err.println("✗ Error procesando mensaje: " + e.getMessage());
             e.printStackTrace();
             
-            // Enviar mensaje de error al cliente
-            sendErrorToClient(session, e.getMessage());
         }
     }
 
@@ -118,35 +110,37 @@ public class MyBinaryWebSocketHandler extends AbstractWebSocketHandler {
         System.err.println("  Error: " + exception.getMessage());
     }
 
-    /* 
-     * Maneja el LOGIN de un usuario
-     */
-    private void handleLogin(WebSocketSession session, WsMessage mensaje) {
-        // se usa el username como si fuera el id.
-        String userId = mensaje.getLoginRequest().getUsername();
-        
-        // Registrar la sesión en el SessionManager
-        sessionManager.registerSession(userId, session);
-        
-        // Enviar mensajes pendientes (no entregados mientras estaba offline)
-        //messageService.sendPendingMessages(userId);
-        
-        // Enviar confirmación de login
-        LoginResponse respuesta = LoginResponse.newBuilder()
+    private void handleAuthentication(WebSocketSession session, AuthMessage authMessage){
+        try{
+            String token = authMessage.getToken();
+
+            Claims claims = jwtValidator.validateToken(token);
+            String userId = jwtValidator.getUserId(claims);
+            String username = jwtValidator.getUsername(claims);
+
+            // registrar sesión
+            sessionManager.registerSession(session.getId(), userId, username, session);
+
+            AuthResponse response = AuthResponse.newBuilder()
                 .setSuccess(true)
-                .setMessage("Bienvenido " + userId + ". Tienes " + 
-                              sessionManager.getOnlineUserCount() + " usuarios online.")
-                .setUserId("SERVIDOR")
+                .setMessage("Autenticación exitosa")
+                .setUserId(userId)
+                .setUsername(username) 
                 .build();
-        
-        try {
-            session.sendMessage(new BinaryMessage(Objects.requireNonNull(respuesta.toByteArray())));
-        } catch (Exception e) {
-            System.err.println("Error enviando confirmación de login: " + e.getMessage());
+
+            WsMessage wsResponse = WsMessage.newBuilder()
+                .setAuthResponse(response)
+                .build();
+
+            session.sendMessage(new BinaryMessage(wsResponse.toByteArray()));
+        }catch(Exception e){
+            sendAuthError(session, "Token inválido o expirado");
+            try {
+                session.close();
+            } catch (IOException ex) {
+               
+            }
         }
-        
-        // Notificar a otros usuarios (opcional)
-        //notifyUserStatus(userId, true);
     }
 
     /**
@@ -202,16 +196,18 @@ public class MyBinaryWebSocketHandler extends AbstractWebSocketHandler {
     /**
      * Envía un mensaje de error al cliente
      */
-    private void sendErrorToClient(WebSocketSession session, String errorMessage) {
+    private void sendAuthError(WebSocketSession session, String errorMessage) {
         try {
-            ChatMessage error = ChatMessage.newBuilder()
-                    .setSender("SISTEMA")
-                    .setContent("ERROR: " + errorMessage)
-                    .setTimestamp(System.currentTimeMillis())
-                    .setType(MessageType.ALERT)
-                    .build();
+            AuthResponse response = AuthResponse.newBuilder()
+                .setSuccess(false)
+                .setMessage(errorMessage)
+                .build();
+
+            WsMessage wsResponse = WsMessage.newBuilder()
+                .setAuthResponse(response)
+                .build();
             
-            session.sendMessage(new BinaryMessage(Objects.requireNonNull(error.toByteArray())));
+            session.sendMessage(new BinaryMessage(Objects.requireNonNull(wsResponse.toByteArray())));
         } catch (Exception e) {
             System.err.println("Error enviando mensaje de error: " + e.getMessage());
         }

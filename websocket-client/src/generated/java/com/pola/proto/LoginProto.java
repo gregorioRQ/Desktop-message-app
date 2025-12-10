@@ -744,6 +744,30 @@ public final class LoginProto {
      */
     com.google.protobuf.ByteString
         getMessageBytes();
+
+    /**
+     * <code>string userId = 3;</code>
+     * @return The userId.
+     */
+    java.lang.String getUserId();
+    /**
+     * <code>string userId = 3;</code>
+     * @return The bytes for userId.
+     */
+    com.google.protobuf.ByteString
+        getUserIdBytes();
+
+    /**
+     * <code>string token = 4;</code>
+     * @return The token.
+     */
+    java.lang.String getToken();
+    /**
+     * <code>string token = 4;</code>
+     * @return The bytes for token.
+     */
+    com.google.protobuf.ByteString
+        getTokenBytes();
   }
   /**
    * <pre>
@@ -763,6 +787,8 @@ public final class LoginProto {
     }
     private LoginResponse() {
       message_ = "";
+      userId_ = "";
+      token_ = "";
     }
 
     @java.lang.Override
@@ -835,6 +861,84 @@ public final class LoginProto {
       }
     }
 
+    public static final int USERID_FIELD_NUMBER = 3;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object userId_ = "";
+    /**
+     * <code>string userId = 3;</code>
+     * @return The userId.
+     */
+    @java.lang.Override
+    public java.lang.String getUserId() {
+      java.lang.Object ref = userId_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        userId_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string userId = 3;</code>
+     * @return The bytes for userId.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getUserIdBytes() {
+      java.lang.Object ref = userId_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        userId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int TOKEN_FIELD_NUMBER = 4;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object token_ = "";
+    /**
+     * <code>string token = 4;</code>
+     * @return The token.
+     */
+    @java.lang.Override
+    public java.lang.String getToken() {
+      java.lang.Object ref = token_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        token_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string token = 4;</code>
+     * @return The bytes for token.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getTokenBytes() {
+      java.lang.Object ref = token_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        token_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -855,6 +959,12 @@ public final class LoginProto {
       if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(message_)) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 2, message_);
       }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(userId_)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, userId_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(token_)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 4, token_);
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -870,6 +980,12 @@ public final class LoginProto {
       }
       if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(message_)) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, message_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(userId_)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, userId_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(token_)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, token_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -890,6 +1006,10 @@ public final class LoginProto {
           != other.getSuccess()) return false;
       if (!getMessage()
           .equals(other.getMessage())) return false;
+      if (!getUserId()
+          .equals(other.getUserId())) return false;
+      if (!getToken()
+          .equals(other.getToken())) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -906,6 +1026,10 @@ public final class LoginProto {
           getSuccess());
       hash = (37 * hash) + MESSAGE_FIELD_NUMBER;
       hash = (53 * hash) + getMessage().hashCode();
+      hash = (37 * hash) + USERID_FIELD_NUMBER;
+      hash = (53 * hash) + getUserId().hashCode();
+      hash = (37 * hash) + TOKEN_FIELD_NUMBER;
+      hash = (53 * hash) + getToken().hashCode();
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -1043,6 +1167,8 @@ public final class LoginProto {
         bitField0_ = 0;
         success_ = false;
         message_ = "";
+        userId_ = "";
+        token_ = "";
         return this;
       }
 
@@ -1081,6 +1207,12 @@ public final class LoginProto {
         }
         if (((from_bitField0_ & 0x00000002) != 0)) {
           result.message_ = message_;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.userId_ = userId_;
+        }
+        if (((from_bitField0_ & 0x00000008) != 0)) {
+          result.token_ = token_;
         }
       }
 
@@ -1136,6 +1268,16 @@ public final class LoginProto {
           bitField0_ |= 0x00000002;
           onChanged();
         }
+        if (!other.getUserId().isEmpty()) {
+          userId_ = other.userId_;
+          bitField0_ |= 0x00000004;
+          onChanged();
+        }
+        if (!other.getToken().isEmpty()) {
+          token_ = other.token_;
+          bitField0_ |= 0x00000008;
+          onChanged();
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -1172,6 +1314,16 @@ public final class LoginProto {
                 bitField0_ |= 0x00000002;
                 break;
               } // case 18
+              case 26: {
+                userId_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 26
+              case 34: {
+                token_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000008;
+                break;
+              } // case 34
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -1289,6 +1441,150 @@ public final class LoginProto {
         checkByteStringIsUtf8(value);
         message_ = value;
         bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object userId_ = "";
+      /**
+       * <code>string userId = 3;</code>
+       * @return The userId.
+       */
+      public java.lang.String getUserId() {
+        java.lang.Object ref = userId_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          userId_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string userId = 3;</code>
+       * @return The bytes for userId.
+       */
+      public com.google.protobuf.ByteString
+          getUserIdBytes() {
+        java.lang.Object ref = userId_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          userId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string userId = 3;</code>
+       * @param value The userId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setUserId(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        userId_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string userId = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearUserId() {
+        userId_ = getDefaultInstance().getUserId();
+        bitField0_ = (bitField0_ & ~0x00000004);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string userId = 3;</code>
+       * @param value The bytes for userId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setUserIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        userId_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object token_ = "";
+      /**
+       * <code>string token = 4;</code>
+       * @return The token.
+       */
+      public java.lang.String getToken() {
+        java.lang.Object ref = token_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          token_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string token = 4;</code>
+       * @return The bytes for token.
+       */
+      public com.google.protobuf.ByteString
+          getTokenBytes() {
+        java.lang.Object ref = token_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          token_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string token = 4;</code>
+       * @param value The token to set.
+       * @return This builder for chaining.
+       */
+      public Builder setToken(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        token_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string token = 4;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearToken() {
+        token_ = getDefaultInstance().getToken();
+        bitField0_ = (bitField0_ & ~0x00000008);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string token = 4;</code>
+       * @param value The bytes for token to set.
+       * @return This builder for chaining.
+       */
+      public Builder setTokenBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        token_ = value;
+        bitField0_ |= 0x00000008;
         onChanged();
         return this;
       }
@@ -2308,13 +2604,14 @@ public final class LoginProto {
   static {
     java.lang.String[] descriptorData = {
       "\n\013login.proto\022\010com.pola\"2\n\014LoginRequest\022" +
-      "\020\n\010username\030\001 \001(\t\022\020\n\010password\030\002 \001(\t\"1\n\rL" +
+      "\020\n\010username\030\001 \001(\t\022\020\n\010password\030\002 \001(\t\"P\n\rL" +
       "oginResponse\022\017\n\007success\030\001 \001(\010\022\017\n\007message" +
-      "\030\002 \001(\t\"\200\001\n\tLoginUser\0222\n\020register_request" +
-      "\030\001 \001(\0132\026.com.pola.LoginRequestH\000\0224\n\021regi" +
-      "ster_response\030\002 \001(\0132\027.com.pola.LoginResp" +
-      "onseH\000B\t\n\007payloadB\034\n\016com.pola.protoB\nLog" +
-      "inProtob\006proto3"
+      "\030\002 \001(\t\022\016\n\006userId\030\003 \001(\t\022\r\n\005token\030\004 \001(\t\"\200\001" +
+      "\n\tLoginUser\0222\n\020register_request\030\001 \001(\0132\026." +
+      "com.pola.LoginRequestH\000\0224\n\021register_resp" +
+      "onse\030\002 \001(\0132\027.com.pola.LoginResponseH\000B\t\n" +
+      "\007payloadB\034\n\016com.pola.protoB\nLoginProtob\006" +
+      "proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -2331,7 +2628,7 @@ public final class LoginProto {
     internal_static_com_pola_LoginResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_pola_LoginResponse_descriptor,
-        new java.lang.String[] { "Success", "Message", });
+        new java.lang.String[] { "Success", "Message", "UserId", "Token", });
     internal_static_com_pola_LoginUser_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_com_pola_LoginUser_fieldAccessorTable = new
