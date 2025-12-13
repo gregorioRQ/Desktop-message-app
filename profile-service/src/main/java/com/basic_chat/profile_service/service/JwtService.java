@@ -26,6 +26,7 @@ public class JwtService {
         this.key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
     }
     // Constructor para usar la clave desde la configuracion.
+    /* 
     public JwtService(@Value("${jwt.secret}") String secretKey){
         if(secretKey.isEmpty()){
             // Usar clave por defecto si no está configurada.
@@ -33,7 +34,7 @@ public class JwtService {
         }else{
             this.key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
         }
-    }
+    }*/
     
     // Genera un token
     public String generateToken(String userId, String username) {

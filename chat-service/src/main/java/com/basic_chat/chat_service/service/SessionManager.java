@@ -3,6 +3,10 @@ package com.basic_chat.chat_service.service;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.WebSocketSession;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -14,111 +18,90 @@ import java.util.stream.Collectors;
  * Mapea userId -> WebSocketSession para envío directo de mensajes.
  */
 @Service
+@Slf4j
 public class SessionManager {
-    // userId -> WebSocketSession
-    private final Map<String, WebSocketSession> userSessions = new ConcurrentHashMap<>();
+    // Sesiones autenticadas.
+    private final Map<String, SessionInfo> authenticatedSessions = new ConcurrentHashMap<>();
     
-    // sessionId -> userId (para lookup inverso)
-    private final Map<String, String> sessionToUser = new ConcurrentHashMap<>();
+    // Sessiones pendientes a autenticar.
+    private final Map<String, Long> pendingAuthentication = new ConcurrentHashMap<>();
+
+    // Usuarios online 
+    private final Map<String, String> usersOnline = new ConcurrentHashMap<>();
+
+    // ventana de tiempo para la autencicacion
+    private static final long AUTH_TIMEOUT_MS = 5000; // 5 segs
 
     /**
      * Registra una nueva sesión cuando un usuario se conecta
      */
-    public void registerSession(String userId, String sessionId, String  username,WebSocketSession session) {
-        // Remover sesión anterior si existe (usuario reconectándose)
-        removeUserSession(userId);
-        
-        userSessions.put(userId, session);
-        sessionToUser.put(session.getId(), userId);
-        
-        System.out.println("✓ Usuario registrado: " + userId + " (Session: " + session.getId() + ")");
-        System.out.println("  Total usuarios online: " + userSessions.size());
+    public void  registerPendingConnection(String sessionId){
+        pendingAuthentication.put(sessionId, System.currentTimeMillis());
+        log.debug("Concexion pendiente de autenticacion: {}", sessionId);
+    }
+
+    // Completar la autenticacion de una sesion.
+    public void authenticateSession(String sessionId, String userId, String username, WebSocketSession wSession){
+        // Remover de pendientes
+        pendingAuthentication.remove(sessionId);
+
+        // Agregar a autenticadas
+        SessionInfo info = new SessionInfo(userId, username, wSession);
+        authenticatedSessions.put(sessionId, info);
+
+        // Agregar a usuarios en linea
+        usersOnline.put(userId, username);
+
+        log.info("Sesion autenticada: {} - Usuario: {} ({})", sessionId, username);
     }
 
     public boolean isAuthenticated(String sessionId){
-        return sessionToUser.containsKey(sessionId);
+        return authenticatedSessions.containsKey(sessionId);
+    }
+
+    // Verifica si una sesion esta pendiente de autenticacion
+    public boolean isPendingAuthentication(String sessionId){
+        return pendingAuthentication.containsKey(sessionId);
+    }
+
+    // Verifica si la ventana para autenticacion expiro
+    public boolean hasAuthenticationExpired(String sessionId){
+        Long connectionTime = pendingAuthentication.get(sessionId);
+        if(connectionTime == null){
+            return false;
+        }
+        long elapsed = System.currentTimeMillis() - connectionTime;
+        return elapsed > AUTH_TIMEOUT_MS;
     }
 
      /**
-     * Remueve una sesión cuando se desconecta
+     * Remueve una sesión autenticada o pendiente
      */
     public void removeSession(String sessionId) {
-        String userId = sessionToUser.remove(sessionId);
-        if (userId != null) {
-            userSessions.remove(userId);
-            System.out.println("✗ Usuario desconectado: " + userId);
-            System.out.println("  Total usuarios online: " + userSessions.size());
+        SessionInfo removed = authenticatedSessions.remove(sessionId);
+        pendingAuthentication.remove(sessionId);
+
+        if (removed != null) {
+           log.info("Sesion removida: {} - Usuario: {}", sessionId, removed.getUsername());
+        }else{
+            log.debug("Sesion pendiente removida: {}", sessionId);
         }
     }
 
-    /**
-     * Remueve todas las sesiones de un usuario
-     */
-    public void removeUserSession(String userId) {
-        WebSocketSession oldSession = userSessions.remove(userId);
-        if (oldSession != null) {
-            sessionToUser.remove(oldSession.getId());
-        }
+    public SessionInfo getSessionInfo(String sessionId){
+        return authenticatedSessions.get(sessionId);
     }
 
-    /**
-     * Verifica si un usuario está online
-     */
-    public boolean isUserOnline(String userId) {
-        WebSocketSession session = userSessions.get(userId);
-        return session != null && session.isOpen();
+    public boolean isUserOnline(String userId){
+        return usersOnline.containsKey(userId);
     }
 
-    /**
-     * Obtiene la sesión de un usuario si está online
-     */
-    public Optional<WebSocketSession> getUserSession(String userId) {
-        WebSocketSession session = userSessions.get(userId);
-        if (session != null && session.isOpen()) {
-            return Optional.of(session);
-        }
-        return Optional.empty();
-    }
-
-    /**
-     * Obtiene el userId asociado a una sesión
-     */
-    public Optional<String> getUserId(String sessionId) {
-        return Optional.ofNullable(sessionToUser.get(sessionId));
-    }
-
-    /**
-     * Obtiene lista de usuarios online
-     */
-    public Set<String> getOnlineUsers() {
-        return userSessions.keySet().stream()
-                .filter(this::isUserOnline)
-                .collect(Collectors.toSet());
-    }
-
-    /**
-     * Obtiene todas las sesiones activas (para broadcast)
-     */
-    public Map<String, WebSocketSession> getAllSessions() {
-        return new ConcurrentHashMap<>(userSessions);
-    }
-
-    /**
-     * Cuenta de usuarios online
-     */
-    public int getOnlineUserCount() {
-        return (int) userSessions.values().stream()
-                .filter(WebSocketSession::isOpen)
-                .count();
-    }
-
-    /**
-     * Limpia sesiones cerradas
-     */
-    public void cleanupClosedSessions() {
-        userSessions.entrySet().removeIf(entry -> !entry.getValue().isOpen());
-        sessionToUser.entrySet().removeIf(entry -> 
-            !userSessions.containsKey(sessionToUser.get(entry.getKey())));
+    @Data
+    @AllArgsConstructor
+    public static class SessionInfo{
+        private String userId;
+        private String username;
+        private WebSocketSession wsSession;
     }
 
 }

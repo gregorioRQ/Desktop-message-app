@@ -15,7 +15,7 @@ import io.jsonwebtoken.security.Keys;
 @Component
 public class JwtValidator {
     // IMPORTANTE: Debe ser la MISMA clave que en profile-service
-    private static final String SECRET_KEY = "your-super-secret-key-at-least-256-bits-long-change-in-production";
+    private static final String SECRET_KEY = "your-256-bit-secret-key-here-change-in-production";
     
     private final SecretKey key;
     
@@ -25,14 +25,14 @@ public class JwtValidator {
     
     /**
      * Constructor alternativo para usar clave desde configuración
-     */
+     
     public JwtValidator(@Value("${jwt.secret:}") String secretKey) {
         if (secretKey.isEmpty()) {
             this.key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
         } else {
             this.key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
         }
-    }
+    }*/
     
     /**
      * Valida un token JWT y retorna los claims

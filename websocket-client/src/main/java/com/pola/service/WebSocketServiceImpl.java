@@ -8,6 +8,7 @@ import java.util.function.Consumer;
 import org.glassfish.tyrus.client.ClientManager;
 
 import com.pola.config.WebSocketConfig;
+import com.pola.proto.MessagesProto.AuthResponse;
 import com.pola.proto.MessagesProto.WsMessage;
 
 import jakarta.websocket.ClientEndpoint;
@@ -90,6 +91,21 @@ public class WebSocketServiceImpl implements WebSocketService{
             buffer.get(data);
             WsMessage message = WsMessage.parseFrom(data);
             
+            // Verificar si es respuesta de autenticacion
+            if(message.hasAuthResponse()){
+                AuthResponse authResponse = message.getAuthResponse();
+                if(authResponse.getSuccess()){
+                    System.out.println("Autenticacion exitosa: " + authResponse.getUserId());
+                    notifyConnectionChange(true);
+                }else{
+                    System.err.println("Error de autenticacion: " + authResponse.getMessage());
+                    notifyError(new Exception("Auth failed: " + authResponse.getMessage()));
+                    disconnect();
+                }
+                return;
+            }
+
+
             if (messageListener != null) {
                 messageListener.accept(message);
             }
@@ -100,7 +116,7 @@ public class WebSocketServiceImpl implements WebSocketService{
     
     @OnClose
     public void onClose(Session session, CloseReason closeReason) {
-        System.out.println("Conexión WebSocket cerrada: " + closeReason);
+        System.out.println("Conexión WebSocket cerrada: " + closeReason.getReasonPhrase());
         notifyConnectionChange(false);
     }
     

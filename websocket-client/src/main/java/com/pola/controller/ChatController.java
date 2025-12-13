@@ -129,8 +129,10 @@ public class ChatController {
             try {
                 webSocketService.connect();
 
+                Thread.sleep(100);
+
                 // enviar el mensaje de autenticacion cuando se conecta
-                Platform.runLater(()-> sendAuthMessage());
+               Platform.runLater(()-> sendAuthMessage());
             } catch (Exception e) {
                 Platform.runLater(() -> {
                     statusLabel.setText("Error al conectar: " + e.getMessage());
@@ -142,6 +144,15 @@ public class ChatController {
 
     private void sendAuthMessage(){
         try{
+            if(authToken == null || authToken.isEmpty()){
+                statusLabel.setText("Error: Token no disponible");
+                statusLabel.setStyle("-fx-text-fill: red");
+                return;
+            }
+
+            statusLabel.setText("Autenticando...");
+            statusLabel.setStyle("-fx-text-fill: blue");
+
             AuthMessage authMessage = AuthMessage.newBuilder()
                 .setToken(authToken)
                 .build();
@@ -152,8 +163,9 @@ public class ChatController {
 
             // envia el token a chat-service
             webSocketService.sendMessage(wsMessage);
+            System.out.println("Mensaje de autenticacion enviado");
         }catch(Exception e){
-            statusLabel.setText("Error en la autenticación");
+            statusLabel.setText("Error en la autenticación: " + e.getMessage());
         }
     }
     

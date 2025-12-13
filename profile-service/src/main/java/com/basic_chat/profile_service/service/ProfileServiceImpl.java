@@ -121,6 +121,7 @@ public class ProfileServiceImpl implements ProfileService{
                 .build();
         }
 
+        // Generar el token y añadirlo a la respuesta.
         String token = jwtService.generateToken(user.getId(), user.getUsername());
         
         return LoginResponse.newBuilder()

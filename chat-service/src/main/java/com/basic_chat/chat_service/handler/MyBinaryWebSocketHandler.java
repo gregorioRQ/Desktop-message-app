@@ -11,6 +11,7 @@ import com.basic_chat.proto.MessagesProto.MessageType;
 import com.basic_chat.proto.MessagesProto.WsMessage;
 
 import io.jsonwebtoken.Claims;
+import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties.Jwt;
 import org.springframework.stereotype.Component;
@@ -33,6 +34,7 @@ import java.util.Objects;
  * ya que es mas sencillo de implementar.
  */
 @Component
+@Slf4j
 public class MyBinaryWebSocketHandler extends AbstractWebSocketHandler {
 
     private static final DateTimeFormatter formatter = 
@@ -52,26 +54,44 @@ public class MyBinaryWebSocketHandler extends AbstractWebSocketHandler {
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         System.out.println("\n ** Nueva conexión WebSocket: " + session.getId());
         
-        // Nota: El userId se establecerá cuando el cliente envíe su primer mensaje LOGIN
-        // Por ahora solo registramos la sesión
+        sessionManager.registerPendingConnection(session.getId());
     }
 
     @Override
     protected void handleBinaryMessage(WebSocketSession session, BinaryMessage message) throws Exception {
         try {
             // Deserializar mensaje Protobuf
+            String sessionId = session.getId();
             byte[] payload = message.getPayload().array();
             MessagesProto.WsMessage mensajeRecibido = MessagesProto.WsMessage.parseFrom(payload);
 
             // verificar si el mensaje es de autenticacion
             if(mensajeRecibido.hasAuthMessage()){
+                log.info("Mensaje de autenticación recibido");
                 handleAuthentication(session, mensajeRecibido.getAuthMessage());
                 return;
             }
 
-            // Para otros mensajes, verificar que esté autenticado
-            if(!sessionManager.isAuthenticated(session.getId())){
-                sendAuthError(session, "Debe autenticarse primero");
+            // verificar si esta autenticado
+            if(!sessionManager.isAuthenticated(sessionId)){
+                //Si esta pendiente y no ha expirado, recordar que debe autenticarse
+                if(sessionManager.isPendingAuthentication(sessionId)){
+                    // verifica si la ventana de auth expiro.
+                    if(sessionManager.hasAuthenticationExpired(sessionId)){
+                        log.warn("Tiempo de autenticacion expirado para la sesion: {}", sessionId);
+                        sendAuthError(session, "Tiempo de autenticacion expirado");
+                        session.close();
+                        sessionManager.removeSession(sessionId);
+                        return;
+                    }
+                    // Aun  queda tiempo para autenticarse.
+                    sendAuthError(session, "La ventana para autenticarse aun no expiro");
+                    return;
+                }
+
+                // No esta ni autenticado ni pendiente
+                log.warn("Intento de enviar mensaje sin autenticacion: {}", sessionId);
+                sendAuthError(session, "No autenticado");
                 session.close();
                 return;
             }
@@ -82,8 +102,13 @@ public class MyBinaryWebSocketHandler extends AbstractWebSocketHandler {
             }
 
         } catch (Exception e) {
-            System.err.println("✗ Error procesando mensaje: " + e.getMessage());
+            System.err.println("Error procesando mensaje: " + e.getMessage());
             e.printStackTrace();
+            try{
+                session.close();
+            }catch(IOException ex){
+                log.error("Error al cerrar la sesion", ex);
+            }
             
         }
     }
@@ -101,7 +126,7 @@ public class MyBinaryWebSocketHandler extends AbstractWebSocketHandler {
         
         System.out.println("\n✗ Conexión cerrada: " + session.getId());
         System.out.println("  Razón: " + status);
-        System.out.println("  Usuarios online: " + sessionManager.getOnlineUserCount());
+  
     }
 
     @Override
@@ -111,15 +136,24 @@ public class MyBinaryWebSocketHandler extends AbstractWebSocketHandler {
     }
 
     private void handleAuthentication(WebSocketSession session, AuthMessage authMessage){
+
+        String sessionId = session.getId();
         try{
+
             String token = authMessage.getToken();
+
+            if(token == null || token.isEmpty()){
+                log.warn("Token vacio recibido de sesion: {}", sessionId);
+                sendAuthError(session, "Token requerido");
+                return;
+            }
 
             Claims claims = jwtValidator.validateToken(token);
             String userId = jwtValidator.getUserId(claims);
             String username = jwtValidator.getUsername(claims);
 
             // registrar sesión
-            sessionManager.registerSession(session.getId(), userId, username, session);
+            sessionManager.authenticateSession(sessionId, userId, username, session);
 
             AuthResponse response = AuthResponse.newBuilder()
                 .setSuccess(true)
@@ -133,6 +167,7 @@ public class MyBinaryWebSocketHandler extends AbstractWebSocketHandler {
                 .build();
 
             session.sendMessage(new BinaryMessage(wsResponse.toByteArray()));
+            log.info("Usuario autenticado: {} ({})", username, userId);
         }catch(Exception e){
             sendAuthError(session, "Token inválido o expirado");
             try {
@@ -215,7 +250,7 @@ public class MyBinaryWebSocketHandler extends AbstractWebSocketHandler {
 
     /**
      * Notifica a otros usuarios sobre el cambio de estado (online/offline)
-     */
+     
     private void notifyUserStatus(String userId, boolean isOnline) {
         String status = isOnline ? "online" : "offline";
         
@@ -236,5 +271,5 @@ public class MyBinaryWebSocketHandler extends AbstractWebSocketHandler {
                 }
             }
         });
-    }
+    }*/
 }
