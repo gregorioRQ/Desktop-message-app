@@ -3,6 +3,7 @@ package com.pola.controller;
 import com.pola.model.Message;
 import com.pola.proto.MessagesProto.AuthMessage;
 import com.pola.proto.MessagesProto.WsMessage;
+import com.pola.service.ContactService;
 import com.pola.service.MessageService;
 import com.pola.service.WebSocketService;
 
@@ -87,12 +88,12 @@ public class ChatController {
     private void setupListeners() {
         // Vincular lista de mensajes con el servicio
         messageService.getMessages().addListener(
-            (javafx.collections.ListChangeListener.Change<? extends Message> change) -> {
+            (javafx.collections.ListChangeListener.Change<? extends com.pola.model.ChatMessage> change) -> {
                 while (change.next()) {
                     if (change.wasAdded()) {
-                        for (Message msg : change.getAddedSubList()) {
+                        for (com.pola.model.ChatMessage msg : change.getAddedSubList()) {
                             Platform.runLater(() -> 
-                                messageListView.getItems().add(msg.getDisplayText())
+                                messageListView.getItems().add(msg.getDisplayText(currentUserId))
                             );
                         }
                     }
@@ -103,9 +104,9 @@ public class ChatController {
     
     private void setupWebSocketListeners() {
         // Listener de mensajes
-        /*webSocketService.setMessageListener(wsMessage -> {
+        webSocketService.setMessageListener(wsMessage -> {
             messageService.processReceivedMessage(wsMessage);
-        });*/
+        });
         
         // Listener de conexión
         webSocketService.setConnectionListener(connected -> {
@@ -129,7 +130,7 @@ public class ChatController {
             try {
                 webSocketService.connect();
 
-                Thread.sleep(100);
+                Thread.sleep(200);
 
                 // enviar el mensaje de autenticacion cuando se conecta
                Platform.runLater(()-> sendAuthMessage());
@@ -187,7 +188,7 @@ public class ChatController {
         }
         
         try {
-            messageService.sendTextMessage(content, currentUsername, "all");
+            messageService.sendTextMessage(content);
             messageInput.clear();
         } catch (Exception e) {
             statusLabel.setText("Error al enviar: " + e.getMessage());
