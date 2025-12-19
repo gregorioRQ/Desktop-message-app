@@ -41,12 +41,12 @@ public class DatabaseManager {
                 CREATE TABLE IF NOT EXISTS contacts (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     user_id TEXT NOT NULL,
-                    contact_user_id TEXT NOT NULL,
                     contact_username TEXT NOT NULL,
+                    contact_nickname TEXT,
                     is_blocked INTEGER DEFAULT 0,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    UNIQUE(user_id, contact_user_id)
+                    UNIQUE(user_id, contact_username)
                 )
                 """;
             

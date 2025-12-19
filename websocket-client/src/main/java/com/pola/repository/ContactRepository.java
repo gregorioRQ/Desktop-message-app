@@ -24,14 +24,14 @@ public class ContactRepository {
     // Crear un nuevo contacto
     public Contact create(Contact contact) throws SQLException{
         String sql = """
-                INSERT INTO contacts (user_id, contact_user_id, contact_username, is_blocked) VALUES (?, ?, ?, ?)
+                INSERT INTO contacts (user_id, contact_username, contact_nickname, is_blocked) VALUES (?, ?, ?, ?)
                 """;
 
         try(Connection conn = dbManager.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)){
+            PreparedStatement stmt = conn.prepareStatement(sql)){
                 stmt.setString(1, contact.getUserId());
-                stmt.setString(2, contact.getContactUserId());
-                stmt.setString(3, contact.getContactUsername());
+                stmt.setString(2, contact.getContactUsername());
+                stmt.setString(3, contact.getContactNickname());
                 stmt.setInt(4, contact.isBlocked() ? 1 : 0);
 
                 int affectedRows = stmt.executeUpdate();
@@ -40,9 +40,12 @@ public class ContactRepository {
                     throw new SQLException("Fallo al crear el contacto");
                 }
 
-                try(ResultSet generatedKeys = stmt.getGeneratedKeys()){
-                    if(generatedKeys.next()){
-                        contact.setId(generatedKeys.getInt(1));
+                // Obtener el ID generado usando last_insert_rowid()
+                String idQuery = "SELECT last_insert_rowid() as id";
+                try(Statement idStmt = conn.createStatement();
+                    ResultSet rs = idStmt.executeQuery(idQuery)){
+                    if(rs.next()){
+                        contact.setId(rs.getInt("id"));
                     }
                 }
                 System.out.println("Contacto creado");
@@ -54,7 +57,7 @@ public class ContactRepository {
     // Obtener todos los contactos de un usuario
     public List<Contact> findByUserId(String userId) throws SQLException{
         String sql = """
-                SELECT id, user_id, contact_user_id, contact_username,
+                SELECT id, user_id, contact_username,contact_nickname,
                 is_blocked, created_at, updated_at FROM contacts WHERE user_id = ?
                 AND is_blocked = 0 ORDER BY contact_username ASC
                 """;
@@ -77,7 +80,7 @@ public class ContactRepository {
      */
     public Optional<Contact> findById(int id) throws SQLException {
         String sql = """
-            SELECT id, user_id, contact_user_id, contact_username, 
+            SELECT id, user_id, contact_username, contact_nickname, 
                    is_blocked, created_at, updated_at
             FROM contacts
             WHERE id = ?
@@ -101,20 +104,20 @@ public class ContactRepository {
     /**
      * Busca un contacto por userId y contactUserId
      */
-    public Optional<Contact> findByUserIdAndContactUserId(String userId, String contactUserId) 
+    public Optional<Contact> findByUserIdAndContactUsername(String userId, String contactUsername) 
             throws SQLException {
         String sql = """
-            SELECT id, user_id, contact_user_id, contact_username, 
+            SELECT id, user_id, contact_username, contact_nickname,
                    is_blocked, created_at, updated_at
             FROM contacts
-            WHERE user_id = ? AND contact_user_id = ?
+            WHERE user_id = ? AND contact_username = ?
             """;
         
         try (Connection conn = dbManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setString(1, userId);
-            stmt.setString(2, contactUserId);
+            stmt.setString(2, contactUsername);
             
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
@@ -140,8 +143,9 @@ public class ContactRepository {
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setString(1, contact.getContactUsername());
-            stmt.setInt(2, contact.isBlocked() ? 1 : 0);
-            stmt.setInt(3, contact.getId());
+            stmt.setString(2, contact.getContactNickname());
+            stmt.setInt(3, contact.isBlocked() ? 1 : 0);
+            stmt.setInt(4, contact.getId());
             
             stmt.executeUpdate();
             System.out.println("Contacto actualizado: " + contact.getContactUsername());
@@ -170,8 +174,8 @@ public class ContactRepository {
         return new Contact(
             rs.getInt("id"),
             rs.getString("user_id"),
-            rs.getString("contact_user_id"),
             rs.getString("contact_username"),
+            rs.getString("contact_nickname"),
             rs.getInt("is_blocked") == 1,
             rs.getTimestamp("created_at").toLocalDateTime(),
             rs.getTimestamp("updated_at").toLocalDateTime()

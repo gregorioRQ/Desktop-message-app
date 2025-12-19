@@ -33,17 +33,17 @@ public class ContactService {
     /**
      * Agrega un nuevo contacto
      */
-    public Contact addContact(String userId, String contactUserId, String contactUsername) {
+    public Contact addContact(String userId, String contactUsername, String nickname) {
         try {
             // Verificar si ya existe
-            Optional<Contact> existing = contactRepository.findByUserIdAndContactUserId(userId, contactUserId);
+            Optional<Contact> existing = contactRepository.findByUserIdAndContactUsername(userId, contactUsername);
             if (existing.isPresent()) {
                 System.out.println("El contacto ya existe: " + contactUsername);
                 return existing.get();
             }
             
             // Crear nuevo contacto
-            Contact contact = new Contact(userId, contactUserId, contactUsername);
+            Contact contact = new Contact(userId, contactUsername, nickname);
             Contact created = contactRepository.create(contact);
             
             // Agregar a la lista observable
@@ -53,7 +53,7 @@ public class ContactService {
             return created;
             
         } catch (SQLException e) {
-            System.err.println("Error agregando contacto: " + e.getMessage());
+            System.err.println("Error agregando contacto: " + e.getMessage() + e.getLocalizedMessage());
             e.printStackTrace();
             return null;
         }
@@ -104,11 +104,11 @@ public class ContactService {
     }
     
     /**
-     * Busca un contacto por contactUserId
+     * Busca un contacto por contactUsername
      */
-    public Optional<Contact> findContactByUserId(String userId, String contactUserId) {
+    public Optional<Contact> findContactByUsername(String userId, String contactUsername) {
         try {
-            return contactRepository.findByUserIdAndContactUserId(userId, contactUserId);
+            return contactRepository.findByUserIdAndContactUsername(userId, contactUsername);
         } catch (SQLException e) {
             System.err.println("Error buscando contacto: " + e.getMessage());
             e.printStackTrace();

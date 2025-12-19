@@ -2,9 +2,11 @@ package com.pola.view;
 
 import java.io.IOException;
 
+import com.pola.controller.AddContactController;
 import com.pola.controller.ChatController;
 import com.pola.controller.LoginController;
 import com.pola.controller.RegisterController;
+import com.pola.service.ContactService;
 import com.pola.service.HttpService;
 import com.pola.service.HttpServiceImpl;
 import com.pola.service.MessageService;
@@ -24,12 +26,14 @@ public class ViewManager {
     private final WebSocketService webSocketService;
     private final MessageService messageService;
     private final HttpService httpService;
+    private final ContactService contactService;
     
     public ViewManager(Stage stage) {
         this.stage = stage;
         this.webSocketService = new WebSocketServiceImpl();
         this.messageService = new MessageService(webSocketService);
         this.httpService = new HttpServiceImpl();
+        this.contactService = new ContactService();
         configureStage();
     }
     
@@ -70,7 +74,11 @@ public class ViewManager {
                     getClass().getResource("/css/styles.css").toExternalForm());
             
             ChatController controller = loader.getController();
-            controller.initialize(username, userId, token, webSocketService, messageService);
+            controller.setWebSocketService(webSocketService);
+            controller.setMessageService(messageService);
+            controller.setContactService(contactService);
+            controller.setViewManager(this);
+            controller.initialize(username, userId, token);
             
             stage.setScene(scene);
         } catch (IOException e) {

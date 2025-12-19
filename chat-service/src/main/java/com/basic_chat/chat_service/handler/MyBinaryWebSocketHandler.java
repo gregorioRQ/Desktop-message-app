@@ -22,9 +22,6 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.AbstractWebSocketHandler;
 
 import java.io.IOException;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
@@ -80,7 +77,7 @@ public class MyBinaryWebSocketHandler extends AbstractWebSocketHandler {
                     if(sessionManager.hasAuthenticationExpired(sessionId)){
                         log.warn("Tiempo de autenticacion expirado para la sesion: {}", sessionId);
                         sendAuthError(session, "Tiempo de autenticacion expirado");
-                        session.close();
+                        session.close(CloseStatus.POLICY_VIOLATION);
                         sessionManager.removeSession(sessionId);
                         return;
                     }

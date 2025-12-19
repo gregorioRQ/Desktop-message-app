@@ -14,18 +14,18 @@ import javafx.beans.property.StringProperty;
 public class Contact {
     private final IntegerProperty id;
     private final StringProperty userId;
-    private final StringProperty contactUserId;
+    private final StringProperty contactNickname;
     private final StringProperty contactUsername;
     private final BooleanProperty blocked;
     private final ObjectProperty<LocalDateTime> createdAt;
     private final ObjectProperty<LocalDateTime> updatedAt;
     
-    public Contact(int id, String userId, String contactUserId, 
+    public Contact(int id, String userId, String contactNickname, 
                    String contactUsername, boolean blocked,
                    LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = new SimpleIntegerProperty(id);
         this.userId = new SimpleStringProperty(userId);
-        this.contactUserId = new SimpleStringProperty(contactUserId);
+        this.contactNickname = new SimpleStringProperty(contactNickname);
         this.contactUsername = new SimpleStringProperty(contactUsername);
         this.blocked = new SimpleBooleanProperty(blocked);
         this.createdAt = new SimpleObjectProperty<>(createdAt);
@@ -33,8 +33,8 @@ public class Contact {
     }
     
     // Constructor simplificado para crear nuevos contactos
-    public Contact(String userId, String contactUserId, String contactUsername) {
-        this(0, userId, contactUserId, contactUsername, false, 
+    public Contact(String userId, String contactNickname, String contactUsername) {
+        this(0, userId, contactNickname, contactUsername, false, 
              LocalDateTime.now(), LocalDateTime.now());
     }
     
@@ -63,16 +63,16 @@ public class Contact {
         this.userId.set(userId);
     }
     
-    public String getContactUserId() {
-        return contactUserId.get();
+    public String getContactNickname() {
+        return contactNickname.get();
     }
     
-    public StringProperty contactUserIdProperty() {
-        return contactUserId;
+    public StringProperty contactNicknamProperty() {
+        return contactNickname;
     }
     
-    public void setContactUserId(String contactUserId) {
-        this.contactUserId.set(contactUserId);
+    public void setContactNickname(String contactNickname) {
+        this.contactNickname.set(contactNickname);
     }
     
     public String getContactUsername() {
@@ -122,5 +122,11 @@ public class Contact {
     @Override
     public String toString() {
         return contactUsername.get();
+    }
+
+    // muestra el apodo si existe sino el username
+    public String getDisplayName(){
+        return contactNickname != null && !contactNickname.get().isEmpty()
+        ? contactNickname.get() : contactUsername.get();
     }
 }

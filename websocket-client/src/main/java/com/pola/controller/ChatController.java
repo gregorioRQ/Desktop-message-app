@@ -1,18 +1,25 @@
 package com.pola.controller;
 
+import com.pola.model.Contact;
 import com.pola.model.Message;
 import com.pola.proto.MessagesProto.AuthMessage;
 import com.pola.proto.MessagesProto.WsMessage;
 import com.pola.service.ContactService;
 import com.pola.service.MessageService;
 import com.pola.service.WebSocketService;
+import com.pola.view.ViewManager;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 
 /**
@@ -22,6 +29,12 @@ import javafx.scene.layout.VBox;
 public class ChatController {
     @FXML
     private ListView<String> messageListView;
+
+    @FXML
+    private ListView<Contact> contactsListView;
+
+    @FXML
+    private TextField searchContactField;
     
     @FXML
     private TextArea messageInput;
@@ -34,33 +47,61 @@ public class ChatController {
     
     @FXML
     private Button disconnectButton;
+
+    @FXML
+    private Button addContactButton;
     
     @FXML
     private Label statusLabel;
     
     @FXML
     private Label usernameLabel;
+
+    @FXML
+    private Label chatTitleLabel;
+
+    @FXML
+    private Label noContactsLabel;
     
     @FXML
     private VBox contactsPanel;
     
     private WebSocketService webSocketService;
     private MessageService messageService;
+    private ContactService contactService;
+    private ViewManager viewManager;
     private String currentUsername;
     private String currentUserId;
     private String authToken;
+    private Contact selectedContact;
     
-    public void initialize(String username, String userId, String token, WebSocketService webSocketService, 
-                          MessageService messageService) {
+    public void initialize(String username, String userId, String token) {
         this.currentUsername = username;
         this.currentUserId = userId;
         this.authToken = token;
-        this.webSocketService = webSocketService;
-        this.messageService = messageService;
+
+        messageService.setCurrentUserId(userId);
         
         setupUI();
         setupListeners();
         setupWebSocketListeners();
+        loadContacts();
+    }
+    
+    public void setWebSocketService(WebSocketService webSocketService) {
+        this.webSocketService = webSocketService;
+    }
+    
+    public void setMessageService(MessageService messageService) {
+        this.messageService = messageService;
+    }
+    
+    public void setContactService(ContactService contactService) {
+        this.contactService = contactService;
+    }
+    
+    public void setViewManager(ViewManager viewManager) {
+        this.viewManager = viewManager;
     }
     
     private void setupUI() {
@@ -71,6 +112,7 @@ public class ChatController {
         sendButton.setOnAction(event -> handleSendMessage());
         connectButton.setOnAction(event -> handleConnect());
         disconnectButton.setOnAction(event -> handleDisconnect());
+        addContactButton.setOnAction(e -> handleAddContact());
         
         // Enter envía mensaje
         messageInput.setOnKeyPressed(event -> {
@@ -86,6 +128,13 @@ public class ChatController {
     }
     
     private void setupListeners() {
+        //listener de seleccion de contacto
+        contactsListView.getSelectionModel().selectedItemProperty().addListener((obs, oldContact, newContact) -> {
+            if(newContact != null){
+                handleContactSelected(newContact);
+            }
+        });
+
         // Vincular lista de mensajes con el servicio
         messageService.getMessages().addListener(
             (javafx.collections.ListChangeListener.Change<? extends com.pola.model.ChatMessage> change) -> {
@@ -98,8 +147,29 @@ public class ChatController {
                         }
                     }
                 }
+                // autoscroll al ultimo mensaje
+                Platform.runLater(()->{
+                    if(!messageListView.getItems().isEmpty()){
+                        messageListView.scrollTo(messageListView.getItems().size() - 1);
+                    }
+                });
             }
         );
+
+        // busqueda de contactos filtro simple
+        searchContactField.textProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal == null || newVal.trim().isEmpty()) {
+                contactsListView.setItems(contactService.getContacts());
+            } else {
+                contactsListView.setItems(
+                    contactService.getContacts().filtered(contact ->
+                        contact.getDisplayName().toLowerCase()
+                            .contains(newVal.toLowerCase())
+                    )
+                );
+            }
+        });
+
     }
     
     private void setupWebSocketListeners() {
@@ -121,6 +191,46 @@ public class ChatController {
             });
         });
     }
+
+    private void loadContacts() {
+        // Cargar contactos desde la base de datos
+        contactService.loadContacts(currentUserId);
+        
+        // Vincular lista de contactos con el ListView
+        contactsListView.setItems(contactService.getContacts());
+        
+        // Mostrar/ocultar mensaje de "no hay contactos"
+        contactService.getContacts().addListener(
+            (javafx.collections.ListChangeListener.Change<?> change) -> {
+                boolean hasContacts = !contactService.getContacts().isEmpty();
+                noContactsLabel.setVisible(!hasContacts);
+                noContactsLabel.setManaged(!hasContacts);
+            }
+        );
+        
+        // Verificar si hay contactos
+        boolean hasContacts = !contactService.getContacts().isEmpty();
+        noContactsLabel.setVisible(!hasContacts);
+        noContactsLabel.setManaged(!hasContacts);
+    }
+
+    private void handleContactSelected(Contact contact) {
+        selectedContact = contact;
+        chatTitleLabel.setText("Chat con: " + contact.getDisplayName());
+        
+        // Limpiar mensajes anteriores
+        messageListView.getItems().clear();
+        
+        // Cargar historial del contacto
+        messageService.loadChatHistory(contact);
+        
+        // Habilitar envío si está conectado
+        if (webSocketService.isConnected()) {
+            sendButton.setDisable(false);
+            messageInput.setDisable(false);
+            messageInput.requestFocus();
+        }
+    }
     
     private void handleConnect() {
         statusLabel.setText("Conectando...");
@@ -133,7 +243,8 @@ public class ChatController {
                 Thread.sleep(200);
 
                 // enviar el mensaje de autenticacion cuando se conecta
-               Platform.runLater(()-> sendAuthMessage());
+               Platform.runLater(()-> 
+                sendAuthMessage());
             } catch (Exception e) {
                 Platform.runLater(() -> {
                     statusLabel.setText("Error al conectar: " + e.getMessage());
@@ -180,6 +291,12 @@ public class ChatController {
         if (content.isEmpty()) {
             return;
         }
+
+        if(selectedContact == null){
+            statusLabel.setText("Selecciona un contacto primero");
+            statusLabel.setStyle("-fx-text-fill: orange");
+            return;
+        }
         
         if (!webSocketService.isConnected()) {
             statusLabel.setText("No conectado al servidor");
@@ -195,6 +312,93 @@ public class ChatController {
             statusLabel.setStyle("-fx-text-fill: red;");
         }
     }
+
+    private void handleAddContact(){
+        showAddContactDialog();
+    }
+
+    // Muestra un dialog pane para añadir contactos
+    private void showAddContactDialog() {
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.setTitle("Agregar Contacto");
+        dialog.setHeaderText("Agrega un nuevo contacto");
+        
+        // Botones
+        ButtonType addButtonType = new ButtonType("Agregar", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(addButtonType, ButtonType.CANCEL);
+        
+        // Contenido
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new javafx.geometry.Insets(20, 150, 10, 10));
+        
+        TextField usernameField = new TextField();
+        usernameField.setPromptText("Username del contacto");
+        
+        TextField nicknameField = new TextField();
+        nicknameField.setPromptText("Apodo (opcional)");
+        
+        Label errorLabel = new Label();
+        errorLabel.setStyle("-fx-text-fill: red;");
+        
+        grid.add(new Label("Username:"), 0, 0);
+        grid.add(usernameField, 1, 0);
+        grid.add(new Label("Apodo:"), 0, 1);
+        grid.add(nicknameField, 1, 1);
+        grid.add(errorLabel, 1, 2);
+        
+        dialog.getDialogPane().setContent(grid);
+        
+        // Foco inicial
+        Platform.runLater(() -> usernameField.requestFocus());
+        
+        // Validación al presionar "Agregar"
+        Button addButton = (Button) dialog.getDialogPane().lookupButton(addButtonType);
+        addButton.addEventFilter(javafx.event.ActionEvent.ACTION, event -> {
+            String username = usernameField.getText().trim();
+            String nickname = nicknameField.getText().trim();
+            
+            // Validar
+            if (username.isEmpty()) {
+                errorLabel.setText("Ingrese un username");
+                event.consume();
+                return;
+            }
+            
+            if (username.length() < 3) {
+                errorLabel.setText("Username mínimo 3 caracteres");
+                event.consume();
+                return;
+            }
+            
+            if (username.equalsIgnoreCase(currentUsername)) {
+                errorLabel.setText("No puedes agregarte a ti mismo");
+                event.consume();
+                return;
+            }
+            
+            if (!username.matches("^[a-zA-Z0-9_-]+$")) {
+                errorLabel.setText("Caracteres no permitidos");
+                event.consume();
+                return;
+            }
+            
+            // Agregar contacto
+            Contact contact = contactService.addContact(
+                currentUserId, 
+                username, 
+                nickname.isEmpty() ? null : nickname
+            );
+            
+            if (contact == null) {
+                errorLabel.setText("Error al agregar contacto");
+                event.consume();
+            }
+        });
+        
+        dialog.showAndWait();
+    }
     
     private void updateConnectionStatus(boolean connected) {
         if (connected) {
@@ -202,8 +406,12 @@ public class ChatController {
             statusLabel.setStyle("-fx-text-fill: green;");
             connectButton.setDisable(true);
             disconnectButton.setDisable(false);
-            sendButton.setDisable(false);
-            messageInput.setDisable(false);
+
+            // habilitar envio si hay contacto selecicondo
+            if(selectedContact != null){
+                sendButton.setDisable(false);
+                messageInput.setDisable(false);
+            }
         } else {
             statusLabel.setText("Desconectado");
             statusLabel.setStyle("-fx-text-fill: red;");

@@ -83,7 +83,7 @@ public class MessageService {
                 .setId(UUID.randomUUID().toString())
                 .setType(MessageType.TEXT)
                 .setSender(currentUserId)
-                .setRecipient(currentContact.getContactUserId())
+                .setRecipient(currentContact.getContactUsername())
                 .setContent(content)
                 .setTimestamp(Instant.now().toEpochMilli())
                 .build();
@@ -115,10 +115,10 @@ public class MessageService {
 
         try {
             // buscar si el contacto existe o crear uno nuevo
-            Contact contact = this.contactService.findContactByUserId(currentUserId, senderId).orElseGet(()->{
+            Contact contact = this.contactService.findContactByUsername(currentUserId, senderId).orElseGet(()->{
                 // Contacto nuevo = agregarlo
                 String senderUsername = protobufMessage.getSender();
-                return this.contactService.addContact(currentUserId, senderId, senderUsername);
+                return this.contactService.addContact(currentUserId, senderUsername, null);
             });
 
             if(contact == null){

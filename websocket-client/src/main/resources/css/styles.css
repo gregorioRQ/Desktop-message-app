@@ -78,6 +78,11 @@
     -fx-font-size: 12px;
 }
 
+.message-label {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
+
 .section-label {
     -fx-font-weight: bold;
     -fx-text-fill: #555;
@@ -151,21 +156,33 @@
 
 /* Panel de contactos */
 .contacts-panel {
-    -fx-background-color: white;
+    -fx-background-color: #f9f9f9;
     -fx-border-color: #ddd;
-    -fx-border-width: 0 0 0 1;
+    -fx-border-width: 0 1 0 0;
 }
 
 .contacts-list {
     -fx-background-color: transparent;
-    -fx-border-color: transparent;
+    -fx-border-color: #ddd;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
 }
 
 .contacts-list .list-cell {
-    -fx-padding: 10;
+    -fx-padding: 12 10;
     -fx-cursor: hand;
+    -fx-background-color: transparent;
 }
 
 .contacts-list .list-cell:hover {
     -fx-background-color: #e3f2fd;
+}
+
+.contacts-list .list-cell:selected {
+    -fx-background-color: #2196F3;
+    -fx-text-fill: white;
+}
+
+.contacts-list .list-cell:selected:hover {
+    -fx-background-color: #1976D2;
 }
