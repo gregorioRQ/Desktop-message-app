@@ -186,3 +186,28 @@
 .contacts-list .list-cell:selected:hover {
     -fx-background-color: #1976D2;
 }
+
+/* Estilos para celdas de mensajes */
+.message-list .list-cell {
+    -fx-padding: 8 10;
+}
+
+.message-list .list-cell:hover {
+    -fx-background-color: #f0f0f0;
+}
+
+/* Menú contextual */
+.context-menu {
+    -fx-background-color: white;
+    -fx-border-color: #ddd;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+}
+
+.context-menu .menu-item {
+    -fx-padding: 8 15;
+}
+
+.context-menu .menu-item:hover {
+    -fx-background-color: #e8e8e8;
+}

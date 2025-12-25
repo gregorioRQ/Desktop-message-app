@@ -27,6 +27,19 @@ message ChatMessage {
   int64 timestamp = 6;
 }
 
+// Mensaje de autenticación WebSocket
+message AuthMessage {
+    string token = 1;
+}
+
+// Respuesta de autenticación
+message AuthResponse {
+    bool success = 1;
+    string message = 2;
+    string userId = 3;
+    string username = 4;
+}
+
 // Lista de usuarios
 message UserList {
   repeated User users = 1;
@@ -39,15 +52,23 @@ message User {
   bool online = 3;
 }
 
-message AuthMessage{
-  string token = 1;
+// Solicitud de eliminación de mensaje
+message DeleteMessageRequest {
+    string message_id = 1;
+    string sender_username = 2;  // Para verificar permisos
 }
 
-message AuthResponse{
-  bool success = 1;
-  string message = 2;
-  string userId = 3;
-  string username = 4;
+// Respuesta de eliminación
+message DeleteMessageResponse {
+    bool success = 1;
+    string message = 2;
+    string message_id = 3;
+}
+
+// Notificación de mensaje eliminado
+message MessageDeletedNotification {
+    string message_id = 1;
+    string deleted_by = 2;
 }
 
 // Wrapper para todos los mensajes
@@ -57,5 +78,8 @@ message WsMessage {
     UserList user_list = 2;
     AuthMessage auth_message = 3;
     AuthResponse auth_response = 4;
+    DeleteMessageRequest delete_message_request = 5;
+    DeleteMessageResponse delete_message_response = 6;
+    MessageDeletedNotification message_delete_notification = 7;
   }
 }

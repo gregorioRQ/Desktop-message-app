@@ -1,6 +1,7 @@
 package com.pola.controller;
 
 import com.pola.database.DatabaseManager;
+import com.pola.model.ChatMessage;
 import com.pola.model.Contact;
 import com.pola.model.Message;
 import com.pola.proto.MessagesProto.AuthMessage;
@@ -8,6 +9,7 @@ import com.pola.proto.MessagesProto.WsMessage;
 import com.pola.service.ContactService;
 import com.pola.service.MessageService;
 import com.pola.service.WebSocketService;
+import com.pola.view.MessageListCell;
 import com.pola.view.ViewManager;
 
 import javafx.application.Platform;
@@ -20,6 +22,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 
@@ -29,7 +32,7 @@ import javafx.scene.layout.VBox;
  */
 public class ChatController {
     @FXML
-    private ListView<String> messageListView;
+    private ListView<ChatMessage> messageListView;
 
     @FXML
     private ListView<Contact> contactsListView;
@@ -116,6 +119,8 @@ public class ChatController {
         connectButton.setOnAction(event -> handleConnect());
         disconnectButton.setOnAction(event -> handleDisconnect());
         addContactButton.setOnAction(e -> handleAddContact());
+
+        setupMessageListView();
         
         // Enter envía mensaje
         messageInput.setOnKeyPressed(event -> {
@@ -128,6 +133,10 @@ public class ChatController {
         // Deshabilitar envío si no está conectado
         sendButton.setDisable(true);
         messageInput.setDisable(true);
+    }
+
+    private void setupMessageListView(){
+        messageListView.setCellFactory(lv -> new MessageListCell(currentUserId, this::handleDeleteMessage, this::handleEditMessage));
     }
     
     private void setupListeners() {
@@ -143,19 +152,22 @@ public class ChatController {
             (javafx.collections.ListChangeListener.Change<? extends com.pola.model.ChatMessage> change) -> {
                 while (change.next()) {
                     if (change.wasAdded()) {
-                        for (com.pola.model.ChatMessage msg : change.getAddedSubList()) {
-                            Platform.runLater(() -> 
-                                messageListView.getItems().add(msg.getDisplayText(currentUserId))
-                            );
+                        Platform.runLater(() -> {
+                        // La lista se actualiza automáticamente con el binding
+                        // Solo hacer auto-scroll
+                        if (!messageListView.getItems().isEmpty()) {
+                            messageListView.scrollTo(messageListView.getItems().size() - 1);
                         }
-                    }
+                    });
+                    if (change.wasRemoved()) {
+                    // Mensaje eliminado, la lista se actualiza automáticamente
+                    Platform.runLater(() -> {
+                        System.out.println("Mensaje removido de la vista");
+                    });
                 }
-                // autoscroll al ultimo mensaje
-                Platform.runLater(()->{
-                    if(!messageListView.getItems().isEmpty()){
-                        messageListView.scrollTo(messageListView.getItems().size() - 1);
-                    }
-                });
+            }
+            }
+                
             }
         );
 
@@ -172,6 +184,9 @@ public class ChatController {
                 );
             }
         });
+
+        // vincular la ObservableList del servicio con el listview
+        messageListView.setItems(messageService.getMessages());
 
     }
     
@@ -318,6 +333,23 @@ public class ChatController {
 
     private void handleAddContact(){
         showAddContactDialog();
+    }
+
+    private void handleDeleteMessage(ChatMessage message){
+        messageService.deleteOneMessage(message);
+    }
+
+    private void handleEditMessage(ChatMessage message){
+        TextInputDialog dialog = new TextInputDialog(message.getContent());
+        dialog.setTitle("Editar Mensaje");
+        dialog.setHeaderText("Edita tu mensaje");
+        dialog.setContentText("Nuevo contenido:");
+
+        dialog.showAndWait().ifPresent(newContent -> {
+            if(!newContent.trim().isEmpty() && !newContent.equals(message.getContent())){
+                messageService.editMessage(message, newContent);
+            }
+        });
     }
 
     // Muestra un dialog pane para añadir contactos

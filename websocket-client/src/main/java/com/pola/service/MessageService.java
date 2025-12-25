@@ -167,4 +167,45 @@ public class MessageService {
     public Contact getCurrenteContact(){
         return currentContact;
     }
+
+    // eliminar un mensaje del local como del servidor
+    public void deleteOneMessage(ChatMessage message){
+        try {
+            messageRepository.delete(message.getId());
+            currentChatMessages.remove(message);
+
+            //Notificar al servidor para eliminar
+            if(webSocketService.isConnected()){
+                sendDeleteMessageToServer(message);
+            }
+        } catch (SQLException ex) {
+            System.err.println("Error eliminando el mensaje");
+            ex.printStackTrace();
+        }
+    }
+
+    private void sendDeleteMessageToServer(ChatMessage message){
+        try {
+            
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+    }
+
+    public void editMessage(ChatMessage message, String newContent){
+        try {
+            messageRepository.updateContent(message.getId(), newContent);
+            message.setContent(newContent);
+            if(webSocketService.isConnected()){
+                sendDeleteMessageToServer(message, newContent);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error editanto el mensaje");
+            e.printStackTrace();
+        }
+    }
+
+    private void sendDeleteMessageToServer(ChatMessage message, String newContent){
+        
+    }
 }

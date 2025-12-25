@@ -170,16 +170,32 @@ public class MessageRepository {
     /**
      * Elimina todos los mensajes de un contacto
      */
-    public void deleteByContactUsername(String username) throws SQLException {
-        String sql = "DELETE FROM messages WHERE contact_username = ?";
+    public void delete(int messageId) throws SQLException {
+        String sql = "DELETE FROM messages WHERE id = ?";
         
         try (Connection conn = dbManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
-            stmt.setString(1, username);
-            stmt.executeUpdate();
+            stmt.setInt(1, messageId);
+            int deleted = stmt.executeUpdate();
+            if(deleted > 0){
+                System.out.println("Mensaje eliminado");
+            }
         }
     }
+
+    public void updateContent(int messageId, String newContent) throws SQLException {
+        String sql = "UPDATE messages SET content = ? WHERE id = ?";
+        try(Connection conn = dbManager.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql)
+    ){
+        stmt.setString(1, newContent);
+        stmt.setInt(2, messageId);
+        stmt.executeUpdate();
+    }
+    }
+
+    //FUTURA IMPLEMENTACION: eliminar el chat completo
     
     /**
      * Mapea un ResultSet a un objeto ChatMessage

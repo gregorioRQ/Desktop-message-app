@@ -94,6 +94,10 @@ public class ChatMessage {
     public void setRead(boolean read) {
         this.read.set(read);
     }
+
+    public void setContent(String content){
+        this.content.set(content);
+    }
     
     /**
      * Formato de tiempo legible (HH:mm)
