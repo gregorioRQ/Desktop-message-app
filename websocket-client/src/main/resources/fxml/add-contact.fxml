@@ -29,14 +29,6 @@
         <TextField fx:id="usernameField" 
                    promptText="Ingrese el username"/>
         
-        <Label text="Apodo (opcional):" styleClass="field-label"/>
-        <TextField fx:id="nicknameField" 
-                   promptText="Ej: Mi amigo Juan"/>
-        
-        <Label text="El apodo te ayudará a identificar fácilmente a tu contacto" 
-               styleClass="field-label"
-               style="-fx-font-size: 10px; -fx-text-fill: #cccccc;"/>
-        
         <!-- Botones -->
         <HBox spacing="10" alignment="CENTER">
             <Button fx:id="addButton" text="Agregar" styleClass="primary-button"/>

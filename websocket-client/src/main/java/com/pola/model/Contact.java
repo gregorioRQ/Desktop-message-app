@@ -14,18 +14,16 @@ import javafx.beans.property.StringProperty;
 public class Contact {
     private final IntegerProperty id;
     private final StringProperty userId;
-    private final StringProperty contactNickname;
     private final StringProperty contactUsername;
     private final BooleanProperty blocked;
     private final ObjectProperty<LocalDateTime> createdAt;
     private final ObjectProperty<LocalDateTime> updatedAt;
     
-    public Contact(int id, String userId, String contactNickname, 
+    public Contact(int id, String userId, 
                    String contactUsername, boolean blocked,
                    LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = new SimpleIntegerProperty(id);
         this.userId = new SimpleStringProperty(userId);
-        this.contactNickname = new SimpleStringProperty(contactNickname);
         this.contactUsername = new SimpleStringProperty(contactUsername);
         this.blocked = new SimpleBooleanProperty(blocked);
         this.createdAt = new SimpleObjectProperty<>(createdAt);
@@ -33,8 +31,8 @@ public class Contact {
     }
     
     // Constructor simplificado para crear nuevos contactos
-    public Contact(String userId, String contactNickname, String contactUsername) {
-        this(0, userId, contactNickname, contactUsername, false, 
+    public Contact(String userId, String contactUsername) {
+        this(0, userId, contactUsername, false, 
              LocalDateTime.now(), LocalDateTime.now());
     }
     
@@ -61,18 +59,6 @@ public class Contact {
     
     public void setUserId(String userId) {
         this.userId.set(userId);
-    }
-    
-    public String getContactNickname() {
-        return contactNickname.get();
-    }
-    
-    public StringProperty contactNicknamProperty() {
-        return contactNickname;
-    }
-    
-    public void setContactNickname(String contactNickname) {
-        this.contactNickname.set(contactNickname);
     }
     
     public String getContactUsername() {
@@ -124,9 +110,4 @@ public class Contact {
         return contactUsername.get();
     }
 
-    // muestra el apodo si existe sino el username
-    public String getDisplayName(){
-        return contactNickname != null && !contactNickname.get().isEmpty()
-        ? contactNickname.get() : contactUsername.get();
-    }
 }

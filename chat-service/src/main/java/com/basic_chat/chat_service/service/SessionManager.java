@@ -49,8 +49,10 @@ public class SessionManager {
         SessionInfo info = new SessionInfo(userId, username, wSession);
         authenticatedSessions.put(sessionId, info);
 
-        // Agregar a usuarios en linea
-        usersOnline.put(userId, username);
+        // Agregar a usuarios en linea (toma el username que viene en el token)
+        // FIX: Guardar username -> sessionId (no username -> username)
+        System.out.println("Añadiendo usuario a la lista online: " + username + " sessionId: " + sessionId);
+        usersOnline.put(username, sessionId);
 
         log.info("Sesion autenticada: {} - Usuario: {} ({})", sessionId, username);
     }
@@ -82,6 +84,8 @@ public class SessionManager {
         pendingAuthentication.remove(sessionId);
 
         if (removed != null) {
+           // Remover también de usersOnline
+           usersOnline.remove(removed.getUsername());
            log.info("Sesion removida: {} - Usuario: {}", sessionId, removed.getUsername());
         }else{
             log.debug("Sesion pendiente removida: {}", sessionId);
@@ -92,7 +96,18 @@ public class SessionManager {
         return authenticatedSessions.get(sessionId);
     }
 
+    // buscar sesion por username
+    public SessionInfo findByUsername(String username){
+        String sessionId = usersOnline.get(username);
+        if(sessionId == null){
+            return null;
+        }
+        return authenticatedSessions.get(sessionId);
+    }
+
+
     public boolean isUserOnline(String userId){
+        System.out.println("Verificando si el usuario: " + userId + " esta en linea");
         return usersOnline.containsKey(userId);
     }
 

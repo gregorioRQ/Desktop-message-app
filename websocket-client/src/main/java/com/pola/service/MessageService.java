@@ -44,11 +44,12 @@ public class MessageService {
         this.currentContact = contact;
 
         try{
-            List<ChatMessage> messages = messageRepository.findByContactId(contact.getId());
+            
+            List<ChatMessage> messages = messageRepository.findByContactUsername(contact.getContactUsername());
             currentChatMessages.setAll(messages);
 
             // marcar mensajes como leidos
-            messageRepository.markAllAsReadByContactId(contact.getId());
+            messageRepository.markAllAsReadByContactUsername(contact.getContactUsername());
             System.out.println("Historial cargado: " + messages.size() + " mensajes");
         }catch(SQLException e){
             e.printStackTrace();
@@ -58,7 +59,7 @@ public class MessageService {
     /**
      * Envía un mensaje de texto
      */
-    public void sendTextMessage(String content) {
+    public void sendTextMessage(String content, String username) {
         if(currentContact == null){
             System.out.println("No hay contacto seleccionado");
             return;
@@ -71,8 +72,8 @@ public class MessageService {
 
         try {
             // guardar en la db local
-            ChatMessage localMessage = new ChatMessage(currentContact.getId(), content, currentUserId);
-
+            ChatMessage localMessage = new ChatMessage(currentContact.getContactUsername(), content, username);
+            System.out.println("valor de currentUserId: " + currentUserId);
             ChatMessage saved = messageRepository.create(localMessage);
 
             // mostrar en la UI
@@ -82,7 +83,7 @@ public class MessageService {
             com.pola.proto.MessagesProto.ChatMessage chatMessage = com.pola.proto.MessagesProto.ChatMessage.newBuilder()
                 .setId(UUID.randomUUID().toString())
                 .setType(MessageType.TEXT)
-                .setSender(currentUserId)
+                .setSender(username)
                 .setRecipient(currentContact.getContactUsername())
                 .setContent(content)
                 .setTimestamp(Instant.now().toEpochMilli())
@@ -112,13 +113,15 @@ public class MessageService {
         com.pola.proto.MessagesProto.ChatMessage protobufMessage = wsMessage.getChatMessage();
         String senderId = protobufMessage.getSender();
         String content = protobufMessage.getContent();
-
+      
+        System.out.println("Iniciando proceso de guardado de mensaje");
+        
         try {
             // buscar si el contacto existe o crear uno nuevo
             Contact contact = this.contactService.findContactByUsername(currentUserId, senderId).orElseGet(()->{
                 // Contacto nuevo = agregarlo
                 String senderUsername = protobufMessage.getSender();
-                return this.contactService.addContact(currentUserId, senderUsername, null);
+                return this.contactService.addContact(currentUserId, senderUsername);
             });
 
             if(contact == null){
@@ -127,7 +130,7 @@ public class MessageService {
             }
 
             // crear el mensaje local
-            ChatMessage localMessage = new ChatMessage(contact.getId(), content, senderId);
+            ChatMessage localMessage = new ChatMessage(contact.getContactUsername(), content, senderId);
 
             // guardar en la db
             ChatMessage saved = messageRepository.create(localMessage);
@@ -142,6 +145,7 @@ public class MessageService {
             System.out.println("Error procesando el mensaje recibido");
             e.printStackTrace();
         }
+        
     }
     
     /**

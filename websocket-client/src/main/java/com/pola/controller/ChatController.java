@@ -1,5 +1,6 @@
 package com.pola.controller;
 
+import com.pola.database.DatabaseManager;
 import com.pola.model.Contact;
 import com.pola.model.Message;
 import com.pola.proto.MessagesProto.AuthMessage;
@@ -79,6 +80,8 @@ public class ChatController {
         this.currentUsername = username;
         this.currentUserId = userId;
         this.authToken = token;
+
+        DatabaseManager.getInstance().initializeForUser(userId);
 
         messageService.setCurrentUserId(userId);
         
@@ -163,7 +166,7 @@ public class ChatController {
             } else {
                 contactsListView.setItems(
                     contactService.getContacts().filtered(contact ->
-                        contact.getDisplayName().toLowerCase()
+                        contact.getContactUsername().toLowerCase()
                             .contains(newVal.toLowerCase())
                     )
                 );
@@ -216,7 +219,7 @@ public class ChatController {
 
     private void handleContactSelected(Contact contact) {
         selectedContact = contact;
-        chatTitleLabel.setText("Chat con: " + contact.getDisplayName());
+        chatTitleLabel.setText("Chat con: " + contact.getContactUsername());
         
         // Limpiar mensajes anteriores
         messageListView.getItems().clear();
@@ -305,7 +308,7 @@ public class ChatController {
         }
         
         try {
-            messageService.sendTextMessage(content);
+            messageService.sendTextMessage(content, currentUsername);
             messageInput.clear();
         } catch (Exception e) {
             statusLabel.setText("Error al enviar: " + e.getMessage());
@@ -383,12 +386,11 @@ public class ChatController {
                 event.consume();
                 return;
             }
-            
+          
             // Agregar contacto
             Contact contact = contactService.addContact(
                 currentUserId, 
-                username, 
-                nickname.isEmpty() ? null : nickname
+                username
             );
             
             if (contact == null) {

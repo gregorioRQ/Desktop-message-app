@@ -14,7 +14,7 @@ import javafx.beans.property.StringProperty;
 
 public class ChatMessage {
     private final IntegerProperty id;
-    private final IntegerProperty contactId;
+    private final StringProperty contactUsername;
     private final StringProperty content;
     private final StringProperty senderId;
     private final ObjectProperty<LocalDateTime> timestamp;
@@ -23,10 +23,10 @@ public class ChatMessage {
     private static final DateTimeFormatter TIME_FORMATTER = 
             DateTimeFormatter.ofPattern("HH:mm");
     
-    public ChatMessage(int id, int contactId, String content, String senderId,
+    public ChatMessage(int id, String contactUsername, String content, String senderId,
                       LocalDateTime timestamp, boolean read) {
         this.id = new SimpleIntegerProperty(id);
-        this.contactId = new SimpleIntegerProperty(contactId);
+        this.contactUsername = new SimpleStringProperty(contactUsername);
         this.content = new SimpleStringProperty(content);
         this.senderId = new SimpleStringProperty(senderId);
         this.timestamp = new SimpleObjectProperty<>(timestamp);
@@ -34,8 +34,8 @@ public class ChatMessage {
     }
     
     // Constructor simplificado para nuevos mensajes
-    public ChatMessage(int contactId, String content, String senderId) {
-        this(0, contactId, content, senderId, LocalDateTime.now(), false);
+    public ChatMessage(String contactUsername, String content, String senderId) {
+        this(0, contactUsername, content, senderId, LocalDateTime.now(), false);
     }
     
     // Getters y setters
@@ -51,12 +51,12 @@ public class ChatMessage {
         this.id.set(id);
     }
     
-    public int getContactId() {
-        return contactId.get();
+    public String getContactUsername() {
+        return contactUsername.get();
     }
     
-    public IntegerProperty contactIdProperty() {
-        return contactId;
+    public StringProperty contactUsernameProperty() {
+        return contactUsername;
     }
     
     public String getContent() {

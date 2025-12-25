@@ -22,14 +22,14 @@ public class MessageRepository {
     // Crear un mensaje
     public ChatMessage create(ChatMessage message) throws SQLException {
         String sql = """
-            INSERT INTO messages (contact_id, content, sender_id, is_read)
+            INSERT INTO messages (contact_username, content, sender_id, is_read)
             VALUES (?, ?, ?, ?)
             """;
         
         try (Connection conn = dbManager.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
             
-            stmt.setInt(1, message.getContactId());
+            stmt.setString(1, message.getContactUsername());
             stmt.setString(2, message.getContent());
             stmt.setString(3, message.getSenderId());
             stmt.setInt(4, message.isRead() ? 1 : 0);
@@ -40,9 +40,12 @@ public class MessageRepository {
                 throw new SQLException("Fallo al crear mensaje");
             }
             
-            try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
-                if (generatedKeys.next()) {
-                    message.setId(generatedKeys.getInt(1));
+            String idQuery = "SELECT last_insert_rowid() as id";
+            try (Statement idStatement = conn.createStatement();
+                ResultSet rs = idStatement.executeQuery(idQuery)
+                ) {
+                if (rs.next()) {
+                    message.setId(rs.getInt("id"));
                 }
             }
             
@@ -53,11 +56,11 @@ public class MessageRepository {
     /**
      * Obtiene todos los mensajes de un contacto
      */
-    public List<ChatMessage> findByContactId(int contactId) throws SQLException {
+    public List<ChatMessage> findByContactUsername(String username) throws SQLException {
         String sql = """
-            SELECT id, contact_id, content, sender_id, timestamp, is_read
+            SELECT id, contact_username, content, sender_id, timestamp, is_read
             FROM messages
-            WHERE contact_id = ?
+            WHERE contact_username = ?
             ORDER BY timestamp ASC
             """;
         
@@ -66,7 +69,7 @@ public class MessageRepository {
         try (Connection conn = dbManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
-            stmt.setInt(1, contactId);
+            stmt.setString(1, username);
             
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
@@ -128,13 +131,13 @@ public class MessageRepository {
     /**
      * Marca todos los mensajes de un contacto como leídos
      */
-    public void markAllAsReadByContactId(int contactId) throws SQLException {
-        String sql = "UPDATE messages SET is_read = 1 WHERE contact_id = ?";
+    public void markAllAsReadByContactUsername(String username) throws SQLException {
+        String sql = "UPDATE messages SET is_read = 1 WHERE contact_username = ?";
         
         try (Connection conn = dbManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
-            stmt.setInt(1, contactId);
+            stmt.setString(1, username);
             stmt.executeUpdate();
         }
     }
@@ -142,17 +145,17 @@ public class MessageRepository {
     /**
      * Cuenta mensajes no leídos de un contacto
      */
-    public int countUnreadByContactId(int contactId) throws SQLException {
+    public int countUnreadByContactUsername(String username) throws SQLException {
         String sql = """
             SELECT COUNT(*) as count
             FROM messages
-            WHERE contact_id = ? AND is_read = 0
+            WHERE contact_username = ? AND is_read = 0
             """;
         
         try (Connection conn = dbManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
-            stmt.setInt(1, contactId);
+            stmt.setString(1, username);
             
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
@@ -167,13 +170,13 @@ public class MessageRepository {
     /**
      * Elimina todos los mensajes de un contacto
      */
-    public void deleteByContactId(int contactId) throws SQLException {
-        String sql = "DELETE FROM messages WHERE contact_id = ?";
+    public void deleteByContactUsername(String username) throws SQLException {
+        String sql = "DELETE FROM messages WHERE contact_username = ?";
         
         try (Connection conn = dbManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
-            stmt.setInt(1, contactId);
+            stmt.setString(1, username);
             stmt.executeUpdate();
         }
     }
@@ -184,7 +187,7 @@ public class MessageRepository {
     private ChatMessage mapResultSetToMessage(ResultSet rs) throws SQLException {
         return new ChatMessage(
             rs.getInt("id"),
-            rs.getInt("contact_id"),
+            rs.getString("contact_username"),
             rs.getString("content"),
             rs.getString("sender_id"),
             rs.getTimestamp("timestamp").toLocalDateTime(),

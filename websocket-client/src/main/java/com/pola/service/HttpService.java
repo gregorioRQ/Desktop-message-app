@@ -36,4 +36,12 @@ public interface HttpService {
      * @return CompletableFuture con la respuesta
      */
     <T, R> CompletableFuture<R> updateProfile(String userId, T request, Class<R> responseClass);
+
+    /**
+     * Obtiene el historial de mensajes 
+    */
+
+    /**
+     * Obtiene el contacto/lista de contactos del usuario
+     */
 }

@@ -2,10 +2,10 @@ package com.pola.view;
 
 import java.io.IOException;
 
-import com.pola.controller.AddContactController;
 import com.pola.controller.ChatController;
 import com.pola.controller.LoginController;
 import com.pola.controller.RegisterController;
+import com.pola.database.DatabaseManager;
 import com.pola.service.ContactService;
 import com.pola.service.HttpService;
 import com.pola.service.HttpServiceImpl;
@@ -23,17 +23,15 @@ import javafx.stage.Stage;
  */
 public class ViewManager {
     private final Stage stage;
-    private final WebSocketService webSocketService;
-    private final MessageService messageService;
+    private WebSocketService webSocketService;
+    private MessageService messageService;
     private final HttpService httpService;
-    private final ContactService contactService;
+    private ContactService contactService;
     
     public ViewManager(Stage stage) {
         this.stage = stage;
-        this.webSocketService = new WebSocketServiceImpl();
-        this.messageService = new MessageService(webSocketService);
         this.httpService = new HttpServiceImpl();
-        this.contactService = new ContactService();
+        // Los demás servicios se crearán cuando se necesiten (lazy initialization)
         configureStage();
     }
     
@@ -67,6 +65,21 @@ public class ViewManager {
 
     public void showChatView(String username, String userId, String token) {
         try {
+            // Inicializar la base de datos para este usuario
+            DatabaseManager dbManager = DatabaseManager.getInstance();
+            dbManager.initializeForUser(userId);
+            
+            // Crear los servicios ahora que la BD está inicializada
+            if (webSocketService == null) {
+                webSocketService = new WebSocketServiceImpl();
+            }
+            if (messageService == null) {
+                messageService = new MessageService(webSocketService);
+            }
+            if (contactService == null) {
+                contactService = new ContactService();
+            }
+            
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/fxml/chat.fxml"));
             Scene scene = new Scene(loader.load());

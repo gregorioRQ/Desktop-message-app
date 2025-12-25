@@ -3,6 +3,7 @@ package com.basic_chat.chat_service.handler;
 import com.basic_chat.chat_service.security.JwtValidator;
 import com.basic_chat.chat_service.service.MessageService;
 import com.basic_chat.chat_service.service.SessionManager;
+import com.basic_chat.chat_service.service.SessionManager.SessionInfo;
 import com.basic_chat.proto.MessagesProto;
 import com.basic_chat.proto.MessagesProto.AuthMessage;
 import com.basic_chat.proto.MessagesProto.AuthResponse;
@@ -95,7 +96,7 @@ public class MyBinaryWebSocketHandler extends AbstractWebSocketHandler {
 
             // procesar mensaje normal
             if(mensajeRecibido.hasChatMessage()){
-                handleChatMessage(session, mensajeRecibido.getChatMessage());
+                handleChatMessage(session, message, mensajeRecibido.getChatMessage().getRecipient());
             }
 
         } catch (Exception e) {
@@ -148,6 +149,8 @@ public class MyBinaryWebSocketHandler extends AbstractWebSocketHandler {
             Claims claims = jwtValidator.validateToken(token);
             String userId = jwtValidator.getUserId(claims);
             String username = jwtValidator.getUsername(claims);
+            System.out.println("***** USERNAME: " + username);
+            System.out.println("******** USER_ID: " + userId);
 
             // registrar sesión
             sessionManager.authenticateSession(sessionId, userId, username, session);
@@ -178,21 +181,42 @@ public class MyBinaryWebSocketHandler extends AbstractWebSocketHandler {
     /**
      * Maneja un mensaje de CHAT
      */
-    private void handleChatMessage(WebSocketSession session, MessagesProto.ChatMessage mensaje) {
+    private void handleChatMessage(WebSocketSession session, BinaryMessage mensaje, String recipient) {
         // Delegar al MessageService para:
         // 1. Intentar entrega directa si destinatario está online
         // 2. Persistir en DB
         // 3. Enviar notificación push si está offline
         //messageService.processMessage(mensaje, session.getId());
-
-        if(sessionManager.isUserOnline(mensaje.getRecipient())){
+        System.out.println("Nuevo mensaje para: " + recipient);
+        
+        // Obtener la sesión del destinatario
+        SessionManager.SessionInfo recipientSession = sessionManager.findByUsername(recipient);
+        
+        if(sessionManager.isUserOnline(recipient) && recipientSession != null){
             try {
-            session.sendMessage(new BinaryMessage(Objects.requireNonNull(mensaje.toByteArray())));
+                // Enviar el mensaje al DESTINATARIO, no al remitente
+                recipientSession.getWsSession().sendMessage(mensaje);
+                System.out.println("Mensaje entregado a: " + recipient);
             } catch (Exception e) {
-            System.err.println("Error enviando el mensaje: " + e.getMessage());
+                System.err.println("Error enviando el mensaje: " + e.getMessage());
+                // Si falla, guardar el mensaje para entrega posterior
+                try {
+                    MessagesProto.ChatMessage chatMessage = MessagesProto.ChatMessage.parseFrom(mensaje.getPayload().array());
+                    messageService.saveMessage(chatMessage);
+                } catch (Exception ex) {
+                    System.err.println("Error al guardar el mensaje: " + ex.getMessage());
+                }
             }
         }else{
-            messageService.saveMessage(mensaje);
+            System.out.println("El usuario: " + recipient + " no se halla en linea");
+            // Guardar el mensaje para entrega posterior
+            try {
+                MessagesProto.ChatMessage chatMessage = MessagesProto.ChatMessage.parseFrom(mensaje.getPayload().array());
+                messageService.saveMessage(chatMessage);
+                System.out.println("Mensaje guardado en BD para entrega posterior");
+            } catch (Exception ex) {
+                System.err.println("Error al guardar el mensaje: " + ex.getMessage());
+            }
         }
         
         // Enviar ACK al remitente

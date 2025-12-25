@@ -14,9 +14,6 @@ public class AddContactController {
     private TextField usernameField;
     
     @FXML
-    private TextField nicknameField;
-    
-    @FXML
     private Button addButton;
     
     @FXML
@@ -51,15 +48,12 @@ public class AddContactController {
         cancelButton.setOnAction(event -> handleCancel());
         
         // Enter en username va a nickname
-        usernameField.setOnAction(event -> nicknameField.requestFocus());
-        
-        // Enter en nickname agrega el contacto
-        nicknameField.setOnAction(event -> handleAddContact());
+        usernameField.setOnAction(event -> handleAddContact());
+
     }
     
     private void handleAddContact() {
         String username = usernameField.getText().trim();
-        String nickname = nicknameField.getText().trim();
         
         // Validaciones
         if (username.isEmpty()) {
@@ -91,12 +85,11 @@ public class AddContactController {
         // Agregar contacto
         Contact contact = contactService.addContact(
             currentUserId, 
-            username, 
-            nickname.isEmpty() ? "No_apodo" : nickname
+            username
         );
         
         if (contact != null) {
-            showSuccess("Contacto agregado: " + contact.getDisplayName());
+            showSuccess("Contacto agregado: " + contact.getContactUsername());
             
             // Esperar un momento y volver al chat
             new Thread(() -> {
@@ -125,7 +118,6 @@ public class AddContactController {
         addButton.setDisable(!enabled);
         cancelButton.setDisable(!enabled);
         usernameField.setDisable(!enabled);
-        nicknameField.setDisable(!enabled);
     }
     
     private void showError(String message) {

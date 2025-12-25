@@ -24,15 +24,14 @@ public class ContactRepository {
     // Crear un nuevo contacto
     public Contact create(Contact contact) throws SQLException{
         String sql = """
-                INSERT INTO contacts (user_id, contact_username, contact_nickname, is_blocked) VALUES (?, ?, ?, ?)
+                INSERT INTO contacts (user_id, contact_username, is_blocked) VALUES (?, ?, ?)
                 """;
 
         try(Connection conn = dbManager.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql)){
                 stmt.setString(1, contact.getUserId());
                 stmt.setString(2, contact.getContactUsername());
-                stmt.setString(3, contact.getContactNickname());
-                stmt.setInt(4, contact.isBlocked() ? 1 : 0);
+                stmt.setInt(3, contact.isBlocked() ? 1 : 0);
 
                 int affectedRows = stmt.executeUpdate();
 
@@ -57,7 +56,7 @@ public class ContactRepository {
     // Obtener todos los contactos de un usuario
     public List<Contact> findByUserId(String userId) throws SQLException{
         String sql = """
-                SELECT id, user_id, contact_username,contact_nickname,
+                SELECT id, user_id, contact_username,
                 is_blocked, created_at, updated_at FROM contacts WHERE user_id = ?
                 AND is_blocked = 0 ORDER BY contact_username ASC
                 """;
@@ -80,7 +79,7 @@ public class ContactRepository {
      */
     public Optional<Contact> findById(int id) throws SQLException {
         String sql = """
-            SELECT id, user_id, contact_username, contact_nickname, 
+            SELECT id, user_id, contact_username, 
                    is_blocked, created_at, updated_at
             FROM contacts
             WHERE id = ?
@@ -107,7 +106,7 @@ public class ContactRepository {
     public Optional<Contact> findByUserIdAndContactUsername(String userId, String contactUsername) 
             throws SQLException {
         String sql = """
-            SELECT id, user_id, contact_username, contact_nickname,
+            SELECT id, user_id, contact_username,
                    is_blocked, created_at, updated_at
             FROM contacts
             WHERE user_id = ? AND contact_username = ?
@@ -143,9 +142,8 @@ public class ContactRepository {
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setString(1, contact.getContactUsername());
-            stmt.setString(2, contact.getContactNickname());
-            stmt.setInt(3, contact.isBlocked() ? 1 : 0);
-            stmt.setInt(4, contact.getId());
+            stmt.setInt(2, contact.isBlocked() ? 1 : 0);
+            stmt.setInt(3, contact.getId());
             
             stmt.executeUpdate();
             System.out.println("Contacto actualizado: " + contact.getContactUsername());
@@ -175,7 +173,6 @@ public class ContactRepository {
             rs.getInt("id"),
             rs.getString("user_id"),
             rs.getString("contact_username"),
-            rs.getString("contact_nickname"),
             rs.getInt("is_blocked") == 1,
             rs.getTimestamp("created_at").toLocalDateTime(),
             rs.getTimestamp("updated_at").toLocalDateTime()

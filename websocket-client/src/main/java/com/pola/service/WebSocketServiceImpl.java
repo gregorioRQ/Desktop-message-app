@@ -104,8 +104,8 @@ public class WebSocketServiceImpl implements WebSocketService{
                 }
                 return;
             }
-
-
+            System.out.println("MENSAJE DE: " + message.getChatMessage().getSender());
+            System.out.println("CONTENIDO: " + message.getChatMessage().getContent());
             if (messageListener != null) {
                 messageListener.accept(message);
             }

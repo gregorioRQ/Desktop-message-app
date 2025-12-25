@@ -33,7 +33,7 @@ public class ContactService {
     /**
      * Agrega un nuevo contacto
      */
-    public Contact addContact(String userId, String contactUsername, String nickname) {
+    public Contact addContact(String userId, String contactUsername) {
         try {
             // Verificar si ya existe
             Optional<Contact> existing = contactRepository.findByUserIdAndContactUsername(userId, contactUsername);
@@ -43,7 +43,7 @@ public class ContactService {
             }
             
             // Crear nuevo contacto
-            Contact contact = new Contact(userId, contactUsername, nickname);
+            Contact contact = new Contact(userId, contactUsername);
             Contact created = contactRepository.create(contact);
             
             // Agregar a la lista observable
