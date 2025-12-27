@@ -1,0 +1,80 @@
+
+RECEPCION DE MENSAJE  DE AUTENTICACION 
+
+mensaje protobuf entrante.
+deserializar a mensaje.
+* es mensaje de autenticacion?
+SI 
+procesar el mensaje de autenticacion:
+- handleAutenticacion
+    obtiene el token del mensaje
+        * token vacio?
+        SI  
+        retorna error.
+        NO
+        validar el token.
+        registrar una nueva sesion en sessionManager:
+            - authenticateSession
+            remueve de las sesiones pendientes la nueva sesion.
+            añade a la lista de sesiones autenticadas.
+            añade a la lista de usuarios en linea.
+        
+        retorna una respuesta al cliente con el token.
+return.
+
+* esta autenticado?
+
+SI no esta autenticado
+        * esta pendiente la autenticacion y no expiro?
+        SI
+            * la ventana de autenticacion expiro?
+            SI
+                eviar error (autenticacion expirada)
+                cerrar la sesion.
+                removerla del sessionManager.
+                retornar.
+            NO
+                enviar error (la ventana aun no expiro).
+                retornar.
+
+        enviar error (intento de enviar mensaje sin autenticacion)
+        cerrar sesion.
+        retornar.
+
+* es mensaje normal?  
+SI 
+pasarlo a handleChatMessage.
+
+
+RECEPCION DE MENSAJE NORMAL
+
+mensaje ya deserializado entrante.
+obtener la sesion del destinatario:
+    - findByUsername (sessionManager)
+    obtener usuario de la lista de usuarios online.
+    * esta en la lista?
+    SI
+    obtener de la lista de sesiones autenticadas su sesion.
+    NO
+    retornar null.
+
+* el usuario destinatario esta en linea Y su sesion es distinta de null?
+SI 
+enviar el mensaje.
+NO
+guardar mensaje en la db.
+
+
+ELIMINACION DE MENSAJES
+mensaje protobuf entrante.
+deserializar.
+* es mensaje de eliminacion?
+SI enviarlo a procesamiento:
+    - deleteMessage(id_msg, user_sender) [MessageService]
+    * mensaje existe y pertenece a user_sender?
+    SI
+    eliminarlo:
+        - deleteMessage (repository)
+        delete()
+    NO 
+    lanzar log: mensaje no existe.

@@ -14,6 +14,8 @@ import jakarta.transaction.Transactional;
 public interface MessageRepository extends JpaRepository<Message, Long> {
     //List<Message> findByReceiverAndIsSeenFalse(String to);
 
+    Message findByFromUserId(String user);
+
     //public boolean existsByReceiver(String receiver);
 
     //public void deleteAllMessagesByReceiver(String receiver);

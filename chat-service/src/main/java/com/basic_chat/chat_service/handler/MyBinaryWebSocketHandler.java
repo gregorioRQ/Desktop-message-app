@@ -8,6 +8,7 @@ import com.basic_chat.proto.MessagesProto;
 import com.basic_chat.proto.MessagesProto.AuthMessage;
 import com.basic_chat.proto.MessagesProto.AuthResponse;
 import com.basic_chat.proto.MessagesProto.ChatMessage;
+import com.basic_chat.proto.MessagesProto.DeleteMessageRequest;
 import com.basic_chat.proto.MessagesProto.MessageType;
 import com.basic_chat.proto.MessagesProto.WsMessage;
 
@@ -97,6 +98,10 @@ public class MyBinaryWebSocketHandler extends AbstractWebSocketHandler {
             // procesar mensaje normal
             if(mensajeRecibido.hasChatMessage()){
                 handleChatMessage(session, message, mensajeRecibido.getChatMessage().getRecipient());
+            }
+
+            if(mensajeRecibido.hasDeleteMessageRequest()){
+                handleDeleteMessage(mensajeRecibido.getDeleteMessageRequest());
             }
 
         } catch (Exception e) {
@@ -201,7 +206,9 @@ public class MyBinaryWebSocketHandler extends AbstractWebSocketHandler {
                 System.err.println("Error enviando el mensaje: " + e.getMessage());
                 // Si falla, guardar el mensaje para entrega posterior
                 try {
-                    MessagesProto.ChatMessage chatMessage = MessagesProto.ChatMessage.parseFrom(mensaje.getPayload().array());
+                    byte[] payload = mensaje.getPayload().array();
+                    MessagesProto.WsMessage wsMessage = MessagesProto.WsMessage.parseFrom(payload);
+                    MessagesProto.ChatMessage chatMessage = wsMessage.getChatMessage();
                     messageService.saveMessage(chatMessage);
                 } catch (Exception ex) {
                     System.err.println("Error al guardar el mensaje: " + ex.getMessage());
@@ -211,7 +218,9 @@ public class MyBinaryWebSocketHandler extends AbstractWebSocketHandler {
             System.out.println("El usuario: " + recipient + " no se halla en linea");
             // Guardar el mensaje para entrega posterior
             try {
-                MessagesProto.ChatMessage chatMessage = MessagesProto.ChatMessage.parseFrom(mensaje.getPayload().array());
+                byte[] payload = mensaje.getPayload().array();
+                MessagesProto.WsMessage wsMessage = MessagesProto.WsMessage.parseFrom(payload);
+                MessagesProto.ChatMessage chatMessage = wsMessage.getChatMessage();
                 messageService.saveMessage(chatMessage);
                 System.out.println("Mensaje guardado en BD para entrega posterior");
             } catch (Exception ex) {
@@ -221,6 +230,10 @@ public class MyBinaryWebSocketHandler extends AbstractWebSocketHandler {
         
         // Enviar ACK al remitente
         //sendAck(session, mensaje);
+    }
+
+    private void handleDeleteMessage(DeleteMessageRequest request){
+        messageService.deleteMessage(request.getMessageId(), request.getSenderUsername());
     }
 
     /**

@@ -109,6 +109,29 @@ public class HttpServiceImpl implements HttpService{
             return CompletableFuture.failedFuture(e);
         }
     }
+
+    /**
+     * Envia una peticion DELETE con protobuf
+     */
+    private <T, R> CompletableFuture<R> sendDeleteRequest(String endpoint, T request, Class<R> responseClass){
+        try {
+            byte[] requestBody = serializeProtobuf(request);
+
+            HttpRequest httpRequest = HttpRequest.newBuilder()
+            .uri(URI.create(baseUrl + endpoint))
+            .header("Content-Type", "application/x-protobuf")
+            .header("Accept", "application/x-protobuf")
+            .method("DELETE", HttpRequest.BodyPublishers.ofByteArray(requestBody))
+            .timeout(Duration.ofSeconds(30))
+            .build();
+            
+            return httpClient.sendAsync(httpRequest, HttpResponse.BodyHandlers.ofByteArray())
+                    .thenApply(response -> handleResponse(response, responseClass));
+                    
+        } catch (Exception e) {
+            return CompletableFuture.failedFuture(e);
+        }
+    }
     
     /**
      * Serializa un mensaje Protobuf a bytes

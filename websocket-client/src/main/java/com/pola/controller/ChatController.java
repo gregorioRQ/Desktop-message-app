@@ -136,7 +136,7 @@ public class ChatController {
     }
 
     private void setupMessageListView(){
-        messageListView.setCellFactory(lv -> new MessageListCell(currentUserId, this::handleDeleteMessage, this::handleEditMessage));
+        messageListView.setCellFactory(lv -> new MessageListCell(currentUsername, this::handleDeleteMessage, this::handleEditMessage));
     }
     
     private void setupListeners() {

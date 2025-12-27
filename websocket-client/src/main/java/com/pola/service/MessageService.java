@@ -186,9 +186,24 @@ public class MessageService {
 
     private void sendDeleteMessageToServer(ChatMessage message){
         try {
+            // Crear la solicitud de eliminación con protobuf
+            com.pola.proto.MessagesProto.DeleteMessageRequest deleteRequest = 
+                com.pola.proto.MessagesProto.DeleteMessageRequest.newBuilder()
+                    .setMessageId(String.valueOf(message.getId()))
+                    .setSenderUsername(currentUserId)
+                    .build();
+            
+            // Enviar como WsMessage
+            WsMessage wsMessage = WsMessage.newBuilder()
+                .setDeleteMessageRequest(deleteRequest)
+                .build();
+            
+            webSocketService.sendMessage(wsMessage);
+            System.out.println("Solicitud de eliminación de mensaje enviada: " + message.getId());
             
         } catch (Exception e) {
-            // TODO: handle exception
+            System.err.println("Error al enviar solicitud de eliminación: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -197,7 +212,7 @@ public class MessageService {
             messageRepository.updateContent(message.getId(), newContent);
             message.setContent(newContent);
             if(webSocketService.isConnected()){
-                sendDeleteMessageToServer(message, newContent);
+                sendEditMessageToServer(message, newContent);
             }
         } catch (SQLException e) {
             System.err.println("Error editanto el mensaje");
@@ -205,7 +220,30 @@ public class MessageService {
         }
     }
 
-    private void sendDeleteMessageToServer(ChatMessage message, String newContent){
-        
+    private void sendEditMessageToServer(ChatMessage message, String newContent){
+        try {
+            // Crear un nuevo mensaje de chat con el contenido actualizado
+            com.pola.proto.MessagesProto.ChatMessage editedMessage = 
+                com.pola.proto.MessagesProto.ChatMessage.newBuilder()
+                    .setId(String.valueOf(message.getId()))
+                    .setType(MessageType.TEXT)
+                    .setSender(currentUserId)
+                    .setRecipient(currentContact != null ? currentContact.getContactUsername() : "")
+                    .setContent(newContent)
+                    .setTimestamp(Instant.now().toEpochMilli())
+                    .build();
+            
+            // Enviar como WsMessage
+            WsMessage wsMessage = WsMessage.newBuilder()
+                .setChatMessage(editedMessage)
+                .build();
+            
+            webSocketService.sendMessage(wsMessage);
+            System.out.println("Solicitud de edición de mensaje enviada: " + message.getId());
+            
+        } catch (Exception e) {
+            System.err.println("Error al enviar solicitud de edición: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 }

@@ -33,7 +33,7 @@ public class MessageService {
          * IllegalArgumentException("No puedes enviar mensajes a un contacto bloqueado."
          * );
          * }*/
-
+        System.out.println(message.toString());
         Message ms = new Message();
         ms.setFromUserId(message.getSender());
         ms.setToUserId(message.getRecipient());
@@ -105,18 +105,20 @@ public class MessageService {
         return totalUpdated;
     }
 */
-/* 
-    public void deleteMessage(Long messageId, String receiver) {
-        
-         * if (!messageRepository.existMessageByReceiverIdAndMessageId(receiverId,
-         * messageId)) {
-         * throw new
-         * IllegalArgumentException("El mensaje no existe o no pertenece al receptor.");
-         * }
+ 
+    public void deleteMessage(String messageId, String senderUsername) {
+        Message msg = messageRepository.findByFromUserId(senderUsername);
+         if (msg == null) {
+            throw new IllegalArgumentException("El mensaje no existe");
+         }
          
-        messageRepository.deleteById(messageId);
+        Long id = msg.getId();
+        if (id == null) {
+            throw new IllegalArgumentException("El ID del mensaje es nulo");
+        }
+        messageRepository.deleteById(id);
     }
-*/
+
 
 /* 
     // Elimina todos los mensajes entre dos usuarios

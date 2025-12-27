@@ -2,21 +2,23 @@ package com.pola.view;
 
 import java.util.function.Consumer;
 
-import org.glassfish.grizzly.Context;
-
 import com.pola.model.ChatMessage;
 
-import javafx.scene.control.ContextMenu;
+import javafx.geometry.Pos;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
-import javafx.scene.control.MenuItem;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 
 public class MessageListCell extends ListCell<ChatMessage>{
-    private String currentUserId;
+    private String currentUsername;
     private final Consumer<ChatMessage> onDelete;
     private final Consumer<ChatMessage> onEdit;
 
-    public MessageListCell(String currentUserId, Consumer<ChatMessage> onDelete, Consumer<ChatMessage> onEdit){
-        this.currentUserId = currentUserId;
+    public MessageListCell(String currentUsername, Consumer<ChatMessage> onDelete, Consumer<ChatMessage> onEdit){
+        this.currentUsername = currentUsername;
         this.onDelete = onDelete;
         this.onEdit = onEdit;
     }
@@ -28,49 +30,52 @@ public class MessageListCell extends ListCell<ChatMessage>{
         if(empty || message == null){
             setText(null);
             setGraphic(null);
-            setContextMenu(null);
         } else{
-            String sender = message.getSenderId().equals(currentUserId) ? "Tu" : "Contacto";
+            String sender = message.getSenderId().equals(currentUsername) ? "Tu" : "Contacto";
             String text = String.format("[%s] %s: %s", message.getFormattedTime(), sender, message.getContent());
-
-            setText(text);
-
-            // muestra el menu contextual solo si es un mensaje propio
-            if(message.getSenderId().equals(currentUserId)){
-                ContextMenu contextMenu = createContextMenu(message);
-                setContextMenu(contextMenu);
-
-                setStyle("-fx-cursor: hand;");
-            }else{
-                setContextMenu(null);
-                setStyle("");
+            
+            // Crear un HBox con el contenido del mensaje
+            HBox messageBox = new HBox(10);
+            messageBox.setAlignment(Pos.CENTER_LEFT);
+            messageBox.setStyle("-fx-padding: 5; -fx-border-radius: 5;");
+            
+            // Label con el contenido del mensaje
+            Label messageLabel = new Label(text);
+            messageLabel.setWrapText(true);
+            HBox.setHgrow(messageLabel, Priority.ALWAYS);
+            
+            messageBox.getChildren().add(messageLabel);
+            
+            // Si es un mensaje propio, agregar botones de acción
+            if(message.getSenderId().equals(currentUsername)){
+                Region spacer = new Region();
+                HBox.setHgrow(spacer, Priority.ALWAYS);
+                messageBox.getChildren().add(spacer);
+                
+                // Botón editar (lápiz)
+                Button editButton = new Button("✎");
+                editButton.setStyle("-fx-font-size: 12; -fx-padding: 5; -fx-min-width: 30; -fx-text-fill: #3498db;");
+                editButton.setOnAction(e -> {
+                    if(onEdit != null){
+                        onEdit.accept(message);
+                    }
+                });
+                
+                // Botón eliminar (X roja)
+                Button deleteButton = new Button("✕");
+                deleteButton.setStyle("-fx-font-size: 12; -fx-padding: 5; -fx-min-width: 30; -fx-text-fill: #e74c3c;");
+                deleteButton.setOnAction(e -> {
+                    if(onDelete != null){
+                        onDelete.accept(message);
+                    }
+                });
+                
+                messageBox.getChildren().addAll(editButton, deleteButton);
             }
+            
+            setText(null);
+            setGraphic(messageBox);
         }
     }
-
-    private ContextMenu createContextMenu(ChatMessage message) {
-        ContextMenu contextMenu = new ContextMenu();
-
-        // Opcion eliminar
-        MenuItem deleteItem = new MenuItem("Eliminar");
-        deleteItem.setStyle("-fx-text-fill: #e74c3c; -fx-font-weight: bold;");
-        deleteItem.setOnAction(e -> {
-            if(onDelete != null){
-                onDelete.accept(message);
-            } 
-        });
-
-        // opcion editar
-        MenuItem editItem = new MenuItem("Editar");
-        editItem.setStyle("-fx-text-fill: #3498db; -fx-font-weight: bold;");
-        editItem.setOnAction(e -> {
-            if(onEdit != null){
-                onEdit.accept(message);
-            }
-        });
-
-        contextMenu.getItems().addAll(deleteItem, editItem);
-        return contextMenu;
-    }
-
 }
+

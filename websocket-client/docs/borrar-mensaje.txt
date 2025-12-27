@@ -1,0 +1,28 @@
+
+ELIMINAR MENSAJE
+controller
+Mensaje seleccionado para eliminar
+
+service
+deleteOneMessage recibe el menaje
+    - eliminar mensaje local
+    delete(id_mensaje)
+
+    - eliminar mensaje del servidor
+        - si websocket esta conectado
+            enviarPeticionDeEliminacion(mensaje)
+        sino solo salir.
+    
+AGREGAR NUEVO CONTACTO 
+controller
+- Usuario ingresa datos del contacto (userId, username)
+
+service
+- addContact recibe los datos
+- verificar si ya existe
+    - si existe retornar el contacto
+    - sino crear uno nuevo
+- mostrar en la lista de el nuevo contacto
+
+repository
+- create() recibe los datos y retorna el nuevo contacto.
