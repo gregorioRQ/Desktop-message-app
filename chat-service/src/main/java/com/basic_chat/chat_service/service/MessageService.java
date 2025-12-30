@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -12,7 +13,9 @@ import org.springframework.stereotype.Service;
 import com.basic_chat.chat_service.models.Message;
 import com.basic_chat.chat_service.models.MessageDTO;
 import com.basic_chat.chat_service.repository.MessageRepository;
+import com.basic_chat.chat_service.validator.MessageValidator;
 import com.basic_chat.proto.MessagesProto;
+import com.basic_chat.proto.MessagesProto.DeleteMessageRequest;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -20,9 +23,11 @@ import jakarta.transaction.Transactional;
 @Service
 public class MessageService {
     private final MessageRepository messageRepository;
+    private final MessageValidator messageValidator;
 
-    public MessageService(MessageRepository messageRepository) {
+    public MessageService(MessageRepository messageRepository, MessageValidator messageValidator) {
         this.messageRepository = messageRepository;
+        this.messageValidator = messageValidator;
     }
 
     public void saveMessage(MessagesProto.ChatMessage message) {
@@ -33,19 +38,25 @@ public class MessageService {
          * IllegalArgumentException("No puedes enviar mensajes a un contacto bloqueado."
          * );
          * }*/
-        System.out.println(message.toString());
-        Message ms = new Message();
-        ms.setFromUserId(message.getSender());
-        ms.setToUserId(message.getRecipient());
-        ms.setData(message.getContent().getBytes());
+        Message mappedMessage = mapProtobufToEntity(message);
+        messageRepository.save(mappedMessage);
+    }
+
+    private Message mapProtobufToEntity(MessagesProto.ChatMessage protoMessage) {
+        Message message = new Message();
+        message.setId(Long.parseLong(protoMessage.getId()));
+        message.setFromUserId(protoMessage.getSender());
+        message.setToUserId(protoMessage.getRecipient());
+        message.setData(protoMessage.getContent().getBytes());
 
         LocalDateTime dateTime = LocalDateTime.ofInstant(
                 Instant.ofEpochMilli(System.currentTimeMillis()),
-                ZoneId.systemDefault() // o ZoneId.of("UTC")
+                ZoneId.systemDefault()
         );
-        ms.setTimestamp(dateTime);
-        ms.setCreationTime(message.getTimestamp());
-        messageRepository.save(ms);
+        message.setTimestamp(dateTime);
+        message.setCreationTime(protoMessage.getTimestamp());
+        
+        return message;
     }
 
     /* 
@@ -106,17 +117,11 @@ public class MessageService {
     }
 */
  
-    public void deleteMessage(String messageId, String senderUsername) {
-        Message msg = messageRepository.findByFromUserId(senderUsername);
-         if (msg == null) {
-            throw new IllegalArgumentException("El mensaje no existe");
-         }
-         
-        Long id = msg.getId();
-        if (id == null) {
-            throw new IllegalArgumentException("El ID del mensaje es nulo");
-        }
-        messageRepository.deleteById(id);
+    public void deleteMessage(DeleteMessageRequest request) {
+        Long messageId = Long.valueOf(request.getMessageId());
+        Message message = messageValidator.validateAndGetMessage(messageId);
+        messageValidator.validateMessageId(message);
+        messageRepository.deleteById(message.getId());
     }
 
 

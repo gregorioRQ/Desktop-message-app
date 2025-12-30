@@ -73,7 +73,9 @@ public class MessageService {
         try {
             // guardar en la db local
             ChatMessage localMessage = new ChatMessage(currentContact.getContactUsername(), content, username);
-            System.out.println("valor de currentUserId: " + currentUserId);
+            // generar un id aleatorio para el mensaje local y del servidor
+            localMessage.setId(Math.abs(UUID.randomUUID().getLeastSignificantBits()));
+            
             ChatMessage saved = messageRepository.create(localMessage);
 
             // mostrar en la UI
@@ -81,7 +83,7 @@ public class MessageService {
 
             // enviar por websocket
             com.pola.proto.MessagesProto.ChatMessage chatMessage = com.pola.proto.MessagesProto.ChatMessage.newBuilder()
-                .setId(UUID.randomUUID().toString())
+                .setId(String.valueOf(localMessage.getId()))
                 .setType(MessageType.TEXT)
                 .setSender(username)
                 .setRecipient(currentContact.getContactUsername())

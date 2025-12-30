@@ -104,7 +104,7 @@ public class DatabaseManager {
             // Tabla de mensajes
             String createMessagesTable = """
                 CREATE TABLE IF NOT EXISTS messages (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    id LONG PRIMARY KEY,
                     contact_username TEXT NOT NULL,
                     content TEXT NOT NULL,
                     sender_id TEXT NOT NULL,

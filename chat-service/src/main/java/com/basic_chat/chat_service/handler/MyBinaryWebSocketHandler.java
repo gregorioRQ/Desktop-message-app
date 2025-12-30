@@ -202,9 +202,6 @@ public class MyBinaryWebSocketHandler extends AbstractWebSocketHandler {
                 // Enviar el mensaje al DESTINATARIO, no al remitente
                 recipientSession.getWsSession().sendMessage(mensaje);
                 System.out.println("Mensaje entregado a: " + recipient);
-            } catch (Exception e) {
-                System.err.println("Error enviando el mensaje: " + e.getMessage());
-                // Si falla, guardar el mensaje para entrega posterior
                 try {
                     byte[] payload = mensaje.getPayload().array();
                     MessagesProto.WsMessage wsMessage = MessagesProto.WsMessage.parseFrom(payload);
@@ -213,6 +210,8 @@ public class MyBinaryWebSocketHandler extends AbstractWebSocketHandler {
                 } catch (Exception ex) {
                     System.err.println("Error al guardar el mensaje: " + ex.getMessage());
                 }
+            } catch (Exception e) {
+                System.err.println("Error enviando el mensaje: " + e.getMessage());
             }
         }else{
             System.out.println("El usuario: " + recipient + " no se halla en linea");
@@ -233,7 +232,7 @@ public class MyBinaryWebSocketHandler extends AbstractWebSocketHandler {
     }
 
     private void handleDeleteMessage(DeleteMessageRequest request){
-        messageService.deleteMessage(request.getMessageId(), request.getSenderUsername());
+        messageService.deleteMessage(request);
     }
 
     /**

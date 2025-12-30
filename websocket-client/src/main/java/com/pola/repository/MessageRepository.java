@@ -22,17 +22,18 @@ public class MessageRepository {
     // Crear un mensaje
     public ChatMessage create(ChatMessage message) throws SQLException {
         String sql = """
-            INSERT INTO messages (contact_username, content, sender_id, is_read)
-            VALUES (?, ?, ?, ?)
+            INSERT INTO messages (id, contact_username, content, sender_id, is_read)
+            VALUES (?, ?, ?, ?, ?)
             """;
         
         try (Connection conn = dbManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
-            stmt.setString(1, message.getContactUsername());
-            stmt.setString(2, message.getContent());
-            stmt.setString(3, message.getSenderId());
-            stmt.setInt(4, message.isRead() ? 1 : 0);
+            stmt.setLong(1, message.getId());
+            stmt.setString(2, message.getContactUsername());
+            stmt.setString(3, message.getContent());
+            stmt.setString(4, message.getSenderId());
+            stmt.setInt(5, message.isRead() ? 1 : 0);
             
             int affectedRows = stmt.executeUpdate();
             
@@ -45,7 +46,7 @@ public class MessageRepository {
                 ResultSet rs = idStatement.executeQuery(idQuery)
                 ) {
                 if (rs.next()) {
-                    message.setId(rs.getInt("id"));
+                    message.setId(rs.getLong("id"));
                 }
             }
             
@@ -117,13 +118,13 @@ public class MessageRepository {
     /**
      * Marca un mensaje como leído
      */
-    public void markAsRead(int messageId) throws SQLException {
+    public void markAsRead(Long messageId) throws SQLException {
         String sql = "UPDATE messages SET is_read = 1 WHERE id = ?";
         
         try (Connection conn = dbManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
-            stmt.setInt(1, messageId);
+            stmt.setLong(1, messageId);
             stmt.executeUpdate();
         }
     }
@@ -170,13 +171,13 @@ public class MessageRepository {
     /**
      * Elimina todos los mensajes de un contacto
      */
-    public void delete(int messageId) throws SQLException {
+    public void delete(Long messageId) throws SQLException {
         String sql = "DELETE FROM messages WHERE id = ?";
         
         try (Connection conn = dbManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
-            stmt.setInt(1, messageId);
+            stmt.setLong(1, messageId);
             int deleted = stmt.executeUpdate();
             if(deleted > 0){
                 System.out.println("Mensaje eliminado");
@@ -184,13 +185,13 @@ public class MessageRepository {
         }
     }
 
-    public void updateContent(int messageId, String newContent) throws SQLException {
+    public void updateContent(Long messageId, String newContent) throws SQLException {
         String sql = "UPDATE messages SET content = ? WHERE id = ?";
         try(Connection conn = dbManager.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql)
     ){
         stmt.setString(1, newContent);
-        stmt.setInt(2, messageId);
+        stmt.setLong(2, messageId);
         stmt.executeUpdate();
     }
     }
@@ -202,7 +203,7 @@ public class MessageRepository {
      */
     private ChatMessage mapResultSetToMessage(ResultSet rs) throws SQLException {
         return new ChatMessage(
-            rs.getInt("id"),
+            rs.getLong("id"),
             rs.getString("contact_username"),
             rs.getString("content"),
             rs.getString("sender_id"),

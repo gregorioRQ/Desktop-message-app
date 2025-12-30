@@ -2,18 +2,21 @@ package com.pola.model;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.UUID;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.LongProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 public class ChatMessage {
-    private final IntegerProperty id;
+    private final LongProperty id;
     private final StringProperty contactUsername;
     private final StringProperty content;
     private final StringProperty senderId;
@@ -23,9 +26,9 @@ public class ChatMessage {
     private static final DateTimeFormatter TIME_FORMATTER = 
             DateTimeFormatter.ofPattern("HH:mm");
     
-    public ChatMessage(int id, String contactUsername, String content, String senderId,
+    public ChatMessage(Long id, String contactUsername, String content, String senderId,
                       LocalDateTime timestamp, boolean read) {
-        this.id = new SimpleIntegerProperty(id);
+        this.id = new SimpleLongProperty(id);
         this.contactUsername = new SimpleStringProperty(contactUsername);
         this.content = new SimpleStringProperty(content);
         this.senderId = new SimpleStringProperty(senderId);
@@ -35,19 +38,19 @@ public class ChatMessage {
     
     // Constructor simplificado para nuevos mensajes
     public ChatMessage(String contactUsername, String content, String senderId) {
-        this(0, contactUsername, content, senderId, LocalDateTime.now(), false);
+        this(0L, contactUsername, content, senderId, LocalDateTime.now(), false);
     }
     
     // Getters y setters
-    public int getId() {
+    public Long getId() {
         return id.get();
     }
     
-    public IntegerProperty idProperty() {
+    public LongProperty idProperty() {
         return id;
     }
     
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id.set(id);
     }
     

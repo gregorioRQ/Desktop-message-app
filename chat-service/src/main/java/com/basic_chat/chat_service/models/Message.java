@@ -21,7 +21,6 @@ import lombok.NoArgsConstructor;
 @Data
 public class Message {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Lob
     private byte[] data; // Protobuf serializado.
