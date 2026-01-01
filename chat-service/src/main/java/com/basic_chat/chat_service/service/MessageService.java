@@ -3,21 +3,15 @@ package com.basic_chat.chat_service.service;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
 import com.basic_chat.chat_service.models.Message;
-import com.basic_chat.chat_service.models.MessageDTO;
 import com.basic_chat.chat_service.repository.MessageRepository;
 import com.basic_chat.chat_service.validator.MessageValidator;
 import com.basic_chat.proto.MessagesProto;
 import com.basic_chat.proto.MessagesProto.DeleteMessageRequest;
 
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -30,16 +24,26 @@ public class MessageService {
         this.messageValidator = messageValidator;
     }
 
+    @Transactional
     public void saveMessage(MessagesProto.ChatMessage message) {
-        /* 
-         * if (contactClient.isUserBlocked(message.getReceiverId(),
-         * message.getSenderId())) {
-         * throw new
-         * IllegalArgumentException("No puedes enviar mensajes a un contacto bloqueado."
-         * );
-         * }*/
-        Message mappedMessage = mapProtobufToEntity(message);
-        messageRepository.save(mappedMessage);
+        validateMessage(message);
+        try{
+            Message mappedMessage = mapProtobufToEntity(message);
+            messageRepository.save(mappedMessage);
+            System.out.println("Mensaje guardado. ID: " + message.getId());
+        }catch(Exception ex){
+            throw new RuntimeException("Error al guardar el mensaje", ex);
+        }
+        
+    }
+
+    private void validateMessage(MessagesProto.ChatMessage message){
+        if(message == null){
+            throw new IllegalArgumentException(
+                "El mensaje no puede ser nulo"
+            );
+        }
+        messageValidator.validate(message);
     }
 
     private Message mapProtobufToEntity(MessagesProto.ChatMessage protoMessage) {
@@ -116,7 +120,7 @@ public class MessageService {
         return totalUpdated;
     }
 */
- 
+    @Transactional
     public void deleteMessage(DeleteMessageRequest request) {
         Long messageId = Long.valueOf(request.getMessageId());
         Message message = messageValidator.validateAndGetMessage(messageId);
