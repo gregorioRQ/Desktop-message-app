@@ -11,8 +11,8 @@ import com.basic_chat.proto.MessagesProto;
 import com.basic_chat.proto.MessagesProto.AuthMessage;
 import com.basic_chat.proto.MessagesProto.AuthResponse;
 import com.basic_chat.proto.MessagesProto.ChatMessage;
-import com.basic_chat.proto.MessagesProto.DeleteMessageRequest;
 import com.basic_chat.proto.MessagesProto.MessageType;
+import com.basic_chat.proto.MessagesProto.UnreadMessagesList;
 import com.basic_chat.proto.MessagesProto.WsMessage;
 
 import io.jsonwebtoken.Claims;
@@ -28,6 +28,7 @@ import org.springframework.web.socket.handler.AbstractWebSocketHandler;
 
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -66,7 +67,7 @@ public class MyBinaryWebSocketHandler extends AbstractWebSocketHandler {
     @Override
     protected void handleBinaryMessage(WebSocketSession session, BinaryMessage message) throws Exception {
         try {
-            MessagesProto.WsMessage wsMessage = MessagesProto.WsMessage.parseFrom (message.getPayload().array());
+            MessagesProto.WsMessage wsMessage = MessagesProto.WsMessage.parseFrom(message.getPayload().array());
 
             SessionContext context = new SessionContext(session, sessionManager);
 
@@ -74,7 +75,9 @@ public class MyBinaryWebSocketHandler extends AbstractWebSocketHandler {
                 authenticationGuard.check(context);
             }
             dispatcher.dispatch(context, wsMessage);
-
+                if (wsMessage.hasAuthMessage() && sessionManager.isAuthenticated(session.getId())) {
+                sendPendingMessages(session);
+            }
         } catch (Exception e) {
             System.err.println("Error procesando mensaje: " + e.getMessage());
             e.printStackTrace();
@@ -105,14 +108,26 @@ public class MyBinaryWebSocketHandler extends AbstractWebSocketHandler {
 
     @Override
     public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
-        System.err.println("\n✗ Error de transporte: " + session.getId());
+        System.err.println("\n Error de transporte: " + session.getId());
         System.err.println("  Error: " + exception.getMessage());
     }
 
-   
-
-    private void handleDeleteMessage(DeleteMessageRequest request){
-        messageService.deleteMessage(request);
+    private void sendPendingMessages(WebSocketSession session){
+        SessionManager.SessionInfo sessionInfo = sessionManager.getSessionInfo(session.getId());
+        if(sessionInfo == null){
+            return;
+        }
+        String username = sessionInfo.getUsername();
+        List<ChatMessage> messages = messageService.getUnreadMessages(username);
+        if(!messages.isEmpty()){
+            UnreadMessagesList list = UnreadMessagesList.newBuilder().addAllMessages(messages).build();
+            WsMessage wsMessage = WsMessage.newBuilder().setUnreadMessagesList(list).build();
+            try {
+                session.sendMessage(new BinaryMessage(wsMessage.toByteArray()));
+            } catch (IOException e) {
+                log.error("Error enviando mensajes pendientes", e);
+            }
+        }
     }
 
     /**

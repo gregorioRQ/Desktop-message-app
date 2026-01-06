@@ -45,6 +45,10 @@ message UserList {
   repeated User users = 1;
 }
 
+message UnreadMessagesList {
+  repeated ChatMessage messages = 1;
+}
+
 // Usuario
 message User {
   string id = 1;
@@ -81,5 +85,6 @@ message WsMessage {
     DeleteMessageRequest delete_message_request = 5;
     DeleteMessageResponse delete_message_response = 6;
     MessageDeletedNotification message_delete_notification = 7;
+    UnreadMessagesList unread_messages_list = 8;
   }
 }

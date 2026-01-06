@@ -12,7 +12,7 @@ import com.basic_chat.chat_service.models.Message;
 import jakarta.transaction.Transactional;
 
 public interface MessageRepository extends JpaRepository<Message, Long> {
-    //List<Message> findByReceiverAndIsSeenFalse(String to);
+    List<Message> findByToUserIdAndSeenFalse(String to);
 
     Message findByFromUserId(String user);
 

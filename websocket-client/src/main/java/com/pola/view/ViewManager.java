@@ -73,11 +73,12 @@ public class ViewManager {
             if (webSocketService == null) {
                 webSocketService = new WebSocketServiceImpl();
             }
-            if (messageService == null) {
-                messageService = new MessageService(webSocketService);
-            }
+            
             if (contactService == null) {
                 contactService = new ContactService();
+            }
+            if (messageService == null) {
+                messageService = new MessageService(webSocketService, contactService);
             }
             
             FXMLLoader loader = new FXMLLoader(

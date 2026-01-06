@@ -12,6 +12,7 @@ import com.pola.proto.MessagesProto.MessageType;
 import com.pola.proto.MessagesProto.WsMessage;
 import com.pola.repository.MessageRepository;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -27,11 +28,11 @@ public class MessageService {
     private String currentUserId;
     private ContactService contactService;
     
-    public MessageService(WebSocketService webSocketService) {
+    public MessageService(WebSocketService webSocketService, ContactService contactService) {
         this.webSocketService = webSocketService;
         this.messageRepository = new MessageRepository();
         this.currentChatMessages = FXCollections.observableArrayList();
-        this.contactService = new ContactService();
+        this.contactService = contactService;
     }
 
     // Establece el usuario actual
@@ -74,7 +75,8 @@ public class MessageService {
             // guardar en la db local
             ChatMessage localMessage = new ChatMessage(currentContact.getContactUsername(), content, username);
             // generar un id aleatorio para el mensaje local y del servidor
-            localMessage.setId(Math.abs(UUID.randomUUID().getLeastSignificantBits()));
+            long id = Math.abs(UUID.randomUUID().getLeastSignificantBits());
+            localMessage.setId(id);
             
             ChatMessage saved = messageRepository.create(localMessage);
 
@@ -83,7 +85,7 @@ public class MessageService {
 
             // enviar por websocket
             com.pola.proto.MessagesProto.ChatMessage chatMessage = com.pola.proto.MessagesProto.ChatMessage.newBuilder()
-                .setId(String.valueOf(localMessage.getId()))
+                .setId(String.valueOf(id))
                 .setType(MessageType.TEXT)
                 .setSender(username)
                 .setRecipient(currentContact.getContactUsername())
@@ -97,7 +99,7 @@ public class MessageService {
 
             webSocketService.sendMessage(wsMessage);
 
-            System.out.println("Mensaje enviado a: " + currentContact.getContactUsername());
+            System.out.println("Mensaje enviado a: " + currentContact.getContactUsername() + "id: " + localMessage.getId());
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -108,6 +110,11 @@ public class MessageService {
      * Procesa un mensaje recibido
      */
     public void processReceivedMessage(WsMessage wsMessage) {
+        if(wsMessage.hasUnreadMessagesList()){
+            processUnreadMessages(wsMessage.getUnreadMessagesList());
+            return;
+        }
+
         if(!wsMessage.hasChatMessage()){
             return;
         }
@@ -115,10 +122,17 @@ public class MessageService {
         com.pola.proto.MessagesProto.ChatMessage protobufMessage = wsMessage.getChatMessage();
         String senderId = protobufMessage.getSender();
         String content = protobufMessage.getContent();
+        long messageId = Long.parseLong(protobufMessage.getId());
       
         System.out.println("Iniciando proceso de guardado de mensaje");
         
         try {
+            // Validar si el mensaje ya existe para evitar duplicados
+            if (messageRepository.existsById(messageId)) {
+                System.out.println("Mensaje recibido ya existe en local. ID: " + messageId);
+                return;
+            }
+
             // buscar si el contacto existe o crear uno nuevo
             Contact contact = this.contactService.findContactByUsername(currentUserId, senderId).orElseGet(()->{
                 // Contacto nuevo = agregarlo
@@ -133,13 +147,14 @@ public class MessageService {
 
             // crear el mensaje local
             ChatMessage localMessage = new ChatMessage(contact.getContactUsername(), content, senderId);
+            localMessage.setId(messageId); // Asignar el ID del servidor
 
             // guardar en la db
             ChatMessage saved = messageRepository.create(localMessage);
 
             // si es del contacto actualmente seleccionado mostrarlo en la UI
             if(currentContact != null && currentContact.getId() == contact.getId()){
-                currentChatMessages.add(saved);
+                Platform.runLater(() -> currentChatMessages.add(saved));
                 messageRepository.markAsRead(saved.getId());
             }
 
@@ -246,6 +261,53 @@ public class MessageService {
         } catch (Exception e) {
             System.err.println("Error al enviar solicitud de edición: " + e.getMessage());
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * Procesa la lista de mensajes no leídos recibida del servidor
+     */
+    private void processUnreadMessages(com.pola.proto.MessagesProto.UnreadMessagesList unreadMessagesList) {
+        List<com.pola.proto.MessagesProto.ChatMessage> messages = unreadMessagesList.getMessagesList();
+        System.out.println("Procesando lista de mensajes no leídos: " + messages.size());
+
+        for (com.pola.proto.MessagesProto.ChatMessage protoMessage : messages) {
+            String senderUsername = protoMessage.getSender();
+            String content = protoMessage.getContent();
+            long messageId = Long.parseLong(protoMessage.getId());
+
+            try {
+                // Buscar o crear contacto
+                Contact contact = this.contactService.findContactByUsername(currentUserId, senderUsername)
+                        .orElseGet(() -> this.contactService.addContact(currentUserId, senderUsername));
+
+                if (contact == null) {
+                    System.err.println("No se pudo obtener contacto para mensaje de: " + senderUsername);
+                    continue;
+                }
+
+                // Validar si el mensaje ya existe
+                if (messageRepository.existsById(messageId)) {
+                    System.out.println("Mensaje no leído ya existe en local (ignorado). ID: " + messageId);
+                    continue;
+                }
+
+                // Crear mensaje local
+                ChatMessage localMessage = new ChatMessage(contact.getContactUsername(), content, senderUsername);
+                localMessage.setId(messageId);
+                
+                // Guardar en DB (se guarda como no leído por defecto)
+                ChatMessage saved = messageRepository.create(localMessage);
+
+                // Si estamos en el chat de este contacto, mostrar y marcar como leído
+                if (currentContact != null && currentContact.getId() == contact.getId()) {
+                    Platform.runLater(() -> currentChatMessages.add(saved));
+                    messageRepository.markAsRead(saved.getId());
+                }
+            } catch (SQLException e) {
+                System.err.println("Error procesando mensaje no leído: " + e.getMessage());
+                e.printStackTrace();
+            }
         }
     }
 }

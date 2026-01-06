@@ -97,6 +97,7 @@ public class WebSocketServiceImpl implements WebSocketService{
                 if(authResponse.getSuccess()){
                     System.out.println("Autenticacion exitosa: " + authResponse.getUserId());
                     notifyConnectionChange(true);
+                    
                 }else{
                     System.err.println("Error de autenticacion: " + authResponse.getMessage());
                     notifyError(new Exception("Auth failed: " + authResponse.getMessage()));
@@ -104,8 +105,7 @@ public class WebSocketServiceImpl implements WebSocketService{
                 }
                 return;
             }
-            System.out.println("MENSAJE DE: " + message.getChatMessage().getSender());
-            System.out.println("CONTENIDO: " + message.getChatMessage().getContent());
+   
             if (messageListener != null) {
                 messageListener.accept(message);
             }

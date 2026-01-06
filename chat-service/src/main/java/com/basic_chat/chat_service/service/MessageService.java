@@ -3,6 +3,8 @@ package com.basic_chat.chat_service.service;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 
@@ -10,6 +12,7 @@ import com.basic_chat.chat_service.models.Message;
 import com.basic_chat.chat_service.repository.MessageRepository;
 import com.basic_chat.chat_service.validator.MessageValidator;
 import com.basic_chat.proto.MessagesProto;
+import com.basic_chat.proto.MessagesProto.ChatMessage;
 import com.basic_chat.proto.MessagesProto.DeleteMessageRequest;
 
 import jakarta.transaction.Transactional;
@@ -48,10 +51,12 @@ public class MessageService {
 
     private Message mapProtobufToEntity(MessagesProto.ChatMessage protoMessage) {
         Message message = new Message();
+        System.out.println(protoMessage.getId());
         message.setId(Long.parseLong(protoMessage.getId()));
         message.setFromUserId(protoMessage.getSender());
         message.setToUserId(protoMessage.getRecipient());
-        message.setData(protoMessage.getContent().getBytes());
+        message.setData(protoMessage.toByteArray());
+        message.setSeen(false);
 
         LocalDateTime dateTime = LocalDateTime.ofInstant(
                 Instant.ofEpochMilli(System.currentTimeMillis()),
@@ -63,31 +68,22 @@ public class MessageService {
         return message;
     }
 
-    /* 
-    public List<MessageDTO> getUnreadMessages(String username) {
+    @Transactional
+    public List<ChatMessage> getUnreadMessages(String username) {
 
-        if (messageRepository.existsByReceiver(username) == false) {
-            System.out.println("No hay mensajes para este usuario");
-            throw new EntityNotFoundException("Este usuario no existe");
-        }
-
-        List<Message> messages = messageRepository.findByReceiverAndIsSeenFalse(username);
+        List<Message> messages = messageRepository.findByToUserIdAndSeenFalse(username);
         if (messages.isEmpty()) {
             System.out.println("No hay mensajes para este usuario");
-            throw new EntityNotFoundException("No hay mensajes para este usuario");
         }
-        List<MessageDTO> messageDTOs = new ArrayList<>();
-        for (Message m : messages) {
-            MessageDTO messageDTO = new MessageDTO();
-            messageDTO.setContent(m.getContent());
-            messageDTO.setReceiver(m.getReceiver());
-            messageDTO.setSender(m.getSender());
-            // convierte de LocaDateTime a long
-            messageDTO.setCreated_at(m.getCreated_at().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
-            messageDTO.setImageUrl(m.getImageUrl());
-            messageDTOs.add(messageDTO);
-        }
-        return messageDTOs;
+        
+        return messages.stream().map(m -> {
+            try{
+                return ChatMessage.parseFrom(m.getData());
+            }catch(Exception ex){
+                throw new RuntimeException("Error al deserializar el mensaje");
+            }
+            
+        }).toList();
     }
     
     public List<ChatMessage> findByToUserId(String toUserId) {
@@ -102,7 +98,7 @@ public class MessageService {
                     }
                 })
                 .toList();
-    }*/
+    }
 
     /* 
     @Transactional

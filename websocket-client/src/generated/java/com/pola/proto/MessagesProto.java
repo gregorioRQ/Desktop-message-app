@@ -3642,6 +3642,788 @@ public final class MessagesProto {
 
   }
 
+  public interface UnreadMessagesListOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:com.pola.UnreadMessagesList)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>repeated .com.pola.ChatMessage messages = 1;</code>
+     */
+    java.util.List<com.pola.proto.MessagesProto.ChatMessage> 
+        getMessagesList();
+    /**
+     * <code>repeated .com.pola.ChatMessage messages = 1;</code>
+     */
+    com.pola.proto.MessagesProto.ChatMessage getMessages(int index);
+    /**
+     * <code>repeated .com.pola.ChatMessage messages = 1;</code>
+     */
+    int getMessagesCount();
+    /**
+     * <code>repeated .com.pola.ChatMessage messages = 1;</code>
+     */
+    java.util.List<? extends com.pola.proto.MessagesProto.ChatMessageOrBuilder> 
+        getMessagesOrBuilderList();
+    /**
+     * <code>repeated .com.pola.ChatMessage messages = 1;</code>
+     */
+    com.pola.proto.MessagesProto.ChatMessageOrBuilder getMessagesOrBuilder(
+        int index);
+  }
+  /**
+   * Protobuf type {@code com.pola.UnreadMessagesList}
+   */
+  public static final class UnreadMessagesList extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:com.pola.UnreadMessagesList)
+      UnreadMessagesListOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use UnreadMessagesList.newBuilder() to construct.
+    private UnreadMessagesList(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private UnreadMessagesList() {
+      messages_ = java.util.Collections.emptyList();
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new UnreadMessagesList();
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.pola.proto.MessagesProto.internal_static_com_pola_UnreadMessagesList_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.pola.proto.MessagesProto.internal_static_com_pola_UnreadMessagesList_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.pola.proto.MessagesProto.UnreadMessagesList.class, com.pola.proto.MessagesProto.UnreadMessagesList.Builder.class);
+    }
+
+    public static final int MESSAGES_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private java.util.List<com.pola.proto.MessagesProto.ChatMessage> messages_;
+    /**
+     * <code>repeated .com.pola.ChatMessage messages = 1;</code>
+     */
+    @java.lang.Override
+    public java.util.List<com.pola.proto.MessagesProto.ChatMessage> getMessagesList() {
+      return messages_;
+    }
+    /**
+     * <code>repeated .com.pola.ChatMessage messages = 1;</code>
+     */
+    @java.lang.Override
+    public java.util.List<? extends com.pola.proto.MessagesProto.ChatMessageOrBuilder> 
+        getMessagesOrBuilderList() {
+      return messages_;
+    }
+    /**
+     * <code>repeated .com.pola.ChatMessage messages = 1;</code>
+     */
+    @java.lang.Override
+    public int getMessagesCount() {
+      return messages_.size();
+    }
+    /**
+     * <code>repeated .com.pola.ChatMessage messages = 1;</code>
+     */
+    @java.lang.Override
+    public com.pola.proto.MessagesProto.ChatMessage getMessages(int index) {
+      return messages_.get(index);
+    }
+    /**
+     * <code>repeated .com.pola.ChatMessage messages = 1;</code>
+     */
+    @java.lang.Override
+    public com.pola.proto.MessagesProto.ChatMessageOrBuilder getMessagesOrBuilder(
+        int index) {
+      return messages_.get(index);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      for (int i = 0; i < messages_.size(); i++) {
+        output.writeMessage(1, messages_.get(i));
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      for (int i = 0; i < messages_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, messages_.get(i));
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.pola.proto.MessagesProto.UnreadMessagesList)) {
+        return super.equals(obj);
+      }
+      com.pola.proto.MessagesProto.UnreadMessagesList other = (com.pola.proto.MessagesProto.UnreadMessagesList) obj;
+
+      if (!getMessagesList()
+          .equals(other.getMessagesList())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (getMessagesCount() > 0) {
+        hash = (37 * hash) + MESSAGES_FIELD_NUMBER;
+        hash = (53 * hash) + getMessagesList().hashCode();
+      }
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.pola.proto.MessagesProto.UnreadMessagesList parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.pola.proto.MessagesProto.UnreadMessagesList parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.pola.proto.MessagesProto.UnreadMessagesList parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.pola.proto.MessagesProto.UnreadMessagesList parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.pola.proto.MessagesProto.UnreadMessagesList parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.pola.proto.MessagesProto.UnreadMessagesList parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.pola.proto.MessagesProto.UnreadMessagesList parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.pola.proto.MessagesProto.UnreadMessagesList parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static com.pola.proto.MessagesProto.UnreadMessagesList parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static com.pola.proto.MessagesProto.UnreadMessagesList parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.pola.proto.MessagesProto.UnreadMessagesList parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.pola.proto.MessagesProto.UnreadMessagesList parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.pola.proto.MessagesProto.UnreadMessagesList prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code com.pola.UnreadMessagesList}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:com.pola.UnreadMessagesList)
+        com.pola.proto.MessagesProto.UnreadMessagesListOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.pola.proto.MessagesProto.internal_static_com_pola_UnreadMessagesList_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.pola.proto.MessagesProto.internal_static_com_pola_UnreadMessagesList_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.pola.proto.MessagesProto.UnreadMessagesList.class, com.pola.proto.MessagesProto.UnreadMessagesList.Builder.class);
+      }
+
+      // Construct using com.pola.proto.MessagesProto.UnreadMessagesList.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        if (messagesBuilder_ == null) {
+          messages_ = java.util.Collections.emptyList();
+        } else {
+          messages_ = null;
+          messagesBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000001);
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.pola.proto.MessagesProto.internal_static_com_pola_UnreadMessagesList_descriptor;
+      }
+
+      @java.lang.Override
+      public com.pola.proto.MessagesProto.UnreadMessagesList getDefaultInstanceForType() {
+        return com.pola.proto.MessagesProto.UnreadMessagesList.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public com.pola.proto.MessagesProto.UnreadMessagesList build() {
+        com.pola.proto.MessagesProto.UnreadMessagesList result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public com.pola.proto.MessagesProto.UnreadMessagesList buildPartial() {
+        com.pola.proto.MessagesProto.UnreadMessagesList result = new com.pola.proto.MessagesProto.UnreadMessagesList(this);
+        buildPartialRepeatedFields(result);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartialRepeatedFields(com.pola.proto.MessagesProto.UnreadMessagesList result) {
+        if (messagesBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) != 0)) {
+            messages_ = java.util.Collections.unmodifiableList(messages_);
+            bitField0_ = (bitField0_ & ~0x00000001);
+          }
+          result.messages_ = messages_;
+        } else {
+          result.messages_ = messagesBuilder_.build();
+        }
+      }
+
+      private void buildPartial0(com.pola.proto.MessagesProto.UnreadMessagesList result) {
+        int from_bitField0_ = bitField0_;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.pola.proto.MessagesProto.UnreadMessagesList) {
+          return mergeFrom((com.pola.proto.MessagesProto.UnreadMessagesList)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.pola.proto.MessagesProto.UnreadMessagesList other) {
+        if (other == com.pola.proto.MessagesProto.UnreadMessagesList.getDefaultInstance()) return this;
+        if (messagesBuilder_ == null) {
+          if (!other.messages_.isEmpty()) {
+            if (messages_.isEmpty()) {
+              messages_ = other.messages_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+            } else {
+              ensureMessagesIsMutable();
+              messages_.addAll(other.messages_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.messages_.isEmpty()) {
+            if (messagesBuilder_.isEmpty()) {
+              messagesBuilder_.dispose();
+              messagesBuilder_ = null;
+              messages_ = other.messages_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+              messagesBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getMessagesFieldBuilder() : null;
+            } else {
+              messagesBuilder_.addAllMessages(other.messages_);
+            }
+          }
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                com.pola.proto.MessagesProto.ChatMessage m =
+                    input.readMessage(
+                        com.pola.proto.MessagesProto.ChatMessage.parser(),
+                        extensionRegistry);
+                if (messagesBuilder_ == null) {
+                  ensureMessagesIsMutable();
+                  messages_.add(m);
+                } else {
+                  messagesBuilder_.addMessage(m);
+                }
+                break;
+              } // case 10
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.util.List<com.pola.proto.MessagesProto.ChatMessage> messages_ =
+        java.util.Collections.emptyList();
+      private void ensureMessagesIsMutable() {
+        if (!((bitField0_ & 0x00000001) != 0)) {
+          messages_ = new java.util.ArrayList<com.pola.proto.MessagesProto.ChatMessage>(messages_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          com.pola.proto.MessagesProto.ChatMessage, com.pola.proto.MessagesProto.ChatMessage.Builder, com.pola.proto.MessagesProto.ChatMessageOrBuilder> messagesBuilder_;
+
+      /**
+       * <code>repeated .com.pola.ChatMessage messages = 1;</code>
+       */
+      public java.util.List<com.pola.proto.MessagesProto.ChatMessage> getMessagesList() {
+        if (messagesBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(messages_);
+        } else {
+          return messagesBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <code>repeated .com.pola.ChatMessage messages = 1;</code>
+       */
+      public int getMessagesCount() {
+        if (messagesBuilder_ == null) {
+          return messages_.size();
+        } else {
+          return messagesBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .com.pola.ChatMessage messages = 1;</code>
+       */
+      public com.pola.proto.MessagesProto.ChatMessage getMessages(int index) {
+        if (messagesBuilder_ == null) {
+          return messages_.get(index);
+        } else {
+          return messagesBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .com.pola.ChatMessage messages = 1;</code>
+       */
+      public Builder setMessages(
+          int index, com.pola.proto.MessagesProto.ChatMessage value) {
+        if (messagesBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureMessagesIsMutable();
+          messages_.set(index, value);
+          onChanged();
+        } else {
+          messagesBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .com.pola.ChatMessage messages = 1;</code>
+       */
+      public Builder setMessages(
+          int index, com.pola.proto.MessagesProto.ChatMessage.Builder builderForValue) {
+        if (messagesBuilder_ == null) {
+          ensureMessagesIsMutable();
+          messages_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          messagesBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .com.pola.ChatMessage messages = 1;</code>
+       */
+      public Builder addMessages(com.pola.proto.MessagesProto.ChatMessage value) {
+        if (messagesBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureMessagesIsMutable();
+          messages_.add(value);
+          onChanged();
+        } else {
+          messagesBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .com.pola.ChatMessage messages = 1;</code>
+       */
+      public Builder addMessages(
+          int index, com.pola.proto.MessagesProto.ChatMessage value) {
+        if (messagesBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureMessagesIsMutable();
+          messages_.add(index, value);
+          onChanged();
+        } else {
+          messagesBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .com.pola.ChatMessage messages = 1;</code>
+       */
+      public Builder addMessages(
+          com.pola.proto.MessagesProto.ChatMessage.Builder builderForValue) {
+        if (messagesBuilder_ == null) {
+          ensureMessagesIsMutable();
+          messages_.add(builderForValue.build());
+          onChanged();
+        } else {
+          messagesBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .com.pola.ChatMessage messages = 1;</code>
+       */
+      public Builder addMessages(
+          int index, com.pola.proto.MessagesProto.ChatMessage.Builder builderForValue) {
+        if (messagesBuilder_ == null) {
+          ensureMessagesIsMutable();
+          messages_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          messagesBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .com.pola.ChatMessage messages = 1;</code>
+       */
+      public Builder addAllMessages(
+          java.lang.Iterable<? extends com.pola.proto.MessagesProto.ChatMessage> values) {
+        if (messagesBuilder_ == null) {
+          ensureMessagesIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, messages_);
+          onChanged();
+        } else {
+          messagesBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .com.pola.ChatMessage messages = 1;</code>
+       */
+      public Builder clearMessages() {
+        if (messagesBuilder_ == null) {
+          messages_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+          onChanged();
+        } else {
+          messagesBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .com.pola.ChatMessage messages = 1;</code>
+       */
+      public Builder removeMessages(int index) {
+        if (messagesBuilder_ == null) {
+          ensureMessagesIsMutable();
+          messages_.remove(index);
+          onChanged();
+        } else {
+          messagesBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .com.pola.ChatMessage messages = 1;</code>
+       */
+      public com.pola.proto.MessagesProto.ChatMessage.Builder getMessagesBuilder(
+          int index) {
+        return getMessagesFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .com.pola.ChatMessage messages = 1;</code>
+       */
+      public com.pola.proto.MessagesProto.ChatMessageOrBuilder getMessagesOrBuilder(
+          int index) {
+        if (messagesBuilder_ == null) {
+          return messages_.get(index);  } else {
+          return messagesBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <code>repeated .com.pola.ChatMessage messages = 1;</code>
+       */
+      public java.util.List<? extends com.pola.proto.MessagesProto.ChatMessageOrBuilder> 
+           getMessagesOrBuilderList() {
+        if (messagesBuilder_ != null) {
+          return messagesBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(messages_);
+        }
+      }
+      /**
+       * <code>repeated .com.pola.ChatMessage messages = 1;</code>
+       */
+      public com.pola.proto.MessagesProto.ChatMessage.Builder addMessagesBuilder() {
+        return getMessagesFieldBuilder().addBuilder(
+            com.pola.proto.MessagesProto.ChatMessage.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .com.pola.ChatMessage messages = 1;</code>
+       */
+      public com.pola.proto.MessagesProto.ChatMessage.Builder addMessagesBuilder(
+          int index) {
+        return getMessagesFieldBuilder().addBuilder(
+            index, com.pola.proto.MessagesProto.ChatMessage.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .com.pola.ChatMessage messages = 1;</code>
+       */
+      public java.util.List<com.pola.proto.MessagesProto.ChatMessage.Builder> 
+           getMessagesBuilderList() {
+        return getMessagesFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          com.pola.proto.MessagesProto.ChatMessage, com.pola.proto.MessagesProto.ChatMessage.Builder, com.pola.proto.MessagesProto.ChatMessageOrBuilder> 
+          getMessagesFieldBuilder() {
+        if (messagesBuilder_ == null) {
+          messagesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              com.pola.proto.MessagesProto.ChatMessage, com.pola.proto.MessagesProto.ChatMessage.Builder, com.pola.proto.MessagesProto.ChatMessageOrBuilder>(
+                  messages_,
+                  ((bitField0_ & 0x00000001) != 0),
+                  getParentForChildren(),
+                  isClean());
+          messages_ = null;
+        }
+        return messagesBuilder_;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:com.pola.UnreadMessagesList)
+    }
+
+    // @@protoc_insertion_point(class_scope:com.pola.UnreadMessagesList)
+    private static final com.pola.proto.MessagesProto.UnreadMessagesList DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.pola.proto.MessagesProto.UnreadMessagesList();
+    }
+
+    public static com.pola.proto.MessagesProto.UnreadMessagesList getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<UnreadMessagesList>
+        PARSER = new com.google.protobuf.AbstractParser<UnreadMessagesList>() {
+      @java.lang.Override
+      public UnreadMessagesList parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<UnreadMessagesList> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<UnreadMessagesList> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.pola.proto.MessagesProto.UnreadMessagesList getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   public interface UserOrBuilder extends
       // @@protoc_insertion_point(interface_extends:com.pola.User)
       com.google.protobuf.MessageOrBuilder {
@@ -6765,6 +7547,21 @@ public final class MessagesProto {
      */
     com.pola.proto.MessagesProto.MessageDeletedNotificationOrBuilder getMessageDeleteNotificationOrBuilder();
 
+    /**
+     * <code>.com.pola.UnreadMessagesList unread_messages_list = 8;</code>
+     * @return Whether the unreadMessagesList field is set.
+     */
+    boolean hasUnreadMessagesList();
+    /**
+     * <code>.com.pola.UnreadMessagesList unread_messages_list = 8;</code>
+     * @return The unreadMessagesList.
+     */
+    com.pola.proto.MessagesProto.UnreadMessagesList getUnreadMessagesList();
+    /**
+     * <code>.com.pola.UnreadMessagesList unread_messages_list = 8;</code>
+     */
+    com.pola.proto.MessagesProto.UnreadMessagesListOrBuilder getUnreadMessagesListOrBuilder();
+
     com.pola.proto.MessagesProto.WsMessage.PayloadCase getPayloadCase();
   }
   /**
@@ -6819,6 +7616,7 @@ public final class MessagesProto {
       DELETE_MESSAGE_REQUEST(5),
       DELETE_MESSAGE_RESPONSE(6),
       MESSAGE_DELETE_NOTIFICATION(7),
+      UNREAD_MESSAGES_LIST(8),
       PAYLOAD_NOT_SET(0);
       private final int value;
       private PayloadCase(int value) {
@@ -6843,6 +7641,7 @@ public final class MessagesProto {
           case 5: return DELETE_MESSAGE_REQUEST;
           case 6: return DELETE_MESSAGE_RESPONSE;
           case 7: return MESSAGE_DELETE_NOTIFICATION;
+          case 8: return UNREAD_MESSAGES_LIST;
           case 0: return PAYLOAD_NOT_SET;
           default: return null;
         }
@@ -7075,6 +7874,37 @@ public final class MessagesProto {
       return com.pola.proto.MessagesProto.MessageDeletedNotification.getDefaultInstance();
     }
 
+    public static final int UNREAD_MESSAGES_LIST_FIELD_NUMBER = 8;
+    /**
+     * <code>.com.pola.UnreadMessagesList unread_messages_list = 8;</code>
+     * @return Whether the unreadMessagesList field is set.
+     */
+    @java.lang.Override
+    public boolean hasUnreadMessagesList() {
+      return payloadCase_ == 8;
+    }
+    /**
+     * <code>.com.pola.UnreadMessagesList unread_messages_list = 8;</code>
+     * @return The unreadMessagesList.
+     */
+    @java.lang.Override
+    public com.pola.proto.MessagesProto.UnreadMessagesList getUnreadMessagesList() {
+      if (payloadCase_ == 8) {
+         return (com.pola.proto.MessagesProto.UnreadMessagesList) payload_;
+      }
+      return com.pola.proto.MessagesProto.UnreadMessagesList.getDefaultInstance();
+    }
+    /**
+     * <code>.com.pola.UnreadMessagesList unread_messages_list = 8;</code>
+     */
+    @java.lang.Override
+    public com.pola.proto.MessagesProto.UnreadMessagesListOrBuilder getUnreadMessagesListOrBuilder() {
+      if (payloadCase_ == 8) {
+         return (com.pola.proto.MessagesProto.UnreadMessagesList) payload_;
+      }
+      return com.pola.proto.MessagesProto.UnreadMessagesList.getDefaultInstance();
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -7109,6 +7939,9 @@ public final class MessagesProto {
       }
       if (payloadCase_ == 7) {
         output.writeMessage(7, (com.pola.proto.MessagesProto.MessageDeletedNotification) payload_);
+      }
+      if (payloadCase_ == 8) {
+        output.writeMessage(8, (com.pola.proto.MessagesProto.UnreadMessagesList) payload_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -7146,6 +7979,10 @@ public final class MessagesProto {
       if (payloadCase_ == 7) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(7, (com.pola.proto.MessagesProto.MessageDeletedNotification) payload_);
+      }
+      if (payloadCase_ == 8) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(8, (com.pola.proto.MessagesProto.UnreadMessagesList) payload_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -7192,6 +8029,10 @@ public final class MessagesProto {
           if (!getMessageDeleteNotification()
               .equals(other.getMessageDeleteNotification())) return false;
           break;
+        case 8:
+          if (!getUnreadMessagesList()
+              .equals(other.getUnreadMessagesList())) return false;
+          break;
         case 0:
         default:
       }
@@ -7234,6 +8075,10 @@ public final class MessagesProto {
         case 7:
           hash = (37 * hash) + MESSAGE_DELETE_NOTIFICATION_FIELD_NUMBER;
           hash = (53 * hash) + getMessageDeleteNotification().hashCode();
+          break;
+        case 8:
+          hash = (37 * hash) + UNREAD_MESSAGES_LIST_FIELD_NUMBER;
+          hash = (53 * hash) + getUnreadMessagesList().hashCode();
           break;
         case 0:
         default:
@@ -7394,6 +8239,9 @@ public final class MessagesProto {
         if (messageDeleteNotificationBuilder_ != null) {
           messageDeleteNotificationBuilder_.clear();
         }
+        if (unreadMessagesListBuilder_ != null) {
+          unreadMessagesListBuilder_.clear();
+        }
         payloadCase_ = 0;
         payload_ = null;
         return this;
@@ -7462,6 +8310,10 @@ public final class MessagesProto {
         if (payloadCase_ == 7 &&
             messageDeleteNotificationBuilder_ != null) {
           result.payload_ = messageDeleteNotificationBuilder_.build();
+        }
+        if (payloadCase_ == 8 &&
+            unreadMessagesListBuilder_ != null) {
+          result.payload_ = unreadMessagesListBuilder_.build();
         }
       }
 
@@ -7536,6 +8388,10 @@ public final class MessagesProto {
           }
           case MESSAGE_DELETE_NOTIFICATION: {
             mergeMessageDeleteNotification(other.getMessageDeleteNotification());
+            break;
+          }
+          case UNREAD_MESSAGES_LIST: {
+            mergeUnreadMessagesList(other.getUnreadMessagesList());
             break;
           }
           case PAYLOAD_NOT_SET: {
@@ -7617,6 +8473,13 @@ public final class MessagesProto {
                 payloadCase_ = 7;
                 break;
               } // case 58
+              case 66: {
+                input.readMessage(
+                    getUnreadMessagesListFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                payloadCase_ = 8;
+                break;
+              } // case 66
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -8642,6 +9505,148 @@ public final class MessagesProto {
         onChanged();
         return messageDeleteNotificationBuilder_;
       }
+
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.pola.proto.MessagesProto.UnreadMessagesList, com.pola.proto.MessagesProto.UnreadMessagesList.Builder, com.pola.proto.MessagesProto.UnreadMessagesListOrBuilder> unreadMessagesListBuilder_;
+      /**
+       * <code>.com.pola.UnreadMessagesList unread_messages_list = 8;</code>
+       * @return Whether the unreadMessagesList field is set.
+       */
+      @java.lang.Override
+      public boolean hasUnreadMessagesList() {
+        return payloadCase_ == 8;
+      }
+      /**
+       * <code>.com.pola.UnreadMessagesList unread_messages_list = 8;</code>
+       * @return The unreadMessagesList.
+       */
+      @java.lang.Override
+      public com.pola.proto.MessagesProto.UnreadMessagesList getUnreadMessagesList() {
+        if (unreadMessagesListBuilder_ == null) {
+          if (payloadCase_ == 8) {
+            return (com.pola.proto.MessagesProto.UnreadMessagesList) payload_;
+          }
+          return com.pola.proto.MessagesProto.UnreadMessagesList.getDefaultInstance();
+        } else {
+          if (payloadCase_ == 8) {
+            return unreadMessagesListBuilder_.getMessage();
+          }
+          return com.pola.proto.MessagesProto.UnreadMessagesList.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.com.pola.UnreadMessagesList unread_messages_list = 8;</code>
+       */
+      public Builder setUnreadMessagesList(com.pola.proto.MessagesProto.UnreadMessagesList value) {
+        if (unreadMessagesListBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          payload_ = value;
+          onChanged();
+        } else {
+          unreadMessagesListBuilder_.setMessage(value);
+        }
+        payloadCase_ = 8;
+        return this;
+      }
+      /**
+       * <code>.com.pola.UnreadMessagesList unread_messages_list = 8;</code>
+       */
+      public Builder setUnreadMessagesList(
+          com.pola.proto.MessagesProto.UnreadMessagesList.Builder builderForValue) {
+        if (unreadMessagesListBuilder_ == null) {
+          payload_ = builderForValue.build();
+          onChanged();
+        } else {
+          unreadMessagesListBuilder_.setMessage(builderForValue.build());
+        }
+        payloadCase_ = 8;
+        return this;
+      }
+      /**
+       * <code>.com.pola.UnreadMessagesList unread_messages_list = 8;</code>
+       */
+      public Builder mergeUnreadMessagesList(com.pola.proto.MessagesProto.UnreadMessagesList value) {
+        if (unreadMessagesListBuilder_ == null) {
+          if (payloadCase_ == 8 &&
+              payload_ != com.pola.proto.MessagesProto.UnreadMessagesList.getDefaultInstance()) {
+            payload_ = com.pola.proto.MessagesProto.UnreadMessagesList.newBuilder((com.pola.proto.MessagesProto.UnreadMessagesList) payload_)
+                .mergeFrom(value).buildPartial();
+          } else {
+            payload_ = value;
+          }
+          onChanged();
+        } else {
+          if (payloadCase_ == 8) {
+            unreadMessagesListBuilder_.mergeFrom(value);
+          } else {
+            unreadMessagesListBuilder_.setMessage(value);
+          }
+        }
+        payloadCase_ = 8;
+        return this;
+      }
+      /**
+       * <code>.com.pola.UnreadMessagesList unread_messages_list = 8;</code>
+       */
+      public Builder clearUnreadMessagesList() {
+        if (unreadMessagesListBuilder_ == null) {
+          if (payloadCase_ == 8) {
+            payloadCase_ = 0;
+            payload_ = null;
+            onChanged();
+          }
+        } else {
+          if (payloadCase_ == 8) {
+            payloadCase_ = 0;
+            payload_ = null;
+          }
+          unreadMessagesListBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>.com.pola.UnreadMessagesList unread_messages_list = 8;</code>
+       */
+      public com.pola.proto.MessagesProto.UnreadMessagesList.Builder getUnreadMessagesListBuilder() {
+        return getUnreadMessagesListFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.com.pola.UnreadMessagesList unread_messages_list = 8;</code>
+       */
+      @java.lang.Override
+      public com.pola.proto.MessagesProto.UnreadMessagesListOrBuilder getUnreadMessagesListOrBuilder() {
+        if ((payloadCase_ == 8) && (unreadMessagesListBuilder_ != null)) {
+          return unreadMessagesListBuilder_.getMessageOrBuilder();
+        } else {
+          if (payloadCase_ == 8) {
+            return (com.pola.proto.MessagesProto.UnreadMessagesList) payload_;
+          }
+          return com.pola.proto.MessagesProto.UnreadMessagesList.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.com.pola.UnreadMessagesList unread_messages_list = 8;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.pola.proto.MessagesProto.UnreadMessagesList, com.pola.proto.MessagesProto.UnreadMessagesList.Builder, com.pola.proto.MessagesProto.UnreadMessagesListOrBuilder> 
+          getUnreadMessagesListFieldBuilder() {
+        if (unreadMessagesListBuilder_ == null) {
+          if (!(payloadCase_ == 8)) {
+            payload_ = com.pola.proto.MessagesProto.UnreadMessagesList.getDefaultInstance();
+          }
+          unreadMessagesListBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              com.pola.proto.MessagesProto.UnreadMessagesList, com.pola.proto.MessagesProto.UnreadMessagesList.Builder, com.pola.proto.MessagesProto.UnreadMessagesListOrBuilder>(
+                  (com.pola.proto.MessagesProto.UnreadMessagesList) payload_,
+                  getParentForChildren(),
+                  isClean());
+          payload_ = null;
+        }
+        payloadCase_ = 8;
+        onChanged();
+        return unreadMessagesListBuilder_;
+      }
       @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -8727,6 +9732,11 @@ public final class MessagesProto {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_com_pola_UserList_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_pola_UnreadMessagesList_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_com_pola_UnreadMessagesList_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_com_pola_User_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -8768,28 +9778,31 @@ public final class MessagesProto {
       "Response\022\017\n\007success\030\001 \001(\010\022\017\n\007message\030\002 \001" +
       "(\t\022\016\n\006userId\030\003 \001(\t\022\020\n\010username\030\004 \001(\t\")\n\010" +
       "UserList\022\035\n\005users\030\001 \003(\0132\016.com.pola.User\"" +
-      "4\n\004User\022\n\n\002id\030\001 \001(\t\022\020\n\010username\030\002 \001(\t\022\016\n" +
-      "\006online\030\003 \001(\010\"C\n\024DeleteMessageRequest\022\022\n" +
-      "\nmessage_id\030\001 \001(\t\022\027\n\017sender_username\030\002 \001" +
-      "(\t\"M\n\025DeleteMessageResponse\022\017\n\007success\030\001" +
-      " \001(\010\022\017\n\007message\030\002 \001(\t\022\022\n\nmessage_id\030\003 \001(" +
-      "\t\"D\n\032MessageDeletedNotification\022\022\n\nmessa" +
-      "ge_id\030\001 \001(\t\022\022\n\ndeleted_by\030\002 \001(\t\"\241\003\n\tWsMe" +
-      "ssage\022-\n\014chat_message\030\001 \001(\0132\025.com.pola.C" +
-      "hatMessageH\000\022\'\n\tuser_list\030\002 \001(\0132\022.com.po" +
-      "la.UserListH\000\022-\n\014auth_message\030\003 \001(\0132\025.co" +
-      "m.pola.AuthMessageH\000\022/\n\rauth_response\030\004 " +
-      "\001(\0132\026.com.pola.AuthResponseH\000\022@\n\026delete_" +
-      "message_request\030\005 \001(\0132\036.com.pola.DeleteM" +
-      "essageRequestH\000\022B\n\027delete_message_respon" +
-      "se\030\006 \001(\0132\037.com.pola.DeleteMessageRespons" +
-      "eH\000\022K\n\033message_delete_notification\030\007 \001(\013" +
-      "2$.com.pola.MessageDeletedNotificationH\000" +
-      "B\t\n\007payload*t\n\013MessageType\022\010\n\004TEXT\020\000\022\t\n\005" +
-      "LOGIN\020\001\022\n\n\006LOGOUT\020\002\022\r\n\tUSER_LIST\020\003\022\n\n\006TY" +
-      "PING\020\004\022\024\n\020DELIVERY_RECEIPT\020\005\022\t\n\005ALERT\020\006\022" +
-      "\010\n\004CHAT\020\007B\037\n\016com.pola.protoB\rMessagesPro" +
-      "tob\006proto3"
+      "=\n\022UnreadMessagesList\022\'\n\010messages\030\001 \003(\0132" +
+      "\025.com.pola.ChatMessage\"4\n\004User\022\n\n\002id\030\001 \001" +
+      "(\t\022\020\n\010username\030\002 \001(\t\022\016\n\006online\030\003 \001(\010\"C\n\024" +
+      "DeleteMessageRequest\022\022\n\nmessage_id\030\001 \001(\t" +
+      "\022\027\n\017sender_username\030\002 \001(\t\"M\n\025DeleteMessa" +
+      "geResponse\022\017\n\007success\030\001 \001(\010\022\017\n\007message\030\002" +
+      " \001(\t\022\022\n\nmessage_id\030\003 \001(\t\"D\n\032MessageDelet" +
+      "edNotification\022\022\n\nmessage_id\030\001 \001(\t\022\022\n\nde" +
+      "leted_by\030\002 \001(\t\"\337\003\n\tWsMessage\022-\n\014chat_mes" +
+      "sage\030\001 \001(\0132\025.com.pola.ChatMessageH\000\022\'\n\tu" +
+      "ser_list\030\002 \001(\0132\022.com.pola.UserListH\000\022-\n\014" +
+      "auth_message\030\003 \001(\0132\025.com.pola.AuthMessag" +
+      "eH\000\022/\n\rauth_response\030\004 \001(\0132\026.com.pola.Au" +
+      "thResponseH\000\022@\n\026delete_message_request\030\005" +
+      " \001(\0132\036.com.pola.DeleteMessageRequestH\000\022B" +
+      "\n\027delete_message_response\030\006 \001(\0132\037.com.po" +
+      "la.DeleteMessageResponseH\000\022K\n\033message_de" +
+      "lete_notification\030\007 \001(\0132$.com.pola.Messa" +
+      "geDeletedNotificationH\000\022<\n\024unread_messag" +
+      "es_list\030\010 \001(\0132\034.com.pola.UnreadMessagesL" +
+      "istH\000B\t\n\007payload*t\n\013MessageType\022\010\n\004TEXT\020" +
+      "\000\022\t\n\005LOGIN\020\001\022\n\n\006LOGOUT\020\002\022\r\n\tUSER_LIST\020\003\022" +
+      "\n\n\006TYPING\020\004\022\024\n\020DELIVERY_RECEIPT\020\005\022\t\n\005ALE" +
+      "RT\020\006\022\010\n\004CHAT\020\007B\037\n\016com.pola.protoB\rMessag" +
+      "esProtob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -8819,36 +9832,42 @@ public final class MessagesProto {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_pola_UserList_descriptor,
         new java.lang.String[] { "Users", });
-    internal_static_com_pola_User_descriptor =
+    internal_static_com_pola_UnreadMessagesList_descriptor =
       getDescriptor().getMessageTypes().get(4);
+    internal_static_com_pola_UnreadMessagesList_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_com_pola_UnreadMessagesList_descriptor,
+        new java.lang.String[] { "Messages", });
+    internal_static_com_pola_User_descriptor =
+      getDescriptor().getMessageTypes().get(5);
     internal_static_com_pola_User_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_pola_User_descriptor,
         new java.lang.String[] { "Id", "Username", "Online", });
     internal_static_com_pola_DeleteMessageRequest_descriptor =
-      getDescriptor().getMessageTypes().get(5);
+      getDescriptor().getMessageTypes().get(6);
     internal_static_com_pola_DeleteMessageRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_pola_DeleteMessageRequest_descriptor,
         new java.lang.String[] { "MessageId", "SenderUsername", });
     internal_static_com_pola_DeleteMessageResponse_descriptor =
-      getDescriptor().getMessageTypes().get(6);
+      getDescriptor().getMessageTypes().get(7);
     internal_static_com_pola_DeleteMessageResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_pola_DeleteMessageResponse_descriptor,
         new java.lang.String[] { "Success", "Message", "MessageId", });
     internal_static_com_pola_MessageDeletedNotification_descriptor =
-      getDescriptor().getMessageTypes().get(7);
+      getDescriptor().getMessageTypes().get(8);
     internal_static_com_pola_MessageDeletedNotification_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_pola_MessageDeletedNotification_descriptor,
         new java.lang.String[] { "MessageId", "DeletedBy", });
     internal_static_com_pola_WsMessage_descriptor =
-      getDescriptor().getMessageTypes().get(8);
+      getDescriptor().getMessageTypes().get(9);
     internal_static_com_pola_WsMessage_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_pola_WsMessage_descriptor,
-        new java.lang.String[] { "ChatMessage", "UserList", "AuthMessage", "AuthResponse", "DeleteMessageRequest", "DeleteMessageResponse", "MessageDeleteNotification", "Payload", });
+        new java.lang.String[] { "ChatMessage", "UserList", "AuthMessage", "AuthResponse", "DeleteMessageRequest", "DeleteMessageResponse", "MessageDeleteNotification", "UnreadMessagesList", "Payload", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

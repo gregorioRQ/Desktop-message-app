@@ -28,4 +28,5 @@ public class Message {
     private String toUserId;
     private LocalDateTime timestamp;
     private Long creationTime;
+    private boolean seen;
 }    

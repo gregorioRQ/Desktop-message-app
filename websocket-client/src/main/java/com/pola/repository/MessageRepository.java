@@ -114,6 +114,22 @@ public class MessageRepository {
         
         return messages;
     }
+
+    /**
+     * Verifica si un mensaje existe por ID
+     */
+    public boolean existsById(Long id) throws SQLException {
+        String sql = "SELECT 1 FROM messages WHERE id = ?";
+        
+        try (Connection conn = dbManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            stmt.setLong(1, id);
+            try (ResultSet rs = stmt.executeQuery()) {
+                return rs.next();
+            }
+        }
+    }
     
     /**
      * Marca un mensaje como leído

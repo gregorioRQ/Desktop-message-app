@@ -9,7 +9,7 @@ import org.springframework.web.socket.WebSocketSession;
 
 import com.basic_chat.chat_service.service.SessionManager;
 
-@Component
+
 public class SessionContext {
     private WebSocketSession session;
     private SessionManager manager;
