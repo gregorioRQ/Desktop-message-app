@@ -5,9 +5,6 @@ import java.net.URI;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import jakarta.websocket.ClientEndpoint;
 import jakarta.websocket.CloseReason;
 import jakarta.websocket.ContainerProvider;
@@ -19,8 +16,6 @@ import jakarta.websocket.WebSocketContainer;
 
 @ClientEndpoint
 public class NotificationService {
-private static final Logger logger = LoggerFactory.getLogger(NotificationService.class);
-    
     private static final String SERVER_URI = "ws://localhost:8084/ws";
 
     private Session session;
@@ -35,8 +30,10 @@ private static final Logger logger = LoggerFactory.getLogger(NotificationService
         try {
             WebSocketContainer container = ContainerProvider.getWebSocketContainer();
             container.connectToServer(this, URI.create(SERVER_URI));
+            System.out.println("Conectando al servidor websocket de notificaciones");
         } catch (Exception e) {
-            logger.error("Error al conectar con el servicio de notificaciones", e);
+            System.err.println("Error al conectar con el servicio de notificaciones: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -45,7 +42,7 @@ private static final Logger logger = LoggerFactory.getLogger(NotificationService
             try {
                 session.close();
             } catch (IOException e) {
-                logger.error("Error al desconectar", e);
+                System.err.println("Error al desconectar: " + e.getMessage());
             }
         }
     }
@@ -57,7 +54,7 @@ private static final Logger logger = LoggerFactory.getLogger(NotificationService
     @OnOpen
     public void onOpen(Session session) {
         this.session = session;
-        logger.info("Conexión WebSocket establecida. Enviando frame CONNECT de STOMP.");
+        System.out.println("Conexión WebSocket establecida. Enviando frame CONNECT de STOMP.");
         
         // Frame CONNECT de STOMP 1.1/1.2
         // Desactivamos heart-beat (0,0) para simplificar la implementación manual
@@ -71,10 +68,10 @@ private static final Logger logger = LoggerFactory.getLogger(NotificationService
 
     @OnMessage
     public void onMessage(String message) {
-        logger.debug("Mensaje STOMP recibido: {}", message);
+        System.out.println("Mensaje STOMP recibido: " + message);
 
         if (message.startsWith("CONNECTED")) {
-            logger.info("STOMP CONNECTED. Suscribiendo a /topic/notifications/{}", userId);
+            System.out.println("STOMP CONNECTED. Suscribiendo a /topic/notifications/" + userId);
             // Frame SUBSCRIBE
             String subscribeFrame = "SUBSCRIBE\n" +
                                     "id:sub-0\n" +
@@ -88,7 +85,7 @@ private static final Logger logger = LoggerFactory.getLogger(NotificationService
             if (bodyStart != -1) {
                 // +2 para saltar los caracteres de nueva línea
                 String body = message.substring(bodyStart + 2).replace("\u0000", "");
-                logger.info("Notificación recibida: {}", body);
+                System.out.println("Notificación recibida: " + body);
                 listeners.forEach(listener -> listener.accept(body));
             }
         }
@@ -96,14 +93,15 @@ private static final Logger logger = LoggerFactory.getLogger(NotificationService
 
     @OnClose
     public void onClose(Session session, CloseReason closeReason) {
-        logger.info("Conexión de notificaciones cerrada: {}", closeReason);
+        System.out.println("Conexión de notificaciones cerrada: " + closeReason);
     }
 
     private void sendMessage(String msg) {
         try {
             session.getBasicRemote().sendText(msg);
         } catch (IOException e) {
-            logger.error("Error enviando mensaje STOMP", e);
+            System.err.println("Error enviando mensaje STOMP: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 }

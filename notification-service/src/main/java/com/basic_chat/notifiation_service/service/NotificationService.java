@@ -47,6 +47,7 @@ public class NotificationService {
     public void notifyUser(Notification event) {
         // Enviar al destino STOMP específico de ese usuario
         String destination = "/topic/notifications/" + event.getReceiver();
+        System.out.println(event.getReceiver());
         messagingTemplate.convertAndSend(destination, event);
     }
 

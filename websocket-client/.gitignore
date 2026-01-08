@@ -1,4 +1,3 @@
 .vscode
 chat_client.db
-/target**
-target
+target/
