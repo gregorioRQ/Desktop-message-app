@@ -21,12 +21,15 @@ import jakarta.websocket.WebSocketContainer;
 public class NotificationService {
 private static final Logger logger = LoggerFactory.getLogger(NotificationService.class);
     
-    // URL del servidor WebSocket. Ajusta el puerto si es diferente a 8080.
-    private static final String SERVER_URI = "ws://localhost:8080/ws";
-    private static final String TOPIC_DESTINATION = "/topic/message.sent";
+    private static final String SERVER_URI = "ws://localhost:8084/ws";
 
     private Session session;
     private final CopyOnWriteArrayList<Consumer<String>> listeners = new CopyOnWriteArrayList<>();
+    private final String userId;
+
+    public NotificationService(String userId) {
+        this.userId = userId;
+    }
 
     public void connect() {
         try {
@@ -71,11 +74,11 @@ private static final Logger logger = LoggerFactory.getLogger(NotificationService
         logger.debug("Mensaje STOMP recibido: {}", message);
 
         if (message.startsWith("CONNECTED")) {
-            logger.info("STOMP CONNECTED. Suscribiendo a {}", TOPIC_DESTINATION);
+            logger.info("STOMP CONNECTED. Suscribiendo a /topic/notifications/{}", userId);
             // Frame SUBSCRIBE
             String subscribeFrame = "SUBSCRIBE\n" +
                                     "id:sub-0\n" +
-                                    "destination:" + TOPIC_DESTINATION + "\n" +
+                                    "destination:/topic/notifications/" + userId + "\n" +
                                     "\n" +
                                     "\u0000";
             sendMessage(subscribeFrame);

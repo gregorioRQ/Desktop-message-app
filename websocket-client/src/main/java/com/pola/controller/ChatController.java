@@ -74,12 +74,12 @@ public class ChatController {
     private WebSocketService webSocketService;
     private MessageService messageService;
     private ContactService contactService;
+    private NotificationService notificationService;
     private ViewManager viewManager;
     private String currentUsername;
     private String currentUserId;
     private String authToken;
     private Contact selectedContact;
-    private NotificationService notificationService;
     
     public void initialize(String username, String userId, String token) {
         this.currentUsername = username;
@@ -259,10 +259,10 @@ public class ChatController {
         new Thread(() -> {
             try {
                 webSocketService.connect();
-
+                
                 // Conectar servicio de notificaciones (en el mismo hilo secundario)
                 if (notificationService == null) {
-                    notificationService = new NotificationService();
+                    notificationService = new NotificationService(currentUserId);
                     notificationService.addNotificationListener(mensaje -> {
                         Platform.runLater(() -> {
                             System.out.println("Notificación recibida: " + mensaje);
@@ -314,9 +314,10 @@ public class ChatController {
     
     private void handleDisconnect() {
         webSocketService.disconnect();
-        if(notificationService != null){
-            notificationService.disconnect();
-        }
+        // Si NotificationService tiene un método disconnect, deberías llamarlo aquí también
+        // if (notificationService != null) {
+        //     notificationService.disconnect();
+        // }
     }
     
     private void handleSendMessage() {
