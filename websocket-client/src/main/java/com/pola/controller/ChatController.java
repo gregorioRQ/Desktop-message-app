@@ -8,6 +8,7 @@ import com.pola.proto.MessagesProto.AuthMessage;
 import com.pola.proto.MessagesProto.WsMessage;
 import com.pola.service.ContactService;
 import com.pola.service.MessageService;
+import com.pola.service.NotificationService;
 import com.pola.service.WebSocketService;
 import com.pola.view.MessageListCell;
 import com.pola.view.ViewManager;
@@ -78,6 +79,7 @@ public class ChatController {
     private String currentUserId;
     private String authToken;
     private Contact selectedContact;
+    private NotificationService notificationService;
     
     public void initialize(String username, String userId, String token) {
         this.currentUsername = username;
@@ -258,6 +260,17 @@ public class ChatController {
             try {
                 webSocketService.connect();
 
+                // Conectar servicio de notificaciones (en el mismo hilo secundario)
+                if (notificationService == null) {
+                    notificationService = new NotificationService();
+                    notificationService.addNotificationListener(mensaje -> {
+                        Platform.runLater(() -> {
+                            System.out.println("Notificación recibida: " + mensaje);
+                        });
+                    });
+                }
+                notificationService.connect();
+
                 Thread.sleep(200);
 
                 // enviar el mensaje de autenticacion cuando se conecta
@@ -301,6 +314,9 @@ public class ChatController {
     
     private void handleDisconnect() {
         webSocketService.disconnect();
+        if(notificationService != null){
+            notificationService.disconnect();
+        }
     }
     
     private void handleSendMessage() {
