@@ -76,9 +76,12 @@ public class NotificationService {
             String subscribeFrame = "SUBSCRIBE\n" +
                                     "id:sub-0\n" +
                                     "destination:/topic/notifications/" + userId + "\n" +
+                                    "receipt:receipt-sub-0\n" +
                                     "\n" +
                                     "\u0000";
             sendMessage(subscribeFrame);
+        } else if (message.startsWith("RECEIPT")) {
+            System.out.println("Confirmación de suscripción recibida exitosamente (RECEIPT frame).");
         } else if (message.startsWith("MESSAGE")) {
             // El cuerpo del mensaje está después de la cabecera, separado por una línea en blanco (\n\n)
             int bodyStart = message.indexOf("\n\n");
