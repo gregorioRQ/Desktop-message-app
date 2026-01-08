@@ -98,14 +98,14 @@
     
     <!-- Panel derecho: Contactos (opcional) -->
     <right>
-        <VBox fx:id="contactsPanel" spacing="10" prefWidth="200" 
-              styleClass="contacts-panel" visible="false" managed="false">
+        <VBox fx:id="notificationsPanel" spacing="10" prefWidth="200" 
+              styleClass="contacts-panel">
             <padding>
                 <Insets top="10" right="10" bottom="10" left="10"/>
             </padding>
             
-            <Label text="Contactos:" styleClass="section-label"/>
-            <ListView styleClass="contacts-list" VBox.vgrow="ALWAYS"/>
+            <Label text="Notificaciones" styleClass="section-label"/>
+            <ListView fx:id="notificationsListView" styleClass="contacts-list" VBox.vgrow="ALWAYS"/>
         </VBox>
     </right>
     

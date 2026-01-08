@@ -4,6 +4,7 @@ import com.pola.database.DatabaseManager;
 import com.pola.model.ChatMessage;
 import com.pola.model.Contact;
 import com.pola.model.Message;
+import com.pola.model.Notification;
 import com.pola.proto.MessagesProto.AuthMessage;
 import com.pola.proto.MessagesProto.WsMessage;
 import com.pola.service.ContactService;
@@ -37,6 +38,9 @@ public class ChatController {
 
     @FXML
     private ListView<Contact> contactsListView;
+
+    @FXML
+    private ListView<Notification> notificationsListView;
 
     @FXML
     private TextField searchContactField;
@@ -94,6 +98,7 @@ public class ChatController {
         setupListeners();
         setupWebSocketListeners();
         loadContacts();
+        notificationsListView.setItems(messageService.getNotifications());
     }
     
     public void setWebSocketService(WebSocketService webSocketService) {

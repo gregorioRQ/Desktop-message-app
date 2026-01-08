@@ -3,10 +3,12 @@ package com.pola.service;
 import java.sql.SQLException;
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import com.pola.model.ChatMessage;
 import com.pola.model.Contact;
+import com.pola.model.Notification;
 
 import com.pola.proto.MessagesProto.MessageType;
 import com.pola.proto.MessagesProto.WsMessage;
@@ -22,6 +24,7 @@ import javafx.collections.ObservableList;
  */
 public class MessageService {
     private final ObservableList<ChatMessage> currentChatMessages;
+    private final ObservableList<Notification> notifications;
     private final MessageRepository messageRepository;
     private final WebSocketService webSocketService;
     private Contact currentContact;
@@ -32,6 +35,7 @@ public class MessageService {
         this.webSocketService = webSocketService;
         this.messageRepository = new MessageRepository();
         this.currentChatMessages = FXCollections.observableArrayList();
+        this.notifications = FXCollections.observableArrayList();
         this.contactService = contactService;
     }
 
@@ -43,6 +47,9 @@ public class MessageService {
     // Carga el historial de mensajes de un contacto
     public void loadChatHistory(Contact contact){
         this.currentContact = contact;
+        
+        // Limpiar notificaciones de este contacto al entrar al chat
+        removeNotification(contact.getContactUsername());
 
         try{
             
@@ -156,6 +163,8 @@ public class MessageService {
             if(currentContact != null && currentContact.getId() == contact.getId()){
                 Platform.runLater(() -> currentChatMessages.add(saved));
                 messageRepository.markAsRead(saved.getId());
+            } else {
+                updateNotification(senderId);
             }
 
         } catch (SQLException e) {
@@ -303,11 +312,41 @@ public class MessageService {
                 if (currentContact != null && currentContact.getId() == contact.getId()) {
                     Platform.runLater(() -> currentChatMessages.add(saved));
                     messageRepository.markAsRead(saved.getId());
+                } else {
+                    updateNotification(senderUsername);
                 }
             } catch (SQLException e) {
                 System.err.println("Error procesando mensaje no leído: " + e.getMessage());
                 e.printStackTrace();
             }
         }
+    }
+
+    private void updateNotification(String senderUsername) {
+        Platform.runLater(() -> {
+            Optional<Notification> existing = notifications.stream()
+                .filter(n -> n.getSenderUsername().equals(senderUsername))
+                .findFirst();
+            
+            if (existing.isPresent()) {
+                Notification n = existing.get();
+                n.incrementCount();
+                // Forzar actualización en la lista (reemplazando el elemento)
+                int idx = notifications.indexOf(n);
+                notifications.set(idx, n);
+            } else {
+                notifications.add(new Notification(senderUsername, 1));
+            }
+        });
+    }
+
+    private void removeNotification(String senderUsername) {
+        Platform.runLater(() -> {
+            notifications.removeIf(n -> n.getSenderUsername().equals(senderUsername));
+        });
+    }
+
+    public ObservableList<Notification> getNotifications() {
+        return notifications;
     }
 }
