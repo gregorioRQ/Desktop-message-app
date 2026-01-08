@@ -1,9 +1,11 @@
 package com.basic_chat.chat_service.handler;
 
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.BinaryMessage;
 
 import com.basic_chat.chat_service.context.SessionContext;
+import com.basic_chat.chat_service.models.MessageSentEvent;
 import com.basic_chat.chat_service.service.MessageService;
 import com.basic_chat.chat_service.service.SessionManager;
 import com.basic_chat.proto.MessagesProto;
@@ -13,10 +15,12 @@ public class ChatMessageHandler implements WsMessageHandler{
 
     private final SessionManager sessionManager;
     private final MessageService messageService;
+    private final RabbitTemplate rabbitTemplate;
 
-    public ChatMessageHandler(SessionManager sessionManager, MessageService messageService) {
+    public ChatMessageHandler(SessionManager sessionManager, MessageService messageService, RabbitTemplate rabbitTemplate) {
         this.sessionManager = sessionManager;
         this.messageService = messageService;
+        this.rabbitTemplate = rabbitTemplate;
     }
 
     @Override
@@ -35,6 +39,8 @@ public class ChatMessageHandler implements WsMessageHandler{
         if (sessionManager.isUserOnline(recipient) && recipientSession != null) {
             recipientSession.getWsSession()
                     .sendMessage(new BinaryMessage(message.toByteArray()));
+        } else {
+            rabbitTemplate.convertAndSend("message.sent", new MessageSentEvent(chat.getSender(), chat.getRecipient()));
         }
 
         messageService.saveMessage(chat);

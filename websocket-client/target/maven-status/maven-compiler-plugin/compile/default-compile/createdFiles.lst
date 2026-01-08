@@ -37,6 +37,7 @@ com\pola\proto\RegisterProto$RegisterUserOrBuilder.class
 com\pola\proto\MessagesProto$AuthResponseOrBuilder.class
 com\pola\service\WebSocketServiceImpl.class
 com\pola\model\Message.class
+com\pola\service\NotificationService.class
 com\pola\proto\MessagesProto$UnreadMessagesListOrBuilder.class
 com\pola\proto\MessagesProto$WsMessageOrBuilder.class
 com\pola\proto\MessagesProto$UnreadMessagesList$Builder.class

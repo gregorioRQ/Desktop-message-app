@@ -7,7 +7,6 @@ import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-/* 
 @Configuration
 public class RabbitMQconfig {
 
@@ -18,11 +17,12 @@ public class RabbitMQconfig {
         return new Queue(MESSAGE_SENT_QUEUE, false);
     }
 
+    /* 
     @Bean
     public Queue messageReadQueue() {
         // durable = true es recomendable en producción
         return new Queue("message.read", false);
-    }
+    }*/
 
     @Bean
     public Jackson2JsonMessageConverter jackson2JsonMessageConverter() {
@@ -37,4 +37,3 @@ public class RabbitMQconfig {
         return template;
     }
 }
-*/
