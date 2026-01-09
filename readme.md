@@ -7,4 +7,4 @@ Funciones actuales:
  - WebSocket + Protobuf para el envío de mensajes en tiempo real.
  - Http + Protobuf para operaciones CRUD.
 
-*El propósito principal de desarrollo de este proyecto fue el de aprender y entender como trabaja la arquitectura orientada a eventos por otra parte tambien me fué útil para aprender a implementar el uso de websockets y la tecnología Protobuf.*
+*El propósito principal de desarrollo de este proyecto fue el de aprender y entender como trabaja la arquitectura orientada a eventos por otra parte tambien me fué útil para aprender a implementar el uso de websockets y la tecnología Protobuf también me eneseñó a planificar funcionalidades ya que por mas pequeñas que sean pueden crecer y convertirce en un dolor de cabeza complejo de manejar.*

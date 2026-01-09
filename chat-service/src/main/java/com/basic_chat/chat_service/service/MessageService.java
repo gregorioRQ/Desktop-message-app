@@ -117,11 +117,12 @@ public class MessageService {
     }
 */
     @Transactional
-    public void deleteMessage(DeleteMessageRequest request) {
+    public Message deleteMessage(DeleteMessageRequest request) {
         Long messageId = Long.valueOf(request.getMessageId());
         Message message = messageValidator.validateAndGetMessage(messageId);
         messageValidator.validateMessageId(message);
         messageRepository.deleteById(message.getId());
+        return message;
     }
 
 

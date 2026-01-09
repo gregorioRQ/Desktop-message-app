@@ -122,6 +122,11 @@ public class MessageService {
             return;
         }
 
+        if(wsMessage.hasDeleteMessageRequest()){
+            processDeleteMessageRequest(wsMessage.getDeleteMessageRequest());
+            return;
+        }
+
         if(!wsMessage.hasChatMessage()){
             return;
         }
@@ -270,6 +275,28 @@ public class MessageService {
         } catch (Exception e) {
             System.err.println("Error al enviar solicitud de edición: " + e.getMessage());
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * Método auxiliar para procesar la solicitud de eliminación de un mensaje
+     */
+    private void processDeleteMessageRequest(com.pola.proto.MessagesProto.DeleteMessageRequest request) {
+        try {
+            long messageId = Long.parseLong(request.getMessageId());
+            
+            // Eliminar de la base de datos local
+            messageRepository.delete(messageId);
+            
+            // Actualizar la UI eliminando el mensaje de la lista observable
+            Platform.runLater(() -> {
+                currentChatMessages.removeIf(m -> m.getId() == messageId);
+            });
+            
+            System.out.println("Mensaje eliminado por solicitud remota: " + messageId);
+            
+        } catch (Exception e) {
+            System.err.println("Error al procesar eliminación de mensaje (no crítico): " + e.getMessage());
         }
     }
 
