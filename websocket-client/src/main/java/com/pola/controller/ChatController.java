@@ -16,9 +16,11 @@ import com.pola.view.ViewManager;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import java.util.Optional;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -59,6 +61,9 @@ public class ChatController {
 
     @FXML
     private Button addContactButton;
+    
+    @FXML
+    private Button clearChatButton;
     
     @FXML
     private Label statusLabel;
@@ -126,6 +131,7 @@ public class ChatController {
         connectButton.setOnAction(event -> handleConnect());
         disconnectButton.setOnAction(event -> handleDisconnect());
         addContactButton.setOnAction(e -> handleAddContact());
+        if (clearChatButton != null) clearChatButton.setOnAction(e -> handleClearChat());
 
         setupMessageListView();
         
@@ -355,6 +361,30 @@ public class ChatController {
 
     private void handleAddContact(){
         showAddContactDialog();
+    }
+
+    private void handleClearChat() {
+        if (selectedContact == null) return;
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Vaciar Chat");
+        alert.setHeaderText("¿Deseas vaciar el chat con " + selectedContact.getContactUsername() + "?");
+        alert.setContentText("Selecciona una opción:");
+
+        ButtonType btnMe = new ButtonType("Solo para mí");
+        ButtonType btnAll = new ButtonType("Para todos");
+        ButtonType btnCancel = new ButtonType("Cancelar", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+        alert.getButtonTypes().setAll(btnMe, btnAll, btnCancel);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent()) {
+            if (result.get() == btnMe) {
+                messageService.clearChatHistory(selectedContact, false);
+            } else if (result.get() == btnAll) {
+                messageService.clearChatHistory(selectedContact, true);
+            }
+        }
     }
 
     private void handleDeleteMessage(ChatMessage message){

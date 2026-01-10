@@ -212,7 +212,19 @@ public class MessageRepository {
     }
     }
 
-    //FUTURA IMPLEMENTACION: eliminar el chat completo
+    /**
+     * Elimina todos los mensajes de un contacto específico de la DB local
+     */
+    public void deleteByContactUsername(String contactUsername) throws SQLException {
+        String sql = "DELETE FROM messages WHERE contact_username = ?";
+        
+        try (Connection conn = dbManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            stmt.setString(1, contactUsername);
+            stmt.executeUpdate();
+        }
+    }
     
     /**
      * Mapea un ResultSet a un objeto ChatMessage

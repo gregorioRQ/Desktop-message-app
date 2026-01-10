@@ -199,6 +199,38 @@ public class MessageService {
         return currentContact;
     }
 
+    /**
+     * Vacía el historial de mensajes con un contacto.
+     * @param contact El contacto del chat.
+     * @param deleteForEveryone Si es true, envía petición al servidor para borrar mensajes.
+     */
+    public void clearChatHistory(Contact contact, boolean deleteForEveryone) {
+        try {
+            // Si es "para todos", enviar peticiones al servidor
+            // NOTA: Idealmente esto debería ser una sola petición 'ClearChatRequest' en el protocolo
+            if (deleteForEveryone && webSocketService.isConnected()) {
+                List<ChatMessage> messages = messageRepository.findByContactUsername(contact.getContactUsername());
+                for (ChatMessage msg : messages) {
+                    sendDeleteMessageToServer(msg);
+                }
+            }
+
+            // Eliminar de la base de datos local (siempre se hace en ambos casos)
+            messageRepository.deleteByContactUsername(contact.getContactUsername());
+            
+            // Limpiar la UI si estamos viendo ese chat actualmente
+            if (currentContact != null && currentContact.getId() == contact.getId()) {
+                Platform.runLater(() -> currentChatMessages.clear());
+            }
+            
+            System.out.println("Historial eliminado (" + (deleteForEveryone ? "global" : "local") + ") para: " + contact.getContactUsername());
+            
+        } catch (SQLException e) {
+            System.err.println("Error al vaciar historial: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
     // eliminar un mensaje del local como del servidor
     public void deleteOneMessage(ChatMessage message){
         try {
