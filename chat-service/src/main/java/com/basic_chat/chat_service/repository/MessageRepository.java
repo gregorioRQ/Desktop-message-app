@@ -21,7 +21,7 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
     //public void deleteAllMessagesByReceiver(String receiver);
 
     // Elimina todos los mensajes entre el remitente y el receptor especificados
-    //public void deleteAllBySenderAndReceiver(String sender, String receiver);
+    public void deleteAllByFromUserIdAndToUserId(String sender, String receiver);
 
     /* 
     @Modifying

@@ -127,6 +127,11 @@ public class MessageService {
             return;
         }
 
+        if(wsMessage.hasClearHistoryRequest()){
+            processClearHistoryRequest(wsMessage.getClearHistoryRequest());
+            return;
+        }
+
         if(!wsMessage.hasChatMessage()){
             return;
         }
@@ -209,10 +214,7 @@ public class MessageService {
             // Si es "para todos", enviar peticiones al servidor
             // NOTA: Idealmente esto debería ser una sola petición 'ClearChatRequest' en el protocolo
             if (deleteForEveryone && webSocketService.isConnected()) {
-                List<ChatMessage> messages = messageRepository.findByContactUsername(contact.getContactUsername());
-                for (ChatMessage msg : messages) {
-                    sendDeleteMessageToServer(msg);
-                }
+                sendClearHistoryToServer(contact);
             }
 
             // Eliminar de la base de datos local (siempre se hace en ambos casos)
@@ -266,6 +268,28 @@ public class MessageService {
             
         } catch (Exception e) {
             System.err.println("Error al enviar solicitud de eliminación: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    private void sendClearHistoryToServer(Contact contact){
+        try {
+            // Construir la solicitud de vaciado de historial
+            com.pola.proto.MessagesProto.ClearHistoryRequest clearRequest = 
+                com.pola.proto.MessagesProto.ClearHistoryRequest.newBuilder()
+                    .setSender(currentUserId)
+                    .setRecipient(contact.getContactUsername())
+                    .build();
+            
+            WsMessage wsMessage = WsMessage.newBuilder()
+                .setClearHistoryRequest(clearRequest)
+                .build();
+            
+            webSocketService.sendMessage(wsMessage);
+            System.out.println("Solicitud de vaciar historial enviada para: " + contact.getContactUsername());
+            
+        } catch (Exception e) {
+            System.err.println("Error al enviar solicitud de vaciar historial: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -329,6 +353,26 @@ public class MessageService {
             
         } catch (Exception e) {
             System.err.println("Error al procesar eliminación de mensaje (no crítico): " + e.getMessage());
+        }
+    }
+
+    /**
+     * Procesa una solicitud de vaciado de historial recibida del servidor
+     */
+    private void processClearHistoryRequest(com.pola.proto.MessagesProto.ClearHistoryRequest request) {
+        try {
+            String senderUsername = request.getSender();
+            
+            // Eliminar mensajes locales de ese contacto
+            messageRepository.deleteByContactUsername(senderUsername);
+            
+            // Si estamos viendo ese chat, limpiar la UI
+            if (currentContact != null && currentContact.getContactUsername().equals(senderUsername)) {
+                Platform.runLater(() -> currentChatMessages.clear());
+            }
+            System.out.println("Historial vaciado por solicitud remota de: " + senderUsername);
+        } catch (SQLException e) {
+            System.err.println("Error al procesar vaciado de historial remoto: " + e.getMessage());
         }
     }
 

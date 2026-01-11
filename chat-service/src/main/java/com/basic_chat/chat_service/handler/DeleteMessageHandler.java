@@ -46,6 +46,10 @@ public class DeleteMessageHandler implements WsMessageHandler{
             recipientSession.getWsSession()
                     .sendMessage(new BinaryMessage(message.toByteArray()));
             log.debug("Notificación de eliminación enviada a {}", recipient);
+        } else {
+            // Si el usuario está offline, guardamos la solicitud pendiente
+            messageService.savePendingDeletion(recipient, request.getMessageId());
+            log.info("Usuario {} offline. Eliminación pendiente guardada para mensaje ID: {}", recipient, request.getMessageId());
         }
     }
 }

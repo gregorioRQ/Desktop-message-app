@@ -69,6 +69,12 @@ message DeleteMessageResponse {
     string message_id = 3;
 }
 
+// Solicitud de eliminacion de historial de mensaje entre dos usuarios
+message ClearHistoryRequest {
+  string sender = 1;
+  string recipient = 2;
+}
+
 // Notificación de mensaje eliminado
 message MessageDeletedNotification {
     string message_id = 1;
@@ -86,5 +92,6 @@ message WsMessage {
     DeleteMessageResponse delete_message_response = 6;
     MessageDeletedNotification message_delete_notification = 7;
     UnreadMessagesList unread_messages_list = 8;
+    ClearHistoryRequest clear_history_request = 9;
   }
 }

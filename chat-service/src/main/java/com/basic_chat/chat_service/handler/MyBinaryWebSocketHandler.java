@@ -11,6 +11,7 @@ import com.basic_chat.proto.MessagesProto;
 import com.basic_chat.proto.MessagesProto.AuthMessage;
 import com.basic_chat.proto.MessagesProto.AuthResponse;
 import com.basic_chat.proto.MessagesProto.ChatMessage;
+import com.basic_chat.proto.MessagesProto.DeleteMessageRequest;
 import com.basic_chat.proto.MessagesProto.MessageType;
 import com.basic_chat.proto.MessagesProto.UnreadMessagesList;
 import com.basic_chat.proto.MessagesProto.WsMessage;
@@ -77,6 +78,7 @@ public class MyBinaryWebSocketHandler extends AbstractWebSocketHandler {
             dispatcher.dispatch(context, wsMessage);
                 if (wsMessage.hasAuthMessage() && sessionManager.isAuthenticated(session.getId())) {
                 sendPendingMessages(session);
+                sendPendingDeletions(session);
             }
         } catch (Exception e) {
             System.err.println("Error procesando mensaje: " + e.getMessage());
@@ -126,6 +128,25 @@ public class MyBinaryWebSocketHandler extends AbstractWebSocketHandler {
                 session.sendMessage(new BinaryMessage(wsMessage.toByteArray()));
             } catch (IOException e) {
                 log.error("Error enviando mensajes pendientes", e);
+            }
+        }
+    }
+
+    private void sendPendingDeletions(WebSocketSession session) {
+        SessionManager.SessionInfo sessionInfo = sessionManager.getSessionInfo(session.getId());
+        if (sessionInfo == null) return;
+
+        String username = sessionInfo.getUsername();
+        List<String> pendingDeletionIds = messageService.getAndClearPendingDeletions(username);
+
+        for (String msgId : pendingDeletionIds) {
+            try {
+                DeleteMessageRequest request = DeleteMessageRequest.newBuilder().setMessageId(msgId).build();
+                WsMessage wsMessage = WsMessage.newBuilder().setDeleteMessageRequest(request).build();
+                session.sendMessage(new BinaryMessage(wsMessage.toByteArray()));
+                log.debug("Eliminación pendiente enviada a {} para mensaje {}", username, msgId);
+            } catch (IOException e) {
+                log.error("Error enviando eliminación pendiente a {}", username, e);
             }
         }
     }

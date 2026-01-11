@@ -9,7 +9,9 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.basic_chat.chat_service.models.Message;
+import com.basic_chat.chat_service.models.PendingDeletion;
 import com.basic_chat.chat_service.repository.MessageRepository;
+import com.basic_chat.chat_service.repository.PendingDeletionRepository;
 import com.basic_chat.chat_service.validator.MessageValidator;
 import com.basic_chat.proto.MessagesProto;
 import com.basic_chat.proto.MessagesProto.ChatMessage;
@@ -20,10 +22,12 @@ import jakarta.transaction.Transactional;
 @Service
 public class MessageService {
     private final MessageRepository messageRepository;
+    private final PendingDeletionRepository pendingDeletionRepository;
     private final MessageValidator messageValidator;
 
-    public MessageService(MessageRepository messageRepository, MessageValidator messageValidator) {
+    public MessageService(MessageRepository messageRepository, PendingDeletionRepository pendingDeletionRepository, MessageValidator messageValidator) {
         this.messageRepository = messageRepository;
+        this.pendingDeletionRepository = pendingDeletionRepository;
         this.messageValidator = messageValidator;
     }
 
@@ -126,15 +130,32 @@ public class MessageService {
     }
 
 
-/* 
+ 
     // Elimina todos los mensajes entre dos usuarios
     @Transactional
     public void deleteAllMessagesBetweenUsers(String sender, String receiver) {
-        messageRepository.deleteAllBySenderAndReceiver(sender, receiver);
+        messageRepository.deleteAllByFromUserIdAndToUserId(sender, receiver);
     }
-
+/*
     public void deleteAllMessages(String username) {
         messageRepository.deleteAllMessagesByReceiver(username);
     }
 */
+
+    @Transactional
+    public void savePendingDeletion(String recipient, String messageId) {
+        PendingDeletion pd = new PendingDeletion(null, recipient, messageId);
+        pendingDeletionRepository.save(pd);
+    }
+
+    @Transactional
+    public List<String> getAndClearPendingDeletions(String recipient) {
+        List<PendingDeletion> pending = pendingDeletionRepository.findByRecipient(recipient);
+        List<String> ids = pending.stream().map(PendingDeletion::getMessageId).toList();
+        
+        if (!pending.isEmpty()) {
+            pendingDeletionRepository.deleteAll(pending);
+        }
+        return ids;
+    }
 }
