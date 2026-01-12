@@ -81,6 +81,24 @@ message MessageDeletedNotification {
     string deleted_by = 2;
 }
 
+// Solicitud para bloquear contacto
+message BlockContactRequest {
+    string recipient = 1; // El usuario a bloquear
+}
+
+// Respuesta de la operación de bloqueo
+message BlockContactResponse {
+    bool success = 1;
+    string message = 2;
+}
+
+// Error de envío (Para notificar al remitente que no pudo enviar el mensaje)
+message MessageError {
+    string message_id = 1;    // ID del mensaje que falló (si existe)
+    string error_message = 2; // <--- Nombre sugerido para el campo de error
+    string recipient = 3;     // Destinatario original
+}
+
 // Wrapper para todos los mensajes
 message WsMessage {
   oneof payload {
@@ -93,5 +111,8 @@ message WsMessage {
     MessageDeletedNotification message_delete_notification = 7;
     UnreadMessagesList unread_messages_list = 8;
     ClearHistoryRequest clear_history_request = 9;
+    BlockContactRequest block_contact_request = 10;
+    BlockContactResponse block_contact_response = 11;
+    MessageError message_error = 12;
   }
 }
