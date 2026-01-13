@@ -181,6 +181,118 @@ public final class MessagesProto {
     // @@protoc_insertion_point(enum_scope:com.basic_chat.MessageType)
   }
 
+  /**
+   * <pre>
+   * Causa del fallo en el envío de un mensaje
+   * </pre>
+   *
+   * Protobuf enum {@code com.basic_chat.FailureCause}
+   */
+  public enum FailureCause
+      implements com.google.protobuf.ProtocolMessageEnum {
+    /**
+     * <code>UNKNOWN_CAUSE = 0;</code>
+     */
+    UNKNOWN_CAUSE(0),
+    /**
+     * <code>BLOCKED = 1;</code>
+     */
+    BLOCKED(1),
+    UNRECOGNIZED(-1),
+    ;
+
+    /**
+     * <code>UNKNOWN_CAUSE = 0;</code>
+     */
+    public static final int UNKNOWN_CAUSE_VALUE = 0;
+    /**
+     * <code>BLOCKED = 1;</code>
+     */
+    public static final int BLOCKED_VALUE = 1;
+
+
+    public final int getNumber() {
+      if (this == UNRECOGNIZED) {
+        throw new java.lang.IllegalArgumentException(
+            "Can't get the number of an unknown enum value.");
+      }
+      return value;
+    }
+
+    /**
+     * @param value The numeric wire value of the corresponding enum entry.
+     * @return The enum associated with the given numeric wire value.
+     * @deprecated Use {@link #forNumber(int)} instead.
+     */
+    @java.lang.Deprecated
+    public static FailureCause valueOf(int value) {
+      return forNumber(value);
+    }
+
+    /**
+     * @param value The numeric wire value of the corresponding enum entry.
+     * @return The enum associated with the given numeric wire value.
+     */
+    public static FailureCause forNumber(int value) {
+      switch (value) {
+        case 0: return UNKNOWN_CAUSE;
+        case 1: return BLOCKED;
+        default: return null;
+      }
+    }
+
+    public static com.google.protobuf.Internal.EnumLiteMap<FailureCause>
+        internalGetValueMap() {
+      return internalValueMap;
+    }
+    private static final com.google.protobuf.Internal.EnumLiteMap<
+        FailureCause> internalValueMap =
+          new com.google.protobuf.Internal.EnumLiteMap<FailureCause>() {
+            public FailureCause findValueByNumber(int number) {
+              return FailureCause.forNumber(number);
+            }
+          };
+
+    public final com.google.protobuf.Descriptors.EnumValueDescriptor
+        getValueDescriptor() {
+      if (this == UNRECOGNIZED) {
+        throw new java.lang.IllegalStateException(
+            "Can't get the descriptor of an unrecognized enum value.");
+      }
+      return getDescriptor().getValues().get(ordinal());
+    }
+    public final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptorForType() {
+      return getDescriptor();
+    }
+    public static final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptor() {
+      return com.basic_chat.proto.MessagesProto.getDescriptor().getEnumTypes().get(1);
+    }
+
+    private static final FailureCause[] VALUES = values();
+
+    public static FailureCause valueOf(
+        com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+      if (desc.getType() != getDescriptor()) {
+        throw new java.lang.IllegalArgumentException(
+          "EnumValueDescriptor is not for this type.");
+      }
+      if (desc.getIndex() == -1) {
+        return UNRECOGNIZED;
+      }
+      return VALUES[desc.getIndex()];
+    }
+
+    private final int value;
+
+    private FailureCause(int value) {
+      this.value = value;
+    }
+
+    // @@protoc_insertion_point(enum_scope:com.basic_chat.FailureCause)
+  }
+
   public interface ChatMessageOrBuilder extends
       // @@protoc_insertion_point(interface_extends:com.basic_chat.ChatMessage)
       com.google.protobuf.MessageOrBuilder {
@@ -9375,6 +9487,1191 @@ public final class MessagesProto {
 
   }
 
+  public interface UnblockContactRequestOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:com.basic_chat.UnblockContactRequest)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string recipient = 1;</code>
+     * @return The recipient.
+     */
+    java.lang.String getRecipient();
+    /**
+     * <code>string recipient = 1;</code>
+     * @return The bytes for recipient.
+     */
+    com.google.protobuf.ByteString
+        getRecipientBytes();
+  }
+  /**
+   * <pre>
+   * Solicitud para desbloquear contacto
+   * </pre>
+   *
+   * Protobuf type {@code com.basic_chat.UnblockContactRequest}
+   */
+  public static final class UnblockContactRequest extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:com.basic_chat.UnblockContactRequest)
+      UnblockContactRequestOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use UnblockContactRequest.newBuilder() to construct.
+    private UnblockContactRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private UnblockContactRequest() {
+      recipient_ = "";
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new UnblockContactRequest();
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_UnblockContactRequest_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_UnblockContactRequest_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.basic_chat.proto.MessagesProto.UnblockContactRequest.class, com.basic_chat.proto.MessagesProto.UnblockContactRequest.Builder.class);
+    }
+
+    public static final int RECIPIENT_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object recipient_ = "";
+    /**
+     * <code>string recipient = 1;</code>
+     * @return The recipient.
+     */
+    @java.lang.Override
+    public java.lang.String getRecipient() {
+      java.lang.Object ref = recipient_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        recipient_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string recipient = 1;</code>
+     * @return The bytes for recipient.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getRecipientBytes() {
+      java.lang.Object ref = recipient_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        recipient_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(recipient_)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, recipient_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(recipient_)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, recipient_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.basic_chat.proto.MessagesProto.UnblockContactRequest)) {
+        return super.equals(obj);
+      }
+      com.basic_chat.proto.MessagesProto.UnblockContactRequest other = (com.basic_chat.proto.MessagesProto.UnblockContactRequest) obj;
+
+      if (!getRecipient()
+          .equals(other.getRecipient())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + RECIPIENT_FIELD_NUMBER;
+      hash = (53 * hash) + getRecipient().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.basic_chat.proto.MessagesProto.UnblockContactRequest parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.basic_chat.proto.MessagesProto.UnblockContactRequest parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.basic_chat.proto.MessagesProto.UnblockContactRequest parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.basic_chat.proto.MessagesProto.UnblockContactRequest parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.basic_chat.proto.MessagesProto.UnblockContactRequest parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.basic_chat.proto.MessagesProto.UnblockContactRequest parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.basic_chat.proto.MessagesProto.UnblockContactRequest parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.basic_chat.proto.MessagesProto.UnblockContactRequest parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static com.basic_chat.proto.MessagesProto.UnblockContactRequest parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static com.basic_chat.proto.MessagesProto.UnblockContactRequest parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.basic_chat.proto.MessagesProto.UnblockContactRequest parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.basic_chat.proto.MessagesProto.UnblockContactRequest parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.basic_chat.proto.MessagesProto.UnblockContactRequest prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * Solicitud para desbloquear contacto
+     * </pre>
+     *
+     * Protobuf type {@code com.basic_chat.UnblockContactRequest}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:com.basic_chat.UnblockContactRequest)
+        com.basic_chat.proto.MessagesProto.UnblockContactRequestOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_UnblockContactRequest_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_UnblockContactRequest_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.basic_chat.proto.MessagesProto.UnblockContactRequest.class, com.basic_chat.proto.MessagesProto.UnblockContactRequest.Builder.class);
+      }
+
+      // Construct using com.basic_chat.proto.MessagesProto.UnblockContactRequest.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        recipient_ = "";
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_UnblockContactRequest_descriptor;
+      }
+
+      @java.lang.Override
+      public com.basic_chat.proto.MessagesProto.UnblockContactRequest getDefaultInstanceForType() {
+        return com.basic_chat.proto.MessagesProto.UnblockContactRequest.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public com.basic_chat.proto.MessagesProto.UnblockContactRequest build() {
+        com.basic_chat.proto.MessagesProto.UnblockContactRequest result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public com.basic_chat.proto.MessagesProto.UnblockContactRequest buildPartial() {
+        com.basic_chat.proto.MessagesProto.UnblockContactRequest result = new com.basic_chat.proto.MessagesProto.UnblockContactRequest(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(com.basic_chat.proto.MessagesProto.UnblockContactRequest result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.recipient_ = recipient_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.basic_chat.proto.MessagesProto.UnblockContactRequest) {
+          return mergeFrom((com.basic_chat.proto.MessagesProto.UnblockContactRequest)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.basic_chat.proto.MessagesProto.UnblockContactRequest other) {
+        if (other == com.basic_chat.proto.MessagesProto.UnblockContactRequest.getDefaultInstance()) return this;
+        if (!other.getRecipient().isEmpty()) {
+          recipient_ = other.recipient_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                recipient_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object recipient_ = "";
+      /**
+       * <code>string recipient = 1;</code>
+       * @return The recipient.
+       */
+      public java.lang.String getRecipient() {
+        java.lang.Object ref = recipient_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          recipient_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string recipient = 1;</code>
+       * @return The bytes for recipient.
+       */
+      public com.google.protobuf.ByteString
+          getRecipientBytes() {
+        java.lang.Object ref = recipient_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          recipient_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string recipient = 1;</code>
+       * @param value The recipient to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRecipient(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        recipient_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string recipient = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearRecipient() {
+        recipient_ = getDefaultInstance().getRecipient();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string recipient = 1;</code>
+       * @param value The bytes for recipient to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRecipientBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        recipient_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:com.basic_chat.UnblockContactRequest)
+    }
+
+    // @@protoc_insertion_point(class_scope:com.basic_chat.UnblockContactRequest)
+    private static final com.basic_chat.proto.MessagesProto.UnblockContactRequest DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.basic_chat.proto.MessagesProto.UnblockContactRequest();
+    }
+
+    public static com.basic_chat.proto.MessagesProto.UnblockContactRequest getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<UnblockContactRequest>
+        PARSER = new com.google.protobuf.AbstractParser<UnblockContactRequest>() {
+      @java.lang.Override
+      public UnblockContactRequest parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<UnblockContactRequest> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<UnblockContactRequest> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.basic_chat.proto.MessagesProto.UnblockContactRequest getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface UnblockContactResponseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:com.basic_chat.UnblockContactResponse)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>bool success = 1;</code>
+     * @return The success.
+     */
+    boolean getSuccess();
+
+    /**
+     * <code>string message = 2;</code>
+     * @return The message.
+     */
+    java.lang.String getMessage();
+    /**
+     * <code>string message = 2;</code>
+     * @return The bytes for message.
+     */
+    com.google.protobuf.ByteString
+        getMessageBytes();
+  }
+  /**
+   * Protobuf type {@code com.basic_chat.UnblockContactResponse}
+   */
+  public static final class UnblockContactResponse extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:com.basic_chat.UnblockContactResponse)
+      UnblockContactResponseOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use UnblockContactResponse.newBuilder() to construct.
+    private UnblockContactResponse(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private UnblockContactResponse() {
+      message_ = "";
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new UnblockContactResponse();
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_UnblockContactResponse_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_UnblockContactResponse_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.basic_chat.proto.MessagesProto.UnblockContactResponse.class, com.basic_chat.proto.MessagesProto.UnblockContactResponse.Builder.class);
+    }
+
+    public static final int SUCCESS_FIELD_NUMBER = 1;
+    private boolean success_ = false;
+    /**
+     * <code>bool success = 1;</code>
+     * @return The success.
+     */
+    @java.lang.Override
+    public boolean getSuccess() {
+      return success_;
+    }
+
+    public static final int MESSAGE_FIELD_NUMBER = 2;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object message_ = "";
+    /**
+     * <code>string message = 2;</code>
+     * @return The message.
+     */
+    @java.lang.Override
+    public java.lang.String getMessage() {
+      java.lang.Object ref = message_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        message_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string message = 2;</code>
+     * @return The bytes for message.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getMessageBytes() {
+      java.lang.Object ref = message_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        message_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (success_ != false) {
+        output.writeBool(1, success_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(message_)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, message_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (success_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(1, success_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(message_)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, message_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.basic_chat.proto.MessagesProto.UnblockContactResponse)) {
+        return super.equals(obj);
+      }
+      com.basic_chat.proto.MessagesProto.UnblockContactResponse other = (com.basic_chat.proto.MessagesProto.UnblockContactResponse) obj;
+
+      if (getSuccess()
+          != other.getSuccess()) return false;
+      if (!getMessage()
+          .equals(other.getMessage())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + SUCCESS_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getSuccess());
+      hash = (37 * hash) + MESSAGE_FIELD_NUMBER;
+      hash = (53 * hash) + getMessage().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.basic_chat.proto.MessagesProto.UnblockContactResponse parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.basic_chat.proto.MessagesProto.UnblockContactResponse parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.basic_chat.proto.MessagesProto.UnblockContactResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.basic_chat.proto.MessagesProto.UnblockContactResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.basic_chat.proto.MessagesProto.UnblockContactResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.basic_chat.proto.MessagesProto.UnblockContactResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.basic_chat.proto.MessagesProto.UnblockContactResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.basic_chat.proto.MessagesProto.UnblockContactResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static com.basic_chat.proto.MessagesProto.UnblockContactResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static com.basic_chat.proto.MessagesProto.UnblockContactResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.basic_chat.proto.MessagesProto.UnblockContactResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.basic_chat.proto.MessagesProto.UnblockContactResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.basic_chat.proto.MessagesProto.UnblockContactResponse prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code com.basic_chat.UnblockContactResponse}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:com.basic_chat.UnblockContactResponse)
+        com.basic_chat.proto.MessagesProto.UnblockContactResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_UnblockContactResponse_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_UnblockContactResponse_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.basic_chat.proto.MessagesProto.UnblockContactResponse.class, com.basic_chat.proto.MessagesProto.UnblockContactResponse.Builder.class);
+      }
+
+      // Construct using com.basic_chat.proto.MessagesProto.UnblockContactResponse.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        success_ = false;
+        message_ = "";
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_UnblockContactResponse_descriptor;
+      }
+
+      @java.lang.Override
+      public com.basic_chat.proto.MessagesProto.UnblockContactResponse getDefaultInstanceForType() {
+        return com.basic_chat.proto.MessagesProto.UnblockContactResponse.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public com.basic_chat.proto.MessagesProto.UnblockContactResponse build() {
+        com.basic_chat.proto.MessagesProto.UnblockContactResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public com.basic_chat.proto.MessagesProto.UnblockContactResponse buildPartial() {
+        com.basic_chat.proto.MessagesProto.UnblockContactResponse result = new com.basic_chat.proto.MessagesProto.UnblockContactResponse(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(com.basic_chat.proto.MessagesProto.UnblockContactResponse result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.success_ = success_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.message_ = message_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.basic_chat.proto.MessagesProto.UnblockContactResponse) {
+          return mergeFrom((com.basic_chat.proto.MessagesProto.UnblockContactResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.basic_chat.proto.MessagesProto.UnblockContactResponse other) {
+        if (other == com.basic_chat.proto.MessagesProto.UnblockContactResponse.getDefaultInstance()) return this;
+        if (other.getSuccess() != false) {
+          setSuccess(other.getSuccess());
+        }
+        if (!other.getMessage().isEmpty()) {
+          message_ = other.message_;
+          bitField0_ |= 0x00000002;
+          onChanged();
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 8: {
+                success_ = input.readBool();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 8
+              case 18: {
+                message_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 18
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private boolean success_ ;
+      /**
+       * <code>bool success = 1;</code>
+       * @return The success.
+       */
+      @java.lang.Override
+      public boolean getSuccess() {
+        return success_;
+      }
+      /**
+       * <code>bool success = 1;</code>
+       * @param value The success to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSuccess(boolean value) {
+
+        success_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bool success = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearSuccess() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        success_ = false;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object message_ = "";
+      /**
+       * <code>string message = 2;</code>
+       * @return The message.
+       */
+      public java.lang.String getMessage() {
+        java.lang.Object ref = message_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          message_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string message = 2;</code>
+       * @return The bytes for message.
+       */
+      public com.google.protobuf.ByteString
+          getMessageBytes() {
+        java.lang.Object ref = message_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          message_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string message = 2;</code>
+       * @param value The message to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMessage(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        message_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string message = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMessage() {
+        message_ = getDefaultInstance().getMessage();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string message = 2;</code>
+       * @param value The bytes for message to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMessageBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        message_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:com.basic_chat.UnblockContactResponse)
+    }
+
+    // @@protoc_insertion_point(class_scope:com.basic_chat.UnblockContactResponse)
+    private static final com.basic_chat.proto.MessagesProto.UnblockContactResponse DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.basic_chat.proto.MessagesProto.UnblockContactResponse();
+    }
+
+    public static com.basic_chat.proto.MessagesProto.UnblockContactResponse getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<UnblockContactResponse>
+        PARSER = new com.google.protobuf.AbstractParser<UnblockContactResponse>() {
+      @java.lang.Override
+      public UnblockContactResponse parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<UnblockContactResponse> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<UnblockContactResponse> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.basic_chat.proto.MessagesProto.UnblockContactResponse getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   public interface MessageErrorOrBuilder extends
       // @@protoc_insertion_point(interface_extends:com.basic_chat.MessageError)
       com.google.protobuf.MessageOrBuilder {
@@ -10339,6 +11636,2276 @@ public final class MessagesProto {
 
   }
 
+  public interface ChatMessageResponseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:com.basic_chat.ChatMessageResponse)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string message_id = 1;</code>
+     * @return The messageId.
+     */
+    java.lang.String getMessageId();
+    /**
+     * <code>string message_id = 1;</code>
+     * @return The bytes for messageId.
+     */
+    com.google.protobuf.ByteString
+        getMessageIdBytes();
+
+    /**
+     * <code>bool success = 2;</code>
+     * @return The success.
+     */
+    boolean getSuccess();
+
+    /**
+     * <code>.com.basic_chat.FailureCause cause = 3;</code>
+     * @return The enum numeric value on the wire for cause.
+     */
+    int getCauseValue();
+    /**
+     * <code>.com.basic_chat.FailureCause cause = 3;</code>
+     * @return The cause.
+     */
+    com.basic_chat.proto.MessagesProto.FailureCause getCause();
+
+    /**
+     * <code>string error_message = 4;</code>
+     * @return The errorMessage.
+     */
+    java.lang.String getErrorMessage();
+    /**
+     * <code>string error_message = 4;</code>
+     * @return The bytes for errorMessage.
+     */
+    com.google.protobuf.ByteString
+        getErrorMessageBytes();
+
+    /**
+     * <code>string recipient = 5;</code>
+     * @return The recipient.
+     */
+    java.lang.String getRecipient();
+    /**
+     * <code>string recipient = 5;</code>
+     * @return The bytes for recipient.
+     */
+    com.google.protobuf.ByteString
+        getRecipientBytes();
+  }
+  /**
+   * <pre>
+   * Respuesta estructurada para el envío de mensajes
+   * </pre>
+   *
+   * Protobuf type {@code com.basic_chat.ChatMessageResponse}
+   */
+  public static final class ChatMessageResponse extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:com.basic_chat.ChatMessageResponse)
+      ChatMessageResponseOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use ChatMessageResponse.newBuilder() to construct.
+    private ChatMessageResponse(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private ChatMessageResponse() {
+      messageId_ = "";
+      cause_ = 0;
+      errorMessage_ = "";
+      recipient_ = "";
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new ChatMessageResponse();
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_ChatMessageResponse_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_ChatMessageResponse_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.basic_chat.proto.MessagesProto.ChatMessageResponse.class, com.basic_chat.proto.MessagesProto.ChatMessageResponse.Builder.class);
+    }
+
+    public static final int MESSAGE_ID_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object messageId_ = "";
+    /**
+     * <code>string message_id = 1;</code>
+     * @return The messageId.
+     */
+    @java.lang.Override
+    public java.lang.String getMessageId() {
+      java.lang.Object ref = messageId_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        messageId_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string message_id = 1;</code>
+     * @return The bytes for messageId.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getMessageIdBytes() {
+      java.lang.Object ref = messageId_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        messageId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int SUCCESS_FIELD_NUMBER = 2;
+    private boolean success_ = false;
+    /**
+     * <code>bool success = 2;</code>
+     * @return The success.
+     */
+    @java.lang.Override
+    public boolean getSuccess() {
+      return success_;
+    }
+
+    public static final int CAUSE_FIELD_NUMBER = 3;
+    private int cause_ = 0;
+    /**
+     * <code>.com.basic_chat.FailureCause cause = 3;</code>
+     * @return The enum numeric value on the wire for cause.
+     */
+    @java.lang.Override public int getCauseValue() {
+      return cause_;
+    }
+    /**
+     * <code>.com.basic_chat.FailureCause cause = 3;</code>
+     * @return The cause.
+     */
+    @java.lang.Override public com.basic_chat.proto.MessagesProto.FailureCause getCause() {
+      com.basic_chat.proto.MessagesProto.FailureCause result = com.basic_chat.proto.MessagesProto.FailureCause.forNumber(cause_);
+      return result == null ? com.basic_chat.proto.MessagesProto.FailureCause.UNRECOGNIZED : result;
+    }
+
+    public static final int ERROR_MESSAGE_FIELD_NUMBER = 4;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object errorMessage_ = "";
+    /**
+     * <code>string error_message = 4;</code>
+     * @return The errorMessage.
+     */
+    @java.lang.Override
+    public java.lang.String getErrorMessage() {
+      java.lang.Object ref = errorMessage_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        errorMessage_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string error_message = 4;</code>
+     * @return The bytes for errorMessage.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getErrorMessageBytes() {
+      java.lang.Object ref = errorMessage_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        errorMessage_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int RECIPIENT_FIELD_NUMBER = 5;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object recipient_ = "";
+    /**
+     * <code>string recipient = 5;</code>
+     * @return The recipient.
+     */
+    @java.lang.Override
+    public java.lang.String getRecipient() {
+      java.lang.Object ref = recipient_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        recipient_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string recipient = 5;</code>
+     * @return The bytes for recipient.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getRecipientBytes() {
+      java.lang.Object ref = recipient_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        recipient_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(messageId_)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, messageId_);
+      }
+      if (success_ != false) {
+        output.writeBool(2, success_);
+      }
+      if (cause_ != com.basic_chat.proto.MessagesProto.FailureCause.UNKNOWN_CAUSE.getNumber()) {
+        output.writeEnum(3, cause_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(errorMessage_)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 4, errorMessage_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(recipient_)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 5, recipient_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(messageId_)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, messageId_);
+      }
+      if (success_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(2, success_);
+      }
+      if (cause_ != com.basic_chat.proto.MessagesProto.FailureCause.UNKNOWN_CAUSE.getNumber()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeEnumSize(3, cause_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(errorMessage_)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, errorMessage_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(recipient_)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, recipient_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.basic_chat.proto.MessagesProto.ChatMessageResponse)) {
+        return super.equals(obj);
+      }
+      com.basic_chat.proto.MessagesProto.ChatMessageResponse other = (com.basic_chat.proto.MessagesProto.ChatMessageResponse) obj;
+
+      if (!getMessageId()
+          .equals(other.getMessageId())) return false;
+      if (getSuccess()
+          != other.getSuccess()) return false;
+      if (cause_ != other.cause_) return false;
+      if (!getErrorMessage()
+          .equals(other.getErrorMessage())) return false;
+      if (!getRecipient()
+          .equals(other.getRecipient())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + MESSAGE_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getMessageId().hashCode();
+      hash = (37 * hash) + SUCCESS_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getSuccess());
+      hash = (37 * hash) + CAUSE_FIELD_NUMBER;
+      hash = (53 * hash) + cause_;
+      hash = (37 * hash) + ERROR_MESSAGE_FIELD_NUMBER;
+      hash = (53 * hash) + getErrorMessage().hashCode();
+      hash = (37 * hash) + RECIPIENT_FIELD_NUMBER;
+      hash = (53 * hash) + getRecipient().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.basic_chat.proto.MessagesProto.ChatMessageResponse parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.basic_chat.proto.MessagesProto.ChatMessageResponse parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.basic_chat.proto.MessagesProto.ChatMessageResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.basic_chat.proto.MessagesProto.ChatMessageResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.basic_chat.proto.MessagesProto.ChatMessageResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.basic_chat.proto.MessagesProto.ChatMessageResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.basic_chat.proto.MessagesProto.ChatMessageResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.basic_chat.proto.MessagesProto.ChatMessageResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static com.basic_chat.proto.MessagesProto.ChatMessageResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static com.basic_chat.proto.MessagesProto.ChatMessageResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.basic_chat.proto.MessagesProto.ChatMessageResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.basic_chat.proto.MessagesProto.ChatMessageResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.basic_chat.proto.MessagesProto.ChatMessageResponse prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * Respuesta estructurada para el envío de mensajes
+     * </pre>
+     *
+     * Protobuf type {@code com.basic_chat.ChatMessageResponse}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:com.basic_chat.ChatMessageResponse)
+        com.basic_chat.proto.MessagesProto.ChatMessageResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_ChatMessageResponse_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_ChatMessageResponse_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.basic_chat.proto.MessagesProto.ChatMessageResponse.class, com.basic_chat.proto.MessagesProto.ChatMessageResponse.Builder.class);
+      }
+
+      // Construct using com.basic_chat.proto.MessagesProto.ChatMessageResponse.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        messageId_ = "";
+        success_ = false;
+        cause_ = 0;
+        errorMessage_ = "";
+        recipient_ = "";
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_ChatMessageResponse_descriptor;
+      }
+
+      @java.lang.Override
+      public com.basic_chat.proto.MessagesProto.ChatMessageResponse getDefaultInstanceForType() {
+        return com.basic_chat.proto.MessagesProto.ChatMessageResponse.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public com.basic_chat.proto.MessagesProto.ChatMessageResponse build() {
+        com.basic_chat.proto.MessagesProto.ChatMessageResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public com.basic_chat.proto.MessagesProto.ChatMessageResponse buildPartial() {
+        com.basic_chat.proto.MessagesProto.ChatMessageResponse result = new com.basic_chat.proto.MessagesProto.ChatMessageResponse(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(com.basic_chat.proto.MessagesProto.ChatMessageResponse result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.messageId_ = messageId_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.success_ = success_;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.cause_ = cause_;
+        }
+        if (((from_bitField0_ & 0x00000008) != 0)) {
+          result.errorMessage_ = errorMessage_;
+        }
+        if (((from_bitField0_ & 0x00000010) != 0)) {
+          result.recipient_ = recipient_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.basic_chat.proto.MessagesProto.ChatMessageResponse) {
+          return mergeFrom((com.basic_chat.proto.MessagesProto.ChatMessageResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.basic_chat.proto.MessagesProto.ChatMessageResponse other) {
+        if (other == com.basic_chat.proto.MessagesProto.ChatMessageResponse.getDefaultInstance()) return this;
+        if (!other.getMessageId().isEmpty()) {
+          messageId_ = other.messageId_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        if (other.getSuccess() != false) {
+          setSuccess(other.getSuccess());
+        }
+        if (other.cause_ != 0) {
+          setCauseValue(other.getCauseValue());
+        }
+        if (!other.getErrorMessage().isEmpty()) {
+          errorMessage_ = other.errorMessage_;
+          bitField0_ |= 0x00000008;
+          onChanged();
+        }
+        if (!other.getRecipient().isEmpty()) {
+          recipient_ = other.recipient_;
+          bitField0_ |= 0x00000010;
+          onChanged();
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                messageId_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 16: {
+                success_ = input.readBool();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 16
+              case 24: {
+                cause_ = input.readEnum();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 24
+              case 34: {
+                errorMessage_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000008;
+                break;
+              } // case 34
+              case 42: {
+                recipient_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000010;
+                break;
+              } // case 42
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object messageId_ = "";
+      /**
+       * <code>string message_id = 1;</code>
+       * @return The messageId.
+       */
+      public java.lang.String getMessageId() {
+        java.lang.Object ref = messageId_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          messageId_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string message_id = 1;</code>
+       * @return The bytes for messageId.
+       */
+      public com.google.protobuf.ByteString
+          getMessageIdBytes() {
+        java.lang.Object ref = messageId_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          messageId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string message_id = 1;</code>
+       * @param value The messageId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMessageId(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        messageId_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string message_id = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMessageId() {
+        messageId_ = getDefaultInstance().getMessageId();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string message_id = 1;</code>
+       * @param value The bytes for messageId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMessageIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        messageId_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      private boolean success_ ;
+      /**
+       * <code>bool success = 2;</code>
+       * @return The success.
+       */
+      @java.lang.Override
+      public boolean getSuccess() {
+        return success_;
+      }
+      /**
+       * <code>bool success = 2;</code>
+       * @param value The success to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSuccess(boolean value) {
+
+        success_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bool success = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearSuccess() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        success_ = false;
+        onChanged();
+        return this;
+      }
+
+      private int cause_ = 0;
+      /**
+       * <code>.com.basic_chat.FailureCause cause = 3;</code>
+       * @return The enum numeric value on the wire for cause.
+       */
+      @java.lang.Override public int getCauseValue() {
+        return cause_;
+      }
+      /**
+       * <code>.com.basic_chat.FailureCause cause = 3;</code>
+       * @param value The enum numeric value on the wire for cause to set.
+       * @return This builder for chaining.
+       */
+      public Builder setCauseValue(int value) {
+        cause_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.com.basic_chat.FailureCause cause = 3;</code>
+       * @return The cause.
+       */
+      @java.lang.Override
+      public com.basic_chat.proto.MessagesProto.FailureCause getCause() {
+        com.basic_chat.proto.MessagesProto.FailureCause result = com.basic_chat.proto.MessagesProto.FailureCause.forNumber(cause_);
+        return result == null ? com.basic_chat.proto.MessagesProto.FailureCause.UNRECOGNIZED : result;
+      }
+      /**
+       * <code>.com.basic_chat.FailureCause cause = 3;</code>
+       * @param value The cause to set.
+       * @return This builder for chaining.
+       */
+      public Builder setCause(com.basic_chat.proto.MessagesProto.FailureCause value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000004;
+        cause_ = value.getNumber();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.com.basic_chat.FailureCause cause = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearCause() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        cause_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object errorMessage_ = "";
+      /**
+       * <code>string error_message = 4;</code>
+       * @return The errorMessage.
+       */
+      public java.lang.String getErrorMessage() {
+        java.lang.Object ref = errorMessage_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          errorMessage_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string error_message = 4;</code>
+       * @return The bytes for errorMessage.
+       */
+      public com.google.protobuf.ByteString
+          getErrorMessageBytes() {
+        java.lang.Object ref = errorMessage_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          errorMessage_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string error_message = 4;</code>
+       * @param value The errorMessage to set.
+       * @return This builder for chaining.
+       */
+      public Builder setErrorMessage(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        errorMessage_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string error_message = 4;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearErrorMessage() {
+        errorMessage_ = getDefaultInstance().getErrorMessage();
+        bitField0_ = (bitField0_ & ~0x00000008);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string error_message = 4;</code>
+       * @param value The bytes for errorMessage to set.
+       * @return This builder for chaining.
+       */
+      public Builder setErrorMessageBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        errorMessage_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object recipient_ = "";
+      /**
+       * <code>string recipient = 5;</code>
+       * @return The recipient.
+       */
+      public java.lang.String getRecipient() {
+        java.lang.Object ref = recipient_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          recipient_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string recipient = 5;</code>
+       * @return The bytes for recipient.
+       */
+      public com.google.protobuf.ByteString
+          getRecipientBytes() {
+        java.lang.Object ref = recipient_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          recipient_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string recipient = 5;</code>
+       * @param value The recipient to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRecipient(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        recipient_ = value;
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string recipient = 5;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearRecipient() {
+        recipient_ = getDefaultInstance().getRecipient();
+        bitField0_ = (bitField0_ & ~0x00000010);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string recipient = 5;</code>
+       * @param value The bytes for recipient to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRecipientBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        recipient_ = value;
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:com.basic_chat.ChatMessageResponse)
+    }
+
+    // @@protoc_insertion_point(class_scope:com.basic_chat.ChatMessageResponse)
+    private static final com.basic_chat.proto.MessagesProto.ChatMessageResponse DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.basic_chat.proto.MessagesProto.ChatMessageResponse();
+    }
+
+    public static com.basic_chat.proto.MessagesProto.ChatMessageResponse getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<ChatMessageResponse>
+        PARSER = new com.google.protobuf.AbstractParser<ChatMessageResponse>() {
+      @java.lang.Override
+      public ChatMessageResponse parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<ChatMessageResponse> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<ChatMessageResponse> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.basic_chat.proto.MessagesProto.ChatMessageResponse getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface UnblockedUsersListOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:com.basic_chat.UnblockedUsersList)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>repeated string users = 1;</code>
+     * @return A list containing the users.
+     */
+    java.util.List<java.lang.String>
+        getUsersList();
+    /**
+     * <code>repeated string users = 1;</code>
+     * @return The count of users.
+     */
+    int getUsersCount();
+    /**
+     * <code>repeated string users = 1;</code>
+     * @param index The index of the element to return.
+     * @return The users at the given index.
+     */
+    java.lang.String getUsers(int index);
+    /**
+     * <code>repeated string users = 1;</code>
+     * @param index The index of the value to return.
+     * @return The bytes of the users at the given index.
+     */
+    com.google.protobuf.ByteString
+        getUsersBytes(int index);
+  }
+  /**
+   * Protobuf type {@code com.basic_chat.UnblockedUsersList}
+   */
+  public static final class UnblockedUsersList extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:com.basic_chat.UnblockedUsersList)
+      UnblockedUsersListOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use UnblockedUsersList.newBuilder() to construct.
+    private UnblockedUsersList(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private UnblockedUsersList() {
+      users_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new UnblockedUsersList();
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_UnblockedUsersList_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_UnblockedUsersList_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.basic_chat.proto.MessagesProto.UnblockedUsersList.class, com.basic_chat.proto.MessagesProto.UnblockedUsersList.Builder.class);
+    }
+
+    public static final int USERS_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private com.google.protobuf.LazyStringArrayList users_ =
+        com.google.protobuf.LazyStringArrayList.emptyList();
+    /**
+     * <code>repeated string users = 1;</code>
+     * @return A list containing the users.
+     */
+    public com.google.protobuf.ProtocolStringList
+        getUsersList() {
+      return users_;
+    }
+    /**
+     * <code>repeated string users = 1;</code>
+     * @return The count of users.
+     */
+    public int getUsersCount() {
+      return users_.size();
+    }
+    /**
+     * <code>repeated string users = 1;</code>
+     * @param index The index of the element to return.
+     * @return The users at the given index.
+     */
+    public java.lang.String getUsers(int index) {
+      return users_.get(index);
+    }
+    /**
+     * <code>repeated string users = 1;</code>
+     * @param index The index of the value to return.
+     * @return The bytes of the users at the given index.
+     */
+    public com.google.protobuf.ByteString
+        getUsersBytes(int index) {
+      return users_.getByteString(index);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      for (int i = 0; i < users_.size(); i++) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, users_.getRaw(i));
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      {
+        int dataSize = 0;
+        for (int i = 0; i < users_.size(); i++) {
+          dataSize += computeStringSizeNoTag(users_.getRaw(i));
+        }
+        size += dataSize;
+        size += 1 * getUsersList().size();
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.basic_chat.proto.MessagesProto.UnblockedUsersList)) {
+        return super.equals(obj);
+      }
+      com.basic_chat.proto.MessagesProto.UnblockedUsersList other = (com.basic_chat.proto.MessagesProto.UnblockedUsersList) obj;
+
+      if (!getUsersList()
+          .equals(other.getUsersList())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (getUsersCount() > 0) {
+        hash = (37 * hash) + USERS_FIELD_NUMBER;
+        hash = (53 * hash) + getUsersList().hashCode();
+      }
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.basic_chat.proto.MessagesProto.UnblockedUsersList parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.basic_chat.proto.MessagesProto.UnblockedUsersList parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.basic_chat.proto.MessagesProto.UnblockedUsersList parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.basic_chat.proto.MessagesProto.UnblockedUsersList parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.basic_chat.proto.MessagesProto.UnblockedUsersList parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.basic_chat.proto.MessagesProto.UnblockedUsersList parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.basic_chat.proto.MessagesProto.UnblockedUsersList parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.basic_chat.proto.MessagesProto.UnblockedUsersList parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static com.basic_chat.proto.MessagesProto.UnblockedUsersList parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static com.basic_chat.proto.MessagesProto.UnblockedUsersList parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.basic_chat.proto.MessagesProto.UnblockedUsersList parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.basic_chat.proto.MessagesProto.UnblockedUsersList parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.basic_chat.proto.MessagesProto.UnblockedUsersList prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code com.basic_chat.UnblockedUsersList}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:com.basic_chat.UnblockedUsersList)
+        com.basic_chat.proto.MessagesProto.UnblockedUsersListOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_UnblockedUsersList_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_UnblockedUsersList_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.basic_chat.proto.MessagesProto.UnblockedUsersList.class, com.basic_chat.proto.MessagesProto.UnblockedUsersList.Builder.class);
+      }
+
+      // Construct using com.basic_chat.proto.MessagesProto.UnblockedUsersList.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        users_ =
+            com.google.protobuf.LazyStringArrayList.emptyList();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_UnblockedUsersList_descriptor;
+      }
+
+      @java.lang.Override
+      public com.basic_chat.proto.MessagesProto.UnblockedUsersList getDefaultInstanceForType() {
+        return com.basic_chat.proto.MessagesProto.UnblockedUsersList.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public com.basic_chat.proto.MessagesProto.UnblockedUsersList build() {
+        com.basic_chat.proto.MessagesProto.UnblockedUsersList result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public com.basic_chat.proto.MessagesProto.UnblockedUsersList buildPartial() {
+        com.basic_chat.proto.MessagesProto.UnblockedUsersList result = new com.basic_chat.proto.MessagesProto.UnblockedUsersList(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(com.basic_chat.proto.MessagesProto.UnblockedUsersList result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          users_.makeImmutable();
+          result.users_ = users_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.basic_chat.proto.MessagesProto.UnblockedUsersList) {
+          return mergeFrom((com.basic_chat.proto.MessagesProto.UnblockedUsersList)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.basic_chat.proto.MessagesProto.UnblockedUsersList other) {
+        if (other == com.basic_chat.proto.MessagesProto.UnblockedUsersList.getDefaultInstance()) return this;
+        if (!other.users_.isEmpty()) {
+          if (users_.isEmpty()) {
+            users_ = other.users_;
+            bitField0_ |= 0x00000001;
+          } else {
+            ensureUsersIsMutable();
+            users_.addAll(other.users_);
+          }
+          onChanged();
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                java.lang.String s = input.readStringRequireUtf8();
+                ensureUsersIsMutable();
+                users_.add(s);
+                break;
+              } // case 10
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private com.google.protobuf.LazyStringArrayList users_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
+      private void ensureUsersIsMutable() {
+        if (!users_.isModifiable()) {
+          users_ = new com.google.protobuf.LazyStringArrayList(users_);
+        }
+        bitField0_ |= 0x00000001;
+      }
+      /**
+       * <code>repeated string users = 1;</code>
+       * @return A list containing the users.
+       */
+      public com.google.protobuf.ProtocolStringList
+          getUsersList() {
+        users_.makeImmutable();
+        return users_;
+      }
+      /**
+       * <code>repeated string users = 1;</code>
+       * @return The count of users.
+       */
+      public int getUsersCount() {
+        return users_.size();
+      }
+      /**
+       * <code>repeated string users = 1;</code>
+       * @param index The index of the element to return.
+       * @return The users at the given index.
+       */
+      public java.lang.String getUsers(int index) {
+        return users_.get(index);
+      }
+      /**
+       * <code>repeated string users = 1;</code>
+       * @param index The index of the value to return.
+       * @return The bytes of the users at the given index.
+       */
+      public com.google.protobuf.ByteString
+          getUsersBytes(int index) {
+        return users_.getByteString(index);
+      }
+      /**
+       * <code>repeated string users = 1;</code>
+       * @param index The index to set the value at.
+       * @param value The users to set.
+       * @return This builder for chaining.
+       */
+      public Builder setUsers(
+          int index, java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        ensureUsersIsMutable();
+        users_.set(index, value);
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string users = 1;</code>
+       * @param value The users to add.
+       * @return This builder for chaining.
+       */
+      public Builder addUsers(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        ensureUsersIsMutable();
+        users_.add(value);
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string users = 1;</code>
+       * @param values The users to add.
+       * @return This builder for chaining.
+       */
+      public Builder addAllUsers(
+          java.lang.Iterable<java.lang.String> values) {
+        ensureUsersIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, users_);
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string users = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearUsers() {
+        users_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000001);;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string users = 1;</code>
+       * @param value The bytes of the users to add.
+       * @return This builder for chaining.
+       */
+      public Builder addUsersBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        ensureUsersIsMutable();
+        users_.add(value);
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:com.basic_chat.UnblockedUsersList)
+    }
+
+    // @@protoc_insertion_point(class_scope:com.basic_chat.UnblockedUsersList)
+    private static final com.basic_chat.proto.MessagesProto.UnblockedUsersList DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.basic_chat.proto.MessagesProto.UnblockedUsersList();
+    }
+
+    public static com.basic_chat.proto.MessagesProto.UnblockedUsersList getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<UnblockedUsersList>
+        PARSER = new com.google.protobuf.AbstractParser<UnblockedUsersList>() {
+      @java.lang.Override
+      public UnblockedUsersList parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<UnblockedUsersList> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<UnblockedUsersList> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.basic_chat.proto.MessagesProto.UnblockedUsersList getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface BlockedUsersListOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:com.basic_chat.BlockedUsersList)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>repeated string users = 1;</code>
+     * @return A list containing the users.
+     */
+    java.util.List<java.lang.String>
+        getUsersList();
+    /**
+     * <code>repeated string users = 1;</code>
+     * @return The count of users.
+     */
+    int getUsersCount();
+    /**
+     * <code>repeated string users = 1;</code>
+     * @param index The index of the element to return.
+     * @return The users at the given index.
+     */
+    java.lang.String getUsers(int index);
+    /**
+     * <code>repeated string users = 1;</code>
+     * @param index The index of the value to return.
+     * @return The bytes of the users at the given index.
+     */
+    com.google.protobuf.ByteString
+        getUsersBytes(int index);
+  }
+  /**
+   * Protobuf type {@code com.basic_chat.BlockedUsersList}
+   */
+  public static final class BlockedUsersList extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:com.basic_chat.BlockedUsersList)
+      BlockedUsersListOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use BlockedUsersList.newBuilder() to construct.
+    private BlockedUsersList(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private BlockedUsersList() {
+      users_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new BlockedUsersList();
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_BlockedUsersList_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_BlockedUsersList_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.basic_chat.proto.MessagesProto.BlockedUsersList.class, com.basic_chat.proto.MessagesProto.BlockedUsersList.Builder.class);
+    }
+
+    public static final int USERS_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private com.google.protobuf.LazyStringArrayList users_ =
+        com.google.protobuf.LazyStringArrayList.emptyList();
+    /**
+     * <code>repeated string users = 1;</code>
+     * @return A list containing the users.
+     */
+    public com.google.protobuf.ProtocolStringList
+        getUsersList() {
+      return users_;
+    }
+    /**
+     * <code>repeated string users = 1;</code>
+     * @return The count of users.
+     */
+    public int getUsersCount() {
+      return users_.size();
+    }
+    /**
+     * <code>repeated string users = 1;</code>
+     * @param index The index of the element to return.
+     * @return The users at the given index.
+     */
+    public java.lang.String getUsers(int index) {
+      return users_.get(index);
+    }
+    /**
+     * <code>repeated string users = 1;</code>
+     * @param index The index of the value to return.
+     * @return The bytes of the users at the given index.
+     */
+    public com.google.protobuf.ByteString
+        getUsersBytes(int index) {
+      return users_.getByteString(index);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      for (int i = 0; i < users_.size(); i++) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, users_.getRaw(i));
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      {
+        int dataSize = 0;
+        for (int i = 0; i < users_.size(); i++) {
+          dataSize += computeStringSizeNoTag(users_.getRaw(i));
+        }
+        size += dataSize;
+        size += 1 * getUsersList().size();
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.basic_chat.proto.MessagesProto.BlockedUsersList)) {
+        return super.equals(obj);
+      }
+      com.basic_chat.proto.MessagesProto.BlockedUsersList other = (com.basic_chat.proto.MessagesProto.BlockedUsersList) obj;
+
+      if (!getUsersList()
+          .equals(other.getUsersList())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (getUsersCount() > 0) {
+        hash = (37 * hash) + USERS_FIELD_NUMBER;
+        hash = (53 * hash) + getUsersList().hashCode();
+      }
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.basic_chat.proto.MessagesProto.BlockedUsersList parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.basic_chat.proto.MessagesProto.BlockedUsersList parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.basic_chat.proto.MessagesProto.BlockedUsersList parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.basic_chat.proto.MessagesProto.BlockedUsersList parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.basic_chat.proto.MessagesProto.BlockedUsersList parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.basic_chat.proto.MessagesProto.BlockedUsersList parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.basic_chat.proto.MessagesProto.BlockedUsersList parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.basic_chat.proto.MessagesProto.BlockedUsersList parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static com.basic_chat.proto.MessagesProto.BlockedUsersList parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static com.basic_chat.proto.MessagesProto.BlockedUsersList parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.basic_chat.proto.MessagesProto.BlockedUsersList parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.basic_chat.proto.MessagesProto.BlockedUsersList parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.basic_chat.proto.MessagesProto.BlockedUsersList prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code com.basic_chat.BlockedUsersList}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:com.basic_chat.BlockedUsersList)
+        com.basic_chat.proto.MessagesProto.BlockedUsersListOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_BlockedUsersList_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_BlockedUsersList_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.basic_chat.proto.MessagesProto.BlockedUsersList.class, com.basic_chat.proto.MessagesProto.BlockedUsersList.Builder.class);
+      }
+
+      // Construct using com.basic_chat.proto.MessagesProto.BlockedUsersList.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        users_ =
+            com.google.protobuf.LazyStringArrayList.emptyList();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_BlockedUsersList_descriptor;
+      }
+
+      @java.lang.Override
+      public com.basic_chat.proto.MessagesProto.BlockedUsersList getDefaultInstanceForType() {
+        return com.basic_chat.proto.MessagesProto.BlockedUsersList.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public com.basic_chat.proto.MessagesProto.BlockedUsersList build() {
+        com.basic_chat.proto.MessagesProto.BlockedUsersList result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public com.basic_chat.proto.MessagesProto.BlockedUsersList buildPartial() {
+        com.basic_chat.proto.MessagesProto.BlockedUsersList result = new com.basic_chat.proto.MessagesProto.BlockedUsersList(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(com.basic_chat.proto.MessagesProto.BlockedUsersList result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          users_.makeImmutable();
+          result.users_ = users_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.basic_chat.proto.MessagesProto.BlockedUsersList) {
+          return mergeFrom((com.basic_chat.proto.MessagesProto.BlockedUsersList)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.basic_chat.proto.MessagesProto.BlockedUsersList other) {
+        if (other == com.basic_chat.proto.MessagesProto.BlockedUsersList.getDefaultInstance()) return this;
+        if (!other.users_.isEmpty()) {
+          if (users_.isEmpty()) {
+            users_ = other.users_;
+            bitField0_ |= 0x00000001;
+          } else {
+            ensureUsersIsMutable();
+            users_.addAll(other.users_);
+          }
+          onChanged();
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                java.lang.String s = input.readStringRequireUtf8();
+                ensureUsersIsMutable();
+                users_.add(s);
+                break;
+              } // case 10
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private com.google.protobuf.LazyStringArrayList users_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
+      private void ensureUsersIsMutable() {
+        if (!users_.isModifiable()) {
+          users_ = new com.google.protobuf.LazyStringArrayList(users_);
+        }
+        bitField0_ |= 0x00000001;
+      }
+      /**
+       * <code>repeated string users = 1;</code>
+       * @return A list containing the users.
+       */
+      public com.google.protobuf.ProtocolStringList
+          getUsersList() {
+        users_.makeImmutable();
+        return users_;
+      }
+      /**
+       * <code>repeated string users = 1;</code>
+       * @return The count of users.
+       */
+      public int getUsersCount() {
+        return users_.size();
+      }
+      /**
+       * <code>repeated string users = 1;</code>
+       * @param index The index of the element to return.
+       * @return The users at the given index.
+       */
+      public java.lang.String getUsers(int index) {
+        return users_.get(index);
+      }
+      /**
+       * <code>repeated string users = 1;</code>
+       * @param index The index of the value to return.
+       * @return The bytes of the users at the given index.
+       */
+      public com.google.protobuf.ByteString
+          getUsersBytes(int index) {
+        return users_.getByteString(index);
+      }
+      /**
+       * <code>repeated string users = 1;</code>
+       * @param index The index to set the value at.
+       * @param value The users to set.
+       * @return This builder for chaining.
+       */
+      public Builder setUsers(
+          int index, java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        ensureUsersIsMutable();
+        users_.set(index, value);
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string users = 1;</code>
+       * @param value The users to add.
+       * @return This builder for chaining.
+       */
+      public Builder addUsers(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        ensureUsersIsMutable();
+        users_.add(value);
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string users = 1;</code>
+       * @param values The users to add.
+       * @return This builder for chaining.
+       */
+      public Builder addAllUsers(
+          java.lang.Iterable<java.lang.String> values) {
+        ensureUsersIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, users_);
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string users = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearUsers() {
+        users_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000001);;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string users = 1;</code>
+       * @param value The bytes of the users to add.
+       * @return This builder for chaining.
+       */
+      public Builder addUsersBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        ensureUsersIsMutable();
+        users_.add(value);
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:com.basic_chat.BlockedUsersList)
+    }
+
+    // @@protoc_insertion_point(class_scope:com.basic_chat.BlockedUsersList)
+    private static final com.basic_chat.proto.MessagesProto.BlockedUsersList DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.basic_chat.proto.MessagesProto.BlockedUsersList();
+    }
+
+    public static com.basic_chat.proto.MessagesProto.BlockedUsersList getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<BlockedUsersList>
+        PARSER = new com.google.protobuf.AbstractParser<BlockedUsersList>() {
+      @java.lang.Override
+      public BlockedUsersList parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<BlockedUsersList> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<BlockedUsersList> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.basic_chat.proto.MessagesProto.BlockedUsersList getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   public interface WsMessageOrBuilder extends
       // @@protoc_insertion_point(interface_extends:com.basic_chat.WsMessage)
       com.google.protobuf.MessageOrBuilder {
@@ -10523,6 +14090,81 @@ public final class MessagesProto {
      */
     com.basic_chat.proto.MessagesProto.MessageErrorOrBuilder getMessageErrorOrBuilder();
 
+    /**
+     * <code>.com.basic_chat.UnblockContactRequest unblock_contact_request = 13;</code>
+     * @return Whether the unblockContactRequest field is set.
+     */
+    boolean hasUnblockContactRequest();
+    /**
+     * <code>.com.basic_chat.UnblockContactRequest unblock_contact_request = 13;</code>
+     * @return The unblockContactRequest.
+     */
+    com.basic_chat.proto.MessagesProto.UnblockContactRequest getUnblockContactRequest();
+    /**
+     * <code>.com.basic_chat.UnblockContactRequest unblock_contact_request = 13;</code>
+     */
+    com.basic_chat.proto.MessagesProto.UnblockContactRequestOrBuilder getUnblockContactRequestOrBuilder();
+
+    /**
+     * <code>.com.basic_chat.UnblockContactResponse unblock_contact_response = 14;</code>
+     * @return Whether the unblockContactResponse field is set.
+     */
+    boolean hasUnblockContactResponse();
+    /**
+     * <code>.com.basic_chat.UnblockContactResponse unblock_contact_response = 14;</code>
+     * @return The unblockContactResponse.
+     */
+    com.basic_chat.proto.MessagesProto.UnblockContactResponse getUnblockContactResponse();
+    /**
+     * <code>.com.basic_chat.UnblockContactResponse unblock_contact_response = 14;</code>
+     */
+    com.basic_chat.proto.MessagesProto.UnblockContactResponseOrBuilder getUnblockContactResponseOrBuilder();
+
+    /**
+     * <code>.com.basic_chat.ChatMessageResponse chat_message_response = 15;</code>
+     * @return Whether the chatMessageResponse field is set.
+     */
+    boolean hasChatMessageResponse();
+    /**
+     * <code>.com.basic_chat.ChatMessageResponse chat_message_response = 15;</code>
+     * @return The chatMessageResponse.
+     */
+    com.basic_chat.proto.MessagesProto.ChatMessageResponse getChatMessageResponse();
+    /**
+     * <code>.com.basic_chat.ChatMessageResponse chat_message_response = 15;</code>
+     */
+    com.basic_chat.proto.MessagesProto.ChatMessageResponseOrBuilder getChatMessageResponseOrBuilder();
+
+    /**
+     * <code>.com.basic_chat.UnblockedUsersList unblocked_users_list = 16;</code>
+     * @return Whether the unblockedUsersList field is set.
+     */
+    boolean hasUnblockedUsersList();
+    /**
+     * <code>.com.basic_chat.UnblockedUsersList unblocked_users_list = 16;</code>
+     * @return The unblockedUsersList.
+     */
+    com.basic_chat.proto.MessagesProto.UnblockedUsersList getUnblockedUsersList();
+    /**
+     * <code>.com.basic_chat.UnblockedUsersList unblocked_users_list = 16;</code>
+     */
+    com.basic_chat.proto.MessagesProto.UnblockedUsersListOrBuilder getUnblockedUsersListOrBuilder();
+
+    /**
+     * <code>.com.basic_chat.BlockedUsersList blocked_users_list = 17;</code>
+     * @return Whether the blockedUsersList field is set.
+     */
+    boolean hasBlockedUsersList();
+    /**
+     * <code>.com.basic_chat.BlockedUsersList blocked_users_list = 17;</code>
+     * @return The blockedUsersList.
+     */
+    com.basic_chat.proto.MessagesProto.BlockedUsersList getBlockedUsersList();
+    /**
+     * <code>.com.basic_chat.BlockedUsersList blocked_users_list = 17;</code>
+     */
+    com.basic_chat.proto.MessagesProto.BlockedUsersListOrBuilder getBlockedUsersListOrBuilder();
+
     com.basic_chat.proto.MessagesProto.WsMessage.PayloadCase getPayloadCase();
   }
   /**
@@ -10582,6 +14224,11 @@ public final class MessagesProto {
       BLOCK_CONTACT_REQUEST(10),
       BLOCK_CONTACT_RESPONSE(11),
       MESSAGE_ERROR(12),
+      UNBLOCK_CONTACT_REQUEST(13),
+      UNBLOCK_CONTACT_RESPONSE(14),
+      CHAT_MESSAGE_RESPONSE(15),
+      UNBLOCKED_USERS_LIST(16),
+      BLOCKED_USERS_LIST(17),
       PAYLOAD_NOT_SET(0);
       private final int value;
       private PayloadCase(int value) {
@@ -10611,6 +14258,11 @@ public final class MessagesProto {
           case 10: return BLOCK_CONTACT_REQUEST;
           case 11: return BLOCK_CONTACT_RESPONSE;
           case 12: return MESSAGE_ERROR;
+          case 13: return UNBLOCK_CONTACT_REQUEST;
+          case 14: return UNBLOCK_CONTACT_RESPONSE;
+          case 15: return CHAT_MESSAGE_RESPONSE;
+          case 16: return UNBLOCKED_USERS_LIST;
+          case 17: return BLOCKED_USERS_LIST;
           case 0: return PAYLOAD_NOT_SET;
           default: return null;
         }
@@ -10998,6 +14650,161 @@ public final class MessagesProto {
       return com.basic_chat.proto.MessagesProto.MessageError.getDefaultInstance();
     }
 
+    public static final int UNBLOCK_CONTACT_REQUEST_FIELD_NUMBER = 13;
+    /**
+     * <code>.com.basic_chat.UnblockContactRequest unblock_contact_request = 13;</code>
+     * @return Whether the unblockContactRequest field is set.
+     */
+    @java.lang.Override
+    public boolean hasUnblockContactRequest() {
+      return payloadCase_ == 13;
+    }
+    /**
+     * <code>.com.basic_chat.UnblockContactRequest unblock_contact_request = 13;</code>
+     * @return The unblockContactRequest.
+     */
+    @java.lang.Override
+    public com.basic_chat.proto.MessagesProto.UnblockContactRequest getUnblockContactRequest() {
+      if (payloadCase_ == 13) {
+         return (com.basic_chat.proto.MessagesProto.UnblockContactRequest) payload_;
+      }
+      return com.basic_chat.proto.MessagesProto.UnblockContactRequest.getDefaultInstance();
+    }
+    /**
+     * <code>.com.basic_chat.UnblockContactRequest unblock_contact_request = 13;</code>
+     */
+    @java.lang.Override
+    public com.basic_chat.proto.MessagesProto.UnblockContactRequestOrBuilder getUnblockContactRequestOrBuilder() {
+      if (payloadCase_ == 13) {
+         return (com.basic_chat.proto.MessagesProto.UnblockContactRequest) payload_;
+      }
+      return com.basic_chat.proto.MessagesProto.UnblockContactRequest.getDefaultInstance();
+    }
+
+    public static final int UNBLOCK_CONTACT_RESPONSE_FIELD_NUMBER = 14;
+    /**
+     * <code>.com.basic_chat.UnblockContactResponse unblock_contact_response = 14;</code>
+     * @return Whether the unblockContactResponse field is set.
+     */
+    @java.lang.Override
+    public boolean hasUnblockContactResponse() {
+      return payloadCase_ == 14;
+    }
+    /**
+     * <code>.com.basic_chat.UnblockContactResponse unblock_contact_response = 14;</code>
+     * @return The unblockContactResponse.
+     */
+    @java.lang.Override
+    public com.basic_chat.proto.MessagesProto.UnblockContactResponse getUnblockContactResponse() {
+      if (payloadCase_ == 14) {
+         return (com.basic_chat.proto.MessagesProto.UnblockContactResponse) payload_;
+      }
+      return com.basic_chat.proto.MessagesProto.UnblockContactResponse.getDefaultInstance();
+    }
+    /**
+     * <code>.com.basic_chat.UnblockContactResponse unblock_contact_response = 14;</code>
+     */
+    @java.lang.Override
+    public com.basic_chat.proto.MessagesProto.UnblockContactResponseOrBuilder getUnblockContactResponseOrBuilder() {
+      if (payloadCase_ == 14) {
+         return (com.basic_chat.proto.MessagesProto.UnblockContactResponse) payload_;
+      }
+      return com.basic_chat.proto.MessagesProto.UnblockContactResponse.getDefaultInstance();
+    }
+
+    public static final int CHAT_MESSAGE_RESPONSE_FIELD_NUMBER = 15;
+    /**
+     * <code>.com.basic_chat.ChatMessageResponse chat_message_response = 15;</code>
+     * @return Whether the chatMessageResponse field is set.
+     */
+    @java.lang.Override
+    public boolean hasChatMessageResponse() {
+      return payloadCase_ == 15;
+    }
+    /**
+     * <code>.com.basic_chat.ChatMessageResponse chat_message_response = 15;</code>
+     * @return The chatMessageResponse.
+     */
+    @java.lang.Override
+    public com.basic_chat.proto.MessagesProto.ChatMessageResponse getChatMessageResponse() {
+      if (payloadCase_ == 15) {
+         return (com.basic_chat.proto.MessagesProto.ChatMessageResponse) payload_;
+      }
+      return com.basic_chat.proto.MessagesProto.ChatMessageResponse.getDefaultInstance();
+    }
+    /**
+     * <code>.com.basic_chat.ChatMessageResponse chat_message_response = 15;</code>
+     */
+    @java.lang.Override
+    public com.basic_chat.proto.MessagesProto.ChatMessageResponseOrBuilder getChatMessageResponseOrBuilder() {
+      if (payloadCase_ == 15) {
+         return (com.basic_chat.proto.MessagesProto.ChatMessageResponse) payload_;
+      }
+      return com.basic_chat.proto.MessagesProto.ChatMessageResponse.getDefaultInstance();
+    }
+
+    public static final int UNBLOCKED_USERS_LIST_FIELD_NUMBER = 16;
+    /**
+     * <code>.com.basic_chat.UnblockedUsersList unblocked_users_list = 16;</code>
+     * @return Whether the unblockedUsersList field is set.
+     */
+    @java.lang.Override
+    public boolean hasUnblockedUsersList() {
+      return payloadCase_ == 16;
+    }
+    /**
+     * <code>.com.basic_chat.UnblockedUsersList unblocked_users_list = 16;</code>
+     * @return The unblockedUsersList.
+     */
+    @java.lang.Override
+    public com.basic_chat.proto.MessagesProto.UnblockedUsersList getUnblockedUsersList() {
+      if (payloadCase_ == 16) {
+         return (com.basic_chat.proto.MessagesProto.UnblockedUsersList) payload_;
+      }
+      return com.basic_chat.proto.MessagesProto.UnblockedUsersList.getDefaultInstance();
+    }
+    /**
+     * <code>.com.basic_chat.UnblockedUsersList unblocked_users_list = 16;</code>
+     */
+    @java.lang.Override
+    public com.basic_chat.proto.MessagesProto.UnblockedUsersListOrBuilder getUnblockedUsersListOrBuilder() {
+      if (payloadCase_ == 16) {
+         return (com.basic_chat.proto.MessagesProto.UnblockedUsersList) payload_;
+      }
+      return com.basic_chat.proto.MessagesProto.UnblockedUsersList.getDefaultInstance();
+    }
+
+    public static final int BLOCKED_USERS_LIST_FIELD_NUMBER = 17;
+    /**
+     * <code>.com.basic_chat.BlockedUsersList blocked_users_list = 17;</code>
+     * @return Whether the blockedUsersList field is set.
+     */
+    @java.lang.Override
+    public boolean hasBlockedUsersList() {
+      return payloadCase_ == 17;
+    }
+    /**
+     * <code>.com.basic_chat.BlockedUsersList blocked_users_list = 17;</code>
+     * @return The blockedUsersList.
+     */
+    @java.lang.Override
+    public com.basic_chat.proto.MessagesProto.BlockedUsersList getBlockedUsersList() {
+      if (payloadCase_ == 17) {
+         return (com.basic_chat.proto.MessagesProto.BlockedUsersList) payload_;
+      }
+      return com.basic_chat.proto.MessagesProto.BlockedUsersList.getDefaultInstance();
+    }
+    /**
+     * <code>.com.basic_chat.BlockedUsersList blocked_users_list = 17;</code>
+     */
+    @java.lang.Override
+    public com.basic_chat.proto.MessagesProto.BlockedUsersListOrBuilder getBlockedUsersListOrBuilder() {
+      if (payloadCase_ == 17) {
+         return (com.basic_chat.proto.MessagesProto.BlockedUsersList) payload_;
+      }
+      return com.basic_chat.proto.MessagesProto.BlockedUsersList.getDefaultInstance();
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -11047,6 +14854,21 @@ public final class MessagesProto {
       }
       if (payloadCase_ == 12) {
         output.writeMessage(12, (com.basic_chat.proto.MessagesProto.MessageError) payload_);
+      }
+      if (payloadCase_ == 13) {
+        output.writeMessage(13, (com.basic_chat.proto.MessagesProto.UnblockContactRequest) payload_);
+      }
+      if (payloadCase_ == 14) {
+        output.writeMessage(14, (com.basic_chat.proto.MessagesProto.UnblockContactResponse) payload_);
+      }
+      if (payloadCase_ == 15) {
+        output.writeMessage(15, (com.basic_chat.proto.MessagesProto.ChatMessageResponse) payload_);
+      }
+      if (payloadCase_ == 16) {
+        output.writeMessage(16, (com.basic_chat.proto.MessagesProto.UnblockedUsersList) payload_);
+      }
+      if (payloadCase_ == 17) {
+        output.writeMessage(17, (com.basic_chat.proto.MessagesProto.BlockedUsersList) payload_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -11104,6 +14926,26 @@ public final class MessagesProto {
       if (payloadCase_ == 12) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(12, (com.basic_chat.proto.MessagesProto.MessageError) payload_);
+      }
+      if (payloadCase_ == 13) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(13, (com.basic_chat.proto.MessagesProto.UnblockContactRequest) payload_);
+      }
+      if (payloadCase_ == 14) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(14, (com.basic_chat.proto.MessagesProto.UnblockContactResponse) payload_);
+      }
+      if (payloadCase_ == 15) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(15, (com.basic_chat.proto.MessagesProto.ChatMessageResponse) payload_);
+      }
+      if (payloadCase_ == 16) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(16, (com.basic_chat.proto.MessagesProto.UnblockedUsersList) payload_);
+      }
+      if (payloadCase_ == 17) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(17, (com.basic_chat.proto.MessagesProto.BlockedUsersList) payload_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -11170,6 +15012,26 @@ public final class MessagesProto {
           if (!getMessageError()
               .equals(other.getMessageError())) return false;
           break;
+        case 13:
+          if (!getUnblockContactRequest()
+              .equals(other.getUnblockContactRequest())) return false;
+          break;
+        case 14:
+          if (!getUnblockContactResponse()
+              .equals(other.getUnblockContactResponse())) return false;
+          break;
+        case 15:
+          if (!getChatMessageResponse()
+              .equals(other.getChatMessageResponse())) return false;
+          break;
+        case 16:
+          if (!getUnblockedUsersList()
+              .equals(other.getUnblockedUsersList())) return false;
+          break;
+        case 17:
+          if (!getBlockedUsersList()
+              .equals(other.getBlockedUsersList())) return false;
+          break;
         case 0:
         default:
       }
@@ -11232,6 +15094,26 @@ public final class MessagesProto {
         case 12:
           hash = (37 * hash) + MESSAGE_ERROR_FIELD_NUMBER;
           hash = (53 * hash) + getMessageError().hashCode();
+          break;
+        case 13:
+          hash = (37 * hash) + UNBLOCK_CONTACT_REQUEST_FIELD_NUMBER;
+          hash = (53 * hash) + getUnblockContactRequest().hashCode();
+          break;
+        case 14:
+          hash = (37 * hash) + UNBLOCK_CONTACT_RESPONSE_FIELD_NUMBER;
+          hash = (53 * hash) + getUnblockContactResponse().hashCode();
+          break;
+        case 15:
+          hash = (37 * hash) + CHAT_MESSAGE_RESPONSE_FIELD_NUMBER;
+          hash = (53 * hash) + getChatMessageResponse().hashCode();
+          break;
+        case 16:
+          hash = (37 * hash) + UNBLOCKED_USERS_LIST_FIELD_NUMBER;
+          hash = (53 * hash) + getUnblockedUsersList().hashCode();
+          break;
+        case 17:
+          hash = (37 * hash) + BLOCKED_USERS_LIST_FIELD_NUMBER;
+          hash = (53 * hash) + getBlockedUsersList().hashCode();
           break;
         case 0:
         default:
@@ -11407,6 +15289,21 @@ public final class MessagesProto {
         if (messageErrorBuilder_ != null) {
           messageErrorBuilder_.clear();
         }
+        if (unblockContactRequestBuilder_ != null) {
+          unblockContactRequestBuilder_.clear();
+        }
+        if (unblockContactResponseBuilder_ != null) {
+          unblockContactResponseBuilder_.clear();
+        }
+        if (chatMessageResponseBuilder_ != null) {
+          chatMessageResponseBuilder_.clear();
+        }
+        if (unblockedUsersListBuilder_ != null) {
+          unblockedUsersListBuilder_.clear();
+        }
+        if (blockedUsersListBuilder_ != null) {
+          blockedUsersListBuilder_.clear();
+        }
         payloadCase_ = 0;
         payload_ = null;
         return this;
@@ -11495,6 +15392,26 @@ public final class MessagesProto {
         if (payloadCase_ == 12 &&
             messageErrorBuilder_ != null) {
           result.payload_ = messageErrorBuilder_.build();
+        }
+        if (payloadCase_ == 13 &&
+            unblockContactRequestBuilder_ != null) {
+          result.payload_ = unblockContactRequestBuilder_.build();
+        }
+        if (payloadCase_ == 14 &&
+            unblockContactResponseBuilder_ != null) {
+          result.payload_ = unblockContactResponseBuilder_.build();
+        }
+        if (payloadCase_ == 15 &&
+            chatMessageResponseBuilder_ != null) {
+          result.payload_ = chatMessageResponseBuilder_.build();
+        }
+        if (payloadCase_ == 16 &&
+            unblockedUsersListBuilder_ != null) {
+          result.payload_ = unblockedUsersListBuilder_.build();
+        }
+        if (payloadCase_ == 17 &&
+            blockedUsersListBuilder_ != null) {
+          result.payload_ = blockedUsersListBuilder_.build();
         }
       }
 
@@ -11589,6 +15506,26 @@ public final class MessagesProto {
           }
           case MESSAGE_ERROR: {
             mergeMessageError(other.getMessageError());
+            break;
+          }
+          case UNBLOCK_CONTACT_REQUEST: {
+            mergeUnblockContactRequest(other.getUnblockContactRequest());
+            break;
+          }
+          case UNBLOCK_CONTACT_RESPONSE: {
+            mergeUnblockContactResponse(other.getUnblockContactResponse());
+            break;
+          }
+          case CHAT_MESSAGE_RESPONSE: {
+            mergeChatMessageResponse(other.getChatMessageResponse());
+            break;
+          }
+          case UNBLOCKED_USERS_LIST: {
+            mergeUnblockedUsersList(other.getUnblockedUsersList());
+            break;
+          }
+          case BLOCKED_USERS_LIST: {
+            mergeBlockedUsersList(other.getBlockedUsersList());
             break;
           }
           case PAYLOAD_NOT_SET: {
@@ -11705,6 +15642,41 @@ public final class MessagesProto {
                 payloadCase_ = 12;
                 break;
               } // case 98
+              case 106: {
+                input.readMessage(
+                    getUnblockContactRequestFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                payloadCase_ = 13;
+                break;
+              } // case 106
+              case 114: {
+                input.readMessage(
+                    getUnblockContactResponseFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                payloadCase_ = 14;
+                break;
+              } // case 114
+              case 122: {
+                input.readMessage(
+                    getChatMessageResponseFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                payloadCase_ = 15;
+                break;
+              } // case 122
+              case 130: {
+                input.readMessage(
+                    getUnblockedUsersListFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                payloadCase_ = 16;
+                break;
+              } // case 130
+              case 138: {
+                input.readMessage(
+                    getBlockedUsersListFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                payloadCase_ = 17;
+                break;
+              } // case 138
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -13440,6 +17412,716 @@ public final class MessagesProto {
         onChanged();
         return messageErrorBuilder_;
       }
+
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.basic_chat.proto.MessagesProto.UnblockContactRequest, com.basic_chat.proto.MessagesProto.UnblockContactRequest.Builder, com.basic_chat.proto.MessagesProto.UnblockContactRequestOrBuilder> unblockContactRequestBuilder_;
+      /**
+       * <code>.com.basic_chat.UnblockContactRequest unblock_contact_request = 13;</code>
+       * @return Whether the unblockContactRequest field is set.
+       */
+      @java.lang.Override
+      public boolean hasUnblockContactRequest() {
+        return payloadCase_ == 13;
+      }
+      /**
+       * <code>.com.basic_chat.UnblockContactRequest unblock_contact_request = 13;</code>
+       * @return The unblockContactRequest.
+       */
+      @java.lang.Override
+      public com.basic_chat.proto.MessagesProto.UnblockContactRequest getUnblockContactRequest() {
+        if (unblockContactRequestBuilder_ == null) {
+          if (payloadCase_ == 13) {
+            return (com.basic_chat.proto.MessagesProto.UnblockContactRequest) payload_;
+          }
+          return com.basic_chat.proto.MessagesProto.UnblockContactRequest.getDefaultInstance();
+        } else {
+          if (payloadCase_ == 13) {
+            return unblockContactRequestBuilder_.getMessage();
+          }
+          return com.basic_chat.proto.MessagesProto.UnblockContactRequest.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.com.basic_chat.UnblockContactRequest unblock_contact_request = 13;</code>
+       */
+      public Builder setUnblockContactRequest(com.basic_chat.proto.MessagesProto.UnblockContactRequest value) {
+        if (unblockContactRequestBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          payload_ = value;
+          onChanged();
+        } else {
+          unblockContactRequestBuilder_.setMessage(value);
+        }
+        payloadCase_ = 13;
+        return this;
+      }
+      /**
+       * <code>.com.basic_chat.UnblockContactRequest unblock_contact_request = 13;</code>
+       */
+      public Builder setUnblockContactRequest(
+          com.basic_chat.proto.MessagesProto.UnblockContactRequest.Builder builderForValue) {
+        if (unblockContactRequestBuilder_ == null) {
+          payload_ = builderForValue.build();
+          onChanged();
+        } else {
+          unblockContactRequestBuilder_.setMessage(builderForValue.build());
+        }
+        payloadCase_ = 13;
+        return this;
+      }
+      /**
+       * <code>.com.basic_chat.UnblockContactRequest unblock_contact_request = 13;</code>
+       */
+      public Builder mergeUnblockContactRequest(com.basic_chat.proto.MessagesProto.UnblockContactRequest value) {
+        if (unblockContactRequestBuilder_ == null) {
+          if (payloadCase_ == 13 &&
+              payload_ != com.basic_chat.proto.MessagesProto.UnblockContactRequest.getDefaultInstance()) {
+            payload_ = com.basic_chat.proto.MessagesProto.UnblockContactRequest.newBuilder((com.basic_chat.proto.MessagesProto.UnblockContactRequest) payload_)
+                .mergeFrom(value).buildPartial();
+          } else {
+            payload_ = value;
+          }
+          onChanged();
+        } else {
+          if (payloadCase_ == 13) {
+            unblockContactRequestBuilder_.mergeFrom(value);
+          } else {
+            unblockContactRequestBuilder_.setMessage(value);
+          }
+        }
+        payloadCase_ = 13;
+        return this;
+      }
+      /**
+       * <code>.com.basic_chat.UnblockContactRequest unblock_contact_request = 13;</code>
+       */
+      public Builder clearUnblockContactRequest() {
+        if (unblockContactRequestBuilder_ == null) {
+          if (payloadCase_ == 13) {
+            payloadCase_ = 0;
+            payload_ = null;
+            onChanged();
+          }
+        } else {
+          if (payloadCase_ == 13) {
+            payloadCase_ = 0;
+            payload_ = null;
+          }
+          unblockContactRequestBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>.com.basic_chat.UnblockContactRequest unblock_contact_request = 13;</code>
+       */
+      public com.basic_chat.proto.MessagesProto.UnblockContactRequest.Builder getUnblockContactRequestBuilder() {
+        return getUnblockContactRequestFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.com.basic_chat.UnblockContactRequest unblock_contact_request = 13;</code>
+       */
+      @java.lang.Override
+      public com.basic_chat.proto.MessagesProto.UnblockContactRequestOrBuilder getUnblockContactRequestOrBuilder() {
+        if ((payloadCase_ == 13) && (unblockContactRequestBuilder_ != null)) {
+          return unblockContactRequestBuilder_.getMessageOrBuilder();
+        } else {
+          if (payloadCase_ == 13) {
+            return (com.basic_chat.proto.MessagesProto.UnblockContactRequest) payload_;
+          }
+          return com.basic_chat.proto.MessagesProto.UnblockContactRequest.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.com.basic_chat.UnblockContactRequest unblock_contact_request = 13;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.basic_chat.proto.MessagesProto.UnblockContactRequest, com.basic_chat.proto.MessagesProto.UnblockContactRequest.Builder, com.basic_chat.proto.MessagesProto.UnblockContactRequestOrBuilder> 
+          getUnblockContactRequestFieldBuilder() {
+        if (unblockContactRequestBuilder_ == null) {
+          if (!(payloadCase_ == 13)) {
+            payload_ = com.basic_chat.proto.MessagesProto.UnblockContactRequest.getDefaultInstance();
+          }
+          unblockContactRequestBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              com.basic_chat.proto.MessagesProto.UnblockContactRequest, com.basic_chat.proto.MessagesProto.UnblockContactRequest.Builder, com.basic_chat.proto.MessagesProto.UnblockContactRequestOrBuilder>(
+                  (com.basic_chat.proto.MessagesProto.UnblockContactRequest) payload_,
+                  getParentForChildren(),
+                  isClean());
+          payload_ = null;
+        }
+        payloadCase_ = 13;
+        onChanged();
+        return unblockContactRequestBuilder_;
+      }
+
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.basic_chat.proto.MessagesProto.UnblockContactResponse, com.basic_chat.proto.MessagesProto.UnblockContactResponse.Builder, com.basic_chat.proto.MessagesProto.UnblockContactResponseOrBuilder> unblockContactResponseBuilder_;
+      /**
+       * <code>.com.basic_chat.UnblockContactResponse unblock_contact_response = 14;</code>
+       * @return Whether the unblockContactResponse field is set.
+       */
+      @java.lang.Override
+      public boolean hasUnblockContactResponse() {
+        return payloadCase_ == 14;
+      }
+      /**
+       * <code>.com.basic_chat.UnblockContactResponse unblock_contact_response = 14;</code>
+       * @return The unblockContactResponse.
+       */
+      @java.lang.Override
+      public com.basic_chat.proto.MessagesProto.UnblockContactResponse getUnblockContactResponse() {
+        if (unblockContactResponseBuilder_ == null) {
+          if (payloadCase_ == 14) {
+            return (com.basic_chat.proto.MessagesProto.UnblockContactResponse) payload_;
+          }
+          return com.basic_chat.proto.MessagesProto.UnblockContactResponse.getDefaultInstance();
+        } else {
+          if (payloadCase_ == 14) {
+            return unblockContactResponseBuilder_.getMessage();
+          }
+          return com.basic_chat.proto.MessagesProto.UnblockContactResponse.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.com.basic_chat.UnblockContactResponse unblock_contact_response = 14;</code>
+       */
+      public Builder setUnblockContactResponse(com.basic_chat.proto.MessagesProto.UnblockContactResponse value) {
+        if (unblockContactResponseBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          payload_ = value;
+          onChanged();
+        } else {
+          unblockContactResponseBuilder_.setMessage(value);
+        }
+        payloadCase_ = 14;
+        return this;
+      }
+      /**
+       * <code>.com.basic_chat.UnblockContactResponse unblock_contact_response = 14;</code>
+       */
+      public Builder setUnblockContactResponse(
+          com.basic_chat.proto.MessagesProto.UnblockContactResponse.Builder builderForValue) {
+        if (unblockContactResponseBuilder_ == null) {
+          payload_ = builderForValue.build();
+          onChanged();
+        } else {
+          unblockContactResponseBuilder_.setMessage(builderForValue.build());
+        }
+        payloadCase_ = 14;
+        return this;
+      }
+      /**
+       * <code>.com.basic_chat.UnblockContactResponse unblock_contact_response = 14;</code>
+       */
+      public Builder mergeUnblockContactResponse(com.basic_chat.proto.MessagesProto.UnblockContactResponse value) {
+        if (unblockContactResponseBuilder_ == null) {
+          if (payloadCase_ == 14 &&
+              payload_ != com.basic_chat.proto.MessagesProto.UnblockContactResponse.getDefaultInstance()) {
+            payload_ = com.basic_chat.proto.MessagesProto.UnblockContactResponse.newBuilder((com.basic_chat.proto.MessagesProto.UnblockContactResponse) payload_)
+                .mergeFrom(value).buildPartial();
+          } else {
+            payload_ = value;
+          }
+          onChanged();
+        } else {
+          if (payloadCase_ == 14) {
+            unblockContactResponseBuilder_.mergeFrom(value);
+          } else {
+            unblockContactResponseBuilder_.setMessage(value);
+          }
+        }
+        payloadCase_ = 14;
+        return this;
+      }
+      /**
+       * <code>.com.basic_chat.UnblockContactResponse unblock_contact_response = 14;</code>
+       */
+      public Builder clearUnblockContactResponse() {
+        if (unblockContactResponseBuilder_ == null) {
+          if (payloadCase_ == 14) {
+            payloadCase_ = 0;
+            payload_ = null;
+            onChanged();
+          }
+        } else {
+          if (payloadCase_ == 14) {
+            payloadCase_ = 0;
+            payload_ = null;
+          }
+          unblockContactResponseBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>.com.basic_chat.UnblockContactResponse unblock_contact_response = 14;</code>
+       */
+      public com.basic_chat.proto.MessagesProto.UnblockContactResponse.Builder getUnblockContactResponseBuilder() {
+        return getUnblockContactResponseFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.com.basic_chat.UnblockContactResponse unblock_contact_response = 14;</code>
+       */
+      @java.lang.Override
+      public com.basic_chat.proto.MessagesProto.UnblockContactResponseOrBuilder getUnblockContactResponseOrBuilder() {
+        if ((payloadCase_ == 14) && (unblockContactResponseBuilder_ != null)) {
+          return unblockContactResponseBuilder_.getMessageOrBuilder();
+        } else {
+          if (payloadCase_ == 14) {
+            return (com.basic_chat.proto.MessagesProto.UnblockContactResponse) payload_;
+          }
+          return com.basic_chat.proto.MessagesProto.UnblockContactResponse.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.com.basic_chat.UnblockContactResponse unblock_contact_response = 14;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.basic_chat.proto.MessagesProto.UnblockContactResponse, com.basic_chat.proto.MessagesProto.UnblockContactResponse.Builder, com.basic_chat.proto.MessagesProto.UnblockContactResponseOrBuilder> 
+          getUnblockContactResponseFieldBuilder() {
+        if (unblockContactResponseBuilder_ == null) {
+          if (!(payloadCase_ == 14)) {
+            payload_ = com.basic_chat.proto.MessagesProto.UnblockContactResponse.getDefaultInstance();
+          }
+          unblockContactResponseBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              com.basic_chat.proto.MessagesProto.UnblockContactResponse, com.basic_chat.proto.MessagesProto.UnblockContactResponse.Builder, com.basic_chat.proto.MessagesProto.UnblockContactResponseOrBuilder>(
+                  (com.basic_chat.proto.MessagesProto.UnblockContactResponse) payload_,
+                  getParentForChildren(),
+                  isClean());
+          payload_ = null;
+        }
+        payloadCase_ = 14;
+        onChanged();
+        return unblockContactResponseBuilder_;
+      }
+
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.basic_chat.proto.MessagesProto.ChatMessageResponse, com.basic_chat.proto.MessagesProto.ChatMessageResponse.Builder, com.basic_chat.proto.MessagesProto.ChatMessageResponseOrBuilder> chatMessageResponseBuilder_;
+      /**
+       * <code>.com.basic_chat.ChatMessageResponse chat_message_response = 15;</code>
+       * @return Whether the chatMessageResponse field is set.
+       */
+      @java.lang.Override
+      public boolean hasChatMessageResponse() {
+        return payloadCase_ == 15;
+      }
+      /**
+       * <code>.com.basic_chat.ChatMessageResponse chat_message_response = 15;</code>
+       * @return The chatMessageResponse.
+       */
+      @java.lang.Override
+      public com.basic_chat.proto.MessagesProto.ChatMessageResponse getChatMessageResponse() {
+        if (chatMessageResponseBuilder_ == null) {
+          if (payloadCase_ == 15) {
+            return (com.basic_chat.proto.MessagesProto.ChatMessageResponse) payload_;
+          }
+          return com.basic_chat.proto.MessagesProto.ChatMessageResponse.getDefaultInstance();
+        } else {
+          if (payloadCase_ == 15) {
+            return chatMessageResponseBuilder_.getMessage();
+          }
+          return com.basic_chat.proto.MessagesProto.ChatMessageResponse.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.com.basic_chat.ChatMessageResponse chat_message_response = 15;</code>
+       */
+      public Builder setChatMessageResponse(com.basic_chat.proto.MessagesProto.ChatMessageResponse value) {
+        if (chatMessageResponseBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          payload_ = value;
+          onChanged();
+        } else {
+          chatMessageResponseBuilder_.setMessage(value);
+        }
+        payloadCase_ = 15;
+        return this;
+      }
+      /**
+       * <code>.com.basic_chat.ChatMessageResponse chat_message_response = 15;</code>
+       */
+      public Builder setChatMessageResponse(
+          com.basic_chat.proto.MessagesProto.ChatMessageResponse.Builder builderForValue) {
+        if (chatMessageResponseBuilder_ == null) {
+          payload_ = builderForValue.build();
+          onChanged();
+        } else {
+          chatMessageResponseBuilder_.setMessage(builderForValue.build());
+        }
+        payloadCase_ = 15;
+        return this;
+      }
+      /**
+       * <code>.com.basic_chat.ChatMessageResponse chat_message_response = 15;</code>
+       */
+      public Builder mergeChatMessageResponse(com.basic_chat.proto.MessagesProto.ChatMessageResponse value) {
+        if (chatMessageResponseBuilder_ == null) {
+          if (payloadCase_ == 15 &&
+              payload_ != com.basic_chat.proto.MessagesProto.ChatMessageResponse.getDefaultInstance()) {
+            payload_ = com.basic_chat.proto.MessagesProto.ChatMessageResponse.newBuilder((com.basic_chat.proto.MessagesProto.ChatMessageResponse) payload_)
+                .mergeFrom(value).buildPartial();
+          } else {
+            payload_ = value;
+          }
+          onChanged();
+        } else {
+          if (payloadCase_ == 15) {
+            chatMessageResponseBuilder_.mergeFrom(value);
+          } else {
+            chatMessageResponseBuilder_.setMessage(value);
+          }
+        }
+        payloadCase_ = 15;
+        return this;
+      }
+      /**
+       * <code>.com.basic_chat.ChatMessageResponse chat_message_response = 15;</code>
+       */
+      public Builder clearChatMessageResponse() {
+        if (chatMessageResponseBuilder_ == null) {
+          if (payloadCase_ == 15) {
+            payloadCase_ = 0;
+            payload_ = null;
+            onChanged();
+          }
+        } else {
+          if (payloadCase_ == 15) {
+            payloadCase_ = 0;
+            payload_ = null;
+          }
+          chatMessageResponseBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>.com.basic_chat.ChatMessageResponse chat_message_response = 15;</code>
+       */
+      public com.basic_chat.proto.MessagesProto.ChatMessageResponse.Builder getChatMessageResponseBuilder() {
+        return getChatMessageResponseFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.com.basic_chat.ChatMessageResponse chat_message_response = 15;</code>
+       */
+      @java.lang.Override
+      public com.basic_chat.proto.MessagesProto.ChatMessageResponseOrBuilder getChatMessageResponseOrBuilder() {
+        if ((payloadCase_ == 15) && (chatMessageResponseBuilder_ != null)) {
+          return chatMessageResponseBuilder_.getMessageOrBuilder();
+        } else {
+          if (payloadCase_ == 15) {
+            return (com.basic_chat.proto.MessagesProto.ChatMessageResponse) payload_;
+          }
+          return com.basic_chat.proto.MessagesProto.ChatMessageResponse.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.com.basic_chat.ChatMessageResponse chat_message_response = 15;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.basic_chat.proto.MessagesProto.ChatMessageResponse, com.basic_chat.proto.MessagesProto.ChatMessageResponse.Builder, com.basic_chat.proto.MessagesProto.ChatMessageResponseOrBuilder> 
+          getChatMessageResponseFieldBuilder() {
+        if (chatMessageResponseBuilder_ == null) {
+          if (!(payloadCase_ == 15)) {
+            payload_ = com.basic_chat.proto.MessagesProto.ChatMessageResponse.getDefaultInstance();
+          }
+          chatMessageResponseBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              com.basic_chat.proto.MessagesProto.ChatMessageResponse, com.basic_chat.proto.MessagesProto.ChatMessageResponse.Builder, com.basic_chat.proto.MessagesProto.ChatMessageResponseOrBuilder>(
+                  (com.basic_chat.proto.MessagesProto.ChatMessageResponse) payload_,
+                  getParentForChildren(),
+                  isClean());
+          payload_ = null;
+        }
+        payloadCase_ = 15;
+        onChanged();
+        return chatMessageResponseBuilder_;
+      }
+
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.basic_chat.proto.MessagesProto.UnblockedUsersList, com.basic_chat.proto.MessagesProto.UnblockedUsersList.Builder, com.basic_chat.proto.MessagesProto.UnblockedUsersListOrBuilder> unblockedUsersListBuilder_;
+      /**
+       * <code>.com.basic_chat.UnblockedUsersList unblocked_users_list = 16;</code>
+       * @return Whether the unblockedUsersList field is set.
+       */
+      @java.lang.Override
+      public boolean hasUnblockedUsersList() {
+        return payloadCase_ == 16;
+      }
+      /**
+       * <code>.com.basic_chat.UnblockedUsersList unblocked_users_list = 16;</code>
+       * @return The unblockedUsersList.
+       */
+      @java.lang.Override
+      public com.basic_chat.proto.MessagesProto.UnblockedUsersList getUnblockedUsersList() {
+        if (unblockedUsersListBuilder_ == null) {
+          if (payloadCase_ == 16) {
+            return (com.basic_chat.proto.MessagesProto.UnblockedUsersList) payload_;
+          }
+          return com.basic_chat.proto.MessagesProto.UnblockedUsersList.getDefaultInstance();
+        } else {
+          if (payloadCase_ == 16) {
+            return unblockedUsersListBuilder_.getMessage();
+          }
+          return com.basic_chat.proto.MessagesProto.UnblockedUsersList.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.com.basic_chat.UnblockedUsersList unblocked_users_list = 16;</code>
+       */
+      public Builder setUnblockedUsersList(com.basic_chat.proto.MessagesProto.UnblockedUsersList value) {
+        if (unblockedUsersListBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          payload_ = value;
+          onChanged();
+        } else {
+          unblockedUsersListBuilder_.setMessage(value);
+        }
+        payloadCase_ = 16;
+        return this;
+      }
+      /**
+       * <code>.com.basic_chat.UnblockedUsersList unblocked_users_list = 16;</code>
+       */
+      public Builder setUnblockedUsersList(
+          com.basic_chat.proto.MessagesProto.UnblockedUsersList.Builder builderForValue) {
+        if (unblockedUsersListBuilder_ == null) {
+          payload_ = builderForValue.build();
+          onChanged();
+        } else {
+          unblockedUsersListBuilder_.setMessage(builderForValue.build());
+        }
+        payloadCase_ = 16;
+        return this;
+      }
+      /**
+       * <code>.com.basic_chat.UnblockedUsersList unblocked_users_list = 16;</code>
+       */
+      public Builder mergeUnblockedUsersList(com.basic_chat.proto.MessagesProto.UnblockedUsersList value) {
+        if (unblockedUsersListBuilder_ == null) {
+          if (payloadCase_ == 16 &&
+              payload_ != com.basic_chat.proto.MessagesProto.UnblockedUsersList.getDefaultInstance()) {
+            payload_ = com.basic_chat.proto.MessagesProto.UnblockedUsersList.newBuilder((com.basic_chat.proto.MessagesProto.UnblockedUsersList) payload_)
+                .mergeFrom(value).buildPartial();
+          } else {
+            payload_ = value;
+          }
+          onChanged();
+        } else {
+          if (payloadCase_ == 16) {
+            unblockedUsersListBuilder_.mergeFrom(value);
+          } else {
+            unblockedUsersListBuilder_.setMessage(value);
+          }
+        }
+        payloadCase_ = 16;
+        return this;
+      }
+      /**
+       * <code>.com.basic_chat.UnblockedUsersList unblocked_users_list = 16;</code>
+       */
+      public Builder clearUnblockedUsersList() {
+        if (unblockedUsersListBuilder_ == null) {
+          if (payloadCase_ == 16) {
+            payloadCase_ = 0;
+            payload_ = null;
+            onChanged();
+          }
+        } else {
+          if (payloadCase_ == 16) {
+            payloadCase_ = 0;
+            payload_ = null;
+          }
+          unblockedUsersListBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>.com.basic_chat.UnblockedUsersList unblocked_users_list = 16;</code>
+       */
+      public com.basic_chat.proto.MessagesProto.UnblockedUsersList.Builder getUnblockedUsersListBuilder() {
+        return getUnblockedUsersListFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.com.basic_chat.UnblockedUsersList unblocked_users_list = 16;</code>
+       */
+      @java.lang.Override
+      public com.basic_chat.proto.MessagesProto.UnblockedUsersListOrBuilder getUnblockedUsersListOrBuilder() {
+        if ((payloadCase_ == 16) && (unblockedUsersListBuilder_ != null)) {
+          return unblockedUsersListBuilder_.getMessageOrBuilder();
+        } else {
+          if (payloadCase_ == 16) {
+            return (com.basic_chat.proto.MessagesProto.UnblockedUsersList) payload_;
+          }
+          return com.basic_chat.proto.MessagesProto.UnblockedUsersList.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.com.basic_chat.UnblockedUsersList unblocked_users_list = 16;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.basic_chat.proto.MessagesProto.UnblockedUsersList, com.basic_chat.proto.MessagesProto.UnblockedUsersList.Builder, com.basic_chat.proto.MessagesProto.UnblockedUsersListOrBuilder> 
+          getUnblockedUsersListFieldBuilder() {
+        if (unblockedUsersListBuilder_ == null) {
+          if (!(payloadCase_ == 16)) {
+            payload_ = com.basic_chat.proto.MessagesProto.UnblockedUsersList.getDefaultInstance();
+          }
+          unblockedUsersListBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              com.basic_chat.proto.MessagesProto.UnblockedUsersList, com.basic_chat.proto.MessagesProto.UnblockedUsersList.Builder, com.basic_chat.proto.MessagesProto.UnblockedUsersListOrBuilder>(
+                  (com.basic_chat.proto.MessagesProto.UnblockedUsersList) payload_,
+                  getParentForChildren(),
+                  isClean());
+          payload_ = null;
+        }
+        payloadCase_ = 16;
+        onChanged();
+        return unblockedUsersListBuilder_;
+      }
+
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.basic_chat.proto.MessagesProto.BlockedUsersList, com.basic_chat.proto.MessagesProto.BlockedUsersList.Builder, com.basic_chat.proto.MessagesProto.BlockedUsersListOrBuilder> blockedUsersListBuilder_;
+      /**
+       * <code>.com.basic_chat.BlockedUsersList blocked_users_list = 17;</code>
+       * @return Whether the blockedUsersList field is set.
+       */
+      @java.lang.Override
+      public boolean hasBlockedUsersList() {
+        return payloadCase_ == 17;
+      }
+      /**
+       * <code>.com.basic_chat.BlockedUsersList blocked_users_list = 17;</code>
+       * @return The blockedUsersList.
+       */
+      @java.lang.Override
+      public com.basic_chat.proto.MessagesProto.BlockedUsersList getBlockedUsersList() {
+        if (blockedUsersListBuilder_ == null) {
+          if (payloadCase_ == 17) {
+            return (com.basic_chat.proto.MessagesProto.BlockedUsersList) payload_;
+          }
+          return com.basic_chat.proto.MessagesProto.BlockedUsersList.getDefaultInstance();
+        } else {
+          if (payloadCase_ == 17) {
+            return blockedUsersListBuilder_.getMessage();
+          }
+          return com.basic_chat.proto.MessagesProto.BlockedUsersList.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.com.basic_chat.BlockedUsersList blocked_users_list = 17;</code>
+       */
+      public Builder setBlockedUsersList(com.basic_chat.proto.MessagesProto.BlockedUsersList value) {
+        if (blockedUsersListBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          payload_ = value;
+          onChanged();
+        } else {
+          blockedUsersListBuilder_.setMessage(value);
+        }
+        payloadCase_ = 17;
+        return this;
+      }
+      /**
+       * <code>.com.basic_chat.BlockedUsersList blocked_users_list = 17;</code>
+       */
+      public Builder setBlockedUsersList(
+          com.basic_chat.proto.MessagesProto.BlockedUsersList.Builder builderForValue) {
+        if (blockedUsersListBuilder_ == null) {
+          payload_ = builderForValue.build();
+          onChanged();
+        } else {
+          blockedUsersListBuilder_.setMessage(builderForValue.build());
+        }
+        payloadCase_ = 17;
+        return this;
+      }
+      /**
+       * <code>.com.basic_chat.BlockedUsersList blocked_users_list = 17;</code>
+       */
+      public Builder mergeBlockedUsersList(com.basic_chat.proto.MessagesProto.BlockedUsersList value) {
+        if (blockedUsersListBuilder_ == null) {
+          if (payloadCase_ == 17 &&
+              payload_ != com.basic_chat.proto.MessagesProto.BlockedUsersList.getDefaultInstance()) {
+            payload_ = com.basic_chat.proto.MessagesProto.BlockedUsersList.newBuilder((com.basic_chat.proto.MessagesProto.BlockedUsersList) payload_)
+                .mergeFrom(value).buildPartial();
+          } else {
+            payload_ = value;
+          }
+          onChanged();
+        } else {
+          if (payloadCase_ == 17) {
+            blockedUsersListBuilder_.mergeFrom(value);
+          } else {
+            blockedUsersListBuilder_.setMessage(value);
+          }
+        }
+        payloadCase_ = 17;
+        return this;
+      }
+      /**
+       * <code>.com.basic_chat.BlockedUsersList blocked_users_list = 17;</code>
+       */
+      public Builder clearBlockedUsersList() {
+        if (blockedUsersListBuilder_ == null) {
+          if (payloadCase_ == 17) {
+            payloadCase_ = 0;
+            payload_ = null;
+            onChanged();
+          }
+        } else {
+          if (payloadCase_ == 17) {
+            payloadCase_ = 0;
+            payload_ = null;
+          }
+          blockedUsersListBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>.com.basic_chat.BlockedUsersList blocked_users_list = 17;</code>
+       */
+      public com.basic_chat.proto.MessagesProto.BlockedUsersList.Builder getBlockedUsersListBuilder() {
+        return getBlockedUsersListFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.com.basic_chat.BlockedUsersList blocked_users_list = 17;</code>
+       */
+      @java.lang.Override
+      public com.basic_chat.proto.MessagesProto.BlockedUsersListOrBuilder getBlockedUsersListOrBuilder() {
+        if ((payloadCase_ == 17) && (blockedUsersListBuilder_ != null)) {
+          return blockedUsersListBuilder_.getMessageOrBuilder();
+        } else {
+          if (payloadCase_ == 17) {
+            return (com.basic_chat.proto.MessagesProto.BlockedUsersList) payload_;
+          }
+          return com.basic_chat.proto.MessagesProto.BlockedUsersList.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.com.basic_chat.BlockedUsersList blocked_users_list = 17;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.basic_chat.proto.MessagesProto.BlockedUsersList, com.basic_chat.proto.MessagesProto.BlockedUsersList.Builder, com.basic_chat.proto.MessagesProto.BlockedUsersListOrBuilder> 
+          getBlockedUsersListFieldBuilder() {
+        if (blockedUsersListBuilder_ == null) {
+          if (!(payloadCase_ == 17)) {
+            payload_ = com.basic_chat.proto.MessagesProto.BlockedUsersList.getDefaultInstance();
+          }
+          blockedUsersListBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              com.basic_chat.proto.MessagesProto.BlockedUsersList, com.basic_chat.proto.MessagesProto.BlockedUsersList.Builder, com.basic_chat.proto.MessagesProto.BlockedUsersListOrBuilder>(
+                  (com.basic_chat.proto.MessagesProto.BlockedUsersList) payload_,
+                  getParentForChildren(),
+                  isClean());
+          payload_ = null;
+        }
+        payloadCase_ = 17;
+        onChanged();
+        return blockedUsersListBuilder_;
+      }
       @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -13565,10 +18247,35 @@ public final class MessagesProto {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_com_basic_chat_BlockContactResponse_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_basic_chat_UnblockContactRequest_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_com_basic_chat_UnblockContactRequest_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_basic_chat_UnblockContactResponse_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_com_basic_chat_UnblockContactResponse_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_com_basic_chat_MessageError_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_com_basic_chat_MessageError_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_basic_chat_ChatMessageResponse_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_com_basic_chat_ChatMessageResponse_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_basic_chat_UnblockedUsersList_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_com_basic_chat_UnblockedUsersList_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_basic_chat_BlockedUsersList_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_com_basic_chat_BlockedUsersList_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_com_basic_chat_WsMessage_descriptor;
   private static final 
@@ -13603,33 +18310,51 @@ public final class MessagesProto {
       "etedNotification\022\022\n\nmessage_id\030\001 \001(\t\022\022\n\n" +
       "deleted_by\030\002 \001(\t\"(\n\023BlockContactRequest\022" +
       "\021\n\trecipient\030\001 \001(\t\"8\n\024BlockContactRespon" +
-      "se\022\017\n\007success\030\001 \001(\010\022\017\n\007message\030\002 \001(\t\"L\n\014" +
-      "MessageError\022\022\n\nmessage_id\030\001 \001(\t\022\025\n\rerro" +
-      "r_message\030\002 \001(\t\022\021\n\trecipient\030\003 \001(\t\"\232\006\n\tW" +
-      "sMessage\0223\n\014chat_message\030\001 \001(\0132\033.com.bas" +
-      "ic_chat.ChatMessageH\000\022-\n\tuser_list\030\002 \001(\013" +
-      "2\030.com.basic_chat.UserListH\000\0223\n\014auth_mes" +
-      "sage\030\003 \001(\0132\033.com.basic_chat.AuthMessageH" +
-      "\000\0225\n\rauth_response\030\004 \001(\0132\034.com.basic_cha" +
-      "t.AuthResponseH\000\022F\n\026delete_message_reque" +
-      "st\030\005 \001(\0132$.com.basic_chat.DeleteMessageR" +
-      "equestH\000\022H\n\027delete_message_response\030\006 \001(" +
-      "\0132%.com.basic_chat.DeleteMessageResponse" +
-      "H\000\022Q\n\033message_delete_notification\030\007 \001(\0132" +
-      "*.com.basic_chat.MessageDeletedNotificat" +
-      "ionH\000\022B\n\024unread_messages_list\030\010 \001(\0132\".co" +
-      "m.basic_chat.UnreadMessagesListH\000\022D\n\025cle" +
-      "ar_history_request\030\t \001(\0132#.com.basic_cha" +
-      "t.ClearHistoryRequestH\000\022D\n\025block_contact" +
-      "_request\030\n \001(\0132#.com.basic_chat.BlockCon" +
-      "tactRequestH\000\022F\n\026block_contact_response\030" +
-      "\013 \001(\0132$.com.basic_chat.BlockContactRespo" +
-      "nseH\000\0225\n\rmessage_error\030\014 \001(\0132\034.com.basic" +
-      "_chat.MessageErrorH\000B\t\n\007payload*t\n\013Messa" +
-      "geType\022\010\n\004TEXT\020\000\022\t\n\005LOGIN\020\001\022\n\n\006LOGOUT\020\002\022" +
-      "\r\n\tUSER_LIST\020\003\022\n\n\006TYPING\020\004\022\024\n\020DELIVERY_R" +
-      "ECEIPT\020\005\022\t\n\005ALERT\020\006\022\010\n\004CHAT\020\007B%\n\024com.bas" +
-      "ic_chat.protoB\rMessagesProtob\006proto3"
+      "se\022\017\n\007success\030\001 \001(\010\022\017\n\007message\030\002 \001(\t\"*\n\025" +
+      "UnblockContactRequest\022\021\n\trecipient\030\001 \001(\t" +
+      "\":\n\026UnblockContactResponse\022\017\n\007success\030\001 " +
+      "\001(\010\022\017\n\007message\030\002 \001(\t\"L\n\014MessageError\022\022\n\n" +
+      "message_id\030\001 \001(\t\022\025\n\rerror_message\030\002 \001(\t\022" +
+      "\021\n\trecipient\030\003 \001(\t\"\221\001\n\023ChatMessageRespon" +
+      "se\022\022\n\nmessage_id\030\001 \001(\t\022\017\n\007success\030\002 \001(\010\022" +
+      "+\n\005cause\030\003 \001(\0162\034.com.basic_chat.FailureC" +
+      "ause\022\025\n\rerror_message\030\004 \001(\t\022\021\n\trecipient" +
+      "\030\005 \001(\t\"#\n\022UnblockedUsersList\022\r\n\005users\030\001 " +
+      "\003(\t\"!\n\020BlockedUsersList\022\r\n\005users\030\001 \003(\t\"\372" +
+      "\010\n\tWsMessage\0223\n\014chat_message\030\001 \001(\0132\033.com" +
+      ".basic_chat.ChatMessageH\000\022-\n\tuser_list\030\002" +
+      " \001(\0132\030.com.basic_chat.UserListH\000\0223\n\014auth" +
+      "_message\030\003 \001(\0132\033.com.basic_chat.AuthMess" +
+      "ageH\000\0225\n\rauth_response\030\004 \001(\0132\034.com.basic" +
+      "_chat.AuthResponseH\000\022F\n\026delete_message_r" +
+      "equest\030\005 \001(\0132$.com.basic_chat.DeleteMess" +
+      "ageRequestH\000\022H\n\027delete_message_response\030" +
+      "\006 \001(\0132%.com.basic_chat.DeleteMessageResp" +
+      "onseH\000\022Q\n\033message_delete_notification\030\007 " +
+      "\001(\0132*.com.basic_chat.MessageDeletedNotif" +
+      "icationH\000\022B\n\024unread_messages_list\030\010 \001(\0132" +
+      "\".com.basic_chat.UnreadMessagesListH\000\022D\n" +
+      "\025clear_history_request\030\t \001(\0132#.com.basic" +
+      "_chat.ClearHistoryRequestH\000\022D\n\025block_con" +
+      "tact_request\030\n \001(\0132#.com.basic_chat.Bloc" +
+      "kContactRequestH\000\022F\n\026block_contact_respo" +
+      "nse\030\013 \001(\0132$.com.basic_chat.BlockContactR" +
+      "esponseH\000\0225\n\rmessage_error\030\014 \001(\0132\034.com.b" +
+      "asic_chat.MessageErrorH\000\022H\n\027unblock_cont" +
+      "act_request\030\r \001(\0132%.com.basic_chat.Unblo" +
+      "ckContactRequestH\000\022J\n\030unblock_contact_re" +
+      "sponse\030\016 \001(\0132&.com.basic_chat.UnblockCon" +
+      "tactResponseH\000\022D\n\025chat_message_response\030" +
+      "\017 \001(\0132#.com.basic_chat.ChatMessageRespon" +
+      "seH\000\022B\n\024unblocked_users_list\030\020 \001(\0132\".com" +
+      ".basic_chat.UnblockedUsersListH\000\022>\n\022bloc" +
+      "ked_users_list\030\021 \001(\0132 .com.basic_chat.Bl" +
+      "ockedUsersListH\000B\t\n\007payload*t\n\013MessageTy" +
+      "pe\022\010\n\004TEXT\020\000\022\t\n\005LOGIN\020\001\022\n\n\006LOGOUT\020\002\022\r\n\tU" +
+      "SER_LIST\020\003\022\n\n\006TYPING\020\004\022\024\n\020DELIVERY_RECEI" +
+      "PT\020\005\022\t\n\005ALERT\020\006\022\010\n\004CHAT\020\007*.\n\014FailureCaus" +
+      "e\022\021\n\rUNKNOWN_CAUSE\020\000\022\013\n\007BLOCKED\020\001B%\n\024com" +
+      ".basic_chat.protoB\rMessagesProtob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -13707,18 +18432,48 @@ public final class MessagesProto {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_basic_chat_BlockContactResponse_descriptor,
         new java.lang.String[] { "Success", "Message", });
-    internal_static_com_basic_chat_MessageError_descriptor =
+    internal_static_com_basic_chat_UnblockContactRequest_descriptor =
       getDescriptor().getMessageTypes().get(12);
+    internal_static_com_basic_chat_UnblockContactRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_com_basic_chat_UnblockContactRequest_descriptor,
+        new java.lang.String[] { "Recipient", });
+    internal_static_com_basic_chat_UnblockContactResponse_descriptor =
+      getDescriptor().getMessageTypes().get(13);
+    internal_static_com_basic_chat_UnblockContactResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_com_basic_chat_UnblockContactResponse_descriptor,
+        new java.lang.String[] { "Success", "Message", });
+    internal_static_com_basic_chat_MessageError_descriptor =
+      getDescriptor().getMessageTypes().get(14);
     internal_static_com_basic_chat_MessageError_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_basic_chat_MessageError_descriptor,
         new java.lang.String[] { "MessageId", "ErrorMessage", "Recipient", });
+    internal_static_com_basic_chat_ChatMessageResponse_descriptor =
+      getDescriptor().getMessageTypes().get(15);
+    internal_static_com_basic_chat_ChatMessageResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_com_basic_chat_ChatMessageResponse_descriptor,
+        new java.lang.String[] { "MessageId", "Success", "Cause", "ErrorMessage", "Recipient", });
+    internal_static_com_basic_chat_UnblockedUsersList_descriptor =
+      getDescriptor().getMessageTypes().get(16);
+    internal_static_com_basic_chat_UnblockedUsersList_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_com_basic_chat_UnblockedUsersList_descriptor,
+        new java.lang.String[] { "Users", });
+    internal_static_com_basic_chat_BlockedUsersList_descriptor =
+      getDescriptor().getMessageTypes().get(17);
+    internal_static_com_basic_chat_BlockedUsersList_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_com_basic_chat_BlockedUsersList_descriptor,
+        new java.lang.String[] { "Users", });
     internal_static_com_basic_chat_WsMessage_descriptor =
-      getDescriptor().getMessageTypes().get(13);
+      getDescriptor().getMessageTypes().get(18);
     internal_static_com_basic_chat_WsMessage_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_basic_chat_WsMessage_descriptor,
-        new java.lang.String[] { "ChatMessage", "UserList", "AuthMessage", "AuthResponse", "DeleteMessageRequest", "DeleteMessageResponse", "MessageDeleteNotification", "UnreadMessagesList", "ClearHistoryRequest", "BlockContactRequest", "BlockContactResponse", "MessageError", "Payload", });
+        new java.lang.String[] { "ChatMessage", "UserList", "AuthMessage", "AuthResponse", "DeleteMessageRequest", "DeleteMessageResponse", "MessageDeleteNotification", "UnreadMessagesList", "ClearHistoryRequest", "BlockContactRequest", "BlockContactResponse", "MessageError", "UnblockContactRequest", "UnblockContactResponse", "ChatMessageResponse", "UnblockedUsersList", "BlockedUsersList", "Payload", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

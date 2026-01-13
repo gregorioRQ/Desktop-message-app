@@ -4,6 +4,9 @@ import java.sql.SQLException;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.function.Consumer;
 import java.util.UUID;
 
 import com.pola.model.ChatMessage;
@@ -29,7 +32,10 @@ public class MessageService {
     private final WebSocketService webSocketService;
     private Contact currentContact;
     private String currentUserId;
+    private String currentUsername;
     private ContactService contactService;
+    private Consumer<String> errorListener;
+    private final Map<WsMessage.PayloadCase, Consumer<WsMessage>> messageHandlers = new HashMap<>();
     
     public MessageService(WebSocketService webSocketService, ContactService contactService) {
         this.webSocketService = webSocketService;
@@ -37,11 +43,31 @@ public class MessageService {
         this.currentChatMessages = FXCollections.observableArrayList();
         this.notifications = FXCollections.observableArrayList();
         this.contactService = contactService;
+        initializeHandlers();
     }
 
     // Establece el usuario actual
     public void setCurrentUserId(String userId){
         this.currentUserId = userId;
+    }
+
+    public void setCurrentUsername(String username) {
+        this.currentUsername = username;
+    }
+
+    private void initializeHandlers() {
+        messageHandlers.put(WsMessage.PayloadCase.CHAT_MESSAGE_RESPONSE, this::handleMessageError);
+        messageHandlers.put(WsMessage.PayloadCase.UNREAD_MESSAGES_LIST, msg -> processUnreadMessages(msg.getUnreadMessagesList()));
+        messageHandlers.put(WsMessage.PayloadCase.DELETE_MESSAGE_REQUEST, msg -> processDeleteMessageRequest(msg.getDeleteMessageRequest()));
+        messageHandlers.put(WsMessage.PayloadCase.CLEAR_HISTORY_REQUEST, msg -> processClearHistoryRequest(msg.getClearHistoryRequest()));
+        messageHandlers.put(WsMessage.PayloadCase.CHAT_MESSAGE, this::handleChatMessage);
+        messageHandlers.put(WsMessage.PayloadCase.UNBLOCKED_USERS_LIST, msg -> processUnblockedUsersList(msg.getUnblockedUsersList()));
+        messageHandlers.put(WsMessage.PayloadCase.BLOCKED_USERS_LIST, msg -> processBlockedUsersList(msg.getBlockedUsersList()));
+    }
+
+    // Establece un listener para errores recibidos del servidor
+    public void setErrorListener(Consumer<String> listener) {
+        this.errorListener = listener;
     }
 
     // Carga el historial de mensajes de un contacto
@@ -75,6 +101,12 @@ public class MessageService {
 
         if(content == null || content.trim().isEmpty()){
             System.err.println("El mensaje está vacío");
+            return;
+        }
+
+        // Verificar si estamos bloqueados por este usuario antes de intentar nada
+        if (contactService.isUserBlockingMe(currentContact.getContactUsername())) {
+            System.out.println("Intento de envío bloqueado: El destinatario te ha bloqueado.");
             return;
         }
 
@@ -117,25 +149,52 @@ public class MessageService {
      * Procesa un mensaje recibido
      */
     public void processReceivedMessage(WsMessage wsMessage) {
-        if(wsMessage.hasUnreadMessagesList()){
-            processUnreadMessages(wsMessage.getUnreadMessagesList());
-            return;
+        WsMessage.PayloadCase payloadCase = wsMessage.getPayloadCase();
+        Consumer<WsMessage> handler = messageHandlers.get(payloadCase);
+        
+        if (handler != null) {
+            handler.accept(wsMessage);
+        } else {
+            System.out.println("Tipo de mensaje no manejado o ignorado: " + payloadCase);
         }
+    }
 
-        if(wsMessage.hasDeleteMessageRequest()){
-            processDeleteMessageRequest(wsMessage.getDeleteMessageRequest());
-            return;
+    private void handleMessageError(WsMessage wsMessage) {
+        com.pola.proto.MessagesProto.ChatMessageResponse response = wsMessage.getChatMessageResponse();
+        String errorContent = response.getErrorMessage();
+        System.out.println("Error recibido del servidor: " + errorContent);
+        
+        if (response.getCause() == com.pola.proto.MessagesProto.FailureCause.BLOCKED) {
+            String recipient = response.getRecipient();
+            
+            // 1. Marcar persistentemente que este usuario nos bloqueó
+            contactService.markUserAsBlockingMe(recipient);
+
+            // 2. Eliminar el mensaje fallido de la DB local y de la UI (Rollback)
+            try {
+                if (response.getMessageId() != null && !response.getMessageId().isEmpty()) {
+                    long msgId = Long.parseLong(response.getMessageId());
+                    messageRepository.delete(msgId);
+                    Platform.runLater(() -> currentChatMessages.removeIf(m -> m.getId() == msgId));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            // 3. Mostrar mensaje de advertencia del sistema si estamos en el chat
+            if (currentContact != null && currentContact.getContactUsername().equals(recipient)) {
+                Platform.runLater(() -> {
+                    ChatMessage systemMessage = new ChatMessage(recipient, errorContent, "Sistema");
+                    systemMessage.setId(System.currentTimeMillis());
+                    currentChatMessages.add(systemMessage);
+                });
+            }
+        } else if (errorListener != null) {
+            Platform.runLater(() -> errorListener.accept(errorContent));
         }
+    }
 
-        if(wsMessage.hasClearHistoryRequest()){
-            processClearHistoryRequest(wsMessage.getClearHistoryRequest());
-            return;
-        }
-
-        if(!wsMessage.hasChatMessage()){
-            return;
-        }
-
+    private void handleChatMessage(WsMessage wsMessage) {
         com.pola.proto.MessagesProto.ChatMessage protobufMessage = wsMessage.getChatMessage();
         String senderId = protobufMessage.getSender();
         String content = protobufMessage.getContent();
@@ -277,7 +336,7 @@ public class MessageService {
             // Construir la solicitud de vaciado de historial
             com.pola.proto.MessagesProto.ClearHistoryRequest clearRequest = 
                 com.pola.proto.MessagesProto.ClearHistoryRequest.newBuilder()
-                    .setSender(currentUserId)
+                    .setSender(currentUsername)
                     .setRecipient(contact.getContactUsername())
                     .build();
             
@@ -362,6 +421,7 @@ public class MessageService {
     private void processClearHistoryRequest(com.pola.proto.MessagesProto.ClearHistoryRequest request) {
         try {
             String senderUsername = request.getSender();
+            System.out.println(senderUsername);
             
             // Eliminar mensajes locales de ese contacto
             messageRepository.deleteByContactUsername(senderUsername);
@@ -420,6 +480,66 @@ public class MessageService {
                 }
             } catch (SQLException e) {
                 System.err.println("Error procesando mensaje no leído: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * Procesa la lista de usuarios que han bloqueado al cliente
+     */
+    private void processBlockedUsersList(com.pola.proto.MessagesProto.BlockedUsersList list) {
+        for (String username : list.getUsersList()) {
+            // 1. Actualizar estado en ContactService (DB y Memoria)
+            contactService.markUserAsBlockingMe(username);
+            
+            // 2. Crear mensaje del sistema para informar
+            String content = "Este usuario te ha bloqueado.";
+            try {
+                ChatMessage localMessage = new ChatMessage(username, content, "Sistema");
+                localMessage.setId(System.currentTimeMillis());
+                
+                // Guardar mensaje del sistema en historial local
+                messageRepository.create(localMessage);
+                
+                // 3. Actualizar UI o Notificaciones
+                if (currentContact != null && currentContact.getContactUsername().equals(username)) {
+                    Platform.runLater(() -> currentChatMessages.add(localMessage));
+                } else {
+                    updateNotification(username);
+                }
+            } catch (Exception e) {
+                System.err.println("Error procesando bloqueo de usuario: " + username);
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * Procesa la lista de usuarios que han desbloqueado al cliente mientras estaba offline
+     */
+    private void processUnblockedUsersList(com.pola.proto.MessagesProto.UnblockedUsersList list) {
+        for (String username : list.getUsersList()) {
+            // 1. Actualizar estado en ContactService (DB y Memoria)
+            contactService.markUserAsUnblockingMe(username);
+            
+            // 2. Crear mensaje del sistema para informar
+            String content = "Este usuario te ha desbloqueado.";
+            try {
+                ChatMessage localMessage = new ChatMessage(username, content, "Sistema");
+                localMessage.setId(System.currentTimeMillis());
+                
+                // Guardar mensaje del sistema en historial local
+                messageRepository.create(localMessage);
+                
+                // 3. Actualizar UI o Notificaciones
+                if (currentContact != null && currentContact.getContactUsername().equals(username)) {
+                    Platform.runLater(() -> currentChatMessages.add(localMessage));
+                } else {
+                    updateNotification(username);
+                }
+            } catch (Exception e) {
+                System.err.println("Error procesando desbloqueo de usuario: " + username);
                 e.printStackTrace();
             }
         }

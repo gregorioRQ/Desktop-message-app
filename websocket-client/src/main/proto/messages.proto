@@ -92,11 +92,44 @@ message BlockContactResponse {
     string message = 2;
 }
 
+// Solicitud para desbloquear contacto
+message UnblockContactRequest {
+    string recipient = 1;
+}
+
+message UnblockContactResponse {
+    bool success = 1;
+    string message = 2;
+}
+
 // Error de envío (Para notificar al remitente que no pudo enviar el mensaje)
 message MessageError {
     string message_id = 1;    // ID del mensaje que falló (si existe)
     string error_message = 2; // <--- Nombre sugerido para el campo de error
     string recipient = 3;     // Destinatario original
+}
+
+// Causa del fallo en el envío de un mensaje
+enum FailureCause {
+    UNKNOWN_CAUSE = 0;
+    BLOCKED = 1;
+}
+
+// Respuesta estructurada para el envío de mensajes
+message ChatMessageResponse {
+    string message_id = 1;
+    bool success = 2;
+    FailureCause cause = 3;
+    string error_message = 4;
+    string recipient = 5;
+}
+
+message UnblockedUsersList {
+  repeated string users = 1;
+}
+
+message BlockedUsersList {
+  repeated string users = 1;
 }
 
 // Wrapper para todos los mensajes
@@ -114,5 +147,10 @@ message WsMessage {
     BlockContactRequest block_contact_request = 10;
     BlockContactResponse block_contact_response = 11;
     MessageError message_error = 12;
+    UnblockContactRequest unblock_contact_request = 13;
+    UnblockContactResponse unblock_contact_response = 14;
+    ChatMessageResponse chat_message_response = 15;
+    UnblockedUsersList unblocked_users_list = 16;
+    BlockedUsersList blocked_users_list = 17;
   }
 }

@@ -44,7 +44,7 @@ public class ChatMessageHandler implements WsMessageHandler{
         if (blockService.isBlocked(chat.getSender(), recipient)) {
             // Si está bloqueado, no enviamos el mensaje ni lo guardamos.
             log.info("Mensaje bloqueado de {} para {}", chat.getSender(), recipient);
-            sendBlockWarning(context.getSession(), recipient);
+            sendBlockErrorResponse(context.getSession(), chat.getId(), recipient);
             return;
         }
 
@@ -61,22 +61,23 @@ public class ChatMessageHandler implements WsMessageHandler{
         messageService.saveMessage(chat);
     }
 
-    private void sendBlockWarning(WebSocketSession session, String recipient) {
+    private void sendBlockErrorResponse(WebSocketSession session, String messageId, String recipient) {
         try {
-            MessagesProto.ChatMessage warning = MessagesProto.ChatMessage.newBuilder()
-                    .setSender("SISTEMA")
-                    .setContent("No puedes enviar mensajes a " + recipient + ".")
-                    .setTimestamp(System.currentTimeMillis())
-                    .setType(MessagesProto.MessageType.ALERT)
+            MessagesProto.ChatMessageResponse response = MessagesProto.ChatMessageResponse.newBuilder()
+                    .setMessageId(messageId)
+                    .setSuccess(false)
+                    .setCause(MessagesProto.FailureCause.BLOCKED)
+                    .setErrorMessage("No puedes enviar mensajes a " + recipient + ".")
+                    .setRecipient(recipient)
                     .build();
 
             MessagesProto.WsMessage wsMessage = MessagesProto.WsMessage.newBuilder()
-                    .setChatMessage(warning)
+                    .setChatMessageResponse(response)
                     .build();
 
             session.sendMessage(new BinaryMessage(wsMessage.toByteArray()));
         } catch (Exception e) {
-            log.error("Error enviando advertencia de bloqueo", e);
+            log.error("Error enviando respuesta de bloqueo", e);
         }
     }
 }

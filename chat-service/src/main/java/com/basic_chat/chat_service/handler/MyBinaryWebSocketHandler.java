@@ -4,11 +4,11 @@ import com.basic_chat.chat_service.context.SessionContext;
 import com.basic_chat.chat_service.security.JwtValidator;
 import com.basic_chat.chat_service.service.AuthenticationGuard;
 import com.basic_chat.chat_service.service.MessageService;
+import com.basic_chat.chat_service.models.PendingUnblock;
+import com.basic_chat.chat_service.repository.PendingUnblockRepository;
 import com.basic_chat.chat_service.service.SessionManager;
 import com.basic_chat.chat_service.service.WsMessageDispatcher;
-import com.basic_chat.chat_service.service.SessionManager.SessionInfo;
 import com.basic_chat.proto.MessagesProto;
-import com.basic_chat.proto.MessagesProto.AuthMessage;
 import com.basic_chat.proto.MessagesProto.AuthResponse;
 import com.basic_chat.proto.MessagesProto.ChatMessage;
 import com.basic_chat.proto.MessagesProto.DeleteMessageRequest;
@@ -16,10 +16,8 @@ import com.basic_chat.proto.MessagesProto.MessageType;
 import com.basic_chat.proto.MessagesProto.UnreadMessagesList;
 import com.basic_chat.proto.MessagesProto.WsMessage;
 
-import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties.Jwt;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.BinaryMessage;
 import org.springframework.web.socket.CloseStatus;
@@ -32,11 +30,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
 
-/**
- * Handler WebSocket que integra SessionManager y MessageService
- * Su propósito es guardar la sesion en memoria, por ahora usar este enfoque
- * ya que es mas sencillo de implementar.
- */
 @Component
 @Slf4j
 public class MyBinaryWebSocketHandler extends AbstractWebSocketHandler {
@@ -49,13 +42,15 @@ public class MyBinaryWebSocketHandler extends AbstractWebSocketHandler {
     private final JwtValidator jwtValidator;
     private final AuthenticationGuard authenticationGuard;
     private final WsMessageDispatcher dispatcher;
+    private final PendingUnblockRepository pendingUnblockRepository;
 
-    public MyBinaryWebSocketHandler(SessionManager sessionManager, MessageService messageService, JwtValidator jwtValidator, AuthenticationGuard authenticationGuard, WsMessageDispatcher dispatcher) {
+    public MyBinaryWebSocketHandler(SessionManager sessionManager, MessageService messageService, JwtValidator jwtValidator, AuthenticationGuard authenticationGuard, WsMessageDispatcher dispatcher, PendingUnblockRepository pendingUnblockRepository) {
         this.sessionManager = sessionManager;
         this.messageService = messageService;
         this.jwtValidator = jwtValidator;
         this.authenticationGuard = authenticationGuard;
         this.dispatcher = dispatcher;
+        this.pendingUnblockRepository = pendingUnblockRepository;
     }
 
     @Override
@@ -79,6 +74,7 @@ public class MyBinaryWebSocketHandler extends AbstractWebSocketHandler {
                 if (wsMessage.hasAuthMessage() && sessionManager.isAuthenticated(session.getId())) {
                 sendPendingMessages(session);
                 sendPendingDeletions(session);
+                sendPendingUnblocks(session);
             }
         } catch (Exception e) {
             System.err.println("Error procesando mensaje: " + e.getMessage());
@@ -148,6 +144,40 @@ public class MyBinaryWebSocketHandler extends AbstractWebSocketHandler {
             } catch (IOException e) {
                 log.error("Error enviando eliminación pendiente a {}", username, e);
             }
+        }
+    }
+
+    private void sendPendingUnblocks(WebSocketSession session) {
+        SessionManager.SessionInfo sessionInfo = sessionManager.getSessionInfo(session.getId());
+        if (sessionInfo == null) return;
+
+        String username = sessionInfo.getUsername();
+        List<PendingUnblock> pendingUnblocks = pendingUnblockRepository.findByUnblockedUser(username);
+
+        if (pendingUnblocks.isEmpty()) {
+            return;
+        }
+
+        List<String> blockers = pendingUnblocks.stream()
+                .map(PendingUnblock::getBlocker)
+                .distinct()
+                .toList();
+
+        try {
+            MessagesProto.UnblockedUsersList list = MessagesProto.UnblockedUsersList.newBuilder()
+                    .addAllUsers(blockers)
+                    .build();
+
+            WsMessage wsMessage = WsMessage.newBuilder()
+                    .setUnblockedUsersList(list)
+                    .build();
+
+            session.sendMessage(new BinaryMessage(wsMessage.toByteArray()));
+            
+            pendingUnblockRepository.deleteAll(pendingUnblocks);
+            log.debug("Lista de desbloqueos pendientes enviada a {}", username);
+        } catch (IOException e) {
+            log.error("Error enviando lista de desbloqueos a {}", username, e);
         }
     }
 

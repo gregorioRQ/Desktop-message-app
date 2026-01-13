@@ -23,12 +23,17 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.geometry.Pos;
 
 /**
  * Controlador para la vista de chat
@@ -40,6 +45,9 @@ public class ChatController {
 
     @FXML
     private ListView<Contact> contactsListView;
+
+    @FXML
+    private ListView<Contact> blockedContactsListView;
 
     @FXML
     private ListView<Notification> notificationsListView;
@@ -64,6 +72,9 @@ public class ChatController {
     
     @FXML
     private Button clearChatButton;
+
+    @FXML
+    private Button blockButton;
     
     @FXML
     private Label statusLabel;
@@ -98,6 +109,10 @@ public class ChatController {
         DatabaseManager.getInstance().initializeForUser(userId);
 
         messageService.setCurrentUserId(userId);
+        messageService.setCurrentUsername(username);
+        contactService.setCurrentUserId(userId);
+        contactService.setCurrentUsername(username);
+        contactService.setWebSocketService(webSocketService);
         
         setupUI();
         setupListeners();
@@ -132,6 +147,7 @@ public class ChatController {
         disconnectButton.setOnAction(event -> handleDisconnect());
         addContactButton.setOnAction(e -> handleAddContact());
         if (clearChatButton != null) clearChatButton.setOnAction(e -> handleClearChat());
+        if (blockButton != null) blockButton.setOnAction(e -> handleBlockContact());
 
         setupMessageListView();
         
@@ -146,6 +162,20 @@ public class ChatController {
         // Deshabilitar envío si no está conectado
         sendButton.setDisable(true);
         messageInput.setDisable(true);
+
+        // Configurar celdas para contactos (Botón Bloquear)
+        contactsListView.setCellFactory(param -> new ContactListCell(false));
+
+        // Configurar panel de contactos bloqueados si no existe en FXML
+        if (blockedContactsListView == null) {
+            blockedContactsListView = new ListView<>();
+            Label blockedLabel = new Label("Contactos Bloqueados");
+            blockedLabel.setStyle("-fx-font-weight: bold; -fx-padding: 10 0 5 0;");
+            contactsPanel.getChildren().addAll(blockedLabel, blockedContactsListView);
+        }
+        
+        // Configurar celdas para contactos bloqueados (Botón Desbloquear)
+        blockedContactsListView.setCellFactory(param -> new ContactListCell(true));
     }
 
     private void setupMessageListView(){
@@ -201,6 +231,28 @@ public class ChatController {
         // vincular la ObservableList del servicio con el listview
         messageListView.setItems(messageService.getMessages());
 
+        // Listener de errores del servidor (ej. usuario bloqueado)
+        messageService.setErrorListener(errorMessage -> {
+            showErrorAlert("Error del Servidor", errorMessage);
+        });
+
+        // Listener para cuando se detecta que un usuario nos bloqueó
+        contactService.setOnBlockedByListener(username -> {
+            Platform.runLater(() -> {
+                if (selectedContact != null && selectedContact.getContactUsername().equals(username)) {
+                    updateChatInputState(true); // true = estamos bloqueados
+                }
+            });
+        });
+
+        // Listener para cuando se detecta que un usuario nos desbloqueó
+        contactService.setOnUnblockedByListener(username -> {
+            Platform.runLater(() -> {
+                if (selectedContact != null && selectedContact.getContactUsername().equals(username)) {
+                    updateChatInputState(false); // false = NO estamos bloqueados (habilitar chat)
+                }
+            });
+        });
     }
     
     private void setupWebSocketListeners() {
@@ -229,6 +281,9 @@ public class ChatController {
         
         // Vincular lista de contactos con el ListView
         contactsListView.setItems(contactService.getContacts());
+
+        // Vincular lista de contactos bloqueados
+        blockedContactsListView.setItems(contactService.getBlockedContacts());
         
         // Mostrar/ocultar mensaje de "no hay contactos"
         contactService.getContacts().addListener(
@@ -255,11 +310,14 @@ public class ChatController {
         // Cargar historial del contacto
         messageService.loadChatHistory(contact);
         
-        // Habilitar envío si está conectado
-        if (webSocketService.isConnected()) {
-            sendButton.setDisable(false);
-            messageInput.setDisable(false);
+        // Verificar estado de bloqueo y conexión para habilitar UI
+        updateChatInputState(contactService.isUserBlockingMe(contact.getContactUsername()));
+
+        if (!contactService.isUserBlockingMe(contact.getContactUsername()) && webSocketService.isConnected()) {
             messageInput.requestFocus();
+        }
+        if (blockButton != null) {
+            blockButton.setDisable(false);
         }
     }
     
@@ -387,6 +445,30 @@ public class ChatController {
         }
     }
 
+    private void handleBlockContact() {
+        if (selectedContact == null) return;
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Bloquear Contacto");
+        alert.setHeaderText("¿Estás seguro de bloquear a " + selectedContact.getContactUsername() + "?");
+        alert.setContentText("El contacto desaparecerá de tu lista y no podrás enviarle mensajes.");
+
+        alert.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK) {
+                contactService.blockContact(selectedContact);
+                
+                // Limpiar la vista del chat actual
+                messageListView.getItems().clear();
+                selectedContact = null;
+                chatTitleLabel.setText("");
+                sendButton.setDisable(true);
+                messageInput.setDisable(true);
+                if (blockButton != null) blockButton.setDisable(true);
+                if (clearChatButton != null) clearChatButton.setDisable(true);
+            }
+        });
+    }
+
     private void handleDeleteMessage(ChatMessage message){
         messageService.deleteOneMessage(message);
     }
@@ -486,6 +568,16 @@ public class ChatController {
         dialog.showAndWait();
     }
     
+    private void showErrorAlert(String title, String content) {
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle(title);
+            alert.setHeaderText(null);
+            alert.setContentText(content);
+            alert.showAndWait();
+        });
+    }
+
     private void updateConnectionStatus(boolean connected) {
         if (connected) {
             statusLabel.setText("Conectado");
@@ -495,8 +587,7 @@ public class ChatController {
 
             // habilitar envio si hay contacto selecicondo
             if(selectedContact != null){
-                sendButton.setDisable(false);
-                messageInput.setDisable(false);
+                updateChatInputState(contactService.isUserBlockingMe(selectedContact.getContactUsername()));
             }
         } else {
             statusLabel.setText("Desconectado");
@@ -506,5 +597,97 @@ public class ChatController {
             sendButton.setDisable(true);
             messageInput.setDisable(true);
         }
+    }
+
+    /**
+     * Actualiza el estado de los inputs del chat basado en si estamos bloqueados o desconectados
+     */
+    private void updateChatInputState(boolean isBlocked) {
+        boolean canSend = webSocketService.isConnected() && !isBlocked;
+        
+        sendButton.setDisable(!canSend);
+        messageInput.setDisable(!canSend);
+        
+        if (isBlocked) {
+            messageInput.setPromptText("No puedes enviar mensajes a este usuario.");
+        } else {
+            messageInput.setPromptText("");
+        }
+    }
+
+    // Clase interna para celdas de contacto con botones
+    private class ContactListCell extends ListCell<Contact> {
+        private final boolean isBlockedList;
+
+        public ContactListCell(boolean isBlockedList) {
+            this.isBlockedList = isBlockedList;
+        }
+
+        @Override
+        protected void updateItem(Contact contact, boolean empty) {
+            super.updateItem(contact, empty);
+
+            if (empty || contact == null) {
+                setText(null);
+                setGraphic(null);
+            } else {
+                HBox hbox = new HBox(10);
+                hbox.setAlignment(Pos.CENTER_LEFT);
+                
+                Label nameLabel = new Label(contact.getContactUsername());
+                Region spacer = new Region();
+                HBox.setHgrow(spacer, Priority.ALWAYS);
+                
+                Button actionButton = new Button();
+                if (isBlockedList) {
+                    // Botón Desbloquear
+                    actionButton.setText("🔓"); // Icono candado abierto
+                    actionButton.setStyle("-fx-background-color: transparent; -fx-text-fill: green; -fx-font-size: 14px; -fx-cursor: hand;");
+                    actionButton.setOnAction(e -> showUnblockConfirmation(contact));
+                } else {
+                    // Botón Bloquear
+                    actionButton.setText("🔒"); // Icono candado cerrado
+                    actionButton.setStyle("-fx-background-color: transparent; -fx-text-fill: red; -fx-font-size: 14px; -fx-cursor: hand;");
+                    actionButton.setOnAction(e -> showBlockConfirmation(contact));
+                }
+                
+                hbox.getChildren().addAll(nameLabel, spacer, actionButton);
+                setGraphic(hbox);
+            }
+        }
+    }
+
+    private void showBlockConfirmation(Contact contact) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Bloquear Contacto");
+        alert.setHeaderText("¿Bloquear a " + contact.getContactUsername() + "?");
+        alert.setContentText("No podrás recibir mensajes de este usuario.");
+
+        alert.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK) {
+                contactService.blockContact(contact);
+                // Si el contacto bloqueado era el seleccionado, limpiar chat
+                if (selectedContact != null && selectedContact.getId() == contact.getId()) {
+                    messageListView.getItems().clear();
+                    selectedContact = null;
+                    chatTitleLabel.setText("");
+                    sendButton.setDisable(true);
+                    messageInput.setDisable(true);
+                }
+            }
+        });
+    }
+
+    private void showUnblockConfirmation(Contact contact) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Desbloquear Contacto");
+        alert.setHeaderText("¿Desbloquear a " + contact.getContactUsername() + "?");
+        alert.setContentText("Podrás volver a intercambiar mensajes.");
+
+        alert.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK) {
+                contactService.unblockContact(contact);
+            }
+        });
     }
 }

@@ -2,7 +2,6 @@ package com.basic_chat.chat_service.context;
 
 import java.io.IOException;
 
-import org.springframework.stereotype.Component;
 import org.springframework.web.socket.BinaryMessage;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.WebSocketSession;
