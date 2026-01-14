@@ -10,8 +10,10 @@ import org.springframework.stereotype.Service;
 
 import com.basic_chat.chat_service.models.Message;
 import com.basic_chat.chat_service.models.PendingDeletion;
+import com.basic_chat.chat_service.models.PendingReadReceipt;
 import com.basic_chat.chat_service.repository.MessageRepository;
 import com.basic_chat.chat_service.repository.PendingDeletionRepository;
+import com.basic_chat.chat_service.repository.PendingReadReceiptRepository;
 import com.basic_chat.chat_service.validator.MessageValidator;
 import com.basic_chat.proto.MessagesProto;
 import com.basic_chat.proto.MessagesProto.ChatMessage;
@@ -23,11 +25,13 @@ import jakarta.transaction.Transactional;
 public class MessageService {
     private final MessageRepository messageRepository;
     private final PendingDeletionRepository pendingDeletionRepository;
+    private final PendingReadReceiptRepository pendingReadReceiptRepository;
     private final MessageValidator messageValidator;
 
-    public MessageService(MessageRepository messageRepository, PendingDeletionRepository pendingDeletionRepository, MessageValidator messageValidator) {
+    public MessageService(MessageRepository messageRepository, PendingDeletionRepository pendingDeletionRepository, PendingReadReceiptRepository pendingReadReceiptRepository, MessageValidator messageValidator) {
         this.messageRepository = messageRepository;
         this.pendingDeletionRepository = pendingDeletionRepository;
+        this.pendingReadReceiptRepository = pendingReadReceiptRepository;
         this.messageValidator = messageValidator;
     }
 
@@ -104,22 +108,26 @@ public class MessageService {
                 .toList();
     }
 
-    /* 
     @Transactional
-    public int markRead(List<Long> messageIds, String receiver) {
-        if (messageIds == null || messageIds.isEmpty())
-            return 0;
-
-        final int CHUNK = 500;
-        int totalUpdated = 0;
-        for (int i = 0; i < messageIds.size(); i += CHUNK) {
-            int end = Math.min(i + CHUNK, messageIds.size());
-            List<Long> sub = messageIds.subList(i, end);
-            totalUpdated += messageRepository.markMessagesAsRead(receiver, sub);
+    public List<Message> markMessagesAsRead(List<String> messageIds, String reader) {
+        if (messageIds == null || messageIds.isEmpty()) {
+            return new ArrayList<>();
         }
-        return totalUpdated;
+
+        List<Long> ids = messageIds.stream().map(Long::valueOf).toList();
+        List<Message> messages = messageRepository.findAllById(ids);
+        List<Message> updatedMessages = new ArrayList<>();
+
+        for (Message m : messages) {
+            if (m.getToUserId().equals(reader) && !m.isSeen()) {
+                m.setSeen(true);
+                updatedMessages.add(m);
+            }
+        }
+        messageRepository.saveAll(updatedMessages);
+        return updatedMessages;
     }
-*/
+
     @Transactional
     public Message deleteMessage(DeleteMessageRequest request) {
         Long messageId = Long.valueOf(request.getMessageId());
@@ -157,5 +165,23 @@ public class MessageService {
             pendingDeletionRepository.deleteAll(pending);
         }
         return ids;
+    }
+
+    @Transactional
+    public void savePendingReadReceipts(String receiptRecipient, List<String> messageIds, String reader) {
+        List<PendingReadReceipt> receipts = messageIds.stream()
+                .map(msgId -> new PendingReadReceipt(null, msgId, receiptRecipient, reader))
+                .toList();
+        pendingReadReceiptRepository.saveAll(receipts);
+    }
+
+    @Transactional
+    public List<PendingReadReceipt> getAndClearPendingReadReceipts(String receiptRecipient) {
+        List<PendingReadReceipt> pending = pendingReadReceiptRepository.findByReceiptRecipient(receiptRecipient);
+        
+        if (!pending.isEmpty()) {
+            pendingReadReceiptRepository.deleteAll(pending);
+        }
+        return pending;
     }
 }

@@ -1,6 +1,7 @@
 package com.basic_chat.chat_service.handler;
 
 import com.basic_chat.chat_service.context.SessionContext;
+import com.basic_chat.chat_service.models.PendingReadReceipt;
 import com.basic_chat.chat_service.security.JwtValidator;
 import com.basic_chat.chat_service.service.AuthenticationGuard;
 import com.basic_chat.chat_service.service.MessageService;
@@ -13,6 +14,7 @@ import com.basic_chat.proto.MessagesProto.AuthResponse;
 import com.basic_chat.proto.MessagesProto.ChatMessage;
 import com.basic_chat.proto.MessagesProto.DeleteMessageRequest;
 import com.basic_chat.proto.MessagesProto.MessageType;
+import com.basic_chat.proto.MessagesProto.MessagesReadUpdate;
 import com.basic_chat.proto.MessagesProto.UnreadMessagesList;
 import com.basic_chat.proto.MessagesProto.WsMessage;
 
@@ -28,7 +30,9 @@ import org.springframework.web.socket.handler.AbstractWebSocketHandler;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Component
 @Slf4j
@@ -75,6 +79,7 @@ public class MyBinaryWebSocketHandler extends AbstractWebSocketHandler {
                 sendPendingMessages(session);
                 sendPendingDeletions(session);
                 sendPendingUnblocks(session);
+                sendPendingReadReceipts(session);
             }
         } catch (Exception e) {
             System.err.println("Error procesando mensaje: " + e.getMessage());
@@ -179,6 +184,43 @@ public class MyBinaryWebSocketHandler extends AbstractWebSocketHandler {
         } catch (IOException e) {
             log.error("Error enviando lista de desbloqueos a {}", username, e);
         }
+    }
+
+    private void sendPendingReadReceipts(WebSocketSession session) {
+        SessionManager.SessionInfo sessionInfo = sessionManager.getSessionInfo(session.getId());
+        if (sessionInfo == null) return;
+
+        String username = sessionInfo.getUsername();
+        List<PendingReadReceipt> pendingReceipts = messageService.getAndClearPendingReadReceipts(username);
+
+        if (pendingReceipts.isEmpty()) {
+            return;
+        }
+
+        // Agrupar por lector (quien leyó el mensaje)
+        Map<String, List<String>> receiptsByReader = pendingReceipts.stream()
+                .collect(Collectors.groupingBy(
+                        PendingReadReceipt::getReader,
+                        Collectors.mapping(PendingReadReceipt::getMessageId, Collectors.toList())
+                ));
+
+        receiptsByReader.forEach((reader, ids) -> {
+            try {
+                MessagesReadUpdate update = MessagesReadUpdate.newBuilder()
+                        .addAllMessageIds(ids)
+                        .setReaderUsername(reader)
+                        .build();
+
+                WsMessage wsMessage = WsMessage.newBuilder()
+                        .setMessagesReadUpdate(update)
+                        .build();
+
+                session.sendMessage(new BinaryMessage(wsMessage.toByteArray()));
+                log.debug("Notificación de lectura pendiente enviada a {} (leído por {})", username, reader);
+            } catch (IOException e) {
+                log.error("Error enviando notificación de lectura pendiente a {}", username, e);
+            }
+        });
     }
 
     /**

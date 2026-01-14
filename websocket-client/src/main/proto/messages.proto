@@ -132,6 +132,19 @@ message BlockedUsersList {
   repeated string users = 1;
 }
 
+// Solicitud para mercar mensajes como leidos
+message MarkMessagesAsReadRequest {
+  string sender = 1; // Quien los leyo
+  string recipient = 2; // De quien son los mensajes
+  repeated string message_ids= 3; // Lista de IDs leidos
+}
+
+// Actualización enviada al remitente original cuando sus mensajes son leídos
+message MessagesReadUpdate {
+  repeated string message_ids = 1;
+  string reader_username = 2;
+}
+
 // Wrapper para todos los mensajes
 message WsMessage {
   oneof payload {
@@ -152,5 +165,7 @@ message WsMessage {
     ChatMessageResponse chat_message_response = 15;
     UnblockedUsersList unblocked_users_list = 16;
     BlockedUsersList blocked_users_list = 17;
+    MarkMessagesAsReadRequest mark_messages_as_read_request = 18;
+    MessagesReadUpdate messages_read_update = 19;
   }
 }

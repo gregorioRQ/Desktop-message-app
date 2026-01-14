@@ -55,6 +55,51 @@ public class MessageRepository {
     }
     
     /**
+     * Obtiene los IDs de los mensajes no leídos de un contacto
+     */
+    public List<Long> getUnreadMessageIds(String contactUsername) throws SQLException {
+        String sql = "SELECT id FROM messages WHERE contact_username = ? AND is_read = 0";
+        List<Long> ids = new ArrayList<>();
+        
+        try (Connection conn = dbManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            stmt.setString(1, contactUsername);
+            
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    ids.add(rs.getLong("id"));
+                }
+            }
+        }
+        return ids;
+    }
+
+    /**
+     * Marca una lista de mensajes como leídos por ID (Batch update)
+     */
+    public void markMultipleAsRead(List<Long> messageIds) throws SQLException {
+        if (messageIds == null || messageIds.isEmpty()) return;
+
+        String sql = "UPDATE messages SET is_read = 1 WHERE id = ?";
+        
+        try (Connection conn = dbManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            conn.setAutoCommit(false); // Iniciar transacción
+            
+            for (Long id : messageIds) {
+                stmt.setLong(1, id);
+                stmt.addBatch();
+            }
+            
+            stmt.executeBatch();
+            conn.commit();
+            conn.setAutoCommit(true);
+        }
+    }
+
+    /**
      * Obtiene todos los mensajes de un contacto
      */
     public List<ChatMessage> findByContactUsername(String username) throws SQLException {

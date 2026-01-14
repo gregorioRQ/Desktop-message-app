@@ -1,81 +1,116 @@
 package com.pola.view;
 
-import java.util.function.Consumer;
-
 import com.pola.model.ChatMessage;
-
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import java.time.format.DateTimeFormatter;
+import java.util.function.Consumer;
 
-public class MessageListCell extends ListCell<ChatMessage>{
-    private String currentUsername;
+/**
+ * Celda personalizada para mostrar mensajes de chat con indicador de estado.
+ */
+public class MessageListCell extends ListCell<ChatMessage> {
+    private final String currentUsername;
     private final Consumer<ChatMessage> onDelete;
     private final Consumer<ChatMessage> onEdit;
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
 
-    public MessageListCell(String currentUsername, Consumer<ChatMessage> onDelete, Consumer<ChatMessage> onEdit){
+    public MessageListCell(String currentUsername, Consumer<ChatMessage> onDelete, Consumer<ChatMessage> onEdit) {
         this.currentUsername = currentUsername;
         this.onDelete = onDelete;
         this.onEdit = onEdit;
     }
 
     @Override
-    protected void updateItem(ChatMessage message, boolean empty){
+    protected void updateItem(ChatMessage message, boolean empty) {
         super.updateItem(message, empty);
 
-        if(empty || message == null){
+        if (empty || message == null) {
             setText(null);
             setGraphic(null);
-        } else{
-            String sender = message.getSenderId().equals(currentUsername) ? "Tu" : "Contacto";
-            String text = String.format("[%s] %s: %s", message.getFormattedTime(), sender, message.getContent());
+            setStyle("-fx-background-color: transparent;");
+        } else {
+            // Contenedor principal
+            HBox root = new HBox(10);
+            VBox contentBox = new VBox(2);
             
-            // Crear un HBox con el contenido del mensaje
-            HBox messageBox = new HBox(10);
-            messageBox.setAlignment(Pos.CENTER_LEFT);
-            messageBox.setStyle("-fx-padding: 5; -fx-border-radius: 5;");
+            // Contenido del mensaje
+            Label msgLabel = new Label(message.getContent());
+            msgLabel.setWrapText(true);
+            msgLabel.setMaxWidth(300); // Limitar ancho para que haga wrap
             
-            // Label con el contenido del mensaje
-            Label messageLabel = new Label(text);
-            messageLabel.setWrapText(true);
-            HBox.setHgrow(messageLabel, Priority.ALWAYS);
+            // Hora
+            Label timeLabel = new Label(message.getTimestamp().format(formatter));
+            timeLabel.setStyle("-fx-font-size: 10px; -fx-text-fill: gray;");
+
+            // Indicador de estado (Círculo)
+            Circle statusCircle = new Circle(4);
             
-            messageBox.getChildren().add(messageLabel);
-            
-            // Si es un mensaje propio, agregar botones de acción
-            if(message.getSenderId().equals(currentUsername)){
-                Region spacer = new Region();
-                HBox.setHgrow(spacer, Priority.ALWAYS);
-                messageBox.getChildren().add(spacer);
+            boolean isMe = message.getSenderId().equals(currentUsername);
+            boolean isSystem = "Sistema".equals(message.getSenderId());
+
+            if (isSystem) {
+                // Estilo para mensajes del sistema
+                root.setAlignment(Pos.CENTER);
+                contentBox.setAlignment(Pos.CENTER);
+                msgLabel.setStyle("-fx-background-color: #e0e0e0; -fx-padding: 5 10; -fx-background-radius: 10; -fx-font-style: italic;");
+                contentBox.getChildren().add(msgLabel);
+                root.getChildren().add(contentBox);
+            } else if (isMe) {
+                // Mensajes enviados por mí (Alineados a la derecha)
+                root.setAlignment(Pos.CENTER_RIGHT);
+                contentBox.setAlignment(Pos.CENTER_RIGHT);
+                msgLabel.setStyle("-fx-background-color: #DCF8C6; -fx-padding: 8; -fx-background-radius: 10;");
                 
-                // Botón editar (lápiz)
-                Button editButton = new Button("✎");
-                editButton.setStyle("-fx-font-size: 12; -fx-padding: 5; -fx-min-width: 30; -fx-text-fill: #3498db;");
-                editButton.setOnAction(e -> {
-                    if(onEdit != null){
-                        onEdit.accept(message);
-                    }
-                });
+                // Lógica del indicador: Verde = Visto, Rojo = No visto
+                if (message.isRead()) {
+                    statusCircle.setFill(Color.GREEN);
+                } else {
+                    statusCircle.setFill(Color.RED);
+                }
                 
-                // Botón eliminar (X roja)
-                Button deleteButton = new Button("✕");
-                deleteButton.setStyle("-fx-font-size: 12; -fx-padding: 5; -fx-min-width: 30; -fx-text-fill: #e74c3c;");
-                deleteButton.setOnAction(e -> {
-                    if(onDelete != null){
-                        onDelete.accept(message);
-                    }
-                });
+                // Añadir menú contextual para editar/eliminar
+                setupContextMenu(root, message, true);
                 
-                messageBox.getChildren().addAll(editButton, deleteButton);
+                contentBox.getChildren().addAll(msgLabel, timeLabel);
+                // Orden: Texto -> Círculo
+                root.getChildren().addAll(contentBox, statusCircle);
+            } else {
+                // Mensajes recibidos (Alineados a la izquierda)
+                root.setAlignment(Pos.CENTER_LEFT);
+                contentBox.setAlignment(Pos.CENTER_LEFT);
+                msgLabel.setStyle("-fx-background-color: #FFFFFF; -fx-padding: 8; -fx-background-radius: 10; -fx-border-color: #E0E0E0; -fx-border-radius: 10;");
+                
+                setupContextMenu(root, message, false);
+                
+                contentBox.getChildren().addAll(msgLabel, timeLabel);
+                root.getChildren().add(contentBox);
             }
-            
-            setText(null);
-            setGraphic(messageBox);
+
+            setGraphic(root);
+            setStyle("-fx-background-color: transparent;");
         }
     }
-}
 
+    private void setupContextMenu(javafx.scene.Node node, ChatMessage message, boolean isMe) {
+        ContextMenu contextMenu = new ContextMenu();
+        MenuItem deleteItem = new MenuItem("Eliminar");
+        deleteItem.setOnAction(e -> onDelete.accept(message));
+        contextMenu.getItems().add(deleteItem);
+
+        if (isMe) {
+            MenuItem editItem = new MenuItem("Editar");
+            editItem.setOnAction(e -> onEdit.accept(message));
+            contextMenu.getItems().add(editItem);
+        }
+        
+        node.setOnContextMenuRequested(e -> contextMenu.show(node, e.getScreenX(), e.getScreenY()));
+    }
+}

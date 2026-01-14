@@ -13906,6 +13906,1842 @@ public final class MessagesProto {
 
   }
 
+  public interface MarkMessagesAsReadRequestOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:com.basic_chat.MarkMessagesAsReadRequest)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * Quien los leyo
+     * </pre>
+     *
+     * <code>string sender = 1;</code>
+     * @return The sender.
+     */
+    java.lang.String getSender();
+    /**
+     * <pre>
+     * Quien los leyo
+     * </pre>
+     *
+     * <code>string sender = 1;</code>
+     * @return The bytes for sender.
+     */
+    com.google.protobuf.ByteString
+        getSenderBytes();
+
+    /**
+     * <pre>
+     * De quien son los mensajes
+     * </pre>
+     *
+     * <code>string recipient = 2;</code>
+     * @return The recipient.
+     */
+    java.lang.String getRecipient();
+    /**
+     * <pre>
+     * De quien son los mensajes
+     * </pre>
+     *
+     * <code>string recipient = 2;</code>
+     * @return The bytes for recipient.
+     */
+    com.google.protobuf.ByteString
+        getRecipientBytes();
+
+    /**
+     * <pre>
+     * Lista de IDs leidos
+     * </pre>
+     *
+     * <code>repeated string message_ids = 3;</code>
+     * @return A list containing the messageIds.
+     */
+    java.util.List<java.lang.String>
+        getMessageIdsList();
+    /**
+     * <pre>
+     * Lista de IDs leidos
+     * </pre>
+     *
+     * <code>repeated string message_ids = 3;</code>
+     * @return The count of messageIds.
+     */
+    int getMessageIdsCount();
+    /**
+     * <pre>
+     * Lista de IDs leidos
+     * </pre>
+     *
+     * <code>repeated string message_ids = 3;</code>
+     * @param index The index of the element to return.
+     * @return The messageIds at the given index.
+     */
+    java.lang.String getMessageIds(int index);
+    /**
+     * <pre>
+     * Lista de IDs leidos
+     * </pre>
+     *
+     * <code>repeated string message_ids = 3;</code>
+     * @param index The index of the value to return.
+     * @return The bytes of the messageIds at the given index.
+     */
+    com.google.protobuf.ByteString
+        getMessageIdsBytes(int index);
+  }
+  /**
+   * <pre>
+   * Solicitud para mercar mensajes como leidos
+   * </pre>
+   *
+   * Protobuf type {@code com.basic_chat.MarkMessagesAsReadRequest}
+   */
+  public static final class MarkMessagesAsReadRequest extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:com.basic_chat.MarkMessagesAsReadRequest)
+      MarkMessagesAsReadRequestOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use MarkMessagesAsReadRequest.newBuilder() to construct.
+    private MarkMessagesAsReadRequest(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private MarkMessagesAsReadRequest() {
+      sender_ = "";
+      recipient_ = "";
+      messageIds_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new MarkMessagesAsReadRequest();
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_MarkMessagesAsReadRequest_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_MarkMessagesAsReadRequest_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequest.class, com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequest.Builder.class);
+    }
+
+    public static final int SENDER_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object sender_ = "";
+    /**
+     * <pre>
+     * Quien los leyo
+     * </pre>
+     *
+     * <code>string sender = 1;</code>
+     * @return The sender.
+     */
+    @java.lang.Override
+    public java.lang.String getSender() {
+      java.lang.Object ref = sender_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        sender_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * Quien los leyo
+     * </pre>
+     *
+     * <code>string sender = 1;</code>
+     * @return The bytes for sender.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getSenderBytes() {
+      java.lang.Object ref = sender_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        sender_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int RECIPIENT_FIELD_NUMBER = 2;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object recipient_ = "";
+    /**
+     * <pre>
+     * De quien son los mensajes
+     * </pre>
+     *
+     * <code>string recipient = 2;</code>
+     * @return The recipient.
+     */
+    @java.lang.Override
+    public java.lang.String getRecipient() {
+      java.lang.Object ref = recipient_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        recipient_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * De quien son los mensajes
+     * </pre>
+     *
+     * <code>string recipient = 2;</code>
+     * @return The bytes for recipient.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getRecipientBytes() {
+      java.lang.Object ref = recipient_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        recipient_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int MESSAGE_IDS_FIELD_NUMBER = 3;
+    @SuppressWarnings("serial")
+    private com.google.protobuf.LazyStringArrayList messageIds_ =
+        com.google.protobuf.LazyStringArrayList.emptyList();
+    /**
+     * <pre>
+     * Lista de IDs leidos
+     * </pre>
+     *
+     * <code>repeated string message_ids = 3;</code>
+     * @return A list containing the messageIds.
+     */
+    public com.google.protobuf.ProtocolStringList
+        getMessageIdsList() {
+      return messageIds_;
+    }
+    /**
+     * <pre>
+     * Lista de IDs leidos
+     * </pre>
+     *
+     * <code>repeated string message_ids = 3;</code>
+     * @return The count of messageIds.
+     */
+    public int getMessageIdsCount() {
+      return messageIds_.size();
+    }
+    /**
+     * <pre>
+     * Lista de IDs leidos
+     * </pre>
+     *
+     * <code>repeated string message_ids = 3;</code>
+     * @param index The index of the element to return.
+     * @return The messageIds at the given index.
+     */
+    public java.lang.String getMessageIds(int index) {
+      return messageIds_.get(index);
+    }
+    /**
+     * <pre>
+     * Lista de IDs leidos
+     * </pre>
+     *
+     * <code>repeated string message_ids = 3;</code>
+     * @param index The index of the value to return.
+     * @return The bytes of the messageIds at the given index.
+     */
+    public com.google.protobuf.ByteString
+        getMessageIdsBytes(int index) {
+      return messageIds_.getByteString(index);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(sender_)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, sender_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(recipient_)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, recipient_);
+      }
+      for (int i = 0; i < messageIds_.size(); i++) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, messageIds_.getRaw(i));
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(sender_)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, sender_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(recipient_)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, recipient_);
+      }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < messageIds_.size(); i++) {
+          dataSize += computeStringSizeNoTag(messageIds_.getRaw(i));
+        }
+        size += dataSize;
+        size += 1 * getMessageIdsList().size();
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequest)) {
+        return super.equals(obj);
+      }
+      com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequest other = (com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequest) obj;
+
+      if (!getSender()
+          .equals(other.getSender())) return false;
+      if (!getRecipient()
+          .equals(other.getRecipient())) return false;
+      if (!getMessageIdsList()
+          .equals(other.getMessageIdsList())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + SENDER_FIELD_NUMBER;
+      hash = (53 * hash) + getSender().hashCode();
+      hash = (37 * hash) + RECIPIENT_FIELD_NUMBER;
+      hash = (53 * hash) + getRecipient().hashCode();
+      if (getMessageIdsCount() > 0) {
+        hash = (37 * hash) + MESSAGE_IDS_FIELD_NUMBER;
+        hash = (53 * hash) + getMessageIdsList().hashCode();
+      }
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequest parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequest parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequest parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequest parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequest parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequest parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequest parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequest parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequest parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequest parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequest parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequest parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequest prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * Solicitud para mercar mensajes como leidos
+     * </pre>
+     *
+     * Protobuf type {@code com.basic_chat.MarkMessagesAsReadRequest}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:com.basic_chat.MarkMessagesAsReadRequest)
+        com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequestOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_MarkMessagesAsReadRequest_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_MarkMessagesAsReadRequest_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequest.class, com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequest.Builder.class);
+      }
+
+      // Construct using com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequest.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        sender_ = "";
+        recipient_ = "";
+        messageIds_ =
+            com.google.protobuf.LazyStringArrayList.emptyList();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_MarkMessagesAsReadRequest_descriptor;
+      }
+
+      @java.lang.Override
+      public com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequest getDefaultInstanceForType() {
+        return com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequest.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequest build() {
+        com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequest result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequest buildPartial() {
+        com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequest result = new com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequest(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequest result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.sender_ = sender_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.recipient_ = recipient_;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          messageIds_.makeImmutable();
+          result.messageIds_ = messageIds_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequest) {
+          return mergeFrom((com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequest)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequest other) {
+        if (other == com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequest.getDefaultInstance()) return this;
+        if (!other.getSender().isEmpty()) {
+          sender_ = other.sender_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        if (!other.getRecipient().isEmpty()) {
+          recipient_ = other.recipient_;
+          bitField0_ |= 0x00000002;
+          onChanged();
+        }
+        if (!other.messageIds_.isEmpty()) {
+          if (messageIds_.isEmpty()) {
+            messageIds_ = other.messageIds_;
+            bitField0_ |= 0x00000004;
+          } else {
+            ensureMessageIdsIsMutable();
+            messageIds_.addAll(other.messageIds_);
+          }
+          onChanged();
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                sender_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 18: {
+                recipient_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 18
+              case 26: {
+                java.lang.String s = input.readStringRequireUtf8();
+                ensureMessageIdsIsMutable();
+                messageIds_.add(s);
+                break;
+              } // case 26
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object sender_ = "";
+      /**
+       * <pre>
+       * Quien los leyo
+       * </pre>
+       *
+       * <code>string sender = 1;</code>
+       * @return The sender.
+       */
+      public java.lang.String getSender() {
+        java.lang.Object ref = sender_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          sender_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * Quien los leyo
+       * </pre>
+       *
+       * <code>string sender = 1;</code>
+       * @return The bytes for sender.
+       */
+      public com.google.protobuf.ByteString
+          getSenderBytes() {
+        java.lang.Object ref = sender_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          sender_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * Quien los leyo
+       * </pre>
+       *
+       * <code>string sender = 1;</code>
+       * @param value The sender to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSender(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        sender_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * Quien los leyo
+       * </pre>
+       *
+       * <code>string sender = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearSender() {
+        sender_ = getDefaultInstance().getSender();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * Quien los leyo
+       * </pre>
+       *
+       * <code>string sender = 1;</code>
+       * @param value The bytes for sender to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSenderBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        sender_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object recipient_ = "";
+      /**
+       * <pre>
+       * De quien son los mensajes
+       * </pre>
+       *
+       * <code>string recipient = 2;</code>
+       * @return The recipient.
+       */
+      public java.lang.String getRecipient() {
+        java.lang.Object ref = recipient_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          recipient_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * De quien son los mensajes
+       * </pre>
+       *
+       * <code>string recipient = 2;</code>
+       * @return The bytes for recipient.
+       */
+      public com.google.protobuf.ByteString
+          getRecipientBytes() {
+        java.lang.Object ref = recipient_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          recipient_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * De quien son los mensajes
+       * </pre>
+       *
+       * <code>string recipient = 2;</code>
+       * @param value The recipient to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRecipient(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        recipient_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * De quien son los mensajes
+       * </pre>
+       *
+       * <code>string recipient = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearRecipient() {
+        recipient_ = getDefaultInstance().getRecipient();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * De quien son los mensajes
+       * </pre>
+       *
+       * <code>string recipient = 2;</code>
+       * @param value The bytes for recipient to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRecipientBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        recipient_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.LazyStringArrayList messageIds_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
+      private void ensureMessageIdsIsMutable() {
+        if (!messageIds_.isModifiable()) {
+          messageIds_ = new com.google.protobuf.LazyStringArrayList(messageIds_);
+        }
+        bitField0_ |= 0x00000004;
+      }
+      /**
+       * <pre>
+       * Lista de IDs leidos
+       * </pre>
+       *
+       * <code>repeated string message_ids = 3;</code>
+       * @return A list containing the messageIds.
+       */
+      public com.google.protobuf.ProtocolStringList
+          getMessageIdsList() {
+        messageIds_.makeImmutable();
+        return messageIds_;
+      }
+      /**
+       * <pre>
+       * Lista de IDs leidos
+       * </pre>
+       *
+       * <code>repeated string message_ids = 3;</code>
+       * @return The count of messageIds.
+       */
+      public int getMessageIdsCount() {
+        return messageIds_.size();
+      }
+      /**
+       * <pre>
+       * Lista de IDs leidos
+       * </pre>
+       *
+       * <code>repeated string message_ids = 3;</code>
+       * @param index The index of the element to return.
+       * @return The messageIds at the given index.
+       */
+      public java.lang.String getMessageIds(int index) {
+        return messageIds_.get(index);
+      }
+      /**
+       * <pre>
+       * Lista de IDs leidos
+       * </pre>
+       *
+       * <code>repeated string message_ids = 3;</code>
+       * @param index The index of the value to return.
+       * @return The bytes of the messageIds at the given index.
+       */
+      public com.google.protobuf.ByteString
+          getMessageIdsBytes(int index) {
+        return messageIds_.getByteString(index);
+      }
+      /**
+       * <pre>
+       * Lista de IDs leidos
+       * </pre>
+       *
+       * <code>repeated string message_ids = 3;</code>
+       * @param index The index to set the value at.
+       * @param value The messageIds to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMessageIds(
+          int index, java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        ensureMessageIdsIsMutable();
+        messageIds_.set(index, value);
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * Lista de IDs leidos
+       * </pre>
+       *
+       * <code>repeated string message_ids = 3;</code>
+       * @param value The messageIds to add.
+       * @return This builder for chaining.
+       */
+      public Builder addMessageIds(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        ensureMessageIdsIsMutable();
+        messageIds_.add(value);
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * Lista de IDs leidos
+       * </pre>
+       *
+       * <code>repeated string message_ids = 3;</code>
+       * @param values The messageIds to add.
+       * @return This builder for chaining.
+       */
+      public Builder addAllMessageIds(
+          java.lang.Iterable<java.lang.String> values) {
+        ensureMessageIdsIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, messageIds_);
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * Lista de IDs leidos
+       * </pre>
+       *
+       * <code>repeated string message_ids = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMessageIds() {
+        messageIds_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000004);;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * Lista de IDs leidos
+       * </pre>
+       *
+       * <code>repeated string message_ids = 3;</code>
+       * @param value The bytes of the messageIds to add.
+       * @return This builder for chaining.
+       */
+      public Builder addMessageIdsBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        ensureMessageIdsIsMutable();
+        messageIds_.add(value);
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:com.basic_chat.MarkMessagesAsReadRequest)
+    }
+
+    // @@protoc_insertion_point(class_scope:com.basic_chat.MarkMessagesAsReadRequest)
+    private static final com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequest DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequest();
+    }
+
+    public static com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequest getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MarkMessagesAsReadRequest>
+        PARSER = new com.google.protobuf.AbstractParser<MarkMessagesAsReadRequest>() {
+      @java.lang.Override
+      public MarkMessagesAsReadRequest parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<MarkMessagesAsReadRequest> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MarkMessagesAsReadRequest> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequest getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface MessagesReadUpdateOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:com.basic_chat.MessagesReadUpdate)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>repeated string message_ids = 1;</code>
+     * @return A list containing the messageIds.
+     */
+    java.util.List<java.lang.String>
+        getMessageIdsList();
+    /**
+     * <code>repeated string message_ids = 1;</code>
+     * @return The count of messageIds.
+     */
+    int getMessageIdsCount();
+    /**
+     * <code>repeated string message_ids = 1;</code>
+     * @param index The index of the element to return.
+     * @return The messageIds at the given index.
+     */
+    java.lang.String getMessageIds(int index);
+    /**
+     * <code>repeated string message_ids = 1;</code>
+     * @param index The index of the value to return.
+     * @return The bytes of the messageIds at the given index.
+     */
+    com.google.protobuf.ByteString
+        getMessageIdsBytes(int index);
+
+    /**
+     * <code>string reader_username = 2;</code>
+     * @return The readerUsername.
+     */
+    java.lang.String getReaderUsername();
+    /**
+     * <code>string reader_username = 2;</code>
+     * @return The bytes for readerUsername.
+     */
+    com.google.protobuf.ByteString
+        getReaderUsernameBytes();
+  }
+  /**
+   * <pre>
+   * Actualización enviada al remitente original cuando sus mensajes son leídos
+   * </pre>
+   *
+   * Protobuf type {@code com.basic_chat.MessagesReadUpdate}
+   */
+  public static final class MessagesReadUpdate extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:com.basic_chat.MessagesReadUpdate)
+      MessagesReadUpdateOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use MessagesReadUpdate.newBuilder() to construct.
+    private MessagesReadUpdate(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private MessagesReadUpdate() {
+      messageIds_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
+      readerUsername_ = "";
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new MessagesReadUpdate();
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_MessagesReadUpdate_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_MessagesReadUpdate_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.basic_chat.proto.MessagesProto.MessagesReadUpdate.class, com.basic_chat.proto.MessagesProto.MessagesReadUpdate.Builder.class);
+    }
+
+    public static final int MESSAGE_IDS_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private com.google.protobuf.LazyStringArrayList messageIds_ =
+        com.google.protobuf.LazyStringArrayList.emptyList();
+    /**
+     * <code>repeated string message_ids = 1;</code>
+     * @return A list containing the messageIds.
+     */
+    public com.google.protobuf.ProtocolStringList
+        getMessageIdsList() {
+      return messageIds_;
+    }
+    /**
+     * <code>repeated string message_ids = 1;</code>
+     * @return The count of messageIds.
+     */
+    public int getMessageIdsCount() {
+      return messageIds_.size();
+    }
+    /**
+     * <code>repeated string message_ids = 1;</code>
+     * @param index The index of the element to return.
+     * @return The messageIds at the given index.
+     */
+    public java.lang.String getMessageIds(int index) {
+      return messageIds_.get(index);
+    }
+    /**
+     * <code>repeated string message_ids = 1;</code>
+     * @param index The index of the value to return.
+     * @return The bytes of the messageIds at the given index.
+     */
+    public com.google.protobuf.ByteString
+        getMessageIdsBytes(int index) {
+      return messageIds_.getByteString(index);
+    }
+
+    public static final int READER_USERNAME_FIELD_NUMBER = 2;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object readerUsername_ = "";
+    /**
+     * <code>string reader_username = 2;</code>
+     * @return The readerUsername.
+     */
+    @java.lang.Override
+    public java.lang.String getReaderUsername() {
+      java.lang.Object ref = readerUsername_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        readerUsername_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string reader_username = 2;</code>
+     * @return The bytes for readerUsername.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getReaderUsernameBytes() {
+      java.lang.Object ref = readerUsername_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        readerUsername_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      for (int i = 0; i < messageIds_.size(); i++) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, messageIds_.getRaw(i));
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(readerUsername_)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, readerUsername_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      {
+        int dataSize = 0;
+        for (int i = 0; i < messageIds_.size(); i++) {
+          dataSize += computeStringSizeNoTag(messageIds_.getRaw(i));
+        }
+        size += dataSize;
+        size += 1 * getMessageIdsList().size();
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(readerUsername_)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, readerUsername_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.basic_chat.proto.MessagesProto.MessagesReadUpdate)) {
+        return super.equals(obj);
+      }
+      com.basic_chat.proto.MessagesProto.MessagesReadUpdate other = (com.basic_chat.proto.MessagesProto.MessagesReadUpdate) obj;
+
+      if (!getMessageIdsList()
+          .equals(other.getMessageIdsList())) return false;
+      if (!getReaderUsername()
+          .equals(other.getReaderUsername())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (getMessageIdsCount() > 0) {
+        hash = (37 * hash) + MESSAGE_IDS_FIELD_NUMBER;
+        hash = (53 * hash) + getMessageIdsList().hashCode();
+      }
+      hash = (37 * hash) + READER_USERNAME_FIELD_NUMBER;
+      hash = (53 * hash) + getReaderUsername().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.basic_chat.proto.MessagesProto.MessagesReadUpdate parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.basic_chat.proto.MessagesProto.MessagesReadUpdate parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.basic_chat.proto.MessagesProto.MessagesReadUpdate parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.basic_chat.proto.MessagesProto.MessagesReadUpdate parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.basic_chat.proto.MessagesProto.MessagesReadUpdate parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.basic_chat.proto.MessagesProto.MessagesReadUpdate parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.basic_chat.proto.MessagesProto.MessagesReadUpdate parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.basic_chat.proto.MessagesProto.MessagesReadUpdate parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static com.basic_chat.proto.MessagesProto.MessagesReadUpdate parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static com.basic_chat.proto.MessagesProto.MessagesReadUpdate parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.basic_chat.proto.MessagesProto.MessagesReadUpdate parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.basic_chat.proto.MessagesProto.MessagesReadUpdate parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.basic_chat.proto.MessagesProto.MessagesReadUpdate prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * Actualización enviada al remitente original cuando sus mensajes son leídos
+     * </pre>
+     *
+     * Protobuf type {@code com.basic_chat.MessagesReadUpdate}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:com.basic_chat.MessagesReadUpdate)
+        com.basic_chat.proto.MessagesProto.MessagesReadUpdateOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_MessagesReadUpdate_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_MessagesReadUpdate_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.basic_chat.proto.MessagesProto.MessagesReadUpdate.class, com.basic_chat.proto.MessagesProto.MessagesReadUpdate.Builder.class);
+      }
+
+      // Construct using com.basic_chat.proto.MessagesProto.MessagesReadUpdate.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        messageIds_ =
+            com.google.protobuf.LazyStringArrayList.emptyList();
+        readerUsername_ = "";
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_MessagesReadUpdate_descriptor;
+      }
+
+      @java.lang.Override
+      public com.basic_chat.proto.MessagesProto.MessagesReadUpdate getDefaultInstanceForType() {
+        return com.basic_chat.proto.MessagesProto.MessagesReadUpdate.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public com.basic_chat.proto.MessagesProto.MessagesReadUpdate build() {
+        com.basic_chat.proto.MessagesProto.MessagesReadUpdate result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public com.basic_chat.proto.MessagesProto.MessagesReadUpdate buildPartial() {
+        com.basic_chat.proto.MessagesProto.MessagesReadUpdate result = new com.basic_chat.proto.MessagesProto.MessagesReadUpdate(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(com.basic_chat.proto.MessagesProto.MessagesReadUpdate result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          messageIds_.makeImmutable();
+          result.messageIds_ = messageIds_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.readerUsername_ = readerUsername_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.basic_chat.proto.MessagesProto.MessagesReadUpdate) {
+          return mergeFrom((com.basic_chat.proto.MessagesProto.MessagesReadUpdate)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.basic_chat.proto.MessagesProto.MessagesReadUpdate other) {
+        if (other == com.basic_chat.proto.MessagesProto.MessagesReadUpdate.getDefaultInstance()) return this;
+        if (!other.messageIds_.isEmpty()) {
+          if (messageIds_.isEmpty()) {
+            messageIds_ = other.messageIds_;
+            bitField0_ |= 0x00000001;
+          } else {
+            ensureMessageIdsIsMutable();
+            messageIds_.addAll(other.messageIds_);
+          }
+          onChanged();
+        }
+        if (!other.getReaderUsername().isEmpty()) {
+          readerUsername_ = other.readerUsername_;
+          bitField0_ |= 0x00000002;
+          onChanged();
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                java.lang.String s = input.readStringRequireUtf8();
+                ensureMessageIdsIsMutable();
+                messageIds_.add(s);
+                break;
+              } // case 10
+              case 18: {
+                readerUsername_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 18
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private com.google.protobuf.LazyStringArrayList messageIds_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
+      private void ensureMessageIdsIsMutable() {
+        if (!messageIds_.isModifiable()) {
+          messageIds_ = new com.google.protobuf.LazyStringArrayList(messageIds_);
+        }
+        bitField0_ |= 0x00000001;
+      }
+      /**
+       * <code>repeated string message_ids = 1;</code>
+       * @return A list containing the messageIds.
+       */
+      public com.google.protobuf.ProtocolStringList
+          getMessageIdsList() {
+        messageIds_.makeImmutable();
+        return messageIds_;
+      }
+      /**
+       * <code>repeated string message_ids = 1;</code>
+       * @return The count of messageIds.
+       */
+      public int getMessageIdsCount() {
+        return messageIds_.size();
+      }
+      /**
+       * <code>repeated string message_ids = 1;</code>
+       * @param index The index of the element to return.
+       * @return The messageIds at the given index.
+       */
+      public java.lang.String getMessageIds(int index) {
+        return messageIds_.get(index);
+      }
+      /**
+       * <code>repeated string message_ids = 1;</code>
+       * @param index The index of the value to return.
+       * @return The bytes of the messageIds at the given index.
+       */
+      public com.google.protobuf.ByteString
+          getMessageIdsBytes(int index) {
+        return messageIds_.getByteString(index);
+      }
+      /**
+       * <code>repeated string message_ids = 1;</code>
+       * @param index The index to set the value at.
+       * @param value The messageIds to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMessageIds(
+          int index, java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        ensureMessageIdsIsMutable();
+        messageIds_.set(index, value);
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string message_ids = 1;</code>
+       * @param value The messageIds to add.
+       * @return This builder for chaining.
+       */
+      public Builder addMessageIds(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        ensureMessageIdsIsMutable();
+        messageIds_.add(value);
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string message_ids = 1;</code>
+       * @param values The messageIds to add.
+       * @return This builder for chaining.
+       */
+      public Builder addAllMessageIds(
+          java.lang.Iterable<java.lang.String> values) {
+        ensureMessageIdsIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, messageIds_);
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string message_ids = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMessageIds() {
+        messageIds_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000001);;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string message_ids = 1;</code>
+       * @param value The bytes of the messageIds to add.
+       * @return This builder for chaining.
+       */
+      public Builder addMessageIdsBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        ensureMessageIdsIsMutable();
+        messageIds_.add(value);
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object readerUsername_ = "";
+      /**
+       * <code>string reader_username = 2;</code>
+       * @return The readerUsername.
+       */
+      public java.lang.String getReaderUsername() {
+        java.lang.Object ref = readerUsername_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          readerUsername_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string reader_username = 2;</code>
+       * @return The bytes for readerUsername.
+       */
+      public com.google.protobuf.ByteString
+          getReaderUsernameBytes() {
+        java.lang.Object ref = readerUsername_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          readerUsername_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string reader_username = 2;</code>
+       * @param value The readerUsername to set.
+       * @return This builder for chaining.
+       */
+      public Builder setReaderUsername(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        readerUsername_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string reader_username = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearReaderUsername() {
+        readerUsername_ = getDefaultInstance().getReaderUsername();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string reader_username = 2;</code>
+       * @param value The bytes for readerUsername to set.
+       * @return This builder for chaining.
+       */
+      public Builder setReaderUsernameBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        readerUsername_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:com.basic_chat.MessagesReadUpdate)
+    }
+
+    // @@protoc_insertion_point(class_scope:com.basic_chat.MessagesReadUpdate)
+    private static final com.basic_chat.proto.MessagesProto.MessagesReadUpdate DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.basic_chat.proto.MessagesProto.MessagesReadUpdate();
+    }
+
+    public static com.basic_chat.proto.MessagesProto.MessagesReadUpdate getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MessagesReadUpdate>
+        PARSER = new com.google.protobuf.AbstractParser<MessagesReadUpdate>() {
+      @java.lang.Override
+      public MessagesReadUpdate parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<MessagesReadUpdate> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MessagesReadUpdate> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.basic_chat.proto.MessagesProto.MessagesReadUpdate getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   public interface WsMessageOrBuilder extends
       // @@protoc_insertion_point(interface_extends:com.basic_chat.WsMessage)
       com.google.protobuf.MessageOrBuilder {
@@ -14165,6 +16001,36 @@ public final class MessagesProto {
      */
     com.basic_chat.proto.MessagesProto.BlockedUsersListOrBuilder getBlockedUsersListOrBuilder();
 
+    /**
+     * <code>.com.basic_chat.MarkMessagesAsReadRequest mark_messages_as_read_request = 18;</code>
+     * @return Whether the markMessagesAsReadRequest field is set.
+     */
+    boolean hasMarkMessagesAsReadRequest();
+    /**
+     * <code>.com.basic_chat.MarkMessagesAsReadRequest mark_messages_as_read_request = 18;</code>
+     * @return The markMessagesAsReadRequest.
+     */
+    com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequest getMarkMessagesAsReadRequest();
+    /**
+     * <code>.com.basic_chat.MarkMessagesAsReadRequest mark_messages_as_read_request = 18;</code>
+     */
+    com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequestOrBuilder getMarkMessagesAsReadRequestOrBuilder();
+
+    /**
+     * <code>.com.basic_chat.MessagesReadUpdate messages_read_update = 19;</code>
+     * @return Whether the messagesReadUpdate field is set.
+     */
+    boolean hasMessagesReadUpdate();
+    /**
+     * <code>.com.basic_chat.MessagesReadUpdate messages_read_update = 19;</code>
+     * @return The messagesReadUpdate.
+     */
+    com.basic_chat.proto.MessagesProto.MessagesReadUpdate getMessagesReadUpdate();
+    /**
+     * <code>.com.basic_chat.MessagesReadUpdate messages_read_update = 19;</code>
+     */
+    com.basic_chat.proto.MessagesProto.MessagesReadUpdateOrBuilder getMessagesReadUpdateOrBuilder();
+
     com.basic_chat.proto.MessagesProto.WsMessage.PayloadCase getPayloadCase();
   }
   /**
@@ -14229,6 +16095,8 @@ public final class MessagesProto {
       CHAT_MESSAGE_RESPONSE(15),
       UNBLOCKED_USERS_LIST(16),
       BLOCKED_USERS_LIST(17),
+      MARK_MESSAGES_AS_READ_REQUEST(18),
+      MESSAGES_READ_UPDATE(19),
       PAYLOAD_NOT_SET(0);
       private final int value;
       private PayloadCase(int value) {
@@ -14263,6 +16131,8 @@ public final class MessagesProto {
           case 15: return CHAT_MESSAGE_RESPONSE;
           case 16: return UNBLOCKED_USERS_LIST;
           case 17: return BLOCKED_USERS_LIST;
+          case 18: return MARK_MESSAGES_AS_READ_REQUEST;
+          case 19: return MESSAGES_READ_UPDATE;
           case 0: return PAYLOAD_NOT_SET;
           default: return null;
         }
@@ -14805,6 +16675,68 @@ public final class MessagesProto {
       return com.basic_chat.proto.MessagesProto.BlockedUsersList.getDefaultInstance();
     }
 
+    public static final int MARK_MESSAGES_AS_READ_REQUEST_FIELD_NUMBER = 18;
+    /**
+     * <code>.com.basic_chat.MarkMessagesAsReadRequest mark_messages_as_read_request = 18;</code>
+     * @return Whether the markMessagesAsReadRequest field is set.
+     */
+    @java.lang.Override
+    public boolean hasMarkMessagesAsReadRequest() {
+      return payloadCase_ == 18;
+    }
+    /**
+     * <code>.com.basic_chat.MarkMessagesAsReadRequest mark_messages_as_read_request = 18;</code>
+     * @return The markMessagesAsReadRequest.
+     */
+    @java.lang.Override
+    public com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequest getMarkMessagesAsReadRequest() {
+      if (payloadCase_ == 18) {
+         return (com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequest) payload_;
+      }
+      return com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequest.getDefaultInstance();
+    }
+    /**
+     * <code>.com.basic_chat.MarkMessagesAsReadRequest mark_messages_as_read_request = 18;</code>
+     */
+    @java.lang.Override
+    public com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequestOrBuilder getMarkMessagesAsReadRequestOrBuilder() {
+      if (payloadCase_ == 18) {
+         return (com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequest) payload_;
+      }
+      return com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequest.getDefaultInstance();
+    }
+
+    public static final int MESSAGES_READ_UPDATE_FIELD_NUMBER = 19;
+    /**
+     * <code>.com.basic_chat.MessagesReadUpdate messages_read_update = 19;</code>
+     * @return Whether the messagesReadUpdate field is set.
+     */
+    @java.lang.Override
+    public boolean hasMessagesReadUpdate() {
+      return payloadCase_ == 19;
+    }
+    /**
+     * <code>.com.basic_chat.MessagesReadUpdate messages_read_update = 19;</code>
+     * @return The messagesReadUpdate.
+     */
+    @java.lang.Override
+    public com.basic_chat.proto.MessagesProto.MessagesReadUpdate getMessagesReadUpdate() {
+      if (payloadCase_ == 19) {
+         return (com.basic_chat.proto.MessagesProto.MessagesReadUpdate) payload_;
+      }
+      return com.basic_chat.proto.MessagesProto.MessagesReadUpdate.getDefaultInstance();
+    }
+    /**
+     * <code>.com.basic_chat.MessagesReadUpdate messages_read_update = 19;</code>
+     */
+    @java.lang.Override
+    public com.basic_chat.proto.MessagesProto.MessagesReadUpdateOrBuilder getMessagesReadUpdateOrBuilder() {
+      if (payloadCase_ == 19) {
+         return (com.basic_chat.proto.MessagesProto.MessagesReadUpdate) payload_;
+      }
+      return com.basic_chat.proto.MessagesProto.MessagesReadUpdate.getDefaultInstance();
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -14869,6 +16801,12 @@ public final class MessagesProto {
       }
       if (payloadCase_ == 17) {
         output.writeMessage(17, (com.basic_chat.proto.MessagesProto.BlockedUsersList) payload_);
+      }
+      if (payloadCase_ == 18) {
+        output.writeMessage(18, (com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequest) payload_);
+      }
+      if (payloadCase_ == 19) {
+        output.writeMessage(19, (com.basic_chat.proto.MessagesProto.MessagesReadUpdate) payload_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -14946,6 +16884,14 @@ public final class MessagesProto {
       if (payloadCase_ == 17) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(17, (com.basic_chat.proto.MessagesProto.BlockedUsersList) payload_);
+      }
+      if (payloadCase_ == 18) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(18, (com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequest) payload_);
+      }
+      if (payloadCase_ == 19) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(19, (com.basic_chat.proto.MessagesProto.MessagesReadUpdate) payload_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -15032,6 +16978,14 @@ public final class MessagesProto {
           if (!getBlockedUsersList()
               .equals(other.getBlockedUsersList())) return false;
           break;
+        case 18:
+          if (!getMarkMessagesAsReadRequest()
+              .equals(other.getMarkMessagesAsReadRequest())) return false;
+          break;
+        case 19:
+          if (!getMessagesReadUpdate()
+              .equals(other.getMessagesReadUpdate())) return false;
+          break;
         case 0:
         default:
       }
@@ -15114,6 +17068,14 @@ public final class MessagesProto {
         case 17:
           hash = (37 * hash) + BLOCKED_USERS_LIST_FIELD_NUMBER;
           hash = (53 * hash) + getBlockedUsersList().hashCode();
+          break;
+        case 18:
+          hash = (37 * hash) + MARK_MESSAGES_AS_READ_REQUEST_FIELD_NUMBER;
+          hash = (53 * hash) + getMarkMessagesAsReadRequest().hashCode();
+          break;
+        case 19:
+          hash = (37 * hash) + MESSAGES_READ_UPDATE_FIELD_NUMBER;
+          hash = (53 * hash) + getMessagesReadUpdate().hashCode();
           break;
         case 0:
         default:
@@ -15304,6 +17266,12 @@ public final class MessagesProto {
         if (blockedUsersListBuilder_ != null) {
           blockedUsersListBuilder_.clear();
         }
+        if (markMessagesAsReadRequestBuilder_ != null) {
+          markMessagesAsReadRequestBuilder_.clear();
+        }
+        if (messagesReadUpdateBuilder_ != null) {
+          messagesReadUpdateBuilder_.clear();
+        }
         payloadCase_ = 0;
         payload_ = null;
         return this;
@@ -15412,6 +17380,14 @@ public final class MessagesProto {
         if (payloadCase_ == 17 &&
             blockedUsersListBuilder_ != null) {
           result.payload_ = blockedUsersListBuilder_.build();
+        }
+        if (payloadCase_ == 18 &&
+            markMessagesAsReadRequestBuilder_ != null) {
+          result.payload_ = markMessagesAsReadRequestBuilder_.build();
+        }
+        if (payloadCase_ == 19 &&
+            messagesReadUpdateBuilder_ != null) {
+          result.payload_ = messagesReadUpdateBuilder_.build();
         }
       }
 
@@ -15526,6 +17502,14 @@ public final class MessagesProto {
           }
           case BLOCKED_USERS_LIST: {
             mergeBlockedUsersList(other.getBlockedUsersList());
+            break;
+          }
+          case MARK_MESSAGES_AS_READ_REQUEST: {
+            mergeMarkMessagesAsReadRequest(other.getMarkMessagesAsReadRequest());
+            break;
+          }
+          case MESSAGES_READ_UPDATE: {
+            mergeMessagesReadUpdate(other.getMessagesReadUpdate());
             break;
           }
           case PAYLOAD_NOT_SET: {
@@ -15677,6 +17661,20 @@ public final class MessagesProto {
                 payloadCase_ = 17;
                 break;
               } // case 138
+              case 146: {
+                input.readMessage(
+                    getMarkMessagesAsReadRequestFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                payloadCase_ = 18;
+                break;
+              } // case 146
+              case 154: {
+                input.readMessage(
+                    getMessagesReadUpdateFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                payloadCase_ = 19;
+                break;
+              } // case 154
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -18122,6 +20120,290 @@ public final class MessagesProto {
         onChanged();
         return blockedUsersListBuilder_;
       }
+
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequest, com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequest.Builder, com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequestOrBuilder> markMessagesAsReadRequestBuilder_;
+      /**
+       * <code>.com.basic_chat.MarkMessagesAsReadRequest mark_messages_as_read_request = 18;</code>
+       * @return Whether the markMessagesAsReadRequest field is set.
+       */
+      @java.lang.Override
+      public boolean hasMarkMessagesAsReadRequest() {
+        return payloadCase_ == 18;
+      }
+      /**
+       * <code>.com.basic_chat.MarkMessagesAsReadRequest mark_messages_as_read_request = 18;</code>
+       * @return The markMessagesAsReadRequest.
+       */
+      @java.lang.Override
+      public com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequest getMarkMessagesAsReadRequest() {
+        if (markMessagesAsReadRequestBuilder_ == null) {
+          if (payloadCase_ == 18) {
+            return (com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequest) payload_;
+          }
+          return com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequest.getDefaultInstance();
+        } else {
+          if (payloadCase_ == 18) {
+            return markMessagesAsReadRequestBuilder_.getMessage();
+          }
+          return com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequest.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.com.basic_chat.MarkMessagesAsReadRequest mark_messages_as_read_request = 18;</code>
+       */
+      public Builder setMarkMessagesAsReadRequest(com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequest value) {
+        if (markMessagesAsReadRequestBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          payload_ = value;
+          onChanged();
+        } else {
+          markMessagesAsReadRequestBuilder_.setMessage(value);
+        }
+        payloadCase_ = 18;
+        return this;
+      }
+      /**
+       * <code>.com.basic_chat.MarkMessagesAsReadRequest mark_messages_as_read_request = 18;</code>
+       */
+      public Builder setMarkMessagesAsReadRequest(
+          com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequest.Builder builderForValue) {
+        if (markMessagesAsReadRequestBuilder_ == null) {
+          payload_ = builderForValue.build();
+          onChanged();
+        } else {
+          markMessagesAsReadRequestBuilder_.setMessage(builderForValue.build());
+        }
+        payloadCase_ = 18;
+        return this;
+      }
+      /**
+       * <code>.com.basic_chat.MarkMessagesAsReadRequest mark_messages_as_read_request = 18;</code>
+       */
+      public Builder mergeMarkMessagesAsReadRequest(com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequest value) {
+        if (markMessagesAsReadRequestBuilder_ == null) {
+          if (payloadCase_ == 18 &&
+              payload_ != com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequest.getDefaultInstance()) {
+            payload_ = com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequest.newBuilder((com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequest) payload_)
+                .mergeFrom(value).buildPartial();
+          } else {
+            payload_ = value;
+          }
+          onChanged();
+        } else {
+          if (payloadCase_ == 18) {
+            markMessagesAsReadRequestBuilder_.mergeFrom(value);
+          } else {
+            markMessagesAsReadRequestBuilder_.setMessage(value);
+          }
+        }
+        payloadCase_ = 18;
+        return this;
+      }
+      /**
+       * <code>.com.basic_chat.MarkMessagesAsReadRequest mark_messages_as_read_request = 18;</code>
+       */
+      public Builder clearMarkMessagesAsReadRequest() {
+        if (markMessagesAsReadRequestBuilder_ == null) {
+          if (payloadCase_ == 18) {
+            payloadCase_ = 0;
+            payload_ = null;
+            onChanged();
+          }
+        } else {
+          if (payloadCase_ == 18) {
+            payloadCase_ = 0;
+            payload_ = null;
+          }
+          markMessagesAsReadRequestBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>.com.basic_chat.MarkMessagesAsReadRequest mark_messages_as_read_request = 18;</code>
+       */
+      public com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequest.Builder getMarkMessagesAsReadRequestBuilder() {
+        return getMarkMessagesAsReadRequestFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.com.basic_chat.MarkMessagesAsReadRequest mark_messages_as_read_request = 18;</code>
+       */
+      @java.lang.Override
+      public com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequestOrBuilder getMarkMessagesAsReadRequestOrBuilder() {
+        if ((payloadCase_ == 18) && (markMessagesAsReadRequestBuilder_ != null)) {
+          return markMessagesAsReadRequestBuilder_.getMessageOrBuilder();
+        } else {
+          if (payloadCase_ == 18) {
+            return (com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequest) payload_;
+          }
+          return com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequest.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.com.basic_chat.MarkMessagesAsReadRequest mark_messages_as_read_request = 18;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequest, com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequest.Builder, com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequestOrBuilder> 
+          getMarkMessagesAsReadRequestFieldBuilder() {
+        if (markMessagesAsReadRequestBuilder_ == null) {
+          if (!(payloadCase_ == 18)) {
+            payload_ = com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequest.getDefaultInstance();
+          }
+          markMessagesAsReadRequestBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequest, com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequest.Builder, com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequestOrBuilder>(
+                  (com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequest) payload_,
+                  getParentForChildren(),
+                  isClean());
+          payload_ = null;
+        }
+        payloadCase_ = 18;
+        onChanged();
+        return markMessagesAsReadRequestBuilder_;
+      }
+
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.basic_chat.proto.MessagesProto.MessagesReadUpdate, com.basic_chat.proto.MessagesProto.MessagesReadUpdate.Builder, com.basic_chat.proto.MessagesProto.MessagesReadUpdateOrBuilder> messagesReadUpdateBuilder_;
+      /**
+       * <code>.com.basic_chat.MessagesReadUpdate messages_read_update = 19;</code>
+       * @return Whether the messagesReadUpdate field is set.
+       */
+      @java.lang.Override
+      public boolean hasMessagesReadUpdate() {
+        return payloadCase_ == 19;
+      }
+      /**
+       * <code>.com.basic_chat.MessagesReadUpdate messages_read_update = 19;</code>
+       * @return The messagesReadUpdate.
+       */
+      @java.lang.Override
+      public com.basic_chat.proto.MessagesProto.MessagesReadUpdate getMessagesReadUpdate() {
+        if (messagesReadUpdateBuilder_ == null) {
+          if (payloadCase_ == 19) {
+            return (com.basic_chat.proto.MessagesProto.MessagesReadUpdate) payload_;
+          }
+          return com.basic_chat.proto.MessagesProto.MessagesReadUpdate.getDefaultInstance();
+        } else {
+          if (payloadCase_ == 19) {
+            return messagesReadUpdateBuilder_.getMessage();
+          }
+          return com.basic_chat.proto.MessagesProto.MessagesReadUpdate.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.com.basic_chat.MessagesReadUpdate messages_read_update = 19;</code>
+       */
+      public Builder setMessagesReadUpdate(com.basic_chat.proto.MessagesProto.MessagesReadUpdate value) {
+        if (messagesReadUpdateBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          payload_ = value;
+          onChanged();
+        } else {
+          messagesReadUpdateBuilder_.setMessage(value);
+        }
+        payloadCase_ = 19;
+        return this;
+      }
+      /**
+       * <code>.com.basic_chat.MessagesReadUpdate messages_read_update = 19;</code>
+       */
+      public Builder setMessagesReadUpdate(
+          com.basic_chat.proto.MessagesProto.MessagesReadUpdate.Builder builderForValue) {
+        if (messagesReadUpdateBuilder_ == null) {
+          payload_ = builderForValue.build();
+          onChanged();
+        } else {
+          messagesReadUpdateBuilder_.setMessage(builderForValue.build());
+        }
+        payloadCase_ = 19;
+        return this;
+      }
+      /**
+       * <code>.com.basic_chat.MessagesReadUpdate messages_read_update = 19;</code>
+       */
+      public Builder mergeMessagesReadUpdate(com.basic_chat.proto.MessagesProto.MessagesReadUpdate value) {
+        if (messagesReadUpdateBuilder_ == null) {
+          if (payloadCase_ == 19 &&
+              payload_ != com.basic_chat.proto.MessagesProto.MessagesReadUpdate.getDefaultInstance()) {
+            payload_ = com.basic_chat.proto.MessagesProto.MessagesReadUpdate.newBuilder((com.basic_chat.proto.MessagesProto.MessagesReadUpdate) payload_)
+                .mergeFrom(value).buildPartial();
+          } else {
+            payload_ = value;
+          }
+          onChanged();
+        } else {
+          if (payloadCase_ == 19) {
+            messagesReadUpdateBuilder_.mergeFrom(value);
+          } else {
+            messagesReadUpdateBuilder_.setMessage(value);
+          }
+        }
+        payloadCase_ = 19;
+        return this;
+      }
+      /**
+       * <code>.com.basic_chat.MessagesReadUpdate messages_read_update = 19;</code>
+       */
+      public Builder clearMessagesReadUpdate() {
+        if (messagesReadUpdateBuilder_ == null) {
+          if (payloadCase_ == 19) {
+            payloadCase_ = 0;
+            payload_ = null;
+            onChanged();
+          }
+        } else {
+          if (payloadCase_ == 19) {
+            payloadCase_ = 0;
+            payload_ = null;
+          }
+          messagesReadUpdateBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>.com.basic_chat.MessagesReadUpdate messages_read_update = 19;</code>
+       */
+      public com.basic_chat.proto.MessagesProto.MessagesReadUpdate.Builder getMessagesReadUpdateBuilder() {
+        return getMessagesReadUpdateFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.com.basic_chat.MessagesReadUpdate messages_read_update = 19;</code>
+       */
+      @java.lang.Override
+      public com.basic_chat.proto.MessagesProto.MessagesReadUpdateOrBuilder getMessagesReadUpdateOrBuilder() {
+        if ((payloadCase_ == 19) && (messagesReadUpdateBuilder_ != null)) {
+          return messagesReadUpdateBuilder_.getMessageOrBuilder();
+        } else {
+          if (payloadCase_ == 19) {
+            return (com.basic_chat.proto.MessagesProto.MessagesReadUpdate) payload_;
+          }
+          return com.basic_chat.proto.MessagesProto.MessagesReadUpdate.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.com.basic_chat.MessagesReadUpdate messages_read_update = 19;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.basic_chat.proto.MessagesProto.MessagesReadUpdate, com.basic_chat.proto.MessagesProto.MessagesReadUpdate.Builder, com.basic_chat.proto.MessagesProto.MessagesReadUpdateOrBuilder> 
+          getMessagesReadUpdateFieldBuilder() {
+        if (messagesReadUpdateBuilder_ == null) {
+          if (!(payloadCase_ == 19)) {
+            payload_ = com.basic_chat.proto.MessagesProto.MessagesReadUpdate.getDefaultInstance();
+          }
+          messagesReadUpdateBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              com.basic_chat.proto.MessagesProto.MessagesReadUpdate, com.basic_chat.proto.MessagesProto.MessagesReadUpdate.Builder, com.basic_chat.proto.MessagesProto.MessagesReadUpdateOrBuilder>(
+                  (com.basic_chat.proto.MessagesProto.MessagesReadUpdate) payload_,
+                  getParentForChildren(),
+                  isClean());
+          payload_ = null;
+        }
+        payloadCase_ = 19;
+        onChanged();
+        return messagesReadUpdateBuilder_;
+      }
       @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -18277,6 +20559,16 @@ public final class MessagesProto {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_com_basic_chat_BlockedUsersList_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_basic_chat_MarkMessagesAsReadRequest_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_com_basic_chat_MarkMessagesAsReadRequest_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_basic_chat_MessagesReadUpdate_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_com_basic_chat_MessagesReadUpdate_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_com_basic_chat_WsMessage_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -18320,41 +20612,49 @@ public final class MessagesProto {
       "+\n\005cause\030\003 \001(\0162\034.com.basic_chat.FailureC" +
       "ause\022\025\n\rerror_message\030\004 \001(\t\022\021\n\trecipient" +
       "\030\005 \001(\t\"#\n\022UnblockedUsersList\022\r\n\005users\030\001 " +
-      "\003(\t\"!\n\020BlockedUsersList\022\r\n\005users\030\001 \003(\t\"\372" +
-      "\010\n\tWsMessage\0223\n\014chat_message\030\001 \001(\0132\033.com" +
-      ".basic_chat.ChatMessageH\000\022-\n\tuser_list\030\002" +
-      " \001(\0132\030.com.basic_chat.UserListH\000\0223\n\014auth" +
-      "_message\030\003 \001(\0132\033.com.basic_chat.AuthMess" +
-      "ageH\000\0225\n\rauth_response\030\004 \001(\0132\034.com.basic" +
-      "_chat.AuthResponseH\000\022F\n\026delete_message_r" +
-      "equest\030\005 \001(\0132$.com.basic_chat.DeleteMess" +
-      "ageRequestH\000\022H\n\027delete_message_response\030" +
-      "\006 \001(\0132%.com.basic_chat.DeleteMessageResp" +
-      "onseH\000\022Q\n\033message_delete_notification\030\007 " +
-      "\001(\0132*.com.basic_chat.MessageDeletedNotif" +
-      "icationH\000\022B\n\024unread_messages_list\030\010 \001(\0132" +
-      "\".com.basic_chat.UnreadMessagesListH\000\022D\n" +
-      "\025clear_history_request\030\t \001(\0132#.com.basic" +
-      "_chat.ClearHistoryRequestH\000\022D\n\025block_con" +
-      "tact_request\030\n \001(\0132#.com.basic_chat.Bloc" +
-      "kContactRequestH\000\022F\n\026block_contact_respo" +
-      "nse\030\013 \001(\0132$.com.basic_chat.BlockContactR" +
-      "esponseH\000\0225\n\rmessage_error\030\014 \001(\0132\034.com.b" +
-      "asic_chat.MessageErrorH\000\022H\n\027unblock_cont" +
-      "act_request\030\r \001(\0132%.com.basic_chat.Unblo" +
-      "ckContactRequestH\000\022J\n\030unblock_contact_re" +
-      "sponse\030\016 \001(\0132&.com.basic_chat.UnblockCon" +
-      "tactResponseH\000\022D\n\025chat_message_response\030" +
-      "\017 \001(\0132#.com.basic_chat.ChatMessageRespon" +
-      "seH\000\022B\n\024unblocked_users_list\030\020 \001(\0132\".com" +
-      ".basic_chat.UnblockedUsersListH\000\022>\n\022bloc" +
-      "ked_users_list\030\021 \001(\0132 .com.basic_chat.Bl" +
-      "ockedUsersListH\000B\t\n\007payload*t\n\013MessageTy" +
-      "pe\022\010\n\004TEXT\020\000\022\t\n\005LOGIN\020\001\022\n\n\006LOGOUT\020\002\022\r\n\tU" +
-      "SER_LIST\020\003\022\n\n\006TYPING\020\004\022\024\n\020DELIVERY_RECEI" +
-      "PT\020\005\022\t\n\005ALERT\020\006\022\010\n\004CHAT\020\007*.\n\014FailureCaus" +
-      "e\022\021\n\rUNKNOWN_CAUSE\020\000\022\013\n\007BLOCKED\020\001B%\n\024com" +
-      ".basic_chat.protoB\rMessagesProtob\006proto3"
+      "\003(\t\"!\n\020BlockedUsersList\022\r\n\005users\030\001 \003(\t\"S" +
+      "\n\031MarkMessagesAsReadRequest\022\016\n\006sender\030\001 " +
+      "\001(\t\022\021\n\trecipient\030\002 \001(\t\022\023\n\013message_ids\030\003 " +
+      "\003(\t\"B\n\022MessagesReadUpdate\022\023\n\013message_ids" +
+      "\030\001 \003(\t\022\027\n\017reader_username\030\002 \001(\t\"\222\n\n\tWsMe" +
+      "ssage\0223\n\014chat_message\030\001 \001(\0132\033.com.basic_" +
+      "chat.ChatMessageH\000\022-\n\tuser_list\030\002 \001(\0132\030." +
+      "com.basic_chat.UserListH\000\0223\n\014auth_messag" +
+      "e\030\003 \001(\0132\033.com.basic_chat.AuthMessageH\000\0225" +
+      "\n\rauth_response\030\004 \001(\0132\034.com.basic_chat.A" +
+      "uthResponseH\000\022F\n\026delete_message_request\030" +
+      "\005 \001(\0132$.com.basic_chat.DeleteMessageRequ" +
+      "estH\000\022H\n\027delete_message_response\030\006 \001(\0132%" +
+      ".com.basic_chat.DeleteMessageResponseH\000\022" +
+      "Q\n\033message_delete_notification\030\007 \001(\0132*.c" +
+      "om.basic_chat.MessageDeletedNotification" +
+      "H\000\022B\n\024unread_messages_list\030\010 \001(\0132\".com.b" +
+      "asic_chat.UnreadMessagesListH\000\022D\n\025clear_" +
+      "history_request\030\t \001(\0132#.com.basic_chat.C" +
+      "learHistoryRequestH\000\022D\n\025block_contact_re" +
+      "quest\030\n \001(\0132#.com.basic_chat.BlockContac" +
+      "tRequestH\000\022F\n\026block_contact_response\030\013 \001" +
+      "(\0132$.com.basic_chat.BlockContactResponse" +
+      "H\000\0225\n\rmessage_error\030\014 \001(\0132\034.com.basic_ch" +
+      "at.MessageErrorH\000\022H\n\027unblock_contact_req" +
+      "uest\030\r \001(\0132%.com.basic_chat.UnblockConta" +
+      "ctRequestH\000\022J\n\030unblock_contact_response\030" +
+      "\016 \001(\0132&.com.basic_chat.UnblockContactRes" +
+      "ponseH\000\022D\n\025chat_message_response\030\017 \001(\0132#" +
+      ".com.basic_chat.ChatMessageResponseH\000\022B\n" +
+      "\024unblocked_users_list\030\020 \001(\0132\".com.basic_" +
+      "chat.UnblockedUsersListH\000\022>\n\022blocked_use" +
+      "rs_list\030\021 \001(\0132 .com.basic_chat.BlockedUs" +
+      "ersListH\000\022R\n\035mark_messages_as_read_reque" +
+      "st\030\022 \001(\0132).com.basic_chat.MarkMessagesAs" +
+      "ReadRequestH\000\022B\n\024messages_read_update\030\023 " +
+      "\001(\0132\".com.basic_chat.MessagesReadUpdateH" +
+      "\000B\t\n\007payload*t\n\013MessageType\022\010\n\004TEXT\020\000\022\t\n" +
+      "\005LOGIN\020\001\022\n\n\006LOGOUT\020\002\022\r\n\tUSER_LIST\020\003\022\n\n\006T" +
+      "YPING\020\004\022\024\n\020DELIVERY_RECEIPT\020\005\022\t\n\005ALERT\020\006" +
+      "\022\010\n\004CHAT\020\007*.\n\014FailureCause\022\021\n\rUNKNOWN_CA" +
+      "USE\020\000\022\013\n\007BLOCKED\020\001B%\n\024com.basic_chat.pro" +
+      "toB\rMessagesProtob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -18468,12 +20768,24 @@ public final class MessagesProto {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_basic_chat_BlockedUsersList_descriptor,
         new java.lang.String[] { "Users", });
-    internal_static_com_basic_chat_WsMessage_descriptor =
+    internal_static_com_basic_chat_MarkMessagesAsReadRequest_descriptor =
       getDescriptor().getMessageTypes().get(18);
+    internal_static_com_basic_chat_MarkMessagesAsReadRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_com_basic_chat_MarkMessagesAsReadRequest_descriptor,
+        new java.lang.String[] { "Sender", "Recipient", "MessageIds", });
+    internal_static_com_basic_chat_MessagesReadUpdate_descriptor =
+      getDescriptor().getMessageTypes().get(19);
+    internal_static_com_basic_chat_MessagesReadUpdate_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_com_basic_chat_MessagesReadUpdate_descriptor,
+        new java.lang.String[] { "MessageIds", "ReaderUsername", });
+    internal_static_com_basic_chat_WsMessage_descriptor =
+      getDescriptor().getMessageTypes().get(20);
     internal_static_com_basic_chat_WsMessage_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_basic_chat_WsMessage_descriptor,
-        new java.lang.String[] { "ChatMessage", "UserList", "AuthMessage", "AuthResponse", "DeleteMessageRequest", "DeleteMessageResponse", "MessageDeleteNotification", "UnreadMessagesList", "ClearHistoryRequest", "BlockContactRequest", "BlockContactResponse", "MessageError", "UnblockContactRequest", "UnblockContactResponse", "ChatMessageResponse", "UnblockedUsersList", "BlockedUsersList", "Payload", });
+        new java.lang.String[] { "ChatMessage", "UserList", "AuthMessage", "AuthResponse", "DeleteMessageRequest", "DeleteMessageResponse", "MessageDeleteNotification", "UnreadMessagesList", "ClearHistoryRequest", "BlockContactRequest", "BlockContactResponse", "MessageError", "UnblockContactRequest", "UnblockContactResponse", "ChatMessageResponse", "UnblockedUsersList", "BlockedUsersList", "MarkMessagesAsReadRequest", "MessagesReadUpdate", "Payload", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)
