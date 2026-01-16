@@ -338,6 +338,7 @@ public class ChatController {
                         });
                     });
                 }
+                contactService.setNotificationService(notificationService);
                 notificationService.connect();
 
                 Thread.sleep(200);

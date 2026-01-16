@@ -24,6 +24,7 @@ public class ContactService {
     private final ObservableList<Contact> contacts;
     private final ObservableList<Contact> blockedContacts;
     private WebSocketService webSocketService;
+    private NotificationService notificationService;
     private String currentUserId;
     private String currentUsername;
     
@@ -42,6 +43,10 @@ public class ContactService {
 
     public void setWebSocketService(WebSocketService webSocketService) {
         this.webSocketService = webSocketService;
+    }
+
+    public void setNotificationService(NotificationService notificationService) {
+        this.notificationService = notificationService;
     }
 
     public void setCurrentUserId(String currentUserId) {
@@ -89,6 +94,11 @@ public class ContactService {
             
             // Agregar a la lista observable
             contacts.add(created);
+            
+            // Enviar notificación STOMP de contacto agregado
+            if (notificationService != null) {
+                notificationService.sendAddContactNotification(currentUsername, contactUsername);
+            }
             
             System.out.println("Contacto agregado: " + contactUsername);
             return created;

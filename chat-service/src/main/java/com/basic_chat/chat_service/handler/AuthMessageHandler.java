@@ -3,11 +3,13 @@ package com.basic_chat.chat_service.handler;
 import java.io.IOException;
 import java.util.Objects;
 
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.BinaryMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 import com.basic_chat.chat_service.context.SessionContext;
+import com.basic_chat.chat_service.models.UserPresenceEvent;
 import com.basic_chat.chat_service.security.JwtValidator;
 import com.basic_chat.chat_service.service.SessionManager;
 import com.basic_chat.proto.MessagesProto.AuthMessage;
@@ -23,10 +25,12 @@ public class AuthMessageHandler implements WsMessageHandler{
 
     private final JwtValidator jwtValidator;
     private final SessionManager sessionManager;
+    private final RabbitTemplate rabbitTemplate;
 
-    public AuthMessageHandler(JwtValidator jwtValidator, SessionManager sessionManager) {
+    public AuthMessageHandler(JwtValidator jwtValidator, SessionManager sessionManager, RabbitTemplate rabbitTemplate) {
         this.jwtValidator = jwtValidator;
         this.sessionManager = sessionManager;
+        this.rabbitTemplate = rabbitTemplate;
     }
 
     @Override
@@ -55,6 +59,9 @@ public class AuthMessageHandler implements WsMessageHandler{
             
             // registrar sesión
             sessionManager.authenticateSession(sessionId, userId, username, session);
+
+            // Publicar evento de usuario en línea para notificar a otros servicios/contactos
+            rabbitTemplate.convertAndSend("user.presence", new UserPresenceEvent(userId, username, true, System.currentTimeMillis()));
 
             AuthResponse response = AuthResponse.newBuilder()
                 .setSuccess(true)

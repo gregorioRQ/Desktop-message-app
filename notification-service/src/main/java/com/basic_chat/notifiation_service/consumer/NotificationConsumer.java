@@ -27,7 +27,8 @@ public class NotificationConsumer {
         ntn.setMessage(event.getFrom() + " te añadió como contacto");
         ntn.setSender(event.getFrom());
         ntn.setReceiver(event.getTo());
-        notificationService.createNotification(ntn);
+        //notificationService.createNotification(ntn);
+        notificationService.addContact(event.getFrom(), event.getTo());
     }
 
     /**

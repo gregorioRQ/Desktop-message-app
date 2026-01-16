@@ -99,6 +99,19 @@ public class NotificationService {
         System.out.println("Conexión de notificaciones cerrada: " + closeReason);
     }
 
+    public void sendAddContactNotification(String fromUser, String toUser) {
+        if (session != null && session.isOpen()) {
+            String jsonBody = String.format("{\"from\": \"%s\", \"to\": \"%s\"}", fromUser, toUser);
+            String sendFrame = "SEND\n" +
+                               "destination:/app/contact.add\n" +
+                               "content-type:application/json\n" +
+                               "\n" +
+                               jsonBody + "\n" +
+                               "\u0000";
+            sendMessage(sendFrame);
+        }
+    }
+
     private void sendMessage(String msg) {
         try {
             session.getBasicRemote().sendText(msg);

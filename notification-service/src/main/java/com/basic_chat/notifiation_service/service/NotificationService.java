@@ -8,16 +8,20 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.basic_chat.notifiation_service.model.Notification;
 import com.basic_chat.notifiation_service.repository.NotificationRepository;
+import com.basic_chat.notifiation_service.model.UserContact;
+import com.basic_chat.notifiation_service.repository.UserContactRepository;
 
 @Service
 @Transactional
 public class NotificationService {
     private final NotificationRepository notificationRepository;
     private final SimpMessagingTemplate messagingTemplate;
+    private final UserContactRepository userContactRepository;
 
-    public NotificationService(NotificationRepository notificationRepository, SimpMessagingTemplate messagingTemplate) {
+    public NotificationService(NotificationRepository notificationRepository, SimpMessagingTemplate messagingTemplate, UserContactRepository userContactRepository) {
         this.notificationRepository = notificationRepository;
         this.messagingTemplate = messagingTemplate;
+        this.userContactRepository = userContactRepository;
     }
 
     public void createNotification(Notification notification) {
@@ -55,5 +59,12 @@ public class NotificationService {
         // Enviar al destino STOMP específico de ese usuario
         String destination = "/topic/seen/" + event.getReceiver();
         messagingTemplate.convertAndSend(destination, event);
+    }
+
+    public void addContact(String username, String contactUsername) {
+        UserContact contact = new UserContact();
+        contact.setUsername(username);
+        contact.setContactUsername(contactUsername);
+        userContactRepository.save(contact);
     }
 }
