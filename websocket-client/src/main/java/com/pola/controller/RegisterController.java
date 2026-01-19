@@ -4,6 +4,7 @@ import com.pola.proto.RegisterProto.RegisterRequest;
 import com.pola.proto.RegisterProto.RegisterResponse;
 import com.pola.service.HttpService;
 import com.pola.view.ViewManager;
+import com.pola.service.NotificationService;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -111,6 +112,22 @@ public class RegisterController {
                 .thenAccept(response -> {
                     Platform.runLater(() -> {
                         if (response.getSuccess()) {
+                            // Enviar notificación de usuario creado al servicio de notificaciones
+                            new Thread(() -> {
+                                try {
+                                    String newUserId = response.getUserId();
+                                    NotificationService ns = new NotificationService(newUserId);
+                                    ns.setOnStompConnected(() -> {
+                                        ns.sendUserCreateNotification(newUserId);
+                                        try { Thread.sleep(500); } catch (InterruptedException e) {}
+                                        ns.disconnect();
+                                    });
+                                    ns.connect();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }).start();
+
                             showSuccess("¡Cuenta creada exitosamente!");
                             // Esperar 1.5 segundos y volver al login
                             new Thread(() -> {

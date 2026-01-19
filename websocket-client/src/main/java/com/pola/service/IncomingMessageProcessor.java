@@ -24,6 +24,7 @@ import java.util.function.Supplier;
 public class IncomingMessageProcessor {
     private final MessageRepository messageRepository;
     private final ContactService contactService;
+    private final MessageSender messageSender;
     private final ObservableList<ChatMessage> currentChatMessages;
     private final ObservableList<Notification> notifications;
     private final Supplier<Contact> currentContactSupplier;
@@ -34,6 +35,7 @@ public class IncomingMessageProcessor {
     public IncomingMessageProcessor(
             MessageRepository messageRepository,
             ContactService contactService,
+            MessageSender messageSender,
             ObservableList<ChatMessage> currentChatMessages,
             ObservableList<Notification> notifications,
             Supplier<Contact> currentContactSupplier,
@@ -41,6 +43,7 @@ public class IncomingMessageProcessor {
         
         this.messageRepository = messageRepository;
         this.contactService = contactService;
+        this.messageSender = messageSender;
         this.currentChatMessages = currentChatMessages;
         this.notifications = notifications;
         this.currentContactSupplier = currentContactSupplier;
@@ -62,6 +65,7 @@ public class IncomingMessageProcessor {
         handlers.put(WsMessage.PayloadCase.UNBLOCKED_USERS_LIST, msg -> processUnblockedUsersList(msg.getUnblockedUsersList()));
         handlers.put(WsMessage.PayloadCase.BLOCKED_USERS_LIST, msg -> processBlockedUsersList(msg.getBlockedUsersList()));
         handlers.put(WsMessage.PayloadCase.MESSAGES_READ_UPDATE, msg -> processMessagesReadUpdate(msg.getMessagesReadUpdate()));
+        handlers.put(WsMessage.PayloadCase.CONTACT_IDENTITY, msg -> processContactIdentity(msg.getContactIdentity()));
     }
 
     public void process(WsMessage message) {
@@ -114,6 +118,7 @@ public class IncomingMessageProcessor {
             if (messageRepository.existsById(messageId)) return;
 
             Contact contact = this.contactService.findContactByUsername(currentUserIdSupplier.get(), senderId)
+            //añade un contacto "improvisado" con un id no oficial
                 .orElseGet(() -> this.contactService.addContact(currentUserIdSupplier.get(), senderId));
 
             if(contact == null) return;
@@ -217,6 +222,40 @@ public class IncomingMessageProcessor {
 
     private void processUnblockedUsersList(MessagesProto.UnblockedUsersList list) {
         processUserStatusChange(list.getUsersList(), "Este usuario te ha desbloqueado.", contactService::markUserAsUnblockingMe);
+    }
+    /**
+     * Actualizara el id temporal por el id oficial del remitente.
+     * @param identity El .proto con el id del remitente y su username
+     */
+    private void processContactIdentity(MessagesProto.ContactIdentity identity) {
+        String remoteUserId = identity.getSenderId();
+        String senderUsername = identity.getSenderUsername();
+
+        if(senderUsername != null && !senderUsername.isEmpty()){
+            contactService.updateContactId(senderUsername, remoteUserId);
+            
+            // Notificar al usuario que fue añadido mediante un mensaje de sistema y alerta
+            String systemMsg = "El usuario " + senderUsername + " te añadió a sus contactos.";
+            try {
+                ChatMessage localMessage = new ChatMessage(senderUsername, systemMsg, "Sistema");
+                localMessage.setId(System.currentTimeMillis());
+                messageRepository.create(localMessage);
+                
+                Contact current = currentContactSupplier.get();
+                if (current != null && current.getContactUsername().equals(senderUsername)) {
+                    Platform.runLater(() -> currentChatMessages.add(localMessage));
+                } else {
+                    updateNotification(senderUsername);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        // Si el contacto era "improvisado" (sin ID), ahora tiene ID.
+        // Devolvemos nuestro ID para completar el handshake si es necesario.
+        // if (contactWasTemporary) {
+        //     messageSender.sendContactIdentity(senderUsername, currentUserIdSupplier.get());
+        // }
     }
 
     private void processUserStatusChange(List<String> users, String systemMsg, Consumer<String> action) {

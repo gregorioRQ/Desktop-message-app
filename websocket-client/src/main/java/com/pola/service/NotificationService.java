@@ -21,6 +21,7 @@ public class NotificationService {
     private Session session;
     private final CopyOnWriteArrayList<Consumer<String>> listeners = new CopyOnWriteArrayList<>();
     private final String userId;
+    private Runnable onStompConnected;
 
     public NotificationService(String userId) {
         this.userId = userId;
@@ -49,6 +50,10 @@ public class NotificationService {
 
     public void addNotificationListener(Consumer<String> listener) {
         listeners.add(listener);
+    }
+
+    public void setOnStompConnected(Runnable onStompConnected) {
+        this.onStompConnected = onStompConnected;
     }
 
     @OnOpen
@@ -80,6 +85,10 @@ public class NotificationService {
                                     "\n" +
                                     "\u0000";
             sendMessage(subscribeFrame);
+
+            if (onStompConnected != null) {
+                onStompConnected.run();
+            }
         } else if (message.startsWith("RECEIPT")) {
             System.out.println("Confirmación de suscripción recibida exitosamente (RECEIPT frame).");
         } else if (message.startsWith("MESSAGE")) {
@@ -99,11 +108,25 @@ public class NotificationService {
         System.out.println("Conexión de notificaciones cerrada: " + closeReason);
     }
 
-    public void sendAddContactNotification(String fromUser, String toUser) {
+    public void sendAddContactNotification(String fromUserId, String toUserId) {
         if (session != null && session.isOpen()) {
-            String jsonBody = String.format("{\"from\": \"%s\", \"to\": \"%s\"}", fromUser, toUser);
+            // Enviamos IDs en lugar de usernames
+            String jsonBody = String.format("{\"from\": \"%s\", \"to\": \"%s\"}", fromUserId, toUserId);
             String sendFrame = "SEND\n" +
                                "destination:/app/contact.add\n" +
+                               "content-type:application/json\n" +
+                               "\n" +
+                               jsonBody + "\n" +
+                               "\u0000";
+            sendMessage(sendFrame);
+        }
+    }
+
+    public void sendUserCreateNotification(String userId) {
+        if (session != null && session.isOpen()) {
+            String jsonBody = String.format("{\"user_id\": \"%s\"}", userId);
+            String sendFrame = "SEND\n" +
+                               "destination:/app/user.add\n" +
                                "content-type:application/json\n" +
                                "\n" +
                                jsonBody + "\n" +

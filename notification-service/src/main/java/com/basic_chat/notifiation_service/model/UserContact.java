@@ -4,6 +4,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -14,15 +16,20 @@ public class UserContact {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String username;
-    private String contactUsername;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "contact_id")
+    private User contact;
 
     public UserContact() {
     }
 
-    public UserContact(String username, String contactUsername) {
-        this.username = username;
-        this.contactUsername = contactUsername;
+    public UserContact(User user, User contact) {
+        this.user = user;
+        this.contact = contact;
     }
 
     public Long getId() {
@@ -33,20 +40,19 @@ public class UserContact {
         this.id = id;
     }
 
-    public String getUsername() {
-        return username;
+    public User getUser() {
+        return user;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUser(User user) {
+        this.user = user;
     }
 
-    public String getContactUsername() {
-        return contactUsername;
+    public User getContact() {
+        return contact;
     }
 
-    public void setContactUsername(String contactUsername) {
-        this.contactUsername = contactUsername;
+    public void setContact(User contact) {
+        this.contact = contact;
     }
 }
-

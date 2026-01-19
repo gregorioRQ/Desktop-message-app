@@ -70,6 +70,16 @@ public class MessageSender {
         sendMessage(WsMessage.newBuilder().setMarkMessagesAsReadRequest(builder.build()).build());
     }
 
+    public void sendContactIdentity(String myUserId, String myUsername, String contactUsername) {
+        MessagesProto.ContactIdentity identity = MessagesProto.ContactIdentity.newBuilder()
+            .setSenderId(myUserId)
+            .setSenderUsername(myUsername)
+            .setContactUsername(contactUsername)
+            .build();
+        
+        sendMessage(WsMessage.newBuilder().setContactIdentity(identity).build());
+    }
+
     private void sendMessage(WsMessage message) {
         if (webSocketService.isConnected()) {
             webSocketService.sendMessage(message);

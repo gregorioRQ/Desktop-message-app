@@ -25,6 +25,7 @@ public class ContactService {
     private final ObservableList<Contact> blockedContacts;
     private WebSocketService webSocketService;
     private NotificationService notificationService;
+    private MessageSender messageSender;
     private String currentUserId;
     private String currentUsername;
     
@@ -43,6 +44,7 @@ public class ContactService {
 
     public void setWebSocketService(WebSocketService webSocketService) {
         this.webSocketService = webSocketService;
+        this.messageSender = new MessageSender(webSocketService);
     }
 
     public void setNotificationService(NotificationService notificationService) {
@@ -89,16 +91,12 @@ public class ContactService {
             }
             
             // Crear nuevo contacto
-            Contact contact = new Contact(userId, contactUsername);
+            Contact contact = new Contact(userId, contactUsername, null);
             Contact created = contactRepository.create(contact);
             
             // Agregar a la lista observable
             contacts.add(created);
             
-            // Enviar notificación STOMP de contacto agregado
-            if (notificationService != null) {
-                notificationService.sendAddContactNotification(currentUsername, contactUsername);
-            }
             
             System.out.println("Contacto agregado: " + contactUsername);
             return created;
@@ -107,6 +105,20 @@ public class ContactService {
             System.err.println("Error agregando contacto: " + e.getMessage() + e.getLocalizedMessage());
             e.printStackTrace();
             return null;
+        }
+    }
+
+    /**
+     * Confirma un contacto y envía mi identidad (ID real) al servidor/usuario
+     */
+    public void confirmContact(Contact contact) {
+        // Aquí podrías actualizar el estado local si tuvieras un flag "is_confirmed"
+        // Por ahora, la acción principal es enviar mi ID al otro usuario
+        if (webSocketService != null && webSocketService.isConnected()) {
+            System.out.println("Enviando identidad a: " + contact.getContactUsername());
+            // El servidor se encargará de enrutar esto al usuario correspondiente
+            // basado en el contexto del chat o añadiendo un campo recipient al proto si es necesario
+            messageSender.sendContactIdentity(currentUserId, currentUsername, contact.getContactUsername());
         }
     }
     
@@ -188,6 +200,28 @@ public class ContactService {
             e.printStackTrace();
             return Optional.empty();
         }
+    }
+    
+    /**
+     * Actualiza el ID de un contacto existente
+     */
+    public void updateContactId(String contactUsername, String contactUserId) {
+        findContactByUsername(currentUserId, contactUsername).ifPresent(contact -> {
+            try {
+                contact.setContactUserId(contactUserId);
+                contactRepository.update(contact);
+                // Enviar notificación STOMP de contacto agregado
+                // Solo cuando el remitente lo confirme y se actualice con el id original en la db del remitente.
+                if (notificationService != null) {
+                    notificationService.sendAddContactNotification(currentUserId, contactUserId);
+                }
+            
+                System.out.println("ID de contacto actualizado para: " + contactUsername);
+            } catch (SQLException e) {
+                System.err.println("Error actualizando ID de contacto: " + e.getMessage());
+                e.printStackTrace();
+            }
+        });
     }
     
     /**

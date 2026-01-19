@@ -145,6 +145,12 @@ message MessagesReadUpdate {
   string reader_username = 2;
 }
 
+message ContactIdentity {
+  string sender_id = 1;      // El ID real (UUID) del remitente
+  string sender_username = 2; // El username del remitente
+  string contact_username = 3; // El username del contacto parcial
+}
+
 // Wrapper para todos los mensajes
 message WsMessage {
   oneof payload {
@@ -167,5 +173,6 @@ message WsMessage {
     BlockedUsersList blocked_users_list = 17;
     MarkMessagesAsReadRequest mark_messages_as_read_request = 18;
     MessagesReadUpdate messages_read_update = 19;
+    ContactIdentity contact_identity = 20;
   }
 }

@@ -28,6 +28,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
+import javafx.scene.shape.Circle;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
@@ -90,7 +91,10 @@ public class ChatController {
     
     @FXML
     private VBox contactsPanel;
-    
+
+    @FXML
+    private Circle notificationBadge;
+
     private WebSocketService webSocketService;
     private MessageService messageService;
     private ContactService contactService;
@@ -119,6 +123,7 @@ public class ChatController {
         setupWebSocketListeners();
         loadContacts();
         notificationsListView.setItems(messageService.getNotifications());
+        updateNotificationBadge();
     }
     
     public void setWebSocketService(WebSocketService webSocketService) {
@@ -252,6 +257,11 @@ public class ChatController {
                     updateChatInputState(false); // false = NO estamos bloqueados (habilitar chat)
                 }
             });
+        });
+
+        // Listener para actualizar el badge de notificaciones
+        messageService.getNotifications().addListener((javafx.collections.ListChangeListener.Change<? extends Notification> c) -> {
+            Platform.runLater(this::updateNotificationBadge);
         });
     }
     
@@ -616,6 +626,30 @@ public class ChatController {
         }
     }
 
+    private void showAddContactConfirmation(Contact contact) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Añadir Contacto");
+        alert.setHeaderText(null);
+        alert.setContentText("¿Quieres añadir este usuario a tu lista de contactos?");
+
+        ButtonType btnYes = new ButtonType("Sí", ButtonBar.ButtonData.YES);
+        ButtonType btnNo = new ButtonType("No", ButtonBar.ButtonData.NO);
+
+        alert.getButtonTypes().setAll(btnYes, btnNo);
+
+        alert.showAndWait().ifPresent(response -> {
+            if (response == btnYes) {
+                contactService.confirmContact(contact);
+            }
+        });
+    }
+
+    private void updateNotificationBadge() {
+        if (notificationBadge != null) {
+            notificationBadge.setVisible(!messageService.getNotifications().isEmpty());
+        }
+    }
+
     // Clase interna para celdas de contacto con botones
     private class ContactListCell extends ListCell<Contact> {
         private final boolean isBlockedList;
@@ -645,14 +679,20 @@ public class ChatController {
                     actionButton.setText("🔓"); // Icono candado abierto
                     actionButton.setStyle("-fx-background-color: transparent; -fx-text-fill: green; -fx-font-size: 14px; -fx-cursor: hand;");
                     actionButton.setOnAction(e -> showUnblockConfirmation(contact));
+                    hbox.getChildren().addAll(nameLabel, spacer, actionButton);
                 } else {
                     // Botón Bloquear
                     actionButton.setText("🔒"); // Icono candado cerrado
                     actionButton.setStyle("-fx-background-color: transparent; -fx-text-fill: red; -fx-font-size: 14px; -fx-cursor: hand;");
                     actionButton.setOnAction(e -> showBlockConfirmation(contact));
+                    
+                    Button handshakeButton = new Button("🤝");
+                    handshakeButton.setStyle("-fx-background-color: transparent; -fx-font-size: 14px; -fx-cursor: hand;");
+                    handshakeButton.setOnAction(e -> showAddContactConfirmation(contact));
+                    
+                    hbox.getChildren().addAll(nameLabel, spacer, handshakeButton, actionButton);
                 }
                 
-                hbox.getChildren().addAll(nameLabel, spacer, actionButton);
                 setGraphic(hbox);
             }
         }

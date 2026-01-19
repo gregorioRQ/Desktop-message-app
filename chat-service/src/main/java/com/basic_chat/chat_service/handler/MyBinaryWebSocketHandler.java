@@ -5,13 +5,16 @@ import com.basic_chat.chat_service.models.PendingReadReceipt;
 import com.basic_chat.chat_service.security.JwtValidator;
 import com.basic_chat.chat_service.service.AuthenticationGuard;
 import com.basic_chat.chat_service.service.MessageService;
+import com.basic_chat.chat_service.models.PendingContactIdentity;
 import com.basic_chat.chat_service.models.PendingUnblock;
+import com.basic_chat.chat_service.repository.PendingContactIdentityRepository;
 import com.basic_chat.chat_service.repository.PendingUnblockRepository;
 import com.basic_chat.chat_service.service.SessionManager;
 import com.basic_chat.chat_service.service.WsMessageDispatcher;
 import com.basic_chat.proto.MessagesProto;
 import com.basic_chat.proto.MessagesProto.AuthResponse;
 import com.basic_chat.proto.MessagesProto.ChatMessage;
+import com.basic_chat.proto.MessagesProto.ContactIdentity;
 import com.basic_chat.proto.MessagesProto.DeleteMessageRequest;
 import com.basic_chat.proto.MessagesProto.MessageType;
 import com.basic_chat.proto.MessagesProto.MessagesReadUpdate;
@@ -47,14 +50,16 @@ public class MyBinaryWebSocketHandler extends AbstractWebSocketHandler {
     private final AuthenticationGuard authenticationGuard;
     private final WsMessageDispatcher dispatcher;
     private final PendingUnblockRepository pendingUnblockRepository;
+    private final PendingContactIdentityRepository pendingContactIdentityRepository;
 
-    public MyBinaryWebSocketHandler(SessionManager sessionManager, MessageService messageService, JwtValidator jwtValidator, AuthenticationGuard authenticationGuard, WsMessageDispatcher dispatcher, PendingUnblockRepository pendingUnblockRepository) {
+    public MyBinaryWebSocketHandler(SessionManager sessionManager, MessageService messageService, JwtValidator jwtValidator, AuthenticationGuard authenticationGuard, WsMessageDispatcher dispatcher, PendingUnblockRepository pendingUnblockRepository, PendingContactIdentityRepository pendingContactIdentityRepository) {
         this.sessionManager = sessionManager;
         this.messageService = messageService;
         this.jwtValidator = jwtValidator;
         this.authenticationGuard = authenticationGuard;
         this.dispatcher = dispatcher;
         this.pendingUnblockRepository = pendingUnblockRepository;
+        this.pendingContactIdentityRepository = pendingContactIdentityRepository;
     }
 
     @Override
@@ -80,6 +85,7 @@ public class MyBinaryWebSocketHandler extends AbstractWebSocketHandler {
                 sendPendingDeletions(session);
                 sendPendingUnblocks(session);
                 sendPendingReadReceipts(session);
+                sendPendingContactIdentities(session);
             }
         } catch (Exception e) {
             System.err.println("Error procesando mensaje: " + e.getMessage());
@@ -221,6 +227,36 @@ public class MyBinaryWebSocketHandler extends AbstractWebSocketHandler {
                 log.error("Error enviando notificación de lectura pendiente a {}", username, e);
             }
         });
+    }
+
+    private void sendPendingContactIdentities(WebSocketSession session) {
+        SessionManager.SessionInfo sessionInfo = sessionManager.getSessionInfo(session.getId());
+        if (sessionInfo == null) return;
+
+        String username = sessionInfo.getUsername();
+        List<PendingContactIdentity> pendingIdentities = pendingContactIdentityRepository.findByRecipient(username);
+
+        if (pendingIdentities.isEmpty()) return;
+
+        for (PendingContactIdentity pending : pendingIdentities) {
+            try {
+                ContactIdentity identity = ContactIdentity.newBuilder()
+                        .setSenderId(pending.getSenderId())
+                        .setSenderUsername(pending.getSenderUsername())
+                        .setContactUsername(username)
+                        .build();
+
+                WsMessage wsMessage = WsMessage.newBuilder()
+                        .setContactIdentity(identity)
+                        .build();
+
+                session.sendMessage(new BinaryMessage(wsMessage.toByteArray()));
+                log.debug("ContactIdentity pendiente enviado a {}", username);
+            } catch (IOException e) {
+                log.error("Error enviando ContactIdentity pendiente a {}", username, e);
+            }
+        }
+        pendingContactIdentityRepository.deleteAll(pendingIdentities);
     }
 
     /**

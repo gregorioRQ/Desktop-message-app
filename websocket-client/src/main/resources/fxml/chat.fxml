@@ -13,6 +13,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
 
 <BorderPane prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pola.controller.ChatController">
    <top>
@@ -48,7 +49,15 @@
                         </VBox>
                      </content>
                 </Tab>
-                <Tab text="Notificaciones">
+                <Tab>
+                     <graphic>
+                        <HBox alignment="CENTER" spacing="5.0">
+                           <children>
+                              <Label text="Notificaciones" />
+                              <Circle fx:id="notificationBadge" fill="ORANGE" radius="5.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" visible="false" />
+                           </children>
+                        </HBox>
+                     </graphic>
                      <content>
                         <VBox spacing="5.0">
                            <children>

@@ -94,6 +94,7 @@ public class DatabaseManager {
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     user_id TEXT NOT NULL,
                     contact_username TEXT NOT NULL,
+                contact_user_id TEXT,
                     is_blocked INTEGER DEFAULT 0,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
