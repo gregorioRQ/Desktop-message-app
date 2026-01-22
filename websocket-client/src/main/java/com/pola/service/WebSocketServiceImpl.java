@@ -31,6 +31,7 @@ public class WebSocketServiceImpl implements WebSocketService{
     private Consumer<WsMessage> messageListener;
     private Consumer<Boolean> connectionListener;
     private Consumer<Throwable> errorListener;
+    private Consumer<String> authSuccessListener;
     
     public WebSocketServiceImpl() {
         this.client = ClientManager.createClient();
@@ -97,6 +98,9 @@ public class WebSocketServiceImpl implements WebSocketService{
                 if(authResponse.getSuccess()){
                     System.out.println("Autenticacion exitosa: " + authResponse.getUserId());
                     notifyConnectionChange(true);
+                    if (authSuccessListener != null) {
+                        authSuccessListener.accept(authResponse.getUserId());
+                    }
                     
                 }else{
                     System.err.println("Error de autenticacion: " + authResponse.getMessage());
@@ -141,6 +145,11 @@ public class WebSocketServiceImpl implements WebSocketService{
         this.errorListener = listener;
     }
     
+    @Override
+    public void setAuthSuccessListener(Consumer<String> listener) {
+        this.authSuccessListener = listener;
+    }
+
     private void notifyConnectionChange(boolean connected) {
         if (connectionListener != null) {
             connectionListener.accept(connected);

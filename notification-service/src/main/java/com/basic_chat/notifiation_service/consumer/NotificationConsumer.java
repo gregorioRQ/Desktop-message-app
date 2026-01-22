@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import com.basic_chat.notifiation_service.model.ContactAddEvent;
 import com.basic_chat.notifiation_service.model.MessageSeenEvent;
 import com.basic_chat.notifiation_service.model.MessageSentEvent;
+import com.basic_chat.notifiation_service.model.UserOnlineEvent;
 import com.basic_chat.notifiation_service.service.NotificationService;
 
 @Component
@@ -57,9 +58,12 @@ public class NotificationConsumer {
         notification.setReceiver(event.getReceiver());
         notification.setMessage(event.getReceiver() + " ha leído tus mensajes.");
         notification.setType("MESSAGES READ");
-        notification.setSeen(true); // No es necesario notificar visualmente
-
-        // notifica al usuario acerca del mensaje visto.
+        notification.setSeen(true); 
         notificationService.notifyMessageSeen(notification);
+    }
+
+    @RabbitListener(queues = "user.online")
+    public void handleUserOnlineEvent(UserOnlineEvent event) {
+        notificationService.notifyUserOnline(event.getUserId());
     }
 }

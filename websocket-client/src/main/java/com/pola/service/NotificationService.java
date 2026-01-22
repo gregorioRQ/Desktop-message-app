@@ -21,10 +21,12 @@ public class NotificationService {
     private Session session;
     private final CopyOnWriteArrayList<Consumer<String>> listeners = new CopyOnWriteArrayList<>();
     private final String userId;
+    private final String username;
     private Runnable onStompConnected;
 
-    public NotificationService(String userId) {
+    public NotificationService(String userId, String username) {
         this.userId = userId;
+        this.username = username;
     }
 
     public void connect() {
@@ -41,6 +43,8 @@ public class NotificationService {
     public void disconnect() {
         if (session != null && session.isOpen()) {
             try {
+                String disconnectFrame = "DISCONNECT\n\n\u0000";
+                session.getBasicRemote().sendText(disconnectFrame);
                 session.close();
             } catch (IOException e) {
                 System.err.println("Error al desconectar: " + e.getMessage());
@@ -65,6 +69,7 @@ public class NotificationService {
         // Desactivamos heart-beat (0,0) para simplificar la implementación manual
         String connectFrame = "CONNECT\n" +
                               "accept-version:1.1,1.0\n" +
+                              "userId:" + this.userId + "\n" +
                               "heart-beat:0,0\n" +
                               "\n" +
                               "\u0000";
@@ -86,19 +91,53 @@ public class NotificationService {
                                     "\u0000";
             sendMessage(subscribeFrame);
 
+            // Suscribiendo a /queue/presence
+            String subscribePresenceFrame = "SUBSCRIBE\n" +
+                                    "id:sub-1\n" +
+                                    "destination:/queue/presence/" + userId + "\n" +
+                                    "receipt:receipt-sub-1\n" +
+                                    "\n" +
+                                    "\u0000";
+            sendMessage(subscribePresenceFrame);
+
             if (onStompConnected != null) {
                 onStompConnected.run();
             }
         } else if (message.startsWith("RECEIPT")) {
             System.out.println("Confirmación de suscripción recibida exitosamente (RECEIPT frame).");
         } else if (message.startsWith("MESSAGE")) {
+            
             // El cuerpo del mensaje está después de la cabecera, separado por una línea en blanco (\n\n)
             int bodyStart = message.indexOf("\n\n");
             if (bodyStart != -1) {
+                String headers = message.substring(0, bodyStart);
+                // Obtener el valor de los headers 'subscription' y 'type'
+                String subscriptionId = null;
+                String type = null;
+                String[] headerLines = headers.split("\n");
+                for (String line : headerLines) {
+                    if (line.startsWith("subscription:")) {
+                        subscriptionId = line.substring("subscription:".length()).trim();
+                    } else if (line.startsWith("type:")) {
+                        type = line.substring("type:".length()).trim();
+                    }
+                }
+
                 // +2 para saltar los caracteres de nueva línea
                 String body = message.substring(bodyStart + 2).replace("\u0000", "");
-                System.out.println("Notificación recibida: " + body);
-                listeners.forEach(listener -> listener.accept(body));
+                
+                if ("sub-1".equals(subscriptionId)) {
+                    // Es un mensaje de presencia
+                    if ("user_online".equals(type)) {
+                        System.out.println("Usuario conectado: " + body);
+                    } else if ("user_offline".equals(type)) {
+                        System.out.println("Usuario desconectado: " + body);
+                    }
+                } else {
+                    // Cualquier otra suscripción (como sub-0) se trata como notificación
+                    System.out.println("Notificación recibida (sub: " + subscriptionId + "): " + body);
+                    listeners.forEach(listener -> listener.accept(body));
+                }
             }
         }
     }
@@ -127,6 +166,19 @@ public class NotificationService {
             String jsonBody = String.format("{\"user_id\": \"%s\"}", userId);
             String sendFrame = "SEND\n" +
                                "destination:/app/user.add\n" +
+                               "content-type:application/json\n" +
+                               "\n" +
+                               jsonBody + "\n" +
+                               "\u0000";
+            sendMessage(sendFrame);
+        }
+    }
+
+    public void sendUserOnlineNotification(String userId) {
+        if (session != null && session.isOpen()) {
+            String jsonBody = String.format("{\"userId\": \"%s\"}", userId);
+            String sendFrame = "SEND\n" +
+                               "destination:/app/user.online\n" +
                                "content-type:application/json\n" +
                                "\n" +
                                jsonBody + "\n" +

@@ -116,7 +116,7 @@ public class RegisterController {
                             new Thread(() -> {
                                 try {
                                     String newUserId = response.getUserId();
-                                    NotificationService ns = new NotificationService(newUserId);
+                                    NotificationService ns = new NotificationService(newUserId, username);
                                     ns.setOnStompConnected(() -> {
                                         ns.sendUserCreateNotification(newUserId);
                                         try { Thread.sleep(500); } catch (InterruptedException e) {}

@@ -12,10 +12,16 @@ public class RabbitMQconfig {
     private static final String CONTACT_EVENTS_QUEUE = "contact.events";
     private static final String MESSAGE_SENT_QUEUE = "message.sent";
     private static final String MESSAGE_READ_QUEUE = "message.read";
+    private static final String USER_ONLINE_QUEUE = "user.online";
 
     @Bean
     public Queue contactAddQueue() {
         return new Queue(CONTACT_EVENTS_QUEUE, false);
+    }
+
+    @Bean
+    public Queue userOnlineQueue() {
+        return new Queue(USER_ONLINE_QUEUE, false);
     }
 
     @Bean

@@ -49,4 +49,10 @@ public interface WebSocketService {
      * @param listener Consumer que procesará errores
      */
     void setErrorListener(Consumer<Throwable> listener);
+
+    /**
+     * Registra un listener para cuando la autenticación es exitosa
+     * @param listener Consumer que recibirá el userId
+     */
+    void setAuthSuccessListener(Consumer<String> listener);
 }
