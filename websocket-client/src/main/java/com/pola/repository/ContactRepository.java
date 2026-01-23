@@ -24,7 +24,7 @@ public class ContactRepository {
     // Crear un nuevo contacto
     public Contact create(Contact contact) throws SQLException{
         String sql = """
-                INSERT INTO contacts (user_id, contact_username, contact_user_id, is_blocked) VALUES (?, ?, ?, ?)
+                INSERT INTO contacts (user_id, contact_username, contact_user_id, is_blocked, is_confirmed) VALUES (?, ?, ?, ?, ?)
                 """;
 
         try(Connection conn = dbManager.getConnection();
@@ -33,6 +33,7 @@ public class ContactRepository {
                 stmt.setString(2, contact.getContactUsername());
                 stmt.setString(3, contact.getContactUserId());
                 stmt.setInt(4, contact.isBlocked() ? 1 : 0);
+                stmt.setInt(5, contact.isConfirmed() ? 1 : 0);
 
                 int affectedRows = stmt.executeUpdate();
 
@@ -58,7 +59,7 @@ public class ContactRepository {
     public List<Contact> findByUserId(String userId) throws SQLException{
         String sql = """
                 SELECT id, user_id, contact_username,
-                contact_user_id, is_blocked, created_at, updated_at FROM contacts WHERE user_id = ?
+                contact_user_id, is_blocked, is_confirmed, created_at, updated_at FROM contacts WHERE user_id = ?
                 AND is_blocked = 0 ORDER BY contact_username ASC
                 """;
         List<Contact> contacts = new ArrayList<>();
@@ -81,7 +82,7 @@ public class ContactRepository {
     public Optional<Contact> findById(int id) throws SQLException {
         String sql = """
             SELECT id, user_id, contact_username, 
-                   contact_user_id, is_blocked, created_at, updated_at
+                   contact_user_id, is_blocked, is_confirmed, created_at, updated_at
             FROM contacts
             WHERE id = ?
             """;
@@ -108,7 +109,7 @@ public class ContactRepository {
             throws SQLException {
         String sql = """
             SELECT id, user_id, contact_username,
-                   contact_user_id, is_blocked, created_at, updated_at
+                   contact_user_id, is_blocked, is_confirmed, created_at, updated_at
             FROM contacts
             WHERE user_id = ? AND contact_username = ?
             """;
@@ -135,7 +136,7 @@ public class ContactRepository {
     public void update(Contact contact) throws SQLException {
         String sql = """
             UPDATE contacts
-            SET contact_username = ?, contact_user_id = ?, is_blocked = ?, updated_at = CURRENT_TIMESTAMP
+            SET contact_username = ?, contact_user_id = ?, is_blocked = ?, is_confirmed = ?, updated_at = CURRENT_TIMESTAMP
             WHERE id = ?
             """;
         
@@ -145,7 +146,8 @@ public class ContactRepository {
             stmt.setString(1, contact.getContactUsername());
             stmt.setString(2, contact.getContactUserId());
             stmt.setInt(3, contact.isBlocked() ? 1 : 0);
-            stmt.setInt(4, contact.getId());
+            stmt.setInt(4, contact.isConfirmed() ? 1 : 0);
+            stmt.setInt(5, contact.getId());
             
             stmt.executeUpdate();
             System.out.println("Contacto actualizado: " + contact.getContactUsername());
@@ -177,6 +179,7 @@ public class ContactRepository {
             rs.getString("contact_username"),
             rs.getString("contact_user_id"),
             rs.getInt("is_blocked") == 1,
+            rs.getInt("is_confirmed") == 1,
             rs.getTimestamp("created_at").toLocalDateTime(),
             rs.getTimestamp("updated_at").toLocalDateTime()
         );

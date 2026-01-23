@@ -17,24 +17,26 @@ public class Contact {
     private final StringProperty contactUsername;
     private final StringProperty contactUserId;
     private final BooleanProperty blocked;
+    private final BooleanProperty confirmed;
     private final ObjectProperty<LocalDateTime> createdAt;
     private final ObjectProperty<LocalDateTime> updatedAt;
     
     public Contact(int id, String userId, 
-                   String contactUsername, String contactUserId, boolean blocked,
+                   String contactUsername, String contactUserId, boolean blocked, boolean confirmed,
                    LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = new SimpleIntegerProperty(id);
         this.userId = new SimpleStringProperty(userId);
         this.contactUsername = new SimpleStringProperty(contactUsername);
         this.contactUserId = new SimpleStringProperty(contactUserId);
         this.blocked = new SimpleBooleanProperty(blocked);
+        this.confirmed = new SimpleBooleanProperty(confirmed);
         this.createdAt = new SimpleObjectProperty<>(createdAt);
         this.updatedAt = new SimpleObjectProperty<>(updatedAt);
     }
     
     // Constructor simplificado para crear nuevos contactos
     public Contact(String userId, String contactUsername, String contactUserId) {
-        this(0, userId, contactUsername, contactUserId, false, 
+        this(0, userId, contactUsername, contactUserId, false, false,
              LocalDateTime.now(), LocalDateTime.now());
     }
     
@@ -99,6 +101,18 @@ public class Contact {
         this.blocked.set(blocked);
     }
     
+    public boolean isConfirmed() {
+        return confirmed.get();
+    }
+
+    public BooleanProperty confirmedProperty() {
+        return confirmed;
+    }
+
+    public void setConfirmed(boolean confirmed) {
+        this.confirmed.set(confirmed);
+    }
+
     public LocalDateTime getCreatedAt() {
         return createdAt.get();
     }

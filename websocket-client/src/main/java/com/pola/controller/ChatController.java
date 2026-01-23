@@ -18,13 +18,17 @@ import com.pola.view.ViewManager;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.shape.Circle;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Polygon;
+import javafx.scene.shape.Circle;
 
 /**
  * Controlador para la vista de chat
@@ -159,7 +163,46 @@ public class ChatController {
         messageInput.setDisable(true);
 
         // Configurar celdas para contactos (Botón Bloquear)
-        contactsListView.setCellFactory(param -> new ContactListCell(false, this::confirmBlockContact, this::confirmUnblockContact, this::confirmAddContact));
+        contactsListView.setCellFactory(param -> new ContactListCell(false, this::confirmBlockContact, this::confirmUnblockContact, this::confirmAddContact) {
+            @Override
+            protected void updateItem(Contact contact, boolean empty) {
+                super.updateItem(contact, empty);
+                if (contact != null && !empty) {
+                    // Añadir indicador de estado
+                    if (getGraphic() instanceof HBox) {
+                        HBox hbox = (HBox) getGraphic();
+                        Node indicator = null;
+                        for (Node n : hbox.getChildren()) {
+                            if ("statusIndicator".equals(n.getId())) {
+                                indicator = n;
+                                break;
+                            }
+                        }
+                        if (indicator == null) {
+                            Label statusLabel = new Label();
+                            statusLabel.setId("statusIndicator");
+                            statusLabel.setStyle("-fx-font-size: 10px; -fx-padding: 0 5 0 0;");
+                            hbox.getChildren().add(0, statusLabel);
+                            indicator = statusLabel;
+                        }
+                        
+                        boolean isOnline = contact.getContactUserId() != null && contactService.isContactOnline(contact.getContactUserId());
+                        ((Label) indicator).setText(isOnline ? "Conectado" : "Desconectado");
+                        ((Label) indicator).setTextFill(isOnline ? Color.GREEN : Color.GRAY);
+
+                        // Ocultar icono de handshake si el contacto ya está confirmado
+                        // Se asume que el botón de handshake tiene el ID "handshakeButton" en ContactListCell
+                        for (Node n : hbox.getChildren()) {
+                            if ("handshakeButton".equals(n.getId())) {
+                                boolean showHandshake = !contact.isConfirmed();
+                                n.setVisible(showHandshake);
+                                n.setManaged(showHandshake);
+                            }
+                        }
+                    }
+                }
+            }
+        });
 
         // Configurar panel de contactos bloqueados si no existe en FXML
         if (blockedContactsListView == null) {
@@ -253,6 +296,11 @@ public class ChatController {
         messageService.getNotifications().addListener((javafx.collections.ListChangeListener.Change<? extends Notification> c) -> {
             Platform.runLater(this::updateNotificationBadge);
         });
+
+        // Listener para refrescar la lista cuando cambia el estado online/offline
+        contactService.setOnOnlineStatusChanged(() -> {
+            Platform.runLater(() -> contactsListView.refresh());
+        });
     }
     
     private void setupWebSocketListeners() {
@@ -345,6 +393,18 @@ public class ChatController {
                         });
                     });
                 }
+
+                notificationService.setPresenceListener((userId, isOnline) -> {
+                    Platform.runLater(() -> {
+                        contactService.setContactOnline(userId, isOnline);
+                        
+                        // Si el contacto se conectó, le notificamos que nosotros también estamos en línea
+                        if (isOnline) {
+                            contactService.notifyContactWeAreOnline(userId);
+                        }
+                    });
+                });
+
                 contactService.setNotificationService(notificationService);
                 notificationService.connect();
 
@@ -394,6 +454,9 @@ public class ChatController {
         if (notificationService != null) {
             notificationService.disconnect();
         }
+        // Forzar la actualización de la UI a desconectado inmediatamente.
+        // Esto garantiza que se limpien los usuarios en línea incluso si el socket ya estaba cerrado.
+        updateConnectionStatus(false);
     }
     
     private void handleSendMessage() {
@@ -426,7 +489,7 @@ public class ChatController {
 
     private void handleAddContact(){
         ChatDialogs.showAddContactDialog(currentUsername, (username) -> {
-            Contact contact = contactService.addContact(currentUserId, username);
+            Contact contact = contactService.addContact(currentUserId, username, true);
             return contact != null;
         });
     }
@@ -475,6 +538,10 @@ public class ChatController {
             disconnectButton.setDisable(true);
             sendButton.setDisable(true);
             messageInput.setDisable(true);
+            
+            if (contactService != null) {
+                contactService.clearOnlineUsers();
+            }
         }
     }
 
@@ -499,7 +566,10 @@ public class ChatController {
             "Añadir Contacto", 
             null, 
             "¿Quieres añadir este usuario a tu lista de contactos?", 
-            () -> contactService.confirmContact(contact)
+            () -> {
+                contactService.confirmContact(contact);
+                contactsListView.refresh();
+            }
         );
     }
 

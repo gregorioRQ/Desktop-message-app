@@ -3,7 +3,10 @@ package com.pola.service;
 import java.io.IOException;
 import java.net.URI;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import jakarta.websocket.ClientEndpoint;
 import jakarta.websocket.CloseReason;
@@ -23,6 +26,7 @@ public class NotificationService {
     private final String userId;
     private final String username;
     private Runnable onStompConnected;
+    private BiConsumer<String, Boolean> presenceListener;
 
     public NotificationService(String userId, String username) {
         this.userId = userId;
@@ -54,6 +58,10 @@ public class NotificationService {
 
     public void addNotificationListener(Consumer<String> listener) {
         listeners.add(listener);
+    }
+
+    public void setPresenceListener(BiConsumer<String, Boolean> listener) {
+        this.presenceListener = listener;
     }
 
     public void setOnStompConnected(Runnable onStompConnected) {
@@ -130,8 +138,10 @@ public class NotificationService {
                     // Es un mensaje de presencia
                     if ("user_online".equals(type)) {
                         System.out.println("Usuario conectado: " + body);
+                        handlePresenceMessage(body, true);
                     } else if ("user_offline".equals(type)) {
                         System.out.println("Usuario desconectado: " + body);
+                        handlePresenceMessage(body, false);
                     }
                 } else {
                     // Cualquier otra suscripción (como sub-0) se trata como notificación
@@ -142,14 +152,32 @@ public class NotificationService {
         }
     }
 
+    private void handlePresenceMessage(String jsonBody, boolean isOnline) {
+        if (presenceListener != null) {
+            String userId = extractJsonValue(jsonBody, "userId");
+            if (userId != null) {
+                presenceListener.accept(userId, isOnline);
+            }
+        }
+    }
+
+    private String extractJsonValue(String json, String key) {
+        Pattern pattern = Pattern.compile("\"" + key + "\"\s*:\s*\"([^\"]+)\"");
+        Matcher matcher = pattern.matcher(json);
+        return matcher.find() ? matcher.group(1) : null;
+    }
+
     @OnClose
     public void onClose(Session session, CloseReason closeReason) {
         System.out.println("Conexión de notificaciones cerrada: " + closeReason);
     }
-
+    /**
+     * envia al servicio de notificaciones los datos para actualizar los contactos de un usuario.
+     * @param fromUserId Id del contacto.
+     * @param toUserId  Id del usuario actual.
+     */
     public void sendAddContactNotification(String fromUserId, String toUserId) {
         if (session != null && session.isOpen()) {
-            // Enviamos IDs en lugar de usernames
             String jsonBody = String.format("{\"from\": \"%s\", \"to\": \"%s\"}", fromUserId, toUserId);
             String sendFrame = "SEND\n" +
                                "destination:/app/contact.add\n" +
@@ -161,6 +189,10 @@ public class NotificationService {
         }
     }
 
+    /**
+     * Envia al servicio de notificaciones el id para que lo retransmita al remitente.
+     * @param userId Id oficial de este usuario que acepto como contacto al remitente.
+     */
     public void sendUserCreateNotification(String userId) {
         if (session != null && session.isOpen()) {
             String jsonBody = String.format("{\"user_id\": \"%s\"}", userId);
@@ -173,7 +205,7 @@ public class NotificationService {
             sendMessage(sendFrame);
         }
     }
-
+    
     public void sendUserOnlineNotification(String userId) {
         if (session != null && session.isOpen()) {
             String jsonBody = String.format("{\"userId\": \"%s\"}", userId);

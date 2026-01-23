@@ -14,6 +14,7 @@ import com.pola.repository.ContactRepository;
 import com.pola.proto.MessagesProto;
 import com.pola.proto.MessagesProto.WsMessage;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -31,8 +32,10 @@ public class ContactService {
     
     // Cache en memoria de usuarios que me han bloqueado
     private Set<String> usersWhoBlockedMe;
+    private Set<String> onlineUsers;
     private Consumer<String> onBlockedByListener;
     private Consumer<String> onUnblockedByListener;
+    private Runnable onOnlineStatusChanged;
 
     public ContactService(){
         this.contactRepository = new ContactRepository();
@@ -40,6 +43,7 @@ public class ContactService {
         this.contacts = FXCollections.observableArrayList();
         this.blockedContacts = FXCollections.observableArrayList();
         this.usersWhoBlockedMe = blockedUserRepository.findAll();
+        this.onlineUsers = new HashSet<>();
     }
 
     public void setWebSocketService(WebSocketService webSocketService) {
@@ -75,7 +79,7 @@ public class ContactService {
     /**
      * Agrega un nuevo contacto
      */
-    public Contact addContact(String userId, String contactUsername) {
+    public Contact addContact(String userId, String contactUsername, boolean isConfirmed) {
         try {
             // Verificar si ya existe
             Optional<Contact> existing = contactRepository.findByUserIdAndContactUsername(userId, contactUsername);
@@ -92,10 +96,11 @@ public class ContactService {
             
             // Crear nuevo contacto
             Contact contact = new Contact(userId, contactUsername, null);
+            contact.setConfirmed(isConfirmed);
             Contact created = contactRepository.create(contact);
             
             // Agregar a la lista observable
-            contacts.add(created);
+            Platform.runLater(() -> contacts.add(created));
             
             
             System.out.println("Contacto agregado: " + contactUsername);
@@ -109,16 +114,19 @@ public class ContactService {
     }
 
     /**
-     * Confirma un contacto y envía mi identidad (ID real) al servidor/usuario
+     * Confirma un contacto y envía el ID real al servidor/usuario
      */
     public void confirmContact(Contact contact) {
-        // Aquí podrías actualizar el estado local si tuvieras un flag "is_confirmed"
-        // Por ahora, la acción principal es enviar mi ID al otro usuario
         if (webSocketService != null && webSocketService.isConnected()) {
             System.out.println("Enviando identidad a: " + contact.getContactUsername());
-            // El servidor se encargará de enrutar esto al usuario correspondiente
-            // basado en el contexto del chat o añadiendo un campo recipient al proto si es necesario
             messageSender.sendContactIdentity(currentUserId, currentUsername, contact.getContactUsername());
+        }
+        
+        try {
+            contact.setConfirmed(true);
+            contactRepository.update(contact);
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
     
@@ -137,7 +145,7 @@ public class ContactService {
     }
     
     /**
-     * Bloquea un contacto (funcionalidad futura)
+     * Bloquea un contacto
      */
     public void blockContact(Contact contact) {
         try {
@@ -164,7 +172,7 @@ public class ContactService {
     }
     
     /**
-     * Desbloquea un contacto (funcionalidad futura)
+     * Desbloquea un contacto 
      */
     public void unblockContact(Contact contact) {
         try {
@@ -206,10 +214,30 @@ public class ContactService {
      * Actualiza el ID de un contacto existente
      */
     public void updateContactId(String contactUsername, String contactUserId) {
-        findContactByUsername(currentUserId, contactUsername).ifPresent(contact -> {
+        // Buscar en la lista en memoria para actualizar el objeto observado por la UI
+        Optional<Contact> listContact = contacts.stream()
+            .filter(c -> c.getContactUsername().equals(contactUsername))
+            .findFirst();
+            
+        // Si no está en la lista, buscar en DB (fallback)
+        Contact contactToUpdate = listContact.orElse(
+            findContactByUsername(currentUserId, contactUsername).orElse(null)
+        );
+
+        if (contactToUpdate != null) {
             try {
-                contact.setContactUserId(contactUserId);
-                contactRepository.update(contact);
+                contactToUpdate.setContactUserId(contactUserId);
+                contactToUpdate.setConfirmed(true);
+                contactRepository.update(contactToUpdate);
+                
+                // Forzar actualización en la lista observable si el contacto estaba en ella
+                if (listContact.isPresent()) {
+                    int index = contacts.indexOf(contactToUpdate);
+                    if (index != -1) {
+                        Platform.runLater(() -> contacts.set(index, contactToUpdate));
+                    }
+                }
+
                 // Enviar notificación STOMP de contacto agregado
                 // Solo cuando el remitente lo confirme y se actualice con el id original en la db del remitente.
                 if (notificationService != null) {
@@ -221,7 +249,7 @@ public class ContactService {
                 System.err.println("Error actualizando ID de contacto: " + e.getMessage());
                 e.printStackTrace();
             }
-        });
+        }
     }
     
     /**
@@ -251,6 +279,32 @@ public class ContactService {
         return usersWhoBlockedMe.contains(username);
     }
 
+    public void setContactOnline(String contactUserId, boolean online) {
+        boolean changed = false;
+        if (online) {
+            changed = onlineUsers.add(contactUserId);
+        } else {
+            changed = onlineUsers.remove(contactUserId);
+        }
+        
+        if (changed && onOnlineStatusChanged != null) {
+            onOnlineStatusChanged.run();
+        }
+    }
+
+    public boolean isContactOnline(String contactUserId) {
+        return onlineUsers.contains(contactUserId);
+    }
+
+    public void clearOnlineUsers() {
+        if (!onlineUsers.isEmpty()) {
+            onlineUsers.clear();
+            if (onOnlineStatusChanged != null) {
+                onOnlineStatusChanged.run();
+            }
+        }
+    }
+
     // Listener para notificar a la UI cuando se detecta un bloqueo nuevo
     public void setOnBlockedByListener(Consumer<String> listener) {
         this.onBlockedByListener = listener;
@@ -275,5 +329,26 @@ public class ContactService {
     // Listener para notificar a la UI cuando alguien nos desbloquea
     public void setOnUnblockedByListener(Consumer<String> listener) {
         this.onUnblockedByListener = listener;
+    }
+
+    public void setOnOnlineStatusChanged(Runnable listener) {
+        this.onOnlineStatusChanged = listener;
+    }
+
+    /**
+     * Notifica a un contacto que estamos en línea enviando nuestra identidad.
+     * Esto permite que el usuario que acaba de conectarse sepa que nosotros ya estábamos aquí.
+     */
+    public void notifyContactWeAreOnline(String contactUserId) {
+        if (contactUserId == null) return;
+
+        contacts.stream()
+            .filter(c -> contactUserId.equals(c.getContactUserId()))
+            .findFirst()
+            .ifPresent(contact -> {
+                if (webSocketService != null && webSocketService.isConnected()) {
+                    messageSender.sendContactIdentity(currentUserId, currentUsername, contact.getContactUsername());
+                }
+            });
     }
 }

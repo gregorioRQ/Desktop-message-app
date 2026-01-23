@@ -96,6 +96,7 @@ public class DatabaseManager {
                     contact_username TEXT NOT NULL,
                 contact_user_id TEXT,
                     is_blocked INTEGER DEFAULT 0,
+                    is_confirmed INTEGER DEFAULT 0,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     UNIQUE(user_id, contact_username)

@@ -41,7 +41,7 @@ public class MessageService {
         this.messageSender = new MessageSender(webSocketService);
         this.messageProcessor = new IncomingMessageProcessor(
             messageRepository, contactService, messageSender, currentChatMessages, notifications, 
-            () -> currentContact, () -> currentUserId
+            () -> currentContact, () -> currentUserId, () -> currentUsername
         );
     }
 

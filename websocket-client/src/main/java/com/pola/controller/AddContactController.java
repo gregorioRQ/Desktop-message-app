@@ -85,7 +85,8 @@ public class AddContactController {
         // Agregar contacto
         Contact contact = contactService.addContact(
             currentUserId, 
-            username
+            username,
+            true // isConfirmed = true (Yo lo agregué, no necesito confirmarlo)
         );
         
         if (contact != null) {

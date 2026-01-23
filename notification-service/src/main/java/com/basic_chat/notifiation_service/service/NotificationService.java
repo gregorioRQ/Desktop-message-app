@@ -77,10 +77,9 @@ public class NotificationService {
     }
 
     public void addContact(String fromId, String contactId) {
-        // Buscar o crear el usuario remitente (asumimos que fromId es el ID)
         User user = userRepository.findById(fromId)
                 .orElseThrow(() -> new EntityNotFoundException("El usuario: " + fromId + " no se halla en el sistema"));
-        // Buscar el contacto por userId
+                
         Optional<User> contactOpt = userRepository.findById(contactId);
         
         if (contactOpt.isPresent()) {
@@ -96,6 +95,20 @@ public class NotificationService {
             if (sessions != null) {
                 for (String sessionId : sessions) {
                     subscribeToContact(sessionId, contactUser.getId());
+                }
+            }
+
+            // Actualizar la lista de contactos de uB (contactUser) agregando a uA (user)
+            UserContact reverseContact = new UserContact();
+            reverseContact.setUser(contactUser);
+            reverseContact.setContact(user);
+            userContactRepository.save(reverseContact);
+
+            // Si uB tiene sesiones activas, suscribirlas a uA
+            List<String> contactSessions = redisTemplate.opsForList().range("user:" + contactId + ":sessions", 0, -1);
+            if (contactSessions != null) {
+                for (String sessionId : contactSessions) {
+                    subscribeToContact(sessionId, user.getId());
                 }
             }
         } else {

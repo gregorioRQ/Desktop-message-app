@@ -53,6 +53,7 @@ public class ContactListCell extends ListCell<Contact> {
                 
                 Button handshakeButton = new Button("🤝");
                 handshakeButton.setStyle("-fx-background-color: transparent; -fx-font-size: 14px; -fx-cursor: hand;");
+                handshakeButton.setId("handshakeButton");
                 handshakeButton.setOnAction(e -> onConfirm.accept(contact));
                 
                 hbox.getChildren().addAll(nameLabel, spacer, handshakeButton, actionButton);
@@ -62,4 +63,3 @@ public class ContactListCell extends ListCell<Contact> {
         }
     }
 }
-

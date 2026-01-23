@@ -21,7 +21,7 @@ public class UserWebSocketController {
 
     /**
      * Recibe el mensaje del cliente en el destino: /app/user.add
-     * Payload esperado: JSON compatible con UserCreateEvent {"user_id": "user_id"}
+     * Payload esperado: JSON compatible con UserCreateEvent {"user_id": "contact_id"}
      */
     @MessageMapping("/user.add")
     public void createUser(@Payload UserCreateEvent event){

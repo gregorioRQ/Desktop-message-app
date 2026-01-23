@@ -29,6 +29,7 @@ public class IncomingMessageProcessor {
     private final ObservableList<Notification> notifications;
     private final Supplier<Contact> currentContactSupplier;
     private final Supplier<String> currentUserIdSupplier;
+    private final Supplier<String> currentUsernameSupplier;
     private final Map<WsMessage.PayloadCase, Consumer<WsMessage>> handlers = new HashMap<>();
     private Consumer<String> errorListener;
 
@@ -39,7 +40,8 @@ public class IncomingMessageProcessor {
             ObservableList<ChatMessage> currentChatMessages,
             ObservableList<Notification> notifications,
             Supplier<Contact> currentContactSupplier,
-            Supplier<String> currentUserIdSupplier) {
+            Supplier<String> currentUserIdSupplier,
+            Supplier<String> currentUsernameSupplier) {
         
         this.messageRepository = messageRepository;
         this.contactService = contactService;
@@ -48,6 +50,7 @@ public class IncomingMessageProcessor {
         this.notifications = notifications;
         this.currentContactSupplier = currentContactSupplier;
         this.currentUserIdSupplier = currentUserIdSupplier;
+        this.currentUsernameSupplier = currentUsernameSupplier;
         
         initializeHandlers();
     }
@@ -119,7 +122,7 @@ public class IncomingMessageProcessor {
 
             Contact contact = this.contactService.findContactByUsername(currentUserIdSupplier.get(), senderId)
             //añade un contacto "improvisado" con un id no oficial
-                .orElseGet(() -> this.contactService.addContact(currentUserIdSupplier.get(), senderId));
+                .orElseGet(() -> this.contactService.addContact(currentUserIdSupplier.get(), senderId, false));
 
             if(contact == null) return;
 
@@ -170,7 +173,7 @@ public class IncomingMessageProcessor {
 
             try {
                 Contact contact = this.contactService.findContactByUsername(currentUserIdSupplier.get(), senderUsername)
-                        .orElseGet(() -> this.contactService.addContact(currentUserIdSupplier.get(), senderUsername));
+                        .orElseGet(() -> this.contactService.addContact(currentUserIdSupplier.get(), senderUsername, false));
 
                 if (contact == null || messageRepository.existsById(messageId)) continue;
 
@@ -232,8 +235,21 @@ public class IncomingMessageProcessor {
         String senderUsername = identity.getSenderUsername();
 
         if(senderUsername != null && !senderUsername.isEmpty()){
+            // Verificar si es la primera vez que obtenemos el ID de este contacto (era null o vacío)
+            boolean isFirstIdUpdate = contactService.findContactByUsername(currentUserIdSupplier.get(), senderUsername)
+                .map(c -> c.getContactUserId() == null || c.getContactUserId().isEmpty())
+                .orElse(true);
+
             contactService.updateContactId(senderUsername, remoteUserId);
             
+            // Marcar como conectado inmediatamente ya que acabamos de recibir señal de vida
+            contactService.setContactOnline(remoteUserId, true);
+
+            // Si es la primera vez que tenemos su ID, enviamos el nuestro de vuelta para completar el handshake
+            if (isFirstIdUpdate) {
+                messageSender.sendContactIdentity(currentUserIdSupplier.get(), currentUsernameSupplier.get(), senderUsername);
+            }
+
             // Notificar al usuario que fue añadido mediante un mensaje de sistema y alerta
             String systemMsg = "El usuario " + senderUsername + " te añadió a sus contactos.";
             try {
