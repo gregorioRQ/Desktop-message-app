@@ -8,5 +8,6 @@ import com.basic_chat.chat_service.models.ContactBlock;
 @Repository
 public interface ContactBlockRepository extends JpaRepository<ContactBlock, Long> {
     boolean existsByBlockerAndBlocked(String blocker, String blocked);
-    void deleteByBlockerAndBlocked(String blocker, String blocked);
+    long deleteByBlockerAndBlocked(String blocker, String blocked);
+    long countByBlocker(String bloker);
 }
