@@ -16,7 +16,7 @@ public class MessageValidator {
         this.messageRepository = messageRepository;
     }
 
-    public Message validateAndGetMessage(Long messageId) {
+    public Message validateAndGetMessage(Long messageId){
         if (messageId == null) {
             throw new IllegalArgumentException("El ID del mensaje no puede ser nulo");
         }
