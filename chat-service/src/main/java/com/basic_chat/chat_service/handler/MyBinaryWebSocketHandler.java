@@ -6,7 +6,6 @@ import com.basic_chat.chat_service.service.AuthenticationGuard;
 import com.basic_chat.chat_service.service.SessionManager;
 import com.basic_chat.chat_service.service.WsMessageDispatcher;
 import com.basic_chat.chat_service.service.WebSocketConnectionManager;
-import com.basic_chat.chat_service.service.PendingMessagesHandler;
 import com.basic_chat.proto.MessagesProto;
 
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +22,6 @@ import org.springframework.web.socket.handler.AbstractWebSocketHandler;
 public class MyBinaryWebSocketHandler extends AbstractWebSocketHandler {
 
     private final SessionManager sessionManager;
-    private final JwtValidator jwtValidator;
     private final AuthenticationGuard authenticationGuard;
     private final WsMessageDispatcher dispatcher;
     private final WebSocketConnectionManager connectionManager;
@@ -31,13 +29,11 @@ public class MyBinaryWebSocketHandler extends AbstractWebSocketHandler {
 
     public MyBinaryWebSocketHandler(
             SessionManager sessionManager,
-            JwtValidator jwtValidator,
             AuthenticationGuard authenticationGuard,
             WsMessageDispatcher dispatcher,
             WebSocketConnectionManager connectionManager,
             PendingMessagesHandler pendingMessagesHandler) {
         this.sessionManager = sessionManager;
-        this.jwtValidator = jwtValidator;
         this.authenticationGuard = authenticationGuard;
         this.dispatcher = dispatcher;
         this.connectionManager = connectionManager;
@@ -88,11 +84,16 @@ public class MyBinaryWebSocketHandler extends AbstractWebSocketHandler {
     }
 
     private void sendAllPendingMessages(WebSocketSession session, String username) {
-        pendingMessagesHandler.sendPendingMessages(session, username);
-        pendingMessagesHandler.sendPendingDeletions(session, username);
-        pendingMessagesHandler.sendPendingUnblocks(session, username);
-        pendingMessagesHandler.sendPendingReadReceipts(session, username);
-        pendingMessagesHandler.sendPendingContactIdentities(session, username);
+        try{
+            pendingMessagesHandler.sendPendingMessages(session, username);
+            pendingMessagesHandler.sendPendingDeletions(session, username);
+            pendingMessagesHandler.sendPendingUnblocks(session, username);
+            pendingMessagesHandler.sendPendingReadReceipts(session, username);
+            pendingMessagesHandler.sendPendingContactIdentities(session, username); 
+        }catch(Exception ex){
+            throw new RuntimeException(ex.getMessage());
+        }
+        
     }
 
     private void closeSession(WebSocketSession session) {

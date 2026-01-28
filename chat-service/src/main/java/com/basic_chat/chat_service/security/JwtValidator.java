@@ -4,15 +4,16 @@ import java.nio.charset.StandardCharsets;
 
 import javax.crypto.SecretKey;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 
 @Component
+@Slf4j
 public class JwtValidator {
     // IMPORTANTE: Debe ser la MISMA clave que en profile-service
     private static final String SECRET_KEY = "your-256-bit-secret-key-here-change-in-production";
@@ -42,6 +43,10 @@ public class JwtValidator {
      * @throws JwtException si el token es inválido o ha expirado
      */
     public Claims validateToken(String token) throws JwtException {
+        if(token == null){
+            log.warn("No se pudo validar el token");
+            throw new IllegalArgumentException("Token de autenticacion nulo");
+        }
         try {
             return Jwts.parser()
                     .verifyWith(key)

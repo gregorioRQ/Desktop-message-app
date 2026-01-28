@@ -75,6 +75,12 @@ message ClearHistoryRequest {
   string recipient = 2;
 }
 
+// Respuesta a peticion de eliminacion de historial
+message ClearHistoryResponse {
+  bool success = 1;
+  string message = 2;
+}
+
 // Notificación de mensaje eliminado
 message MessageDeletedNotification {
     string message_id = 1;
@@ -174,5 +180,6 @@ message WsMessage {
     MarkMessagesAsReadRequest mark_messages_as_read_request = 18;
     MessagesReadUpdate messages_read_update = 19;
     ContactIdentity contact_identity = 20;
+    ClearHistoryResponse clear_history_response = 21;
   }
 }

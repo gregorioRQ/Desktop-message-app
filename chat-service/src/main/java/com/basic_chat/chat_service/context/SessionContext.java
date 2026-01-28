@@ -9,6 +9,24 @@ import org.springframework.web.socket.WebSocketSession;
 import com.basic_chat.chat_service.service.SessionManager;
 
 
+/**
+ * Contexto de sesión que encapsula una conexión WebSocket y su estado de autenticación.
+ * 
+ * Esta clase proporciona una abstracción de alto nivel sobre las sesiones WebSocket,
+ * permitiendo verificar el estado de autenticación, enviar mensajes binarios y gestionar
+ * el ciclo de vida de la sesión (apertura y cierre). Actúa como intermediaria entre
+ * los manejadores de WebSocket y el gestor de sesiones, proporcionando métodos convenientes
+ * para las operaciones más comunes sobre una sesión de usuario autenticado.
+ * 
+ * Responsabilidades principales:
+ * - Mantener referencia a la sesión WebSocket y su gestor asociado
+ * - Verificar estado de autenticación (autenticado, pendiente de autenticación, expirado)
+ * - Enviar mensajes binarios a través de la sesión WebSocket
+ * - Cerrar la sesión y limpiar recursos asociados
+ * 
+ * @see SessionManager
+ * @see WebSocketSession
+ */
 public class SessionContext {
     private WebSocketSession session;
     private SessionManager manager;

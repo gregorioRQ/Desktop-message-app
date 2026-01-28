@@ -36,27 +36,30 @@ public class SessionManager {
      * Registra una nueva sesión cuando un usuario se conecta
      */
     public void  registerPendingConnection(String sessionId){
+        log.debug("Concexion pendiente de autenticacion: {} añadida a la lista", sessionId);
         pendingAuthentication.put(sessionId, System.currentTimeMillis());
-        log.debug("Concexion pendiente de autenticacion: {}", sessionId);
+        
     }
 
     // Completar la autenticacion de una sesion.
     public void authenticateSession(String sessionId, String userId, String username, WebSocketSession wSession){
-        // Remover de pendientes
+ 
+        log.debug("Removiendo la sesion {} de pendientes", sessionId);
         pendingAuthentication.remove(sessionId);
 
-        // Agregar a autenticadas
+        
         SessionInfo info = new SessionInfo(userId, username, wSession);
+        log.debug("Añadiendo la sesion: {} a sesiones autenticadas", sessionId);
         authenticatedSessions.put(sessionId, info);
 
         // Agregar a usuarios en linea (toma el username que viene en el token)
-        // FIX: Guardar username -> sessionId (no username -> username)
-        System.out.println("Añadiendo usuario a la lista online: " + username + " sessionId: " + sessionId);
+        log.debug("Añadiendo al usuario {} a la lista de usuarios online", username);
         usersOnline.put(username, sessionId);
 
         log.info("Sesion autenticada: {} - Usuario: {} ({})", sessionId, username);
     }
 
+    // Verifica si una sesion esta autenticada.
     public boolean isAuthenticated(String sessionId){
         return authenticatedSessions.containsKey(sessionId);
     }
@@ -105,10 +108,15 @@ public class SessionManager {
         return authenticatedSessions.get(sessionId);
     }
 
-
+    // Verifica si un usuario se halla en linea
     public boolean isUserOnline(String userId){
-        System.out.println("Verificando si el usuario: " + userId + " esta en linea");
-        return usersOnline.containsKey(userId);
+        log.debug("Verificando si {} se halla en linea", userId);
+        if(usersOnline.containsKey(userId)){
+            return true;
+        }else{
+            log.debug("El usuario: {} no se halla en linea", userId);
+            return false;
+        }      
     }
 
     @Data
