@@ -250,22 +250,8 @@ public class IncomingMessageProcessor {
                 messageSender.sendContactIdentity(currentUserIdSupplier.get(), currentUsernameSupplier.get(), senderUsername);
             }
 
-            // Notificar al usuario que fue añadido mediante un mensaje de sistema y alerta
-            String systemMsg = "El usuario " + senderUsername + " te añadió a sus contactos.";
-            try {
-                ChatMessage localMessage = new ChatMessage(senderUsername, systemMsg, "Sistema");
-                localMessage.setId(System.currentTimeMillis());
-                messageRepository.create(localMessage);
-                
-                Contact current = currentContactSupplier.get();
-                if (current != null && current.getContactUsername().equals(senderUsername)) {
-                    Platform.runLater(() -> currentChatMessages.add(localMessage));
-                } else {
-                    updateNotification(senderUsername);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            // Añadir notificación a la bandeja en lugar de mensaje de chat
+            updateNotification(senderUsername);
         }
         // Si el contacto era "improvisado" (sin ID), ahora tiene ID.
         // Devolvemos nuestro ID para completar el handshake si es necesario.

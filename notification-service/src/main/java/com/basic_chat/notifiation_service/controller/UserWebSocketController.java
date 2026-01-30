@@ -7,16 +7,19 @@ import org.springframework.stereotype.Controller;
 import com.basic_chat.notifiation_service.model.UserCreateEvent;
 import com.basic_chat.notifiation_service.model.UserOnlineEvent;
 import com.basic_chat.notifiation_service.service.NotificationService;
+import com.basic_chat.notifiation_service.service.UserPresenceService;
 import com.basic_chat.notifiation_service.service.UserService;
 
 @Controller
 public class UserWebSocketController {
     private final UserService userService;
     private final NotificationService notificationService;
+    private final UserPresenceService userPresenceService;
 
-    public UserWebSocketController(UserService userService, NotificationService notificationService){
+    public UserWebSocketController(UserService userService, NotificationService notificationService, UserPresenceService userPresenceService){
         this.userService = userService;
         this.notificationService = notificationService;
+        this.userPresenceService = userPresenceService;
     }
 
     /**
@@ -34,6 +37,6 @@ public class UserWebSocketController {
      */
     @MessageMapping("/user.online")
     public void notifyUserOnline(@Payload UserOnlineEvent event){
-        notificationService.notifyUserOnline(event.getUserId());
+        userPresenceService.notifyUserOnline(event.getUserId());
     }
 }

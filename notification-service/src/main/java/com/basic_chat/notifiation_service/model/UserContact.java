@@ -16,12 +16,14 @@ public class UserContact {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // El dueño del contacto
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    // El contacto
     @ManyToOne
-    @JoinColumn(name = "contact_id")
+    @JoinColumn(name = "contact_id", nullable = false)
     private User contact;
 
     public UserContact() {

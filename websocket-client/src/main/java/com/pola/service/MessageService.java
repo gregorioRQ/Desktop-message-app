@@ -227,6 +227,13 @@ public class MessageService {
         });
     }
 
+    /**
+     * Elimina todas las notificaciones de la bandeja.
+     */
+    public void clearAllNotifications() {
+        Platform.runLater(() -> notifications.clear());
+    }
+
     public ObservableList<Notification> getNotifications() {
         return notifications;
     }

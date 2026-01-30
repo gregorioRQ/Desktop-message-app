@@ -12,16 +12,29 @@ import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 
 import com.basic_chat.notifiation_service.service.NotificationService;
+import com.basic_chat.notifiation_service.service.UserPresenceService;
 
 @Component
 public class WebSocketEventListener {
 
     private static final Logger logger = LoggerFactory.getLogger(WebSocketEventListener.class);
     private final NotificationService notificationService;
+    private final UserPresenceService userPresenceService;
 
-    public WebSocketEventListener(NotificationService notificationService) {
+    public WebSocketEventListener(NotificationService notificationService, UserPresenceService userPresenceService) {
         this.notificationService = notificationService;
+        this.userPresenceService = userPresenceService;
     }
+
+    /**
+     * Listener websocket que procesa el evento SessionConnect.
+     * 
+     * Flujo:
+     * Verifica si se halla el user en el Principal.
+     * Verifica que el usuario y la sesion no sean nulas.
+     * 
+     * @param event El evento que ocurre cuando el cliente se conecta a este servicio.
+     */
 
     @EventListener
     public void handleWebSocketConnectListener(SessionConnectEvent event) {
@@ -39,7 +52,7 @@ public class WebSocketEventListener {
         }
 
         if (userId != null && sessionId != null) {
-            notificationService.handleSessionConnected(userId, sessionId);
+            userPresenceService.handleSessionConnected(userId, sessionId);
         } else {
             logger.warn("Usuario no encontrado en el evento de conexión. No se registrará en Redis.");
         }
@@ -58,7 +71,7 @@ public class WebSocketEventListener {
     public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
         String sessionId = headerAccessor.getSessionId();
-        notificationService.handleSessionDisconnect(sessionId);
+        userPresenceService.handleSessionDisconnect(sessionId);
         logger.info("Evento DISCONECT recibido. SessionId: {}", sessionId);
     }
 }

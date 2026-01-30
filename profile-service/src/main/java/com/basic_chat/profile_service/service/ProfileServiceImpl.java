@@ -4,11 +4,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.basic_chat.profile_service.exception.UserAlreadyExistsException;
 import java.util.Optional;
 import com.basic_chat.profile_service.models.User;
 import com.basic_chat.profile_service.repository.UserRepository;
-import com.basic_chat.proto.AuthProto.AuthResponse;
 import com.basic_chat.proto.LoginProto.LoginRequest;
 import com.basic_chat.proto.LoginProto.LoginResponse;
 import com.basic_chat.proto.RegisterProto.RegisterRequest;
@@ -26,6 +24,19 @@ public class ProfileServiceImpl implements ProfileService{
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final CredentialsValidator credentialsValidator;
+
+    /**
+     * Registra un nuevo usuario en la base de datos.
+     * 
+     * 1. Valida las credenciales
+     * 2. Encripta la contraseña.
+     * 3. Guarda el usuario.
+     * 4. Envia la respuesta al cliente.
+     * 
+     * @param request La solicitud protobuf con los datos del usuario.
+     * @return RegisterResponse con mensaje de exito o de fracaso.
+     */
 
     @Override
     @Transactional
@@ -35,36 +46,13 @@ public class ProfileServiceImpl implements ProfileService{
         
         log.info("Iniciando registro para usuario: {}", username);
         
-        // Validar que el username no exista
-        if (userRepository.existsByUsername(username)) {
-            log.warn("Intento de registro con username existente: {}", username);
-            throw new UserAlreadyExistsException("El nombre de usuario ya está en uso");
-        }
-        
-        // Validar longitud mínima de username
-        if (username.length() < 3) {
-            log.warn("Username demasiado corto: {}", username);
+        // Validar credenciales
+        String validationError = credentialsValidator.validateCredentials(username, password);
+        if (validationError != null) {
+            log.warn("Validación fallida para usuario: {} - {}", username, validationError);
             return RegisterResponse.newBuilder()
                     .setSuccess(false)
-                    .setMessage("El nombre de usuario debe tener al menos 3 caracteres")
-                    .build();
-        }
-        
-        // Validar longitud mínima de password
-        if (password.length() < 6) {
-            log.warn("Password demasiado corto para usuario: {}", username);
-            return RegisterResponse.newBuilder()
-                    .setSuccess(false)
-                    .setMessage("La contraseña debe tener al menos 6 caracteres")
-                    .build();
-        }
-        
-        // Validar caracteres permitidos en username
-        if (!username.matches("^[a-zA-Z0-9_-]+$")) {
-            log.warn("Username con caracteres no permitidos: {}", username);
-            return RegisterResponse.newBuilder()
-                    .setSuccess(false)
-                    .setMessage("El nombre de usuario solo puede contener letras, números, guiones y guiones bajos")
+                    .setMessage(validationError)
                     .build();
         }
         
@@ -91,7 +79,7 @@ public class ProfileServiceImpl implements ProfileService{
                     .build();
                     
         } catch (Exception e) {
-            log.error("Error al registrar usuario: {}", username, e);
+            log.error("Error crítico al registrar usuario: {}", username, e);
             return RegisterResponse.newBuilder()
                     .setSuccess(false)
                     .setMessage("Error interno al registrar usuario")
@@ -103,33 +91,47 @@ public class ProfileServiceImpl implements ProfileService{
     public LoginResponse login(LoginRequest request) {
         String username = request.getUsername();
         String password = request.getPassword();
-
-        Optional<User> userOpt = userRepository.findByUsername(username);
-        if(userOpt.isEmpty()){
-            return LoginResponse.newBuilder()
-                .setSuccess(false)
-                .setMessage("Usuario o contraseña incorrectos")
-                .build();
-        }
-
-        User user = userOpt.get();
-
-        if(!passwordEncoder.matches(password, user.getPassword())){
-            return LoginResponse.newBuilder()
-                .setSuccess(false)
-                .setMessage("Usuario o contraseña incorrectos")
-                .build();
-        }
-
-        // Generar el token y añadirlo a la respuesta.
-        String token = jwtService.generateToken(user.getId(), user.getUsername());
         
-        return LoginResponse.newBuilder()
-            .setSuccess(true)
-            .setMessage("Login exitoso")
-            .setUserId(user.getId())
-            .setToken(token)
-            .build();
+        log.info("Iniciando login para usuario: {}", username);
 
+        try {
+            Optional<User> userOpt = userRepository.findByUsername(username);
+            if(userOpt.isEmpty()){
+                log.warn("Intento de login con usuario inexistente: {}", username);
+                return LoginResponse.newBuilder()
+                    .setSuccess(false)
+                    .setMessage("Usuario o contraseña incorrectos")
+                    .build();
+            }
+
+            User user = userOpt.get();
+
+            if(!passwordEncoder.matches(password, user.getPassword())){
+                log.warn("Intento de login con contraseña incorrecta para usuario: {}", username);
+                return LoginResponse.newBuilder()
+                    .setSuccess(false)
+                    .setMessage("Usuario o contraseña incorrectos")
+                    .build();
+            }
+
+            // Generar el token y añadirlo a la respuesta.
+            String token = jwtService.generateToken(user.getId(), user.getUsername());
+            
+            log.info("Login exitoso para usuario: {}", username);
+            
+            return LoginResponse.newBuilder()
+                .setSuccess(true)
+                .setMessage("Login exitoso")
+                .setUserId(user.getId())
+                .setToken(token)
+                .build();
+                
+        } catch (Exception e) {
+            log.error("Error crítico durante el login para usuario: {}", username, e);
+            return LoginResponse.newBuilder()
+                .setSuccess(false)
+                .setMessage("Error interno durante el login")
+                .build();
+        }
     }
 }

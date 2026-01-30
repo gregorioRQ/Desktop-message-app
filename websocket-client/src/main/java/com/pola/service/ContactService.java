@@ -238,8 +238,7 @@ public class ContactService {
                     }
                 }
 
-                // Enviar notificación STOMP de contacto agregado
-                // Solo cuando el remitente lo confirme y se actualice con el id original en la db del remitente.
+                // Enviar notificación STOMP de contacto agregado cuando acepatamos al remitente.
                 if (notificationService != null) {
                     notificationService.sendAddContactNotification(currentUserId, contactUserId);
                 }
@@ -249,6 +248,8 @@ public class ContactService {
                 System.err.println("Error actualizando ID de contacto: " + e.getMessage());
                 e.printStackTrace();
             }
+        }else{
+            System.out.println("Contacto no encontrado contactUsername: " + contactUsername + " contactUserId: "+contactUserId);
         }
     }
     

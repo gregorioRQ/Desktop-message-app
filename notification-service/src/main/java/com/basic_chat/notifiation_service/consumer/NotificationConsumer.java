@@ -9,26 +9,24 @@ import com.basic_chat.notifiation_service.model.MessageSeenEvent;
 import com.basic_chat.notifiation_service.model.MessageSentEvent;
 import com.basic_chat.notifiation_service.model.UserOnlineEvent;
 import com.basic_chat.notifiation_service.service.NotificationService;
+import com.basic_chat.notifiation_service.service.UserPresenceService;
 
 @Component
 public class NotificationConsumer {
 
     private final NotificationService notificationService;
+    private final UserPresenceService userPresenceService;
 
-    public NotificationConsumer(NotificationService notificationService) {
+    public NotificationConsumer(NotificationService notificationService, UserPresenceService userPresenceService) {
         this.notificationService = notificationService;
+        this.userPresenceService = userPresenceService;
     }
-
+    /**
+     * Listener que se ejecuta cuando un usuario añade como contacto a otro.
+     * @param event El evento con los datos para procesar la notificacion.
+     */
     @RabbitListener(queues = "contact.events")
     public void handleContactAdded(ContactAddEvent event) {
-
-        Notification ntn = new Notification();
-        ntn.setType("CONTACT ADD");
-        ntn.setSeen(false);
-        ntn.setMessage(event.getFrom() + " te añadió como contacto");
-        ntn.setSender(event.getFrom());
-        ntn.setReceiver(event.getTo());
-        //notificationService.createNotification(ntn);
         notificationService.addContact(event.getFrom(), event.getTo());
     }
 
@@ -39,17 +37,13 @@ public class NotificationConsumer {
      */
     @RabbitListener(queues = "message.sent")
     public void handleMessageSentEvent(MessageSentEvent event) {
-
-        // guarda la notificación en la base de datos
         Notification notification = new Notification();
         notification.setSender(event.getSender());
         notification.setReceiver(event.getReceiver());
         notification.setMessage("Tienes un nuevo mensaje de: " + event.getSender());
         notification.setType("MESSAGE_SENT");
         notification.setSeen(false);
-        // Notifica al usuario a través de WebSocket
         notificationService.notifyUser(notification);
-        // notificationService.createNotification(notification);
     }
 
     @RabbitListener(queues = "message.read")
@@ -64,6 +58,6 @@ public class NotificationConsumer {
 
     @RabbitListener(queues = "user.online")
     public void handleUserOnlineEvent(UserOnlineEvent event) {
-        notificationService.notifyUserOnline(event.getUserId());
+        userPresenceService.notifyUserOnline(event.getUserId());
     }
 }

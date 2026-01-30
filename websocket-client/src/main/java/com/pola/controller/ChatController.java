@@ -89,6 +89,9 @@ public class ChatController {
     @FXML
     private Circle notificationBadge;
 
+    @FXML
+    private Button clearNotificationsButton;
+
     private WebSocketService webSocketService;
     private MessageService messageService;
     private ContactService contactService;
@@ -98,6 +101,7 @@ public class ChatController {
     private String currentUserId;
     private String authToken;
     private Contact selectedContact;
+    private NotificationUIController notificationUIController;
     
     public void initialize(String username, String userId, String token) {
         this.currentUsername = username;
@@ -116,8 +120,10 @@ public class ChatController {
         setupListeners();
         setupWebSocketListeners();
         loadContacts();
-        notificationsListView.setItems(messageService.getNotifications());
-        updateNotificationBadge();
+        
+        // Delegar la visualización de notificaciones al nuevo componente
+        this.notificationUIController = new NotificationUIController(
+            notificationsListView, notificationBadge, clearNotificationsButton, messageService.getNotifications());
     }
     
     public void setWebSocketService(WebSocketService webSocketService) {
@@ -290,11 +296,6 @@ public class ChatController {
                     updateChatInputState(false); // false = NO estamos bloqueados (habilitar chat)
                 }
             });
-        });
-
-        // Listener para actualizar el badge de notificaciones
-        messageService.getNotifications().addListener((javafx.collections.ListChangeListener.Change<? extends Notification> c) -> {
-            Platform.runLater(this::updateNotificationBadge);
         });
 
         // Listener para refrescar la lista cuando cambia el estado online/offline
@@ -571,12 +572,6 @@ public class ChatController {
                 contactsListView.refresh();
             }
         );
-    }
-
-    private void updateNotificationBadge() {
-        if (notificationBadge != null) {
-            notificationBadge.setVisible(!messageService.getNotifications().isEmpty());
-        }
     }
 
     private void confirmBlockContact(Contact contact) {

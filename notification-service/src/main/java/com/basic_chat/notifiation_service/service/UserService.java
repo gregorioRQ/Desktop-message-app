@@ -9,7 +9,10 @@ import com.basic_chat.notifiation_service.model.User;
 import com.basic_chat.notifiation_service.model.UserCreateEvent;
 import com.basic_chat.notifiation_service.repository.UserRepository;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Service
+@Slf4j
 public class UserService {
    private final UserRepository userRepository;
 
@@ -19,17 +22,24 @@ public class UserService {
 
    @Transactional
    public void create(UserCreateEvent e){
-        Optional<User> u = userRepository.findById(e.getUser_id());
-        if(u.isPresent()){
+        if(e == null){
+            log.warn("Evento recibido fue nulo no se creara el contacto");
             return;
         }
         try{
+            Optional<User> u = userRepository.findById(e.getUser_id());
+            if(u.isPresent()){
+                log.debug("El usuario: {} ya existe", e.getUser_id());
+                return;
+            }
+            log.debug("Registrando nuevo usuario en la db, userId: {}", e.getUser_id());
             User user = new User();
             user.setId(e.getUser_id());
             userRepository.save(user);
+            log.info("Nuevo usuario registrado con exito");
         }catch(Exception ex){
-            System.err.println("No se pudo crear el usuario");
-            throw ex;
+            log.error("No se pudo registrar el usuario error: {}", ex);
+          
         }    
    }
 }
