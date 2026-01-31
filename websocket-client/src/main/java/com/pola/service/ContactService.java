@@ -11,6 +11,7 @@ import java.util.function.Consumer;
 import com.pola.model.Contact;
 import com.pola.repository.BlockedUserRepository;
 import com.pola.repository.ContactRepository;
+import com.pola.repository.MessageRepository;
 import com.pola.proto.MessagesProto;
 import com.pola.proto.MessagesProto.WsMessage;
 
@@ -22,6 +23,7 @@ public class ContactService {
 
     private final ContactRepository contactRepository;
     private final BlockedUserRepository blockedUserRepository;
+    private final MessageRepository messageRepository;
     private final ObservableList<Contact> contacts;
     private final ObservableList<Contact> blockedContacts;
     private WebSocketService webSocketService;
@@ -40,6 +42,7 @@ public class ContactService {
     public ContactService(){
         this.contactRepository = new ContactRepository();
         this.blockedUserRepository = new BlockedUserRepository();
+        this.messageRepository = new MessageRepository();
         this.contacts = FXCollections.observableArrayList();
         this.blockedContacts = FXCollections.observableArrayList();
         this.usersWhoBlockedMe = blockedUserRepository.findAll();
@@ -131,15 +134,35 @@ public class ContactService {
     }
     
     /**
-     * Elimina un contacto
+     * Elimina un contacto de la lista local y prepara la petición al servidor.
+     * Aplica Clean Code y logs detallados del proceso.
      */
-    public void removeContact(Contact contact) {
+    public void deleteContact(Contact contact) {
+        if (contact == null) return;
+        
+        String logPrefix = "[ContactService] ";
+        System.out.println(logPrefix + "Iniciando proceso de eliminación para el contacto: " + contact.getContactUsername());
+
         try {
+            // 1. Eliminar de la persistencia local
             contactRepository.delete(contact.getId());
-            contacts.remove(contact);
-            System.out.println("Contacto eliminado: " + contact.getContactUsername());
+            
+            // Eliminar mensajes locales asociados al contacto para mantener consistencia
+            messageRepository.deleteByContactUsername(contact.getContactUsername());
+            
+            // 2. Actualizar estado en memoria (UI)
+            Platform.runLater(() -> {
+                contacts.remove(contact);
+                blockedContacts.remove(contact); // Asegurar eliminación si estaba bloqueado
+            });
+
+            // 3. (Futuro) Enviar solicitud de eliminación al servidor
+            // TODO: Implementar envío de paquete DELETE_CONTACT cuando el protocolo lo soporte
+            // if (webSocketService.isConnected()) { ... }
+
+            System.out.println(logPrefix + "Contacto eliminado exitosamente: " + contact.getContactUsername());
         } catch (SQLException e) {
-            System.err.println("Error eliminando contacto: " + e.getMessage());
+            System.err.println(logPrefix + "Error crítico al eliminar contacto: " + e.getMessage());
             e.printStackTrace();
         }
     }

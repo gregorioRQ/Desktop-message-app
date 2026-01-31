@@ -21,6 +21,8 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuButton;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -102,6 +104,9 @@ public class ChatController {
     private String authToken;
     private Contact selectedContact;
     private NotificationUIController notificationUIController;
+    private ContactActionHelper contactActionHelper;
+    private MessageActionHelper messageActionHelper;
+    private ConnectionActionHelper connectionActionHelper;
     
     public void initialize(String username, String userId, String token) {
         this.currentUsername = username;
@@ -116,6 +121,10 @@ public class ChatController {
         contactService.setCurrentUsername(username);
         contactService.setWebSocketService(webSocketService);
         
+        this.contactActionHelper = new ContactActionHelper(contactService, this);
+        this.messageActionHelper = new MessageActionHelper(messageService, webSocketService, contactService, this);
+        this.connectionActionHelper = new ConnectionActionHelper(webSocketService, contactService, this);
+
         setupUI();
         setupListeners();
         setupWebSocketListeners();
@@ -147,12 +156,12 @@ public class ChatController {
         updateConnectionStatus(false);
         
         // Configurar botones
-        sendButton.setOnAction(event -> handleSendMessage());
-        connectButton.setOnAction(event -> handleConnect());
-        disconnectButton.setOnAction(event -> handleDisconnect());
-        addContactButton.setOnAction(e -> handleAddContact());
-        if (clearChatButton != null) clearChatButton.setOnAction(e -> handleClearChat());
-        if (blockButton != null) blockButton.setOnAction(e -> handleBlockContact());
+        sendButton.setOnAction(event -> messageActionHelper.handleSendMessage());
+        connectButton.setOnAction(event -> connectionActionHelper.handleConnect());
+        disconnectButton.setOnAction(event -> connectionActionHelper.handleDisconnect());
+        addContactButton.setOnAction(e -> contactActionHelper.handleAddContact());
+        if (clearChatButton != null) clearChatButton.setOnAction(e -> messageActionHelper.handleClearChat());
+        if (blockButton != null) blockButton.setOnAction(e -> contactActionHelper.confirmBlockContact(selectedContact));
 
         setupMessageListView();
         
@@ -160,7 +169,7 @@ public class ChatController {
         messageInput.setOnKeyPressed(event -> {
             if (event.getCode().toString().equals("ENTER") && !event.isShiftDown()) {
                 event.consume();
-                handleSendMessage();
+                messageActionHelper.handleSendMessage();
             }
         });
         
@@ -169,7 +178,7 @@ public class ChatController {
         messageInput.setDisable(true);
 
         // Configurar celdas para contactos (Botón Bloquear)
-        contactsListView.setCellFactory(param -> new ContactListCell(false, this::confirmBlockContact, this::confirmUnblockContact, this::confirmAddContact) {
+        contactsListView.setCellFactory(param -> new ContactListCell(false, contactActionHelper::confirmBlockContact, contactActionHelper::confirmUnblockContact, contactActionHelper::confirmAddContact) {
             @Override
             protected void updateItem(Contact contact, boolean empty) {
                 super.updateItem(contact, empty);
@@ -205,6 +214,34 @@ public class ChatController {
                                 n.setManaged(showHandshake);
                             }
                         }
+
+                        // Menú desplegable de opciones (Eliminar)
+                        Node optionsNode = null;
+                        for (Node n : hbox.getChildren()) {
+                            if ("optionsMenu".equals(n.getId())) {
+                                optionsNode = n;
+                                break;
+                            }
+                        }
+
+                        if (optionsNode == null) {
+                            MenuButton optionsMenu = new MenuButton("⋮");
+                            optionsMenu.setId("optionsMenu");
+                            optionsMenu.setStyle("-fx-background-color: transparent; -fx-font-weight: bold; -fx-padding: 0 5 0 5; -fx-cursor: hand;");
+                            
+                            MenuItem deleteItem = new MenuItem("Eliminar");
+                            deleteItem.setOnAction(e -> contactActionHelper.confirmDeleteContact(contact));
+                            
+                            optionsMenu.getItems().add(deleteItem);
+                            hbox.getChildren().add(optionsMenu);
+                        } else {
+                            // Actualizar la acción para asegurar que capture el contacto correcto
+                            MenuButton optionsMenu = (MenuButton) optionsNode;
+                            optionsMenu.getItems().clear();
+                            MenuItem deleteItem = new MenuItem("Eliminar");
+                            deleteItem.setOnAction(e -> contactActionHelper.confirmDeleteContact(contact));
+                            optionsMenu.getItems().add(deleteItem);
+                        }
                     }
                 }
             }
@@ -219,11 +256,11 @@ public class ChatController {
         }
         
         // Configurar celdas para contactos bloqueados (Botón Desbloquear)
-        blockedContactsListView.setCellFactory(param -> new ContactListCell(true, this::confirmBlockContact, this::confirmUnblockContact, this::confirmAddContact));
+        blockedContactsListView.setCellFactory(param -> new ContactListCell(true, contactActionHelper::confirmBlockContact, contactActionHelper::confirmUnblockContact, contactActionHelper::confirmAddContact));
     }
 
     private void setupMessageListView(){
-        messageListView.setCellFactory(lv -> new MessageListCell(currentUsername, this::handleDeleteMessage, this::handleEditMessage));
+        messageListView.setCellFactory(lv -> new MessageListCell(currentUsername, messageActionHelper::handleDeleteMessage, messageActionHelper::handleEditMessage));
     }
     
     private void setupListeners() {
@@ -377,151 +414,7 @@ public class ChatController {
         }
     }
     
-    private void handleConnect() {
-        statusLabel.setText("Conectando...");
-        statusLabel.setStyle("-fx-text-fill: blue;");
-        
-        new Thread(() -> {
-            try {
-                webSocketService.connect();
-                
-                // Conectar servicio de notificaciones (en el mismo hilo secundario)
-                if (notificationService == null) {
-                    notificationService = new NotificationService(currentUserId, currentUsername);
-                    notificationService.addNotificationListener(mensaje -> {
-                        Platform.runLater(() -> {
-                            System.out.println("Notificación recibida: " + mensaje);
-                        });
-                    });
-                }
-
-                notificationService.setPresenceListener((userId, isOnline) -> {
-                    Platform.runLater(() -> {
-                        contactService.setContactOnline(userId, isOnline);
-                        
-                        // Si el contacto se conectó, le notificamos que nosotros también estamos en línea
-                        if (isOnline) {
-                            contactService.notifyContactWeAreOnline(userId);
-                        }
-                    });
-                });
-
-                contactService.setNotificationService(notificationService);
-                notificationService.connect();
-
-                Thread.sleep(200);
-
-                // enviar el mensaje de autenticacion cuando se conecta
-               Platform.runLater(()-> 
-                sendAuthMessage());
-            } catch (Exception e) {
-                Platform.runLater(() -> {
-                    statusLabel.setText("Error al conectar: " + e.getMessage());
-                    statusLabel.setStyle("-fx-text-fill: red;");
-                });
-            }
-        }).start();
-    }
-
-    private void sendAuthMessage(){
-        try{
-            if(authToken == null || authToken.isEmpty()){
-                statusLabel.setText("Error: Token no disponible");
-                statusLabel.setStyle("-fx-text-fill: red");
-                return;
-            }
-
-            statusLabel.setText("Autenticando...");
-            statusLabel.setStyle("-fx-text-fill: blue");
-
-            AuthMessage authMessage = AuthMessage.newBuilder()
-                .setToken(authToken)
-                .build();
-                
-            WsMessage wsMessage = WsMessage.newBuilder()
-                .setAuthMessage(authMessage)
-                .build();
-
-            // envia el token a chat-service
-            webSocketService.sendMessage(wsMessage);
-            System.out.println("Mensaje de autenticacion enviado");
-        }catch(Exception e){
-            statusLabel.setText("Error en la autenticación: " + e.getMessage());
-        }
-    }
-    
-    private void handleDisconnect() {
-        webSocketService.disconnect();
-        if (notificationService != null) {
-            notificationService.disconnect();
-        }
-        // Forzar la actualización de la UI a desconectado inmediatamente.
-        // Esto garantiza que se limpien los usuarios en línea incluso si el socket ya estaba cerrado.
-        updateConnectionStatus(false);
-    }
-    
-    private void handleSendMessage() {
-        String content = messageInput.getText().trim();
-        
-        if (content.isEmpty()) {
-            return;
-        }
-
-        if(selectedContact == null){
-            statusLabel.setText("Selecciona un contacto primero");
-            statusLabel.setStyle("-fx-text-fill: orange");
-            return;
-        }
-        
-        if (!webSocketService.isConnected()) {
-            statusLabel.setText("No conectado al servidor");
-            statusLabel.setStyle("-fx-text-fill: red;");
-            return;
-        }
-        
-        try {
-            messageService.sendTextMessage(content, currentUsername);
-            messageInput.clear();
-        } catch (Exception e) {
-            statusLabel.setText("Error al enviar: " + e.getMessage());
-            statusLabel.setStyle("-fx-text-fill: red;");
-        }
-    }
-
-    private void handleAddContact(){
-        ChatDialogs.showAddContactDialog(currentUsername, (username) -> {
-            Contact contact = contactService.addContact(currentUserId, username, true);
-            return contact != null;
-        });
-    }
-
-    private void handleClearChat() {
-        if (selectedContact == null) return;
-
-        ChatDialogs.showClearChatDialog(
-            selectedContact.getContactUsername(),
-            () -> messageService.clearChatHistory(selectedContact, false),
-            () -> messageService.clearChatHistory(selectedContact, true)
-        );
-    }
-
-    private void handleBlockContact() {
-        if (selectedContact == null) return;
-        confirmBlockContact(selectedContact);
-    }
-
-    private void handleDeleteMessage(ChatMessage message){
-        messageService.deleteOneMessage(message);
-    }
-
-    private void handleEditMessage(ChatMessage message){
-        ChatDialogs.showEditMessageDialog(message.getContent(), newContent -> {
-            messageService.editMessage(message, newContent);
-        });
-    }
-
-
-    private void updateConnectionStatus(boolean connected) {
+    public void updateConnectionStatus(boolean connected) {
         if (connected) {
             statusLabel.setText("Conectado");
             statusLabel.setStyle("-fx-text-fill: green;");
@@ -562,45 +455,58 @@ public class ChatController {
         }
     }
 
-    private void confirmAddContact(Contact contact) {
-        ChatDialogs.showConfirmation(
-            "Añadir Contacto", 
-            null, 
-            "¿Quieres añadir este usuario a tu lista de contactos?", 
-            () -> {
-                contactService.confirmContact(contact);
-                contactsListView.refresh();
-            }
-        );
+    public void refreshContactsList() {
+        contactsListView.refresh();
     }
 
-    private void confirmBlockContact(Contact contact) {
-        ChatDialogs.showConfirmation(
-            "Bloquear Contacto", 
-            "¿Bloquear a " + contact.getContactUsername() + "?", 
-            "No podrás recibir mensajes de este usuario.", 
-            () -> {
-                contactService.blockContact(contact);
-                // Si el contacto bloqueado era el seleccionado, limpiar chat
-                if (selectedContact != null && selectedContact.getId() == contact.getId()) {
-                    messageListView.getItems().clear();
-                    selectedContact = null;
-                    chatTitleLabel.setText("");
-                    sendButton.setDisable(true);
-                    messageInput.setDisable(true);
-                    if (blockButton != null) blockButton.setDisable(true);
-                    if (clearChatButton != null) clearChatButton.setDisable(true);
-                }
-            }
-        );
+    public void resetChatViewIfSelected(Contact contact) {
+        if (selectedContact != null && selectedContact.getId() == contact.getId()) {
+            messageListView.getItems().clear();
+            selectedContact = null;
+            chatTitleLabel.setText("");
+            sendButton.setDisable(true);
+            messageInput.setDisable(true);
+            if (blockButton != null) blockButton.setDisable(true);
+            if (clearChatButton != null) clearChatButton.setDisable(true);
+        }
     }
 
-    private void confirmUnblockContact(Contact contact) {
-        ChatDialogs.showConfirmation(
-            "Desbloquear Contacto", 
-            "¿Desbloquear a " + contact.getContactUsername() + "?", 
-            "Podrás volver a intercambiar mensajes.", 
-            () -> contactService.unblockContact(contact)
-        );
+    // --- Getters y Setters para los Helpers ---
+
+    public Contact getSelectedContact() {
+        return selectedContact;
+    }
+
+    public TextArea getMessageInput() {
+        return messageInput;
+    }
+
+    public String getCurrentUsername() {
+        return currentUsername;
+    }
+
+    public String getCurrentUserId() {
+        return currentUserId;
+    }
+
+    public String getAuthToken() {
+        return authToken;
+    }
+
+    public NotificationService getNotificationService() {
+        return notificationService;
+    }
+
+    public void setNotificationService(NotificationService notificationService) {
+        this.notificationService = notificationService;
+    }
+
+    public void showStatus(String message, Color color) {
+        statusLabel.setText(message);
+        if (color != null) {
+            // Convertir Color de JavaFX a string CSS simple (aproximado)
+            String colorString = "#" + color.toString().substring(2, 8);
+            statusLabel.setStyle("-fx-text-fill: " + colorString + ";");
+        }
     }
 }

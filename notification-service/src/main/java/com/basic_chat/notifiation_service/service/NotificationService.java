@@ -113,44 +113,60 @@ public class NotificationService {
                 User contactUser = contactOpt.get();
                 logger.info("Usuario contacto encontrado: {}. Iniciando proceso de vinculación.", contactId);
                 
-                // Crear relación unidireccional: fromId -> contactId
-                UserContact userContact = new UserContact();
-                userContact.setUser(user);
-                userContact.setContact(contactUser);
-                userContactRepository.save(userContact);
-                logger.debug("Relación guardada: {} ahora tiene a {} como contacto", fromId, contactId);
-                
-                // Obtener sesiones activas del usuario origen y suscribirlas al nuevo contacto
-                List<String> sessions = redisTemplate.opsForList()
-                        .range("user:" + fromId + ":sessions", 0, -1);
-                if (sessions != null && !sessions.isEmpty()) {
-                    logger.debug("Usuario {} tiene {} sesiones activas. Suscribiendo al contacto {}", 
-                        fromId, sessions.size(), contactId);
-                    for (String sessionId : sessions) {
-                        userPresenceService.subscribeToContact(sessionId, contactUser.getId());
+                // 1. Verificar y crear relación fromId -> contactId
+                boolean contactExists = userContactRepository.findByUser(user).stream()
+                        .anyMatch(c -> c.getContact().getId().equals(contactId));
+
+                if (!contactExists) {
+                    // Crear relación unidireccional: fromId -> contactId
+                    UserContact userContact = new UserContact();
+                    userContact.setUser(user);
+                    userContact.setContact(contactUser);
+                    userContactRepository.save(userContact);
+                    logger.debug("Relación guardada: {} ahora tiene a {} como contacto", fromId, contactId);
+                    
+                    // Obtener sesiones activas del usuario origen y suscribirlas al nuevo contacto
+                    List<String> sessions = redisTemplate.opsForList()
+                            .range("user:" + fromId + ":sessions", 0, -1);
+                    if (sessions != null && !sessions.isEmpty()) {
+                        logger.debug("Usuario {} tiene {} sesiones activas. Suscribiendo al contacto {}", 
+                            fromId, sessions.size(), contactId);
+                        for (String sessionId : sessions) {
+                            userPresenceService.subscribeToContact(sessionId, contactUser.getId());
+                        }
+                    } else {
+                        logger.debug("Usuario {} no tiene sesiones activas en este momento", fromId);
                     }
                 } else {
-                    logger.debug("Usuario {} no tiene sesiones activas en este momento", fromId);
+                    logger.info("El contacto {} ya existe para el usuario {}. Se omite la creación.", contactId, fromId);
                 }
 
-                // Crear relación bidireccional: contactId -> fromId (relación inversa)
-                UserContact reverseContact = new UserContact();
-                reverseContact.setUser(contactUser);
-                reverseContact.setContact(user);
-                userContactRepository.save(reverseContact);
-                logger.debug("Relación inversa guardada: {} ahora tiene a {} como contacto", contactId, fromId);
+                // 2. Verifica si el usuario que recibio la solicitud tiene como contacto al usuario que le envio la solicitud y crea la relación inversa contactId -> fromId
+                boolean reverseExists = userContactRepository.findByUser(contactUser).stream()
+                        .anyMatch(c -> c.getContact().getId().equals(fromId));
 
-                // Obtener sesiones activas del usuario contacto y suscribirlas al usuario origen
-                List<String> contactSessions = redisTemplate.opsForList()
-                        .range("user:" + contactId + ":sessions", 0, -1);
-                if (contactSessions != null && !contactSessions.isEmpty()) {
-                    logger.debug("Usuario {} tiene {} sesiones activas. Suscribiendo al usuario {}", 
-                        contactId, contactSessions.size(), fromId);
-                    for (String sessionId : contactSessions) {
-                        userPresenceService.subscribeToContact(sessionId, user.getId());
+                if (!reverseExists) {
+                    // Crear relación bidireccional: contactId -> fromId (relación inversa)
+                    UserContact reverseContact = new UserContact();
+                    reverseContact.setUser(contactUser);
+                    reverseContact.setContact(user);
+                    userContactRepository.save(reverseContact);
+                    logger.debug("Relación inversa guardada: {} ahora tiene a {} como contacto", contactId, fromId);
+
+                    // Obtener sesiones activas del usuario contacto y suscribirlas al usuario origen
+                    List<String> contactSessions = redisTemplate.opsForList()
+                            .range("user:" + contactId + ":sessions", 0, -1);
+                    if (contactSessions != null && !contactSessions.isEmpty()) {
+                        logger.debug("Usuario {} tiene {} sesiones activas. Suscribiendo al usuario {}", 
+                            contactId, contactSessions.size(), fromId);
+                        for (String sessionId : contactSessions) {
+                            userPresenceService.subscribeToContact(sessionId, user.getId());
+                        }
+                    } else {
+                        logger.debug("Usuario {} no tiene sesiones activas en este momento", contactId);
                     }
                 } else {
-                    logger.debug("Usuario {} no tiene sesiones activas en este momento", contactId);
+                    logger.info("El contacto inverso {} ya existe para el usuario {}. Se omite la creación.", fromId, contactId);
                 }
                 
                 logger.info("Proceso de adición de contacto completado exitosamente. {} y {} ahora son contactos mutuos", 
