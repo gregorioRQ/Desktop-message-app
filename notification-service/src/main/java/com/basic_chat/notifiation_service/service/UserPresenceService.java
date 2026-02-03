@@ -325,4 +325,48 @@ public class UserPresenceService {
                 "Error al suscribir sesión " + sessionId + " al contacto " + contactId + ": " + e.getMessage(), e);
         }
     }
+
+    /**
+     * Elimina las suscripciones bidireccionales entre un usuario y un contacto.
+     * Se utiliza cuando se elimina un contacto para asegurar que dejen de recibir actualizaciones de presencia mutuas.
+     * 
+     * @param userId ID del usuario principal
+     * @param contactId ID del contacto a remover
+     */
+    public void unsubscribeBidirectional(String userId, String contactId) {
+        try {
+            logger.info("Iniciando desuscripción bidireccional entre {} y {}", userId, contactId);
+
+            // 1. Desuscribir sesiones del usuario principal hacia el contacto
+            List<String> userSessions = redisTemplate.opsForList().range("user:" + userId + ":sessions", 0, -1);
+            if (userSessions != null) {
+                for (String sessionId : userSessions) {
+                    removeSubscription(sessionId, contactId);
+                }
+            }
+
+            // 2. Desuscribir sesiones del contacto hacia el usuario principal
+            List<String> contactSessions = redisTemplate.opsForList().range("user:" + contactId + ":sessions", 0, -1);
+            if (contactSessions != null) {
+                for (String sessionId : contactSessions) {
+                    removeSubscription(sessionId, userId);
+                }
+            }
+            
+            logger.debug("Desuscripción bidireccional completada para {} y {}", userId, contactId);
+        } catch (Exception e) {
+            logger.error("Error al eliminar suscripciones entre {} y {}: {}", userId, contactId, e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Método auxiliar para remover una suscripción específica de Redis.
+     */
+    private void removeSubscription(String sessionId, String targetId) {
+        // Remover el targetId de la lista de suscripciones de la sesión
+        redisTemplate.opsForList().remove("session:" + sessionId + ":subscriptions", 0, targetId);
+        
+        // Remover la sesión de la lista de suscriptores del target
+        redisTemplate.opsForList().remove("user:" + targetId + ":subscribers", 0, sessionId);
+    }
 }

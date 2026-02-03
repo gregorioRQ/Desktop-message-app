@@ -190,11 +190,16 @@ class MessageServiceSaveMessageTest {
         messageService.saveMessage(validMessage);
 
         // Assert
-        verify(messageRepository).save(argThat(message ->
-                message.getFromUserId().equals("user1") &&
-                message.getToUserId().equals("user2") &&
-                new String(message.getData()).equals("Hello") &&
-                message.getCreationTime() == validMessage.getTimestamp()
-        ));
+        verify(messageRepository).save(argThat(message -> {
+            try {
+                MessagesProto.ChatMessage parsed = MessagesProto.ChatMessage.parseFrom(message.getData());
+                return message.getFromUserId().equals("user1") &&
+                    message.getToUserId().equals("user2") &&
+                    parsed.getContent().equals("Hello") &&
+                    message.getCreationTime() == validMessage.getTimestamp();
+            } catch (Exception e) {
+                return false;
+            }
+        }));
     }
 }

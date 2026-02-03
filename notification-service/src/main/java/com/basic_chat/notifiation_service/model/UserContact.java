@@ -7,9 +7,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 
 @Entity
-@Table(name = "user_contacts")
+@Table(name = "user_contacts", uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"user_id", "contact_id"})
+})
 public class UserContact {
 
     @Id

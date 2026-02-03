@@ -35,7 +35,10 @@ public class ConnectionActionHelper {
                     );
                     
                     ns.addNotificationListener(mensaje -> {
-                        Platform.runLater(() -> System.out.println("Notificación recibida: " + mensaje));
+                        Platform.runLater(() -> {
+                            System.out.println("Notificación recibida: " + mensaje);
+                            chatController.showStatus(mensaje, Color.BLUE);
+                        });
                     });
 
                     ns.setPresenceListener((userId, isOnline) -> {
@@ -95,4 +98,3 @@ public class ConnectionActionHelper {
         }
     }
 }
-

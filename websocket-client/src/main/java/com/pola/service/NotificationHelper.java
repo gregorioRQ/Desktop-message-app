@@ -74,6 +74,27 @@ public class NotificationHelper {
         sendMessage(sendFrame);
     }
 
+    public void sendDropContactNotification(String userId, java.util.List<String> contactIds) {
+        StringBuilder contactsJson = new StringBuilder("[");
+        for (int i = 0; i < contactIds.size(); i++) {
+            contactsJson.append("\"").append(contactIds.get(i)).append("\"");
+            if (i < contactIds.size() - 1) {
+                contactsJson.append(",");
+            }
+        }
+        contactsJson.append("]");
+
+        String jsonBody = String.format("{\"userId\": \"%s\", \"contactIds\": %s}", userId, contactsJson.toString());
+        String sendFrame = "SEND\n" +
+                           "destination:/app/contact.drop\n" +
+                           "type:contact_dropped\n" +
+                           "content-type:application/json\n" +
+                           "\n" +
+                           jsonBody + "\n" +
+                           "\u0000";
+        sendMessage(sendFrame);
+    }
+
     public String buildSubscribeFrame(String subscriptionId, String destination) {
         return "SUBSCRIBE\n" +
                "id:" + subscriptionId + "\n" +
@@ -90,6 +111,12 @@ public class NotificationHelper {
             }
         }
         return null;
+    }
+
+    public boolean extractJsonBoolean(String json, String key) {
+        Pattern pattern = Pattern.compile("\"" + key + "\"\\s*:\\s*(true|false)");
+        Matcher matcher = pattern.matcher(json);
+        return matcher.find() && Boolean.parseBoolean(matcher.group(1));
     }
 
     public void handlePresenceMessage(String jsonBody, boolean isOnline, BiConsumer<String, Boolean> presenceListener) {

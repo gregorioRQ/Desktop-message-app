@@ -16,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Component
 @Slf4j
-public class ChatMessageHandler implements WsMessageHandler{
+public class ChatMessageHandler implements WsMessageHandler {
 
     private final SessionManager sessionManager;
     private final MessageService messageService;
@@ -35,58 +35,81 @@ public class ChatMessageHandler implements WsMessageHandler{
         return message.hasChatMessage();
     }
 
-    /**
-     * Procesa un mensaje de chat recibido a través de WebSocket.
-     * 
-     * Flujo:
-     * 1. Extrae los datos del mensaje (remitente, destinatario, contenido)
-     * 2. Valida que el destinatario no haya bloqueado al remitente
-     * 3. Si está bloqueado: envía respuesta de error y retorna
-     * 4. Si el destinatario está online: entrega el mensaje en tiempo real
-     * 5. Si el destinatario está offline: publica un evento para guardarlo en cola
-     * 6. Guarda el mensaje en la base de datos (historial)
-     * 
-     * @param context contexto de la sesión WebSocket del remitente
-     * @param message mensaje protobuf que contiene los datos del chat
-     * @throws Exception si ocurre un error durante el procesamiento
-     */
     @Override
-    public void handle(SessionContext context, MessagesProto.WsMessage message) throws Exception {
+    public void handle(SessionContext context, MessagesProto.WsMessage message) {
         MessagesProto.ChatMessage chat = message.getChatMessage();
-        String recipient = chat.getRecipient();
+        log.debug("Processing chat message ID: {}", chat.getId());
+        try {
+            processChatMessage(context, message, chat);
+        } catch (Exception e) {
+            log.error("Unhandled exception while processing chat message ID: {}", chat.getId(), e);
+        }
+    }
 
-        // Verificar si el destinatario ha bloqueado al remitente
-        if (blockService.isBlocked(chat.getSender(), recipient)) {
-            log.info("Mensaje bloqueado de {} para {}", chat.getSender(), recipient);
-            sendBlockErrorResponse(context.getSession(), chat.getId(), recipient);
+    private void processChatMessage(SessionContext context, MessagesProto.WsMessage wsMessage, MessagesProto.ChatMessage chatMessage) {
+        if (isBlocked(chatMessage.getSender(), chatMessage.getRecipient())) {
+            handleBlockedMessage(context.getSession(), chatMessage);
             return;
         }
 
-        // Obtener la sesión del destinatario si está conectado
-        SessionManager.SessionInfo recipientSession = sessionManager.findByUsername(recipient);
-
-        // Si el destinatario está online, entregar el mensaje en tiempo real
-        if (sessionManager.isUserOnline(recipient) && recipientSession != null) {
-            recipientSession.getWsSession()
-                    .sendMessage(new BinaryMessage(message.toByteArray()));
-            log.debug("Mensaje entregado en tiempo real a {} desde {}", recipient, chat.getSender());
-        } else {
-            // Si está offline, publicar evento para cola de mensajes pendientes
-            rabbitTemplate.convertAndSend("message.sent", new MessageSentEvent(chat.getSender(), chat.getRecipient()));
-            log.debug("Usuario {} offline. Mensaje en cola para entrega posterior", recipient);
-        }
-
-        // Guardar el mensaje en la base de datos (historial de chat)
-        messageService.saveMessage(chat);
+        deliverMessage(wsMessage, chatMessage);
+        saveMessage(chatMessage);
     }
 
-    /**
-     * Envía una respuesta de error al remitente indicando que el mensaje fue bloqueado.
-     * 
-     * @param session sesión WebSocket del remitente
-     * @param messageId ID del mensaje que fue bloqueado
-     * @param recipient nombre del usuario que bloqueó al remitente
-     */
+    private boolean isBlocked(String sender, String recipient) {
+        try {
+            return blockService.isBlocked(sender, recipient);
+        } catch (Exception e) {
+            log.error("Error checking block status between {} and {}", sender, recipient, e);
+            return false;
+        }
+    }
+
+    private void handleBlockedMessage(WebSocketSession session, MessagesProto.ChatMessage chatMessage) {
+        log.warn("Blocked message from {} to {}", chatMessage.getSender(), chatMessage.getRecipient());
+        sendBlockErrorResponse(session, chatMessage.getId(), chatMessage.getRecipient());
+    }
+    
+    private void deliverMessage(MessagesProto.WsMessage message, MessagesProto.ChatMessage chat) {
+        try {
+            SessionManager.SessionInfo recipientSession = sessionManager.findByUsername(chat.getRecipient());
+            if (sessionManager.isUserOnline(chat.getRecipient()) && recipientSession != null) {
+                sendRealTimeMessage(recipientSession.getWsSession(), message);
+            } else {
+                queueOfflineMessage(chat);
+            }
+        } catch (Exception e) {
+            log.error("Failed to deliver message ID: {}", chat.getId(), e);
+        }
+    }
+
+    private void sendRealTimeMessage(WebSocketSession recipientSession, MessagesProto.WsMessage message) {
+        try {
+            recipientSession.sendMessage(new BinaryMessage(message.toByteArray()));
+            log.info("Message ID: {} delivered in real-time to {}", message.getChatMessage().getId(), recipientSession.getAttributes().get("username"));
+        } catch (Exception e) {
+            log.error("Failed to send real-time message ID: {} to session {}", message.getChatMessage().getId(), recipientSession.getId(), e);
+        }
+    }
+
+    private void queueOfflineMessage(MessagesProto.ChatMessage chat) {
+        try {
+            rabbitTemplate.convertAndSend("message.sent", new MessageSentEvent(chat.getSender(), chat.getRecipient()));
+            log.info("User {} is offline. Message ID: {} queued for later delivery.", chat.getRecipient(), chat.getId());
+        } catch (Exception e) {
+            log.error("Failed to queue offline message ID: {} for user {}", chat.getId(), chat.getRecipient(), e);
+        }
+    }
+
+    private void saveMessage(MessagesProto.ChatMessage chatMessage) {
+        try {
+            messageService.saveMessage(chatMessage);
+            log.debug("Message ID: {} saved to database.", chatMessage.getId());
+        } catch (Exception e) {
+            log.error("Failed to save message ID: {}", chatMessage.getId(), e);
+        }
+    }
+    
     private void sendBlockErrorResponse(WebSocketSession session, String messageId, String recipient) {
         try {
             MessagesProto.ChatMessageResponse response = MessagesProto.ChatMessageResponse.newBuilder()
@@ -102,9 +125,9 @@ public class ChatMessageHandler implements WsMessageHandler{
                     .build();
 
             session.sendMessage(new BinaryMessage(wsMessage.toByteArray()));
-            log.info("Respuesta de bloqueo enviada a {} para mensaje {}", session.getId(), messageId);
+            log.info("Block error response sent for message ID: {} to session {}", messageId, session.getId());
         } catch (Exception e) {
-            log.error("Error enviando respuesta de bloqueo para mensaje {} a sesión {}", messageId, session.getId(), e);
+            log.error("Error sending block error response for message ID: {} to session {}", messageId, session.getId(), e);
         }
     }
 }

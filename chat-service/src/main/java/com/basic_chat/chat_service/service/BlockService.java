@@ -47,7 +47,7 @@ public class BlockService {
             return true;
         } catch (Exception e) {
             log.error("Error al guardar bloqueo en base de datos - blocker: {}, blocked: {}", blocker, blocked, e);
-            return false;
+            throw new RuntimeException(e.getMessage());
         }
     }
 

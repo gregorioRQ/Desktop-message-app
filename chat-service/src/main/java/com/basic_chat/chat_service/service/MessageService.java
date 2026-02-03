@@ -179,8 +179,8 @@ public class MessageService {
             String errorMsg = "El ID del mensaje no es un número válido: " + request.getMessageId();
             System.err.println(errorMsg);
             throw new IllegalArgumentException(errorMsg, ex);
-            
-        } catch (IllegalArgumentException ex) {
+        
+        } catch (IllegalArgumentException | jakarta.persistence.EntityNotFoundException ex) {
             System.err.println("Validación fallida: " + ex.getMessage());
             throw ex;
             

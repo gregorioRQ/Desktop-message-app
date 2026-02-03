@@ -155,6 +155,9 @@ public class NotificationService {
             case "contact_unblocked":
                 handleContactUnblockedNotification(body);
                 break;
+            case "contact_dropped":
+                handleContactDroppedNotification(body);
+                break;
             default:
                 handleUnknownMessage(type, body);
                 break;
@@ -186,6 +189,16 @@ public class NotificationService {
     private void handleContactUnblockedNotification(String body) {
         System.out.println("Notificación de contacto desbloqueado: " + body);
         listeners.forEach(listener -> listener.accept(body));
+    }
+
+    private void handleContactDroppedNotification(String body) {
+        boolean success = false;
+        if (helper != null) {
+            success = helper.extractJsonBoolean(body, "success");
+        }
+        String message = success ? "Contacto eliminado correctamente." : "No se pudo eliminar el contacto.";
+        System.out.println("Notificación de eliminación: " + message);
+        listeners.forEach(listener -> listener.accept(message));
     }
 
     private void handleUnknownMessage(String type, String body) {
@@ -220,6 +233,12 @@ public class NotificationService {
     public void sendUserOnlineNotification(String userId) {
         if (helper != null) {
             helper.sendUserOnlineNotification(userId);
+        }
+    }
+
+    public void sendDropContactNotification(String userId, java.util.List<String> contactIds) {
+        if (helper != null) {
+            helper.sendDropContactNotification(userId, contactIds);
         }
     }
 }

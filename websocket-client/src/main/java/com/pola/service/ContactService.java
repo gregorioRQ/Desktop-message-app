@@ -156,9 +156,10 @@ public class ContactService {
                 blockedContacts.remove(contact); // Asegurar eliminación si estaba bloqueado
             });
 
-            // 3. (Futuro) Enviar solicitud de eliminación al servidor
-            // TODO: Implementar envío de paquete DELETE_CONTACT cuando el protocolo lo soporte
-            // if (webSocketService.isConnected()) { ... }
+            // 3. Enviar solicitud de eliminación al servidor de notificaciones
+            if (notificationService != null && contact.getContactUserId() != null) {
+                notificationService.sendDropContactNotification(currentUserId, java.util.Collections.singletonList(contact.getContactUserId()));
+            }
 
             System.out.println(logPrefix + "Contacto eliminado exitosamente: " + contact.getContactUsername());
         } catch (SQLException e) {
