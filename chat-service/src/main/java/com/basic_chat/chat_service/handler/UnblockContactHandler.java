@@ -79,9 +79,6 @@ public class UnblockContactHandler implements WsMessageHandler {
                 notifyUnBlockedUserIfOnline(blocked, blocker);
             } else {
                 // Si está offline, guardar pendiente
-                PendingUnblock pending = new PendingUnblock(null, blocker, blocked, System.currentTimeMillis());
-                pendingUnblockRepository.save(pending);
-                log.info("Usuario {} offline. Desbloqueo pendiente guardado.", blocked);
                 savePendingUnblockNotification(blocker, blocked);
             }
         } catch (Exception e) {
