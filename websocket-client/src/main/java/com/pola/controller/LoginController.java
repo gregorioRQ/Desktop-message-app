@@ -1,8 +1,6 @@
 package com.pola.controller;
 
-import com.pola.proto.LoginProto.LoginRequest;
-import com.pola.proto.LoginProto.LoginResponse;
-import com.pola.service.HttpService;
+import com.pola.service.AuthService;
 import com.pola.view.ViewManager;
 
 import javafx.application.Platform;
@@ -36,14 +34,15 @@ public class LoginController {
     private Label registerLink;
     
     private ViewManager viewManager;
-    private HttpService httpService;
+    private AuthService authService;
     
     public void setViewManager(ViewManager viewManager) {
         this.viewManager = viewManager;
     }
 
-    public void setHttpService(HttpService httpService){
-        this.httpService = httpService;
+    public void setAuthService(AuthService authService){
+        this.authService = authService;
+        attemptAutoLogin();
     }
     
     @FXML
@@ -62,6 +61,25 @@ public class LoginController {
             registerLink.setStyle("-fx-text-fill: #ffffff; -fx-underline: true; -fx-cursor: hand;"));
         registerLink.setOnMouseExited(event -> 
             registerLink.setStyle("-fx-text-fill: #e0e0e0; -fx-underline: true; -fx-cursor: hand;"));
+    }
+
+    private void attemptAutoLogin() {
+        if (authService == null) return;
+        
+        setButtonsEnabled(false);
+        statusLabel.setText("Intentando inicio de sesión automático...");
+        
+        authService.tryAutoLogin()
+            .thenAccept(session -> Platform.runLater(() -> {
+                viewManager.showChatView(session.getUsername(), session.getUserId(), session.getAccessToken());
+            }))
+            .exceptionally(e -> {
+                Platform.runLater(() -> {
+                    setButtonsEnabled(true);
+                    statusLabel.setText(""); // Limpiar mensaje si falla auto-login
+                });
+                return null;
+            });
     }
 
     @FXML
@@ -88,22 +106,11 @@ public class LoginController {
             setButtonsEnabled(false);
             showInfo("Iniciando sesión...");
 
-        LoginRequest loginRequest = LoginRequest.newBuilder()
-                .setUsername(username)
-                .setPassword(password)
-                .build();
-        
-        httpService.login(loginRequest, LoginResponse.class)
-                    .thenAccept(response -> {
+        authService.login(username, password)
+                    .thenAccept(session -> {
                     Platform.runLater(() -> {
-                        if (response.getSuccess()) {
-                            showSuccess("Login exitoso");
-                            // pasa el token a viewmanager
-                            viewManager.showChatView(username, response.getUserId(), response.getToken());
-                        } else {
-                            showError("Error: " + response.getMessage());
-                            setButtonsEnabled(true);
-                        }
+                        showSuccess("Login exitoso");
+                        viewManager.showChatView(session.getUsername(), session.getUserId(), session.getAccessToken());
                     });
                 })
                 .exceptionally(error -> {

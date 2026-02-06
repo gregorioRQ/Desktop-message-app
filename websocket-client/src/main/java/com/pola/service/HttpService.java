@@ -38,6 +38,13 @@ public interface HttpService {
     <T, R> CompletableFuture<R> updateProfile(String userId, T request, Class<R> responseClass);
 
     /**
+     * Refresca los tokens de sesión
+     * @param request Request de refresco (Protobuf)
+     * @return CompletableFuture con la respuesta
+     */
+    <T, R> CompletableFuture<R> refreshToken(T request, Class<R> responseClass);
+
+    /**
      * Obtiene el historial de mensajes 
     */
 

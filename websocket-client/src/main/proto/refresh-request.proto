@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package com.pola;
+
+option java_package = "com.pola.proto";
+option java_outer_classname ="RefreshTokenMessage";
+
+message RefreshRequest{
+    string token = 1;
+}
+
+message RefreshResponse{
+    string accessToken = 1;
+    string refreshToken = 2;
+    string errorMsg = 3;
+}
+
+message RefreshTokenRequest{
+    oneof payload{
+        RefreshRequest refresh_request = 1;
+        RefreshResponse refresh_response = 2;
+    }
+}

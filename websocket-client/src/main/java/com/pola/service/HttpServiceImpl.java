@@ -44,6 +44,11 @@ public class HttpServiceImpl implements HttpService{
         return sendPutRequest("/profiles/" + userId, request, responseClass);
     }
 
+    @Override
+    public <T, R> CompletableFuture<R> refreshToken(T request, Class<R> responseClass) {
+        return sendPostRequest("/auth/refresh", request, responseClass);
+    }
+
     /**
      * Envía una petición POST con Protobuf
      */
