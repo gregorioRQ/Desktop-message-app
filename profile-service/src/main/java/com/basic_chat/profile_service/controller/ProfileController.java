@@ -7,9 +7,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.basic_chat.profile_service.service.JwtService;
 import com.basic_chat.profile_service.service.ProfileService;
 import com.basic_chat.proto.LoginProto.LoginRequest;
 import com.basic_chat.proto.LoginProto.LoginResponse;
+import com.basic_chat.proto.RefreshTokenMessage.RefreshRequest;
+import com.basic_chat.proto.RefreshTokenMessage.RefreshResponse;
 import com.basic_chat.proto.RegisterProto.RegisterRequest;
 import com.basic_chat.proto.RegisterProto.RegisterResponse;
 
@@ -18,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * Controlador REST para registro de usuarios
- * Principio SOLID: Single Responsibility - Solo maneja requests HTTP
+ * Principio SOLID: Single Responsibility - Solo maneja requests HTTP con protobuf
  */
 @RestController
 @RequestMapping("/profile/api/v1")
@@ -27,6 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ProfileController {
 
     private final ProfileService profileService;
+    private final JwtService jwtService;
 
     /**
      * Endpoint para registrar un nuevo usuario
@@ -70,5 +74,11 @@ public class ProfileController {
         }else{
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
         }
+    }
+
+    @PostMapping(value = "auth/refresh", consumes = "application/x-protobuf", produces = "application/x-protobuf")
+    public ResponseEntity<RefreshResponse> refresh(@RequestBody RefreshRequest request) {
+        RefreshResponse tokens = jwtService.refreshAccessToken(request.getToken());
+        return ResponseEntity.ok(tokens);
     }
 }

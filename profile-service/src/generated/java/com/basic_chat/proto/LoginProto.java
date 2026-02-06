@@ -15,6 +15,706 @@ public final class LoginProto {
     registerAllExtensions(
         (com.google.protobuf.ExtensionRegistryLite) registry);
   }
+  public interface TokenPairOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:com.basic_chat.TokenPair)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string accessToken = 1;</code>
+     * @return The accessToken.
+     */
+    java.lang.String getAccessToken();
+    /**
+     * <code>string accessToken = 1;</code>
+     * @return The bytes for accessToken.
+     */
+    com.google.protobuf.ByteString
+        getAccessTokenBytes();
+
+    /**
+     * <code>string refreshToken = 2;</code>
+     * @return The refreshToken.
+     */
+    java.lang.String getRefreshToken();
+    /**
+     * <code>string refreshToken = 2;</code>
+     * @return The bytes for refreshToken.
+     */
+    com.google.protobuf.ByteString
+        getRefreshTokenBytes();
+  }
+  /**
+   * Protobuf type {@code com.basic_chat.TokenPair}
+   */
+  public static final class TokenPair extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:com.basic_chat.TokenPair)
+      TokenPairOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use TokenPair.newBuilder() to construct.
+    private TokenPair(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private TokenPair() {
+      accessToken_ = "";
+      refreshToken_ = "";
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new TokenPair();
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.basic_chat.proto.LoginProto.internal_static_com_basic_chat_TokenPair_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.basic_chat.proto.LoginProto.internal_static_com_basic_chat_TokenPair_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.basic_chat.proto.LoginProto.TokenPair.class, com.basic_chat.proto.LoginProto.TokenPair.Builder.class);
+    }
+
+    public static final int ACCESSTOKEN_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object accessToken_ = "";
+    /**
+     * <code>string accessToken = 1;</code>
+     * @return The accessToken.
+     */
+    @java.lang.Override
+    public java.lang.String getAccessToken() {
+      java.lang.Object ref = accessToken_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        accessToken_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string accessToken = 1;</code>
+     * @return The bytes for accessToken.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getAccessTokenBytes() {
+      java.lang.Object ref = accessToken_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        accessToken_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int REFRESHTOKEN_FIELD_NUMBER = 2;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object refreshToken_ = "";
+    /**
+     * <code>string refreshToken = 2;</code>
+     * @return The refreshToken.
+     */
+    @java.lang.Override
+    public java.lang.String getRefreshToken() {
+      java.lang.Object ref = refreshToken_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        refreshToken_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string refreshToken = 2;</code>
+     * @return The bytes for refreshToken.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getRefreshTokenBytes() {
+      java.lang.Object ref = refreshToken_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        refreshToken_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(accessToken_)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, accessToken_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(refreshToken_)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, refreshToken_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(accessToken_)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, accessToken_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(refreshToken_)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, refreshToken_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.basic_chat.proto.LoginProto.TokenPair)) {
+        return super.equals(obj);
+      }
+      com.basic_chat.proto.LoginProto.TokenPair other = (com.basic_chat.proto.LoginProto.TokenPair) obj;
+
+      if (!getAccessToken()
+          .equals(other.getAccessToken())) return false;
+      if (!getRefreshToken()
+          .equals(other.getRefreshToken())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + ACCESSTOKEN_FIELD_NUMBER;
+      hash = (53 * hash) + getAccessToken().hashCode();
+      hash = (37 * hash) + REFRESHTOKEN_FIELD_NUMBER;
+      hash = (53 * hash) + getRefreshToken().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.basic_chat.proto.LoginProto.TokenPair parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.basic_chat.proto.LoginProto.TokenPair parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.basic_chat.proto.LoginProto.TokenPair parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.basic_chat.proto.LoginProto.TokenPair parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.basic_chat.proto.LoginProto.TokenPair parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.basic_chat.proto.LoginProto.TokenPair parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.basic_chat.proto.LoginProto.TokenPair parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.basic_chat.proto.LoginProto.TokenPair parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static com.basic_chat.proto.LoginProto.TokenPair parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static com.basic_chat.proto.LoginProto.TokenPair parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.basic_chat.proto.LoginProto.TokenPair parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.basic_chat.proto.LoginProto.TokenPair parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.basic_chat.proto.LoginProto.TokenPair prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code com.basic_chat.TokenPair}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:com.basic_chat.TokenPair)
+        com.basic_chat.proto.LoginProto.TokenPairOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.basic_chat.proto.LoginProto.internal_static_com_basic_chat_TokenPair_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.basic_chat.proto.LoginProto.internal_static_com_basic_chat_TokenPair_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.basic_chat.proto.LoginProto.TokenPair.class, com.basic_chat.proto.LoginProto.TokenPair.Builder.class);
+      }
+
+      // Construct using com.basic_chat.proto.LoginProto.TokenPair.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        accessToken_ = "";
+        refreshToken_ = "";
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.basic_chat.proto.LoginProto.internal_static_com_basic_chat_TokenPair_descriptor;
+      }
+
+      @java.lang.Override
+      public com.basic_chat.proto.LoginProto.TokenPair getDefaultInstanceForType() {
+        return com.basic_chat.proto.LoginProto.TokenPair.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public com.basic_chat.proto.LoginProto.TokenPair build() {
+        com.basic_chat.proto.LoginProto.TokenPair result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public com.basic_chat.proto.LoginProto.TokenPair buildPartial() {
+        com.basic_chat.proto.LoginProto.TokenPair result = new com.basic_chat.proto.LoginProto.TokenPair(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(com.basic_chat.proto.LoginProto.TokenPair result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.accessToken_ = accessToken_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.refreshToken_ = refreshToken_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.basic_chat.proto.LoginProto.TokenPair) {
+          return mergeFrom((com.basic_chat.proto.LoginProto.TokenPair)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.basic_chat.proto.LoginProto.TokenPair other) {
+        if (other == com.basic_chat.proto.LoginProto.TokenPair.getDefaultInstance()) return this;
+        if (!other.getAccessToken().isEmpty()) {
+          accessToken_ = other.accessToken_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        if (!other.getRefreshToken().isEmpty()) {
+          refreshToken_ = other.refreshToken_;
+          bitField0_ |= 0x00000002;
+          onChanged();
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                accessToken_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 18: {
+                refreshToken_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 18
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object accessToken_ = "";
+      /**
+       * <code>string accessToken = 1;</code>
+       * @return The accessToken.
+       */
+      public java.lang.String getAccessToken() {
+        java.lang.Object ref = accessToken_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          accessToken_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string accessToken = 1;</code>
+       * @return The bytes for accessToken.
+       */
+      public com.google.protobuf.ByteString
+          getAccessTokenBytes() {
+        java.lang.Object ref = accessToken_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          accessToken_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string accessToken = 1;</code>
+       * @param value The accessToken to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAccessToken(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        accessToken_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string accessToken = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearAccessToken() {
+        accessToken_ = getDefaultInstance().getAccessToken();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string accessToken = 1;</code>
+       * @param value The bytes for accessToken to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAccessTokenBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        accessToken_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object refreshToken_ = "";
+      /**
+       * <code>string refreshToken = 2;</code>
+       * @return The refreshToken.
+       */
+      public java.lang.String getRefreshToken() {
+        java.lang.Object ref = refreshToken_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          refreshToken_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string refreshToken = 2;</code>
+       * @return The bytes for refreshToken.
+       */
+      public com.google.protobuf.ByteString
+          getRefreshTokenBytes() {
+        java.lang.Object ref = refreshToken_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          refreshToken_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string refreshToken = 2;</code>
+       * @param value The refreshToken to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRefreshToken(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        refreshToken_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string refreshToken = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearRefreshToken() {
+        refreshToken_ = getDefaultInstance().getRefreshToken();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string refreshToken = 2;</code>
+       * @param value The bytes for refreshToken to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRefreshTokenBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        refreshToken_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:com.basic_chat.TokenPair)
+    }
+
+    // @@protoc_insertion_point(class_scope:com.basic_chat.TokenPair)
+    private static final com.basic_chat.proto.LoginProto.TokenPair DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.basic_chat.proto.LoginProto.TokenPair();
+    }
+
+    public static com.basic_chat.proto.LoginProto.TokenPair getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<TokenPair>
+        PARSER = new com.google.protobuf.AbstractParser<TokenPair>() {
+      @java.lang.Override
+      public TokenPair parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<TokenPair> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<TokenPair> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.basic_chat.proto.LoginProto.TokenPair getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   public interface LoginRequestOrBuilder extends
       // @@protoc_insertion_point(interface_extends:com.basic_chat.LoginRequest)
       com.google.protobuf.MessageOrBuilder {
@@ -42,6 +742,18 @@ public final class LoginProto {
      */
     com.google.protobuf.ByteString
         getPasswordBytes();
+
+    /**
+     * <code>string deviceId = 3;</code>
+     * @return The deviceId.
+     */
+    java.lang.String getDeviceId();
+    /**
+     * <code>string deviceId = 3;</code>
+     * @return The bytes for deviceId.
+     */
+    com.google.protobuf.ByteString
+        getDeviceIdBytes();
   }
   /**
    * <pre>
@@ -62,6 +774,7 @@ public final class LoginProto {
     private LoginRequest() {
       username_ = "";
       password_ = "";
+      deviceId_ = "";
     }
 
     @java.lang.Override
@@ -162,6 +875,45 @@ public final class LoginProto {
       }
     }
 
+    public static final int DEVICEID_FIELD_NUMBER = 3;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object deviceId_ = "";
+    /**
+     * <code>string deviceId = 3;</code>
+     * @return The deviceId.
+     */
+    @java.lang.Override
+    public java.lang.String getDeviceId() {
+      java.lang.Object ref = deviceId_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        deviceId_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string deviceId = 3;</code>
+     * @return The bytes for deviceId.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getDeviceIdBytes() {
+      java.lang.Object ref = deviceId_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        deviceId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -182,6 +934,9 @@ public final class LoginProto {
       if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(password_)) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 2, password_);
       }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(deviceId_)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, deviceId_);
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -196,6 +951,9 @@ public final class LoginProto {
       }
       if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(password_)) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, password_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(deviceId_)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, deviceId_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -216,6 +974,8 @@ public final class LoginProto {
           .equals(other.getUsername())) return false;
       if (!getPassword()
           .equals(other.getPassword())) return false;
+      if (!getDeviceId()
+          .equals(other.getDeviceId())) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -231,6 +991,8 @@ public final class LoginProto {
       hash = (53 * hash) + getUsername().hashCode();
       hash = (37 * hash) + PASSWORD_FIELD_NUMBER;
       hash = (53 * hash) + getPassword().hashCode();
+      hash = (37 * hash) + DEVICEID_FIELD_NUMBER;
+      hash = (53 * hash) + getDeviceId().hashCode();
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -368,6 +1130,7 @@ public final class LoginProto {
         bitField0_ = 0;
         username_ = "";
         password_ = "";
+        deviceId_ = "";
         return this;
       }
 
@@ -406,6 +1169,9 @@ public final class LoginProto {
         }
         if (((from_bitField0_ & 0x00000002) != 0)) {
           result.password_ = password_;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.deviceId_ = deviceId_;
         }
       }
 
@@ -463,6 +1229,11 @@ public final class LoginProto {
           bitField0_ |= 0x00000002;
           onChanged();
         }
+        if (!other.getDeviceId().isEmpty()) {
+          deviceId_ = other.deviceId_;
+          bitField0_ |= 0x00000004;
+          onChanged();
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -499,6 +1270,11 @@ public final class LoginProto {
                 bitField0_ |= 0x00000002;
                 break;
               } // case 18
+              case 26: {
+                deviceId_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 26
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -659,6 +1435,78 @@ public final class LoginProto {
         onChanged();
         return this;
       }
+
+      private java.lang.Object deviceId_ = "";
+      /**
+       * <code>string deviceId = 3;</code>
+       * @return The deviceId.
+       */
+      public java.lang.String getDeviceId() {
+        java.lang.Object ref = deviceId_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          deviceId_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string deviceId = 3;</code>
+       * @return The bytes for deviceId.
+       */
+      public com.google.protobuf.ByteString
+          getDeviceIdBytes() {
+        java.lang.Object ref = deviceId_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          deviceId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string deviceId = 3;</code>
+       * @param value The deviceId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDeviceId(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        deviceId_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string deviceId = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearDeviceId() {
+        deviceId_ = getDefaultInstance().getDeviceId();
+        bitField0_ = (bitField0_ & ~0x00000004);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string deviceId = 3;</code>
+       * @param value The bytes for deviceId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDeviceIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        deviceId_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
       @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -758,16 +1606,19 @@ public final class LoginProto {
         getUserIdBytes();
 
     /**
-     * <code>string token = 4;</code>
-     * @return The token.
+     * <code>.com.basic_chat.TokenPair tokens = 4;</code>
+     * @return Whether the tokens field is set.
      */
-    java.lang.String getToken();
+    boolean hasTokens();
     /**
-     * <code>string token = 4;</code>
-     * @return The bytes for token.
+     * <code>.com.basic_chat.TokenPair tokens = 4;</code>
+     * @return The tokens.
      */
-    com.google.protobuf.ByteString
-        getTokenBytes();
+    com.basic_chat.proto.LoginProto.TokenPair getTokens();
+    /**
+     * <code>.com.basic_chat.TokenPair tokens = 4;</code>
+     */
+    com.basic_chat.proto.LoginProto.TokenPairOrBuilder getTokensOrBuilder();
   }
   /**
    * <pre>
@@ -788,7 +1639,6 @@ public final class LoginProto {
     private LoginResponse() {
       message_ = "";
       userId_ = "";
-      token_ = "";
     }
 
     @java.lang.Override
@@ -811,6 +1661,7 @@ public final class LoginProto {
               com.basic_chat.proto.LoginProto.LoginResponse.class, com.basic_chat.proto.LoginProto.LoginResponse.Builder.class);
     }
 
+    private int bitField0_;
     public static final int SUCCESS_FIELD_NUMBER = 1;
     private boolean success_ = false;
     /**
@@ -900,43 +1751,30 @@ public final class LoginProto {
       }
     }
 
-    public static final int TOKEN_FIELD_NUMBER = 4;
-    @SuppressWarnings("serial")
-    private volatile java.lang.Object token_ = "";
+    public static final int TOKENS_FIELD_NUMBER = 4;
+    private com.basic_chat.proto.LoginProto.TokenPair tokens_;
     /**
-     * <code>string token = 4;</code>
-     * @return The token.
+     * <code>.com.basic_chat.TokenPair tokens = 4;</code>
+     * @return Whether the tokens field is set.
      */
     @java.lang.Override
-    public java.lang.String getToken() {
-      java.lang.Object ref = token_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        token_ = s;
-        return s;
-      }
+    public boolean hasTokens() {
+      return ((bitField0_ & 0x00000001) != 0);
     }
     /**
-     * <code>string token = 4;</code>
-     * @return The bytes for token.
+     * <code>.com.basic_chat.TokenPair tokens = 4;</code>
+     * @return The tokens.
      */
     @java.lang.Override
-    public com.google.protobuf.ByteString
-        getTokenBytes() {
-      java.lang.Object ref = token_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        token_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
+    public com.basic_chat.proto.LoginProto.TokenPair getTokens() {
+      return tokens_ == null ? com.basic_chat.proto.LoginProto.TokenPair.getDefaultInstance() : tokens_;
+    }
+    /**
+     * <code>.com.basic_chat.TokenPair tokens = 4;</code>
+     */
+    @java.lang.Override
+    public com.basic_chat.proto.LoginProto.TokenPairOrBuilder getTokensOrBuilder() {
+      return tokens_ == null ? com.basic_chat.proto.LoginProto.TokenPair.getDefaultInstance() : tokens_;
     }
 
     private byte memoizedIsInitialized = -1;
@@ -962,8 +1800,8 @@ public final class LoginProto {
       if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(userId_)) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 3, userId_);
       }
-      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(token_)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 4, token_);
+      if (((bitField0_ & 0x00000001) != 0)) {
+        output.writeMessage(4, getTokens());
       }
       getUnknownFields().writeTo(output);
     }
@@ -984,8 +1822,9 @@ public final class LoginProto {
       if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(userId_)) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, userId_);
       }
-      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(token_)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, token_);
+      if (((bitField0_ & 0x00000001) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(4, getTokens());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -1008,8 +1847,11 @@ public final class LoginProto {
           .equals(other.getMessage())) return false;
       if (!getUserId()
           .equals(other.getUserId())) return false;
-      if (!getToken()
-          .equals(other.getToken())) return false;
+      if (hasTokens() != other.hasTokens()) return false;
+      if (hasTokens()) {
+        if (!getTokens()
+            .equals(other.getTokens())) return false;
+      }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -1028,8 +1870,10 @@ public final class LoginProto {
       hash = (53 * hash) + getMessage().hashCode();
       hash = (37 * hash) + USERID_FIELD_NUMBER;
       hash = (53 * hash) + getUserId().hashCode();
-      hash = (37 * hash) + TOKEN_FIELD_NUMBER;
-      hash = (53 * hash) + getToken().hashCode();
+      if (hasTokens()) {
+        hash = (37 * hash) + TOKENS_FIELD_NUMBER;
+        hash = (53 * hash) + getTokens().hashCode();
+      }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -1153,13 +1997,19 @@ public final class LoginProto {
 
       // Construct using com.basic_chat.proto.LoginProto.LoginResponse.newBuilder()
       private Builder() {
-
+        maybeForceBuilderInitialization();
       }
 
       private Builder(
           com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
         super(parent);
-
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+          getTokensFieldBuilder();
+        }
       }
       @java.lang.Override
       public Builder clear() {
@@ -1168,7 +2018,11 @@ public final class LoginProto {
         success_ = false;
         message_ = "";
         userId_ = "";
-        token_ = "";
+        tokens_ = null;
+        if (tokensBuilder_ != null) {
+          tokensBuilder_.dispose();
+          tokensBuilder_ = null;
+        }
         return this;
       }
 
@@ -1211,9 +2065,14 @@ public final class LoginProto {
         if (((from_bitField0_ & 0x00000004) != 0)) {
           result.userId_ = userId_;
         }
+        int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000008) != 0)) {
-          result.token_ = token_;
+          result.tokens_ = tokensBuilder_ == null
+              ? tokens_
+              : tokensBuilder_.build();
+          to_bitField0_ |= 0x00000001;
         }
+        result.bitField0_ |= to_bitField0_;
       }
 
       @java.lang.Override
@@ -1273,10 +2132,8 @@ public final class LoginProto {
           bitField0_ |= 0x00000004;
           onChanged();
         }
-        if (!other.getToken().isEmpty()) {
-          token_ = other.token_;
-          bitField0_ |= 0x00000008;
-          onChanged();
+        if (other.hasTokens()) {
+          mergeTokens(other.getTokens());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
@@ -1320,7 +2177,9 @@ public final class LoginProto {
                 break;
               } // case 26
               case 34: {
-                token_ = input.readStringRequireUtf8();
+                input.readMessage(
+                    getTokensFieldBuilder().getBuilder(),
+                    extensionRegistry);
                 bitField0_ |= 0x00000008;
                 break;
               } // case 34
@@ -1517,76 +2376,125 @@ public final class LoginProto {
         return this;
       }
 
-      private java.lang.Object token_ = "";
+      private com.basic_chat.proto.LoginProto.TokenPair tokens_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.basic_chat.proto.LoginProto.TokenPair, com.basic_chat.proto.LoginProto.TokenPair.Builder, com.basic_chat.proto.LoginProto.TokenPairOrBuilder> tokensBuilder_;
       /**
-       * <code>string token = 4;</code>
-       * @return The token.
+       * <code>.com.basic_chat.TokenPair tokens = 4;</code>
+       * @return Whether the tokens field is set.
        */
-      public java.lang.String getToken() {
-        java.lang.Object ref = token_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          token_ = s;
-          return s;
+      public boolean hasTokens() {
+        return ((bitField0_ & 0x00000008) != 0);
+      }
+      /**
+       * <code>.com.basic_chat.TokenPair tokens = 4;</code>
+       * @return The tokens.
+       */
+      public com.basic_chat.proto.LoginProto.TokenPair getTokens() {
+        if (tokensBuilder_ == null) {
+          return tokens_ == null ? com.basic_chat.proto.LoginProto.TokenPair.getDefaultInstance() : tokens_;
         } else {
-          return (java.lang.String) ref;
+          return tokensBuilder_.getMessage();
         }
       }
       /**
-       * <code>string token = 4;</code>
-       * @return The bytes for token.
+       * <code>.com.basic_chat.TokenPair tokens = 4;</code>
        */
-      public com.google.protobuf.ByteString
-          getTokenBytes() {
-        java.lang.Object ref = token_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          token_ = b;
-          return b;
+      public Builder setTokens(com.basic_chat.proto.LoginProto.TokenPair value) {
+        if (tokensBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          tokens_ = value;
         } else {
-          return (com.google.protobuf.ByteString) ref;
+          tokensBuilder_.setMessage(value);
         }
-      }
-      /**
-       * <code>string token = 4;</code>
-       * @param value The token to set.
-       * @return This builder for chaining.
-       */
-      public Builder setToken(
-          java.lang.String value) {
-        if (value == null) { throw new NullPointerException(); }
-        token_ = value;
         bitField0_ |= 0x00000008;
         onChanged();
         return this;
       }
       /**
-       * <code>string token = 4;</code>
-       * @return This builder for chaining.
+       * <code>.com.basic_chat.TokenPair tokens = 4;</code>
        */
-      public Builder clearToken() {
-        token_ = getDefaultInstance().getToken();
+      public Builder setTokens(
+          com.basic_chat.proto.LoginProto.TokenPair.Builder builderForValue) {
+        if (tokensBuilder_ == null) {
+          tokens_ = builderForValue.build();
+        } else {
+          tokensBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.com.basic_chat.TokenPair tokens = 4;</code>
+       */
+      public Builder mergeTokens(com.basic_chat.proto.LoginProto.TokenPair value) {
+        if (tokensBuilder_ == null) {
+          if (((bitField0_ & 0x00000008) != 0) &&
+            tokens_ != null &&
+            tokens_ != com.basic_chat.proto.LoginProto.TokenPair.getDefaultInstance()) {
+            getTokensBuilder().mergeFrom(value);
+          } else {
+            tokens_ = value;
+          }
+        } else {
+          tokensBuilder_.mergeFrom(value);
+        }
+        if (tokens_ != null) {
+          bitField0_ |= 0x00000008;
+          onChanged();
+        }
+        return this;
+      }
+      /**
+       * <code>.com.basic_chat.TokenPair tokens = 4;</code>
+       */
+      public Builder clearTokens() {
         bitField0_ = (bitField0_ & ~0x00000008);
+        tokens_ = null;
+        if (tokensBuilder_ != null) {
+          tokensBuilder_.dispose();
+          tokensBuilder_ = null;
+        }
         onChanged();
         return this;
       }
       /**
-       * <code>string token = 4;</code>
-       * @param value The bytes for token to set.
-       * @return This builder for chaining.
+       * <code>.com.basic_chat.TokenPair tokens = 4;</code>
        */
-      public Builder setTokenBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) { throw new NullPointerException(); }
-        checkByteStringIsUtf8(value);
-        token_ = value;
+      public com.basic_chat.proto.LoginProto.TokenPair.Builder getTokensBuilder() {
         bitField0_ |= 0x00000008;
         onChanged();
-        return this;
+        return getTokensFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.com.basic_chat.TokenPair tokens = 4;</code>
+       */
+      public com.basic_chat.proto.LoginProto.TokenPairOrBuilder getTokensOrBuilder() {
+        if (tokensBuilder_ != null) {
+          return tokensBuilder_.getMessageOrBuilder();
+        } else {
+          return tokens_ == null ?
+              com.basic_chat.proto.LoginProto.TokenPair.getDefaultInstance() : tokens_;
+        }
+      }
+      /**
+       * <code>.com.basic_chat.TokenPair tokens = 4;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.basic_chat.proto.LoginProto.TokenPair, com.basic_chat.proto.LoginProto.TokenPair.Builder, com.basic_chat.proto.LoginProto.TokenPairOrBuilder> 
+          getTokensFieldBuilder() {
+        if (tokensBuilder_ == null) {
+          tokensBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              com.basic_chat.proto.LoginProto.TokenPair, com.basic_chat.proto.LoginProto.TokenPair.Builder, com.basic_chat.proto.LoginProto.TokenPairOrBuilder>(
+                  getTokens(),
+                  getParentForChildren(),
+                  isClean());
+          tokens_ = null;
+        }
+        return tokensBuilder_;
       }
       @java.lang.Override
       public final Builder setUnknownFields(
@@ -2580,6 +3488,11 @@ public final class LoginProto {
   }
 
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_basic_chat_TokenPair_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_com_basic_chat_TokenPair_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_com_basic_chat_LoginRequest_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -2603,34 +3516,43 @@ public final class LoginProto {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\013login.proto\022\016com.basic_chat\"2\n\014LoginRe" +
-      "quest\022\020\n\010username\030\001 \001(\t\022\020\n\010password\030\002 \001(" +
-      "\t\"P\n\rLoginResponse\022\017\n\007success\030\001 \001(\010\022\017\n\007m" +
-      "essage\030\002 \001(\t\022\016\n\006userId\030\003 \001(\t\022\r\n\005token\030\004 " +
-      "\001(\t\"\214\001\n\tLoginUser\0228\n\020register_request\030\001 " +
-      "\001(\0132\034.com.basic_chat.LoginRequestH\000\022:\n\021r" +
-      "egister_response\030\002 \001(\0132\035.com.basic_chat." +
-      "LoginResponseH\000B\t\n\007payloadB\"\n\024com.basic_" +
-      "chat.protoB\nLoginProtob\006proto3"
+      "\n\013login.proto\022\016com.basic_chat\"6\n\tTokenPa" +
+      "ir\022\023\n\013accessToken\030\001 \001(\t\022\024\n\014refreshToken\030" +
+      "\002 \001(\t\"D\n\014LoginRequest\022\020\n\010username\030\001 \001(\t\022" +
+      "\020\n\010password\030\002 \001(\t\022\020\n\010deviceId\030\003 \001(\t\"l\n\rL" +
+      "oginResponse\022\017\n\007success\030\001 \001(\010\022\017\n\007message" +
+      "\030\002 \001(\t\022\016\n\006userId\030\003 \001(\t\022)\n\006tokens\030\004 \001(\0132\031" +
+      ".com.basic_chat.TokenPair\"\214\001\n\tLoginUser\022" +
+      "8\n\020register_request\030\001 \001(\0132\034.com.basic_ch" +
+      "at.LoginRequestH\000\022:\n\021register_response\030\002" +
+      " \001(\0132\035.com.basic_chat.LoginResponseH\000B\t\n" +
+      "\007payloadB\"\n\024com.basic_chat.protoB\nLoginP" +
+      "rotob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
         });
-    internal_static_com_basic_chat_LoginRequest_descriptor =
+    internal_static_com_basic_chat_TokenPair_descriptor =
       getDescriptor().getMessageTypes().get(0);
+    internal_static_com_basic_chat_TokenPair_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_com_basic_chat_TokenPair_descriptor,
+        new java.lang.String[] { "AccessToken", "RefreshToken", });
+    internal_static_com_basic_chat_LoginRequest_descriptor =
+      getDescriptor().getMessageTypes().get(1);
     internal_static_com_basic_chat_LoginRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_basic_chat_LoginRequest_descriptor,
-        new java.lang.String[] { "Username", "Password", });
+        new java.lang.String[] { "Username", "Password", "DeviceId", });
     internal_static_com_basic_chat_LoginResponse_descriptor =
-      getDescriptor().getMessageTypes().get(1);
+      getDescriptor().getMessageTypes().get(2);
     internal_static_com_basic_chat_LoginResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_basic_chat_LoginResponse_descriptor,
-        new java.lang.String[] { "Success", "Message", "UserId", "Token", });
+        new java.lang.String[] { "Success", "Message", "UserId", "Tokens", });
     internal_static_com_basic_chat_LoginUser_descriptor =
-      getDescriptor().getMessageTypes().get(2);
+      getDescriptor().getMessageTypes().get(3);
     internal_static_com_basic_chat_LoginUser_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_basic_chat_LoginUser_descriptor,

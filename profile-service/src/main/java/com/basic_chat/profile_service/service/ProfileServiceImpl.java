@@ -4,15 +4,19 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
+
+import com.basic_chat.profile_service.models.RefreshToken;
 import com.basic_chat.profile_service.models.User;
 import com.basic_chat.profile_service.repository.UserRepository;
 import com.basic_chat.proto.LoginProto.LoginRequest;
 import com.basic_chat.proto.LoginProto.LoginResponse;
+import com.basic_chat.proto.LoginProto.TokenPair;
 import com.basic_chat.proto.RegisterProto.RegisterRequest;
 import com.basic_chat.proto.RegisterProto.RegisterResponse;
 
-
+import ch.qos.logback.core.subst.Token;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -91,13 +95,15 @@ public class ProfileServiceImpl implements ProfileService{
     public LoginResponse login(LoginRequest request) {
         String username = request.getUsername();
         String password = request.getPassword();
+        String deviceId = request.getDeviceId();
         
         log.info("Iniciando login para usuario: {}", username);
+       
 
         try {
-            Optional<User> userOpt = userRepository.findByUsername(username);
-            if(userOpt.isEmpty()){
-                log.warn("Intento de login con usuario inexistente: {}", username);
+            Optional<User> userOpt = authenticate(username, password);
+
+            if (userOpt.isEmpty()) {
                 return LoginResponse.newBuilder()
                     .setSuccess(false)
                     .setMessage("Usuario o contraseña incorrectos")
@@ -105,17 +111,15 @@ public class ProfileServiceImpl implements ProfileService{
             }
 
             User user = userOpt.get();
-
-            if(!passwordEncoder.matches(password, user.getPassword())){
-                log.warn("Intento de login con contraseña incorrecta para usuario: {}", username);
-                return LoginResponse.newBuilder()
-                    .setSuccess(false)
-                    .setMessage("Usuario o contraseña incorrectos")
-                    .build();
-            }
-
-            // Generar el token y añadirlo a la respuesta.
-            String token = jwtService.generateToken(user.getId(), user.getUsername());
+                // Generar los tokens
+                String accessToken = jwtService.generateToken(user);
+                String refreshToken = jwtService.generateRefreshToken(user, deviceId);
+        
+                TokenPair tokens = TokenPair.newBuilder()
+                        .setAccessToken(accessToken)
+                        .setRefreshToken(refreshToken)
+                        .build();
+          
             
             log.info("Login exitoso para usuario: {}", username);
             
@@ -123,7 +127,7 @@ public class ProfileServiceImpl implements ProfileService{
                 .setSuccess(true)
                 .setMessage("Login exitoso")
                 .setUserId(user.getId())
-                .setToken(token)
+                .setTokens(tokens)
                 .build();
                 
         } catch (Exception e) {
@@ -134,4 +138,20 @@ public class ProfileServiceImpl implements ProfileService{
                 .build();
         }
     }
+
+    private Optional<User> authenticate(String username, String password) {
+        Optional<User> userOpt = userRepository.findByUsername(username);
+        if (userOpt.isEmpty()) {
+            log.warn("Intento de login con usuario inexistente: {}", username);
+            return Optional.empty();
+        }
+
+        User user = userOpt.get();
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            log.warn("Intento de login con contraseña incorrecta para usuario: {}", username);
+            return Optional.empty();
+        }
+        return Optional.of(user);
+    }
+   
 }

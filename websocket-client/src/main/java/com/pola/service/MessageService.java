@@ -32,11 +32,15 @@ public class MessageService {
     private ContactService contactService;
     
     public MessageService(WebSocketService webSocketService, ContactService contactService) {
+        this(webSocketService, contactService, new MessageRepository());
+    }
+
+    public MessageService(WebSocketService webSocketService, ContactService contactService, MessageRepository messageRepository) {
         this.webSocketService = webSocketService;
-        this.messageRepository = new MessageRepository();
+        this.contactService = contactService;
+        this.messageRepository = messageRepository;
         this.currentChatMessages = FXCollections.observableArrayList();
         this.notifications = FXCollections.observableArrayList();
-        this.contactService = contactService;
         
         this.messageSender = new MessageSender(webSocketService);
         this.messageProcessor = new IncomingMessageProcessor(
@@ -169,7 +173,6 @@ public class MessageService {
     public void clearChatHistory(Contact contact, boolean deleteForEveryone) {
         try {
             // Si es "para todos", enviar peticiones al servidor
-            // NOTA: Idealmente esto debería ser una sola petición 'ClearChatRequest' en el protocolo
             if (deleteForEveryone && webSocketService.isConnected()) {
                 messageSender.sendClearHistory(currentUsername, contact.getContactUsername());
             }
