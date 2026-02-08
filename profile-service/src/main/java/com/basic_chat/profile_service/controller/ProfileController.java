@@ -11,6 +11,8 @@ import com.basic_chat.profile_service.service.JwtService;
 import com.basic_chat.profile_service.service.ProfileService;
 import com.basic_chat.proto.LoginProto.LoginRequest;
 import com.basic_chat.proto.LoginProto.LoginResponse;
+import com.basic_chat.proto.LogoutProto.LogoutRequest;
+import com.basic_chat.proto.LogoutProto.LogoutResponse;
 import com.basic_chat.proto.RefreshTokenMessage.RefreshRequest;
 import com.basic_chat.proto.RefreshTokenMessage.RefreshResponse;
 import com.basic_chat.proto.RegisterProto.RegisterRequest;
@@ -80,5 +82,24 @@ public class ProfileController {
     public ResponseEntity<RefreshResponse> refresh(@RequestBody RefreshRequest request) {
         RefreshResponse tokens = jwtService.refreshAccessToken(request.getToken());
         return ResponseEntity.ok(tokens);
+    }
+
+    @PostMapping(value = "auth/logout", consumes = "application/x-protobuf", produces = "application/x-protobuf")
+    public ResponseEntity<LogoutResponse> logout(@RequestBody LogoutRequest request){
+        // Validación temprana: Si el token está vacío, retornamos 400 Bad Request inmediatamente
+        if (request.getRefreToken().isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(LogoutResponse.newBuilder()
+                    .setSuccess(false)
+                    .setMessage("Token no enviado")
+                    .build());
+        }
+
+        LogoutResponse response = profileService.logout(request);
+        if(response.getSuccess()){
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }else{
+            // Si la validación pasó pero el servicio falló (success=false), asumimos error interno (500)
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
     }
 }

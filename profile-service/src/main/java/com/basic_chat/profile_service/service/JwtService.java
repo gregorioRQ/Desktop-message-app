@@ -182,4 +182,8 @@ public class JwtService {
                 .build();
     }
 
+    public void deleteRefreshToken(String token){
+        refreshTokenRepository.deleteByToken(token);
+    }
+
 }

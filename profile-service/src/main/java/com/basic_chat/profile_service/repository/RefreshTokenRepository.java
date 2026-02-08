@@ -10,4 +10,5 @@ import com.basic_chat.profile_service.models.RefreshToken;
 @Repository
 public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long>{
     Optional<RefreshToken> findByToken(String refreshToken);
+    void deleteByToken(String token);
 }

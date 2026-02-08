@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package com.basic_chat;
+
+option java_package = "com.basic_chat.proto";
+option java_outer_classname = "LogoutProto";
+
+message LogoutRequest{
+    string refreToken = 1;
+}
+
+message LogoutResponse {
+    string message = 1;
+    bool success = 2;
+}
+
+message LogoutUser{
+    oneof payload {
+        LogoutRequest logout_request = 1;
+        LogoutResponse logout_response = 2;
+    }
+}

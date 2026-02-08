@@ -13,6 +13,8 @@ import com.basic_chat.profile_service.repository.UserRepository;
 import com.basic_chat.proto.LoginProto.LoginRequest;
 import com.basic_chat.proto.LoginProto.LoginResponse;
 import com.basic_chat.proto.LoginProto.TokenPair;
+import com.basic_chat.proto.LogoutProto.LogoutRequest;
+import com.basic_chat.proto.LogoutProto.LogoutResponse;
 import com.basic_chat.proto.RegisterProto.RegisterRequest;
 import com.basic_chat.proto.RegisterProto.RegisterResponse;
 
@@ -153,5 +155,33 @@ public class ProfileServiceImpl implements ProfileService{
         }
         return Optional.of(user);
     }
+
+    @Override
+    public LogoutResponse logout(LogoutRequest request) {
+        if(request.getRefreToken().isEmpty()){
+            log.warn("Parámetros inválidos, refreshToken vacío");
+            return LogoutResponse.newBuilder()
+                .setMessage("Token no enviado")
+                .setSuccess(false)
+                .build();
+        }
+
+        try{
+            jwtService.deleteRefreshToken(request.getRefreToken());
+            log.info("RefreshToken eliminado");
+            return LogoutResponse.newBuilder()
+                .setMessage("RefreshToken eliminado")
+                .setSuccess(true)
+                .build();
+        }catch(Exception ex){
+            log.error("No se pudo eliminar el refresh token. {}" , ex);
+            return LogoutResponse.newBuilder()
+                .setMessage("No se pudo eliminar el refreshToken")
+                .setSuccess(false)
+                .build();
+        }
+    }
    
+
+    
 }

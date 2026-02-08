@@ -6,6 +6,7 @@ import com.pola.controller.ChatController;
 import com.pola.controller.LoginController;
 import com.pola.controller.RegisterController;
 import com.pola.database.DatabaseManager;
+import com.pola.service.AuthService;
 import com.pola.service.ContactService;
 import com.pola.service.HttpService;
 import com.pola.service.HttpServiceImpl;
@@ -26,6 +27,7 @@ public class ViewManager {
     private WebSocketService webSocketService;
     private MessageService messageService;
     private final HttpService httpService;
+    private AuthService authService;
     private ContactService contactService;
     
     public ViewManager(Stage stage) {
@@ -54,7 +56,10 @@ public class ViewManager {
             
             LoginController controller = loader.getController();
             controller.setViewManager(this);
-            controller.setHttpService(httpService);
+            if (authService == null) {
+                authService = new AuthService(httpService);
+            }
+            controller.setAuthService(authService);
             
             stage.setScene(scene);
             stage.show();
