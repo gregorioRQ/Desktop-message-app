@@ -10,6 +10,7 @@ import com.pola.model.Contact;
 import com.pola.model.Notification;
 import com.pola.proto.MessagesProto.WsMessage;
 import com.pola.repository.MessageRepository;
+import com.pola.util.MessageProcessingContext;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -43,10 +44,19 @@ public class MessageService {
         this.notifications = FXCollections.observableArrayList();
         
         this.messageSender = new MessageSender(webSocketService);
-        this.messageProcessor = new IncomingMessageProcessor(
-            messageRepository, contactService, messageSender, currentChatMessages, notifications, 
-            () -> currentContact, () -> currentUserId, () -> currentUsername
+
+        MessageProcessingContext context = new MessageProcessingContext(
+                messageRepository,
+                contactService,
+                messageSender,
+                currentChatMessages,
+                notifications,
+                () -> currentContact,
+                () -> currentUserId,
+                () -> currentUsername
         );
+
+        this.messageProcessor = new IncomingMessageProcessor(context);
     }
 
     // Establece el usuario actual

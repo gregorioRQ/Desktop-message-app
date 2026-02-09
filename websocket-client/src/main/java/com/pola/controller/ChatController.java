@@ -8,9 +8,13 @@ import com.pola.model.Notification;
 import com.pola.proto.MessagesProto.AuthMessage;
 import com.pola.proto.MessagesProto.WsMessage;
 import com.pola.service.ContactService;
+import com.pola.service.LogoutService;
 import com.pola.service.MessageService;
 import com.pola.service.NotificationService;
 import com.pola.service.WebSocketService;
+import com.pola.util.LogoutContext;
+import com.pola.util.LogoutHandler;
+import com.pola.repository.TokenRepository;
 import com.pola.view.MessageListCell;
 import com.pola.view.ContactListCell;
 import com.pola.view.ChatDialogs;
@@ -74,6 +78,9 @@ public class ChatController {
     private Button blockButton;
     
     @FXML
+    private Button logoutButton;
+    
+    @FXML
     private Label statusLabel;
     
     @FXML
@@ -107,6 +114,7 @@ public class ChatController {
     private ContactActionHelper contactActionHelper;
     private MessageActionHelper messageActionHelper;
     private ConnectionActionHelper connectionActionHelper;
+    private LogoutHandler logoutHandler;
     
     public void initialize(String username, String userId, String token) {
         this.currentUsername = username;
@@ -124,6 +132,19 @@ public class ChatController {
         this.contactActionHelper = new ContactActionHelper(contactService, this);
         this.messageActionHelper = new MessageActionHelper(messageService, webSocketService, contactService, this);
         this.connectionActionHelper = new ConnectionActionHelper(webSocketService, contactService, this);
+
+        // 1. Crear el objeto de contexto con las dependencias
+        LogoutContext logoutCtx = new LogoutContext(
+            webSocketService,
+            messageService,
+            contactService,
+            viewManager,
+            new TokenRepository()
+        );
+        // 2. Instanciar el handler con el objeto de contexto
+        this.logoutHandler = new LogoutHandler(
+            this, new LogoutService(), logoutCtx, logoutButton
+        );
 
         setupUI();
         setupListeners();
@@ -162,6 +183,7 @@ public class ChatController {
         addContactButton.setOnAction(e -> contactActionHelper.handleAddContact());
         if (clearChatButton != null) clearChatButton.setOnAction(e -> messageActionHelper.handleClearChat());
         if (blockButton != null) blockButton.setOnAction(e -> contactActionHelper.confirmBlockContact(selectedContact));
+        if (logoutButton != null) logoutButton.setOnAction(e -> logoutHandler.handleLogout());
 
         setupMessageListView();
         

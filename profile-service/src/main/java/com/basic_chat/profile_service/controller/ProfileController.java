@@ -86,7 +86,6 @@ public class ProfileController {
 
     @PostMapping(value = "auth/logout", consumes = "application/x-protobuf", produces = "application/x-protobuf")
     public ResponseEntity<LogoutResponse> logout(@RequestBody LogoutRequest request){
-        // Validación temprana: Si el token está vacío, retornamos 400 Bad Request inmediatamente
         if (request.getRefreToken().isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(LogoutResponse.newBuilder()
                     .setSuccess(false)
@@ -98,7 +97,6 @@ public class ProfileController {
         if(response.getSuccess()){
             return ResponseEntity.status(HttpStatus.OK).body(response);
         }else{
-            // Si la validación pasó pero el servicio falló (success=false), asumimos error interno (500)
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }

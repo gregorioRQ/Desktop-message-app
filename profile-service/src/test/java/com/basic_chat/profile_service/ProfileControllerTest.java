@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -21,6 +22,8 @@ import com.basic_chat.profile_service.service.ProfileService;
 import com.basic_chat.proto.LoginProto.LoginRequest;
 import com.basic_chat.proto.LoginProto.LoginResponse;
 import com.basic_chat.proto.LoginProto.TokenPair;
+import com.basic_chat.proto.LogoutProto.LogoutRequest;
+import com.basic_chat.proto.LogoutProto.LogoutResponse;
 import com.basic_chat.proto.RefreshTokenMessage.RefreshRequest;
 import com.basic_chat.proto.RefreshTokenMessage.RefreshResponse;
 import com.basic_chat.proto.RegisterProto.RegisterRequest;
@@ -170,5 +173,58 @@ class ProfileControllerTest {
                     RefreshResponse actual = RefreshResponse.parseFrom(result.getResponse().getContentAsByteArray());
                     assert actual.getAccessToken().equals("new-access-token");
                 });
+    }
+
+    @Nested
+    @DisplayName("Pruebas del endpoint Logout")
+    class LogoutTests {
+
+        @Test
+        @DisplayName("Logout: Debería retornar 400 Bad Request cuando el token está vacío")
+        void logout_EmptyToken() throws Exception {
+            LogoutRequest request = LogoutRequest.newBuilder().setRefreToken("").build();
+
+            mockMvc.perform(post("/profile/api/v1/auth/logout")
+                    .contentType(PROTOBUF_CONTENT_TYPE)
+                    .content(request.toByteArray()))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(result -> {
+                        LogoutResponse response = LogoutResponse.parseFrom(result.getResponse().getContentAsByteArray());
+                        assert !response.getSuccess();
+                        assert response.getMessage().equals("Token no enviado");
+                    });
+        }
+
+        @Test
+        @DisplayName("Logout: Debería retornar 200 OK cuando el servicio responde exitosamente")
+        void logout_Success() throws Exception {
+            LogoutRequest request = LogoutRequest.newBuilder().setRefreToken("valid-token").build();
+            LogoutResponse serviceResponse = LogoutResponse.newBuilder().setSuccess(true).setMessage("Exito").build();
+
+            when(profileService.logout(any(LogoutRequest.class))).thenReturn(serviceResponse);
+
+            mockMvc.perform(post("/profile/api/v1/auth/logout")
+                    .contentType(PROTOBUF_CONTENT_TYPE)
+                    .content(request.toByteArray()))
+                    .andExpect(status().isOk())
+                    .andExpect(result -> {
+                        LogoutResponse response = LogoutResponse.parseFrom(result.getResponse().getContentAsByteArray());
+                        assert response.getSuccess();
+                    });
+        }
+
+        @Test
+        @DisplayName("Logout: Debería retornar 500 Internal Server Error cuando el servicio falla")
+        void logout_ServiceFailure() throws Exception {
+            LogoutRequest request = LogoutRequest.newBuilder().setRefreToken("valid-token").build();
+            LogoutResponse serviceResponse = LogoutResponse.newBuilder().setSuccess(false).setMessage("Error DB").build();
+
+            when(profileService.logout(any(LogoutRequest.class))).thenReturn(serviceResponse);
+
+            mockMvc.perform(post("/profile/api/v1/auth/logout")
+                    .contentType(PROTOBUF_CONTENT_TYPE)
+                    .content(request.toByteArray()))
+                    .andExpect(status().isInternalServerError());
+        }
     }
 }

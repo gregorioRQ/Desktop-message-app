@@ -5,9 +5,8 @@ import com.pola.model.Contact;
 import com.pola.model.Notification;
 import com.pola.proto.MessagesProto;
 import com.pola.proto.MessagesProto.WsMessage;
-import com.pola.repository.MessageRepository;
+import com.pola.util.MessageProcessingContext;
 import javafx.application.Platform;
-import javafx.collections.ObservableList;
 
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -15,43 +14,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 /**
  * Procesa los mensajes entrantes del WebSocket.
  * Principio SOLID: Open/Closed - Fácil de extender con nuevos handlers en el mapa.
  */
 public class IncomingMessageProcessor {
-    private final MessageRepository messageRepository;
-    private final ContactService contactService;
-    private final MessageSender messageSender;
-    private final ObservableList<ChatMessage> currentChatMessages;
-    private final ObservableList<Notification> notifications;
-    private final Supplier<Contact> currentContactSupplier;
-    private final Supplier<String> currentUserIdSupplier;
-    private final Supplier<String> currentUsernameSupplier;
+    private final MessageProcessingContext context;
     private final Map<WsMessage.PayloadCase, Consumer<WsMessage>> handlers = new HashMap<>();
     private Consumer<String> errorListener;
 
-    public IncomingMessageProcessor(
-            MessageRepository messageRepository,
-            ContactService contactService,
-            MessageSender messageSender,
-            ObservableList<ChatMessage> currentChatMessages,
-            ObservableList<Notification> notifications,
-            Supplier<Contact> currentContactSupplier,
-            Supplier<String> currentUserIdSupplier,
-            Supplier<String> currentUsernameSupplier) {
-        
-        this.messageRepository = messageRepository;
-        this.contactService = contactService;
-        this.messageSender = messageSender;
-        this.currentChatMessages = currentChatMessages;
-        this.notifications = notifications;
-        this.currentContactSupplier = currentContactSupplier;
-        this.currentUserIdSupplier = currentUserIdSupplier;
-        this.currentUsernameSupplier = currentUsernameSupplier;
-        
+    public IncomingMessageProcessor(MessageProcessingContext context) {
+        this.context = context;
         initializeHandlers();
     }
 
@@ -86,24 +60,24 @@ public class IncomingMessageProcessor {
         
         if (response.getCause() == MessagesProto.FailureCause.BLOCKED) {
             String recipient = response.getRecipient();
-            contactService.markUserAsBlockingMe(recipient);
+            context.getContactService().markUserAsBlockingMe(recipient);
 
             try {
                 if (response.getMessageId() != null && !response.getMessageId().isEmpty()) {
                     long msgId = Long.parseLong(response.getMessageId());
-                    messageRepository.delete(msgId);
-                    Platform.runLater(() -> currentChatMessages.removeIf(m -> m.getId() == msgId));
+                    context.getMessageRepository().delete(msgId);
+                    Platform.runLater(() -> context.getCurrentChatMessages().removeIf(m -> m.getId() == msgId));
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
-            Contact current = currentContactSupplier.get();
+            Contact current = context.getCurrentContactSupplier().get();
             if (current != null && current.getContactUsername().equals(recipient)) {
                 Platform.runLater(() -> {
                     ChatMessage systemMessage = new ChatMessage(recipient, errorContent, "Sistema");
                     systemMessage.setId(System.currentTimeMillis());
-                    currentChatMessages.add(systemMessage);
+                    context.getCurrentChatMessages().add(systemMessage);
                 });
             }
         } else if (errorListener != null) {
@@ -118,22 +92,22 @@ public class IncomingMessageProcessor {
         long messageId = Long.parseLong(protobufMessage.getId());
       
         try {
-            if (messageRepository.existsById(messageId)) return;
+            if (context.getMessageRepository().existsById(messageId)) return;
 
-            Contact contact = this.contactService.findContactByUsername(currentUserIdSupplier.get(), senderId)
+            Contact contact = context.getContactService().findContactByUsername(context.getCurrentUserIdSupplier().get(), senderId)
             //añade un contacto "improvisado" con un id no oficial
-                .orElseGet(() -> this.contactService.addContact(currentUserIdSupplier.get(), senderId, false));
+                .orElseGet(() -> context.getContactService().addContact(context.getCurrentUserIdSupplier().get(), senderId, false));
 
             if(contact == null) return;
 
             ChatMessage localMessage = new ChatMessage(contact.getContactUsername(), content, senderId);
             localMessage.setId(messageId);
-            ChatMessage saved = messageRepository.create(localMessage);
+            ChatMessage saved = context.getMessageRepository().create(localMessage);
 
-            Contact current = currentContactSupplier.get();
+            Contact current = context.getCurrentContactSupplier().get();
             if(current != null && current.getId() == contact.getId()){
-                Platform.runLater(() -> currentChatMessages.add(saved));
-                messageRepository.markAsRead(saved.getId());
+                Platform.runLater(() -> context.getCurrentChatMessages().add(saved));
+                context.getMessageRepository().markAsRead(saved.getId());
             } else {
                 updateNotification(senderId);
             }
@@ -145,8 +119,8 @@ public class IncomingMessageProcessor {
     private void processDeleteMessageRequest(MessagesProto.DeleteMessageRequest request) {
         try {
             long messageId = Long.parseLong(request.getMessageId());
-            messageRepository.delete(messageId);
-            Platform.runLater(() -> currentChatMessages.removeIf(m -> m.getId() == messageId));
+            context.getMessageRepository().delete(messageId);
+            Platform.runLater(() -> context.getCurrentChatMessages().removeIf(m -> m.getId() == messageId));
         } catch (Exception e) {
             System.err.println("Error al procesar eliminación: " + e.getMessage());
         }
@@ -155,11 +129,11 @@ public class IncomingMessageProcessor {
     private void processClearHistoryRequest(MessagesProto.ClearHistoryRequest request) {
         try {
             String senderUsername = request.getSender();
-            messageRepository.deleteByContactUsername(senderUsername);
+            context.getMessageRepository().deleteByContactUsername(senderUsername);
             
-            Contact current = currentContactSupplier.get();
+            Contact current = context.getCurrentContactSupplier().get();
             if (current != null && current.getContactUsername().equals(senderUsername)) {
-                Platform.runLater(() -> currentChatMessages.clear());
+                Platform.runLater(() -> context.getCurrentChatMessages().clear());
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -172,19 +146,19 @@ public class IncomingMessageProcessor {
             long messageId = Long.parseLong(protoMessage.getId());
 
             try {
-                Contact contact = this.contactService.findContactByUsername(currentUserIdSupplier.get(), senderUsername)
-                        .orElseGet(() -> this.contactService.addContact(currentUserIdSupplier.get(), senderUsername, false));
+                Contact contact = context.getContactService().findContactByUsername(context.getCurrentUserIdSupplier().get(), senderUsername)
+                        .orElseGet(() -> context.getContactService().addContact(context.getCurrentUserIdSupplier().get(), senderUsername, false));
 
-                if (contact == null || messageRepository.existsById(messageId)) continue;
+                if (contact == null || context.getMessageRepository().existsById(messageId)) continue;
 
                 ChatMessage localMessage = new ChatMessage(contact.getContactUsername(), protoMessage.getContent(), senderUsername);
                 localMessage.setId(messageId);
-                ChatMessage saved = messageRepository.create(localMessage);
+                ChatMessage saved = context.getMessageRepository().create(localMessage);
 
-                Contact current = currentContactSupplier.get();
+                Contact current = context.getCurrentContactSupplier().get();
                 if (current != null && current.getId() == contact.getId()) {
-                    Platform.runLater(() -> currentChatMessages.add(saved));
-                    messageRepository.markAsRead(saved.getId());
+                    Platform.runLater(() -> context.getCurrentChatMessages().add(saved));
+                    context.getMessageRepository().markAsRead(saved.getId());
                 } else {
                     updateNotification(senderUsername);
                 }
@@ -204,13 +178,13 @@ public class IncomingMessageProcessor {
         }
 
         try {
-            messageRepository.markMultipleAsRead(ids);
+            context.getMessageRepository().markMultipleAsRead(ids);
             Platform.runLater(() -> {
-                for (int i = 0; i < currentChatMessages.size(); i++) {
-                    ChatMessage msg = currentChatMessages.get(i);
+                for (int i = 0; i < context.getCurrentChatMessages().size(); i++) {
+                    ChatMessage msg = context.getCurrentChatMessages().get(i);
                     if (ids.contains(msg.getId())) {
                         msg.setRead(true);
-                        currentChatMessages.set(i, msg);
+                        context.getCurrentChatMessages().set(i, msg);
                     }
                 }
             });
@@ -220,11 +194,11 @@ public class IncomingMessageProcessor {
     }
 
     private void processBlockedUsersList(MessagesProto.BlockedUsersList list) {
-        processUserStatusChange(list.getUsersList(), "Este usuario te ha bloqueado.", contactService::markUserAsBlockingMe);
+        processUserStatusChange(list.getUsersList(), "Este usuario te ha bloqueado.", context.getContactService()::markUserAsBlockingMe);
     }
 
     private void processUnblockedUsersList(MessagesProto.UnblockedUsersList list) {
-        processUserStatusChange(list.getUsersList(), "Este usuario te ha desbloqueado.", contactService::markUserAsUnblockingMe);
+        processUserStatusChange(list.getUsersList(), "Este usuario te ha desbloqueado.", context.getContactService()::markUserAsUnblockingMe);
     }
     /**
      * Actualizara el id temporal por el id oficial del remitente.
@@ -236,18 +210,18 @@ public class IncomingMessageProcessor {
 
         if(senderUsername != null && !senderUsername.isEmpty()){
             // Verificar si es la primera vez que obtenemos el ID de este contacto (era null o vacío)
-            boolean isFirstIdUpdate = contactService.findContactByUsername(currentUserIdSupplier.get(), senderUsername)
+            boolean isFirstIdUpdate = context.getContactService().findContactByUsername(context.getCurrentUserIdSupplier().get(), senderUsername)
                 .map(c -> c.getContactUserId() == null || c.getContactUserId().isEmpty())
                 .orElse(true);
 
-            contactService.updateContactId(senderUsername, remoteUserId);
+            context.getContactService().updateContactId(senderUsername, remoteUserId);
             
             // Marcar como conectado inmediatamente ya que acabamos de recibir señal de vida
-            contactService.setContactOnline(remoteUserId, true);
+            context.getContactService().setContactOnline(remoteUserId, true);
 
             // Si es la primera vez que tenemos su ID, enviamos el nuestro de vuelta para completar el handshake
             if (isFirstIdUpdate) {
-                messageSender.sendContactIdentity(currentUserIdSupplier.get(), currentUsernameSupplier.get(), senderUsername);
+                context.getMessageSender().sendContactIdentity(context.getCurrentUserIdSupplier().get(), context.getCurrentUsernameSupplier().get(), senderUsername);
             }
 
             // Añadir notificación a la bandeja en lugar de mensaje de chat
@@ -266,11 +240,11 @@ public class IncomingMessageProcessor {
             try {
                 ChatMessage localMessage = new ChatMessage(username, systemMsg, "Sistema");
                 localMessage.setId(System.currentTimeMillis());
-                messageRepository.create(localMessage);
+                context.getMessageRepository().create(localMessage);
                 
-                Contact current = currentContactSupplier.get();
+                Contact current = context.getCurrentContactSupplier().get();
                 if (current != null && current.getContactUsername().equals(username)) {
-                    Platform.runLater(() -> currentChatMessages.add(localMessage));
+                    Platform.runLater(() -> context.getCurrentChatMessages().add(localMessage));
                 } else {
                     updateNotification(username);
                 }
@@ -281,6 +255,6 @@ public class IncomingMessageProcessor {
     }
 
     private void updateNotification(String senderUsername) {
-        Platform.runLater(() -> Notification.updateOrAdd(notifications, senderUsername));
+        Platform.runLater(() -> Notification.updateOrAdd(context.getNotifications(), senderUsername));
     }
 }
