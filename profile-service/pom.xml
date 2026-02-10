@@ -163,7 +163,7 @@
                 </executions>
             </plugin>
 
-			<!-- Plugin para agregar las fuentes generadas al classpath -->
+		<!-- Plugin para agregar las fuentes generadas al classpath -->
         <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>build-helper-maven-plugin</artifactId>
