@@ -26,7 +26,7 @@ public class HttpServiceImpl implements HttpService{
 
     @Override
     public <T, R> CompletableFuture<R> createProfile(T request, Class<R> responseClass) {
-        return sendPostRequest("/register", request, responseClass);
+        return sendPostRequest("auth/register", request, responseClass);
     }
 
     @Override
@@ -47,6 +47,11 @@ public class HttpServiceImpl implements HttpService{
     @Override
     public <T, R> CompletableFuture<R> refreshToken(T request, Class<R> responseClass) {
         return sendPostRequest("/auth/refresh", request, responseClass);
+    }
+
+    @Override
+    public <T, R> CompletableFuture<R> logout(T request, Class<R> responseClass) {
+        return sendPostRequest("/auth/logout", request, responseClass);
     }
 
     /**

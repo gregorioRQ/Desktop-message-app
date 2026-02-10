@@ -45,6 +45,13 @@ public interface HttpService {
     <T, R> CompletableFuture<R> refreshToken(T request, Class<R> responseClass);
 
     /**
+     * Cierra la sesión del usuario
+     * @param request Request de logout (Protobuf)
+     * @return CompletableFuture con la respuesta
+     */
+    <T, R> CompletableFuture<R> logout(T request, Class<R> responseClass);
+
+    /**
      * Obtiene el historial de mensajes 
     */
 

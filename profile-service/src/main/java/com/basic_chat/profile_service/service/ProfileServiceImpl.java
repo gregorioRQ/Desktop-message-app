@@ -157,8 +157,9 @@ public class ProfileServiceImpl implements ProfileService{
     }
 
     @Override
+    @Transactional
     public LogoutResponse logout(LogoutRequest request) {
-        if(request.getRefreToken().isEmpty()){
+        if(request.getRefreshToken().isEmpty()){
             log.warn("Parámetros inválidos, refreshToken vacío");
             return LogoutResponse.newBuilder()
                 .setMessage("Token no enviado")
@@ -167,14 +168,14 @@ public class ProfileServiceImpl implements ProfileService{
         }
 
         try{
-            jwtService.deleteRefreshToken(request.getRefreToken());
+            jwtService.deleteRefreshToken(request.getRefreshToken());
             log.info("RefreshToken eliminado");
             return LogoutResponse.newBuilder()
                 .setMessage("RefreshToken eliminado")
                 .setSuccess(true)
                 .build();
         }catch(Exception ex){
-            log.error("No se pudo eliminar el refresh token. {}" , ex);
+            log.error("No se pudo eliminar el refresh token. {}" , ex.getMessage());
             return LogoutResponse.newBuilder()
                 .setMessage("No se pudo eliminar el refreshToken")
                 .setSuccess(false)

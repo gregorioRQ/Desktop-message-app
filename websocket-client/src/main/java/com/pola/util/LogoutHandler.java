@@ -2,7 +2,7 @@ package com.pola.util;
 
 import com.pola.controller.ChatController;
 import com.pola.model.Session;
-import com.pola.service.LogoutService;
+import com.pola.service.AuthService;
 import javafx.application.Platform;
 import javafx.scene.control.Button;
 import javafx.scene.paint.Color;
@@ -10,17 +10,17 @@ import javafx.scene.paint.Color;
 public class LogoutHandler {
 
     private final ChatController chatController; // For UI updates (showStatus)
-    private final LogoutService logoutService;
+    private final AuthService authService;
     private final LogoutContext logoutContext;
     private final Button logoutButton;
 
     public LogoutHandler(
             ChatController chatController,
-            LogoutService logoutService,
+            AuthService authService,
             LogoutContext logoutContext,
             Button logoutButton) {
         this.chatController = chatController;
-        this.logoutService = logoutService;
+        this.authService = authService;
         this.logoutContext = logoutContext;
         this.logoutButton = logoutButton;
     }
@@ -32,7 +32,7 @@ public class LogoutHandler {
         Session session = logoutContext.getTokenRepository().loadSession();
         String refreshToken = (session != null) ? session.getRefreshToken() : "";
 
-        logoutService.logout(refreshToken) // Asume que LogoutService no necesita estar en el contexto
+        authService.logout(refreshToken)
             .thenAccept(response -> {
                 Platform.runLater(() -> {
                     if (response.getSuccess()) {
@@ -64,6 +64,13 @@ public class LogoutHandler {
         if (logoutContext.getContactService() != null) logoutContext.getContactService().clearOnlineUsers();
         logoutContext.getTokenRepository().clearSession();
 
-        Platform.runLater(() -> logoutContext.getViewManager().showLoginView());
+        new Thread(() -> {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+            Platform.runLater(() -> logoutContext.getViewManager().showLoginView());
+        }).start();
     }
 }

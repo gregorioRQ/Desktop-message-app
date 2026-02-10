@@ -8,7 +8,8 @@ import com.pola.model.Notification;
 import com.pola.proto.MessagesProto.AuthMessage;
 import com.pola.proto.MessagesProto.WsMessage;
 import com.pola.service.ContactService;
-import com.pola.service.LogoutService;
+import com.pola.service.AuthService;
+import com.pola.service.HttpServiceImpl;
 import com.pola.service.MessageService;
 import com.pola.service.NotificationService;
 import com.pola.service.WebSocketService;
@@ -142,8 +143,11 @@ public class ChatController {
             new TokenRepository()
         );
         // 2. Instanciar el handler con el objeto de contexto
+        // Necesitamos AuthService para el logout remoto
+        AuthService authService = new AuthService(new HttpServiceImpl(), logoutCtx.getTokenRepository());
+        
         this.logoutHandler = new LogoutHandler(
-            this, new LogoutService(), logoutCtx, logoutButton
+            this, authService, logoutCtx, logoutButton
         );
 
         setupUI();

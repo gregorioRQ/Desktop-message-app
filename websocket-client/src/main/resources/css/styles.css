@@ -211,3 +211,27 @@
 .context-menu .menu-item:hover {
     -fx-background-color: #e8e8e8;
 }
+
+/* Boton de logout */
+
+.logout-button {
+    -fx-background-color: #dc3545; /* Rojo */
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-background-radius: 4;
+    -fx-padding: 5 10 5 10;
+}
+
+.logout-button:hover {
+    -fx-background-color: #c82333; /* Rojo más oscuro al pasar el mouse */
+}
+
+.logout-button:pressed {
+    -fx-background-color: #bd2130;
+}
+
+.logout-button:disabled {
+    -fx-opacity: 0.6;
+    -fx-cursor: default;
+}

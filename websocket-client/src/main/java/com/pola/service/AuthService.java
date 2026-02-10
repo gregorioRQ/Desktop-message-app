@@ -3,6 +3,8 @@ package com.pola.service;
 import com.pola.model.Session;
 import com.pola.proto.LoginProto.LoginRequest;
 import com.pola.proto.LoginProto.LoginResponse;
+import com.pola.proto.LogoutProto.LogoutRequest;
+import com.pola.proto.LogoutProto.LogoutResponse;
 import com.pola.proto.RefreshTokenMessage.RefreshRequest;
 import com.pola.proto.RefreshTokenMessage.RefreshResponse;
 import com.pola.repository.TokenRepository;
@@ -66,6 +68,14 @@ public class AuthService {
 
     public void logout() {
         tokenRepository.clearSession();
+    }
+
+    public CompletableFuture<LogoutResponse> logout(String refreshToken) {
+        LogoutRequest request = LogoutRequest.newBuilder()
+                .setRefreshToken(refreshToken)
+                .build();
+
+        return httpService.logout(request, LogoutResponse.class);
     }
 
     private CompletableFuture<Session> refreshSession(Session currentSession) {

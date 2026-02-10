@@ -20,16 +20,16 @@ public final class LogoutProto {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>string refreToken = 1;</code>
-     * @return The refreToken.
+     * <code>string refreshToken = 1;</code>
+     * @return The refreshToken.
      */
-    java.lang.String getRefreToken();
+    java.lang.String getRefreshToken();
     /**
-     * <code>string refreToken = 1;</code>
-     * @return The bytes for refreToken.
+     * <code>string refreshToken = 1;</code>
+     * @return The bytes for refreshToken.
      */
     com.google.protobuf.ByteString
-        getRefreTokenBytes();
+        getRefreshTokenBytes();
   }
   /**
    * Protobuf type {@code com.basic_chat.LogoutRequest}
@@ -44,7 +44,7 @@ public final class LogoutProto {
       super(builder);
     }
     private LogoutRequest() {
-      refreToken_ = "";
+      refreshToken_ = "";
     }
 
     @java.lang.Override
@@ -67,39 +67,39 @@ public final class LogoutProto {
               com.basic_chat.proto.LogoutProto.LogoutRequest.class, com.basic_chat.proto.LogoutProto.LogoutRequest.Builder.class);
     }
 
-    public static final int REFRETOKEN_FIELD_NUMBER = 1;
+    public static final int REFRESHTOKEN_FIELD_NUMBER = 1;
     @SuppressWarnings("serial")
-    private volatile java.lang.Object refreToken_ = "";
+    private volatile java.lang.Object refreshToken_ = "";
     /**
-     * <code>string refreToken = 1;</code>
-     * @return The refreToken.
+     * <code>string refreshToken = 1;</code>
+     * @return The refreshToken.
      */
     @java.lang.Override
-    public java.lang.String getRefreToken() {
-      java.lang.Object ref = refreToken_;
+    public java.lang.String getRefreshToken() {
+      java.lang.Object ref = refreshToken_;
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        refreToken_ = s;
+        refreshToken_ = s;
         return s;
       }
     }
     /**
-     * <code>string refreToken = 1;</code>
-     * @return The bytes for refreToken.
+     * <code>string refreshToken = 1;</code>
+     * @return The bytes for refreshToken.
      */
     @java.lang.Override
     public com.google.protobuf.ByteString
-        getRefreTokenBytes() {
-      java.lang.Object ref = refreToken_;
+        getRefreshTokenBytes() {
+      java.lang.Object ref = refreshToken_;
       if (ref instanceof java.lang.String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
-        refreToken_ = b;
+        refreshToken_ = b;
         return b;
       } else {
         return (com.google.protobuf.ByteString) ref;
@@ -120,8 +120,8 @@ public final class LogoutProto {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(refreToken_)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, refreToken_);
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(refreshToken_)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, refreshToken_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -132,8 +132,8 @@ public final class LogoutProto {
       if (size != -1) return size;
 
       size = 0;
-      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(refreToken_)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, refreToken_);
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(refreshToken_)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, refreshToken_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -150,8 +150,8 @@ public final class LogoutProto {
       }
       com.basic_chat.proto.LogoutProto.LogoutRequest other = (com.basic_chat.proto.LogoutProto.LogoutRequest) obj;
 
-      if (!getRefreToken()
-          .equals(other.getRefreToken())) return false;
+      if (!getRefreshToken()
+          .equals(other.getRefreshToken())) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -163,8 +163,8 @@ public final class LogoutProto {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (37 * hash) + REFRETOKEN_FIELD_NUMBER;
-      hash = (53 * hash) + getRefreToken().hashCode();
+      hash = (37 * hash) + REFRESHTOKEN_FIELD_NUMBER;
+      hash = (53 * hash) + getRefreshToken().hashCode();
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -296,7 +296,7 @@ public final class LogoutProto {
       public Builder clear() {
         super.clear();
         bitField0_ = 0;
-        refreToken_ = "";
+        refreshToken_ = "";
         return this;
       }
 
@@ -331,7 +331,7 @@ public final class LogoutProto {
       private void buildPartial0(com.basic_chat.proto.LogoutProto.LogoutRequest result) {
         int from_bitField0_ = bitField0_;
         if (((from_bitField0_ & 0x00000001) != 0)) {
-          result.refreToken_ = refreToken_;
+          result.refreshToken_ = refreshToken_;
         }
       }
 
@@ -379,8 +379,8 @@ public final class LogoutProto {
 
       public Builder mergeFrom(com.basic_chat.proto.LogoutProto.LogoutRequest other) {
         if (other == com.basic_chat.proto.LogoutProto.LogoutRequest.getDefaultInstance()) return this;
-        if (!other.getRefreToken().isEmpty()) {
-          refreToken_ = other.refreToken_;
+        if (!other.getRefreshToken().isEmpty()) {
+          refreshToken_ = other.refreshToken_;
           bitField0_ |= 0x00000001;
           onChanged();
         }
@@ -411,7 +411,7 @@ public final class LogoutProto {
                 done = true;
                 break;
               case 10: {
-                refreToken_ = input.readStringRequireUtf8();
+                refreshToken_ = input.readStringRequireUtf8();
                 bitField0_ |= 0x00000001;
                 break;
               } // case 10
@@ -432,73 +432,73 @@ public final class LogoutProto {
       }
       private int bitField0_;
 
-      private java.lang.Object refreToken_ = "";
+      private java.lang.Object refreshToken_ = "";
       /**
-       * <code>string refreToken = 1;</code>
-       * @return The refreToken.
+       * <code>string refreshToken = 1;</code>
+       * @return The refreshToken.
        */
-      public java.lang.String getRefreToken() {
-        java.lang.Object ref = refreToken_;
+      public java.lang.String getRefreshToken() {
+        java.lang.Object ref = refreshToken_;
         if (!(ref instanceof java.lang.String)) {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
-          refreToken_ = s;
+          refreshToken_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
         }
       }
       /**
-       * <code>string refreToken = 1;</code>
-       * @return The bytes for refreToken.
+       * <code>string refreshToken = 1;</code>
+       * @return The bytes for refreshToken.
        */
       public com.google.protobuf.ByteString
-          getRefreTokenBytes() {
-        java.lang.Object ref = refreToken_;
+          getRefreshTokenBytes() {
+        java.lang.Object ref = refreshToken_;
         if (ref instanceof String) {
           com.google.protobuf.ByteString b = 
               com.google.protobuf.ByteString.copyFromUtf8(
                   (java.lang.String) ref);
-          refreToken_ = b;
+          refreshToken_ = b;
           return b;
         } else {
           return (com.google.protobuf.ByteString) ref;
         }
       }
       /**
-       * <code>string refreToken = 1;</code>
-       * @param value The refreToken to set.
+       * <code>string refreshToken = 1;</code>
+       * @param value The refreshToken to set.
        * @return This builder for chaining.
        */
-      public Builder setRefreToken(
+      public Builder setRefreshToken(
           java.lang.String value) {
         if (value == null) { throw new NullPointerException(); }
-        refreToken_ = value;
+        refreshToken_ = value;
         bitField0_ |= 0x00000001;
         onChanged();
         return this;
       }
       /**
-       * <code>string refreToken = 1;</code>
+       * <code>string refreshToken = 1;</code>
        * @return This builder for chaining.
        */
-      public Builder clearRefreToken() {
-        refreToken_ = getDefaultInstance().getRefreToken();
+      public Builder clearRefreshToken() {
+        refreshToken_ = getDefaultInstance().getRefreshToken();
         bitField0_ = (bitField0_ & ~0x00000001);
         onChanged();
         return this;
       }
       /**
-       * <code>string refreToken = 1;</code>
-       * @param value The bytes for refreToken to set.
+       * <code>string refreshToken = 1;</code>
+       * @param value The bytes for refreshToken to set.
        * @return This builder for chaining.
        */
-      public Builder setRefreTokenBytes(
+      public Builder setRefreshTokenBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) { throw new NullPointerException(); }
         checkByteStringIsUtf8(value);
-        refreToken_ = value;
+        refreshToken_ = value;
         bitField0_ |= 0x00000001;
         onChanged();
         return this;
@@ -2143,14 +2143,14 @@ public final class LogoutProto {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\014logout.proto\022\016com.basic_chat\"#\n\rLogout" +
-      "Request\022\022\n\nrefreToken\030\001 \001(\t\"2\n\016LogoutRes" +
-      "ponse\022\017\n\007message\030\001 \001(\t\022\017\n\007success\030\002 \001(\010\"" +
-      "\213\001\n\nLogoutUser\0227\n\016logout_request\030\001 \001(\0132\035" +
-      ".com.basic_chat.LogoutRequestH\000\0229\n\017logou" +
-      "t_response\030\002 \001(\0132\036.com.basic_chat.Logout" +
-      "ResponseH\000B\t\n\007payloadB#\n\024com.basic_chat." +
-      "protoB\013LogoutProtob\006proto3"
+      "\n\014logout.proto\022\016com.basic_chat\"%\n\rLogout" +
+      "Request\022\024\n\014refreshToken\030\001 \001(\t\"2\n\016LogoutR" +
+      "esponse\022\017\n\007message\030\001 \001(\t\022\017\n\007success\030\002 \001(" +
+      "\010\"\213\001\n\nLogoutUser\0227\n\016logout_request\030\001 \001(\013" +
+      "2\035.com.basic_chat.LogoutRequestH\000\0229\n\017log" +
+      "out_response\030\002 \001(\0132\036.com.basic_chat.Logo" +
+      "utResponseH\000B\t\n\007payloadB#\n\024com.basic_cha" +
+      "t.protoB\013LogoutProtob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -2161,7 +2161,7 @@ public final class LogoutProto {
     internal_static_com_basic_chat_LogoutRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_basic_chat_LogoutRequest_descriptor,
-        new java.lang.String[] { "RefreToken", });
+        new java.lang.String[] { "RefreshToken", });
     internal_static_com_basic_chat_LogoutResponse_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_com_basic_chat_LogoutResponse_fieldAccessorTable = new

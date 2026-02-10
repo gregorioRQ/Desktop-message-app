@@ -262,7 +262,7 @@ class ProfileServiceImplTest {
     @DisplayName("Logout Happy Path: Debería eliminar el token y retornar éxito")
     void logout_HappyPath() {
         String token = "refresh-token-123";
-        LogoutRequest request = LogoutRequest.newBuilder().setRefreToken(token).build();
+        LogoutRequest request = LogoutRequest.newBuilder().setRefreshToken(token).build();
 
         LogoutResponse response = profileService.logout(request);
 
@@ -274,7 +274,7 @@ class ProfileServiceImplTest {
     @Test
     @DisplayName("Logout Edge Case: Debería fallar si el token está vacío")
     void logout_EmptyToken() {
-        LogoutRequest request = LogoutRequest.newBuilder().setRefreToken("").build();
+        LogoutRequest request = LogoutRequest.newBuilder().setRefreshToken("").build();
 
         LogoutResponse response = profileService.logout(request);
 
@@ -287,7 +287,7 @@ class ProfileServiceImplTest {
     @DisplayName("Logout Edge Case: Debería manejar excepciones al eliminar")
     void logout_Exception() {
         String token = "token-error";
-        LogoutRequest request = LogoutRequest.newBuilder().setRefreToken(token).build();
+        LogoutRequest request = LogoutRequest.newBuilder().setRefreshToken(token).build();
 
         doThrow(new RuntimeException("DB Error")).when(jwtService).deleteRefreshToken(token);
 

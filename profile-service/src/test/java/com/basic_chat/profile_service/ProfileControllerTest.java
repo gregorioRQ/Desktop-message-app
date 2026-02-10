@@ -182,7 +182,7 @@ class ProfileControllerTest {
         @Test
         @DisplayName("Logout: Debería retornar 400 Bad Request cuando el token está vacío")
         void logout_EmptyToken() throws Exception {
-            LogoutRequest request = LogoutRequest.newBuilder().setRefreToken("").build();
+            LogoutRequest request = LogoutRequest.newBuilder().setRefreshToken("").build();
 
             mockMvc.perform(post("/profile/api/v1/auth/logout")
                     .contentType(PROTOBUF_CONTENT_TYPE)
@@ -198,7 +198,7 @@ class ProfileControllerTest {
         @Test
         @DisplayName("Logout: Debería retornar 200 OK cuando el servicio responde exitosamente")
         void logout_Success() throws Exception {
-            LogoutRequest request = LogoutRequest.newBuilder().setRefreToken("valid-token").build();
+            LogoutRequest request = LogoutRequest.newBuilder().setRefreshToken("valid-token").build();
             LogoutResponse serviceResponse = LogoutResponse.newBuilder().setSuccess(true).setMessage("Exito").build();
 
             when(profileService.logout(any(LogoutRequest.class))).thenReturn(serviceResponse);
@@ -216,7 +216,7 @@ class ProfileControllerTest {
         @Test
         @DisplayName("Logout: Debería retornar 500 Internal Server Error cuando el servicio falla")
         void logout_ServiceFailure() throws Exception {
-            LogoutRequest request = LogoutRequest.newBuilder().setRefreToken("valid-token").build();
+            LogoutRequest request = LogoutRequest.newBuilder().setRefreshToken("valid-token").build();
             LogoutResponse serviceResponse = LogoutResponse.newBuilder().setSuccess(false).setMessage("Error DB").build();
 
             when(profileService.logout(any(LogoutRequest.class))).thenReturn(serviceResponse);

@@ -43,7 +43,7 @@ public class ProfileController {
      * @param request Solicitud de registro en formato Protobuf
      * @return Respuesta de registro en formato Protobuf
      */
-    @PostMapping(value = "/register", 
+    @PostMapping(value = "auth/register", 
                  consumes = "application/x-protobuf",
                  produces = "application/x-protobuf")
     public ResponseEntity<RegisterResponse> register(@RequestBody RegisterRequest request) {
@@ -86,7 +86,7 @@ public class ProfileController {
 
     @PostMapping(value = "auth/logout", consumes = "application/x-protobuf", produces = "application/x-protobuf")
     public ResponseEntity<LogoutResponse> logout(@RequestBody LogoutRequest request){
-        if (request.getRefreToken().isEmpty()) {
+        if (request.getRefreshToken().isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(LogoutResponse.newBuilder()
                     .setSuccess(false)
                     .setMessage("Token no enviado")
