@@ -105,7 +105,7 @@
         <dependency>
             <groupId>com.github.gotson</groupId>
             <artifactId>webp-imageio</artifactId>
-            <version>0.3.6</version>
+            <version>0.2.2</version>
         </dependency>
 
 
