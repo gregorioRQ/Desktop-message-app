@@ -8,120 +8,61 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 /**
- * Servicio para gestionar sesiones WebSocket activas en memoria.
- * Mapea userId -> WebSocketSession para envío directo de mensajes.
+ * Gestor de sesiones WebSocket locales.
+ * 
+ * Mantiene un mapeo en memoria de sessionId -> WebSocketSession.
+ * 
+ * IMPORTANTE ARQUITECTURA:
+ * El objeto WebSocketSession representa una conexión TCP física y NO es serializable.
+ * Por tanto, NO se puede guardar en Redis. Debe residir en la memoria RAM del servidor.
+ * 
+ * La verificación de usuarios online y el mapeo de userId/username -> sessionId
+ * es responsabilidad de Redis (gestionado por el API Gateway).
+ * Este servicio solo gestiona las sesiones WebSocket locales para envío de mensajes.
  */
 @Service
 @Slf4j
 public class SessionManager {
-    // Sesiones autenticadas.
-    private final Map<String, SessionInfo> authenticatedSessions = new ConcurrentHashMap<>();
-    
-    // Sessiones pendientes a autenticar.
-    private final Map<String, Long> pendingAuthentication = new ConcurrentHashMap<>();
-
-    // Usuarios online 
-    private final Map<String, String> usersOnline = new ConcurrentHashMap<>();
-
-    // ventana de tiempo para la autencicacion
-    private static final long AUTH_TIMEOUT_MS = 5000; // 5 segs
+    // Sesiones WebSocket locales: sessionId -> SessionInfo
+    private final Map<String, SessionInfo> localSessions = new ConcurrentHashMap<>();
 
     /**
-     * Registra una nueva sesión cuando un usuario se conecta
+     * Registra una sesión WebSocket cuando un usuario autenticado se conecta.
+     * 
+     * @param sessionId ID de la sesión WebSocket
+     * @param userId ID del usuario (para referencia)
+     * @param username Username del usuario (para referencia)
+     * @param wSession Sesión WebSocket
      */
-    public void  registerPendingConnection(String sessionId){
-        log.debug("Concexion pendiente de autenticacion: {} añadida a la lista", sessionId);
-        pendingAuthentication.put(sessionId, System.currentTimeMillis());
-        
-    }
-
-    // Completar la autenticacion de una sesion.
-    public void authenticateSession(String sessionId, String userId, String username, WebSocketSession wSession){
- 
-        log.debug("Removiendo la sesion {} de pendientes", sessionId);
-        pendingAuthentication.remove(sessionId);
-
-        
+    public void registerSession(String sessionId, String userId, String username, WebSocketSession wSession) {
         SessionInfo info = new SessionInfo(userId, username, wSession);
-        log.debug("Añadiendo la sesion: {} a sesiones autenticadas", sessionId);
-        authenticatedSessions.put(sessionId, info);
-
-        // Agregar a usuarios en linea (toma el username que viene en el token)
-        log.debug("Añadiendo al usuario {} a la lista de usuarios online", username);
-        usersOnline.put(username, sessionId);
-
-        log.info("Sesion autenticada: {} - Usuario: {} ({})", sessionId, username);
+        localSessions.put(sessionId, info);
+        log.info("Sesión WebSocket registrada: {} - Usuario: {} ({})", sessionId, username, userId);
     }
 
-    // Verifica si una sesion esta autenticada.
-    public boolean isAuthenticated(String sessionId){
-        return authenticatedSessions.containsKey(sessionId);
-    }
-
-    // Verifica si una sesion esta pendiente de autenticacion
-    public boolean isPendingAuthentication(String sessionId){
-        return pendingAuthentication.containsKey(sessionId);
-    }
-
-    // Verifica si la ventana para autenticacion expiro
-    public boolean hasAuthenticationExpired(String sessionId){
-        Long connectionTime = pendingAuthentication.get(sessionId);
-        if(connectionTime == null){
-            return false;
-        }
-        long elapsed = System.currentTimeMillis() - connectionTime;
-        return elapsed > AUTH_TIMEOUT_MS;
-    }
-
-     /**
-     * Remueve una sesión autenticada o pendiente
+    /**
+     * Remueve una sesión WebSocket cuando el usuario se desconecta.
      */
     public void removeSession(String sessionId) {
-        SessionInfo removed = authenticatedSessions.remove(sessionId);
-        pendingAuthentication.remove(sessionId);
-
+        SessionInfo removed = localSessions.remove(sessionId);
         if (removed != null) {
-           // Remover también de usersOnline
-           usersOnline.remove(removed.getUsername());
-           log.info("Sesion removida: {} - Usuario: {}", sessionId, removed.getUsername());
-        }else{
-            log.debug("Sesion pendiente removida: {}", sessionId);
+            log.info("Sesión WebSocket removida: {} - Usuario: {}", sessionId, removed.getUsername());
         }
     }
 
-    public SessionInfo getSessionInfo(String sessionId){
-        return authenticatedSessions.get(sessionId);
-    }
-
-    // buscar sesion por username
-    public SessionInfo findByUsername(String username){
-        String sessionId = usersOnline.get(username);
-        if(sessionId == null){
-            return null;
-        }
-        return authenticatedSessions.get(sessionId);
-    }
-
-    // Verifica si un usuario se halla en linea
-    public boolean isUserOnline(String userId){
-        log.debug("Verificando si {} se halla en linea", userId);
-        if(usersOnline.containsKey(userId)){
-            return true;
-        }else{
-            log.debug("El usuario: {} no se halla en linea", userId);
-            return false;
-        }      
+    /**
+     * Obtiene la información de una sesión WebSocket por su sessionId.
+     */
+    public SessionInfo getSessionInfo(String sessionId) {
+        return localSessions.get(sessionId);
     }
 
     @Data
     @AllArgsConstructor
-    public static class SessionInfo{
+    public static class SessionInfo {
         private String userId;
         private String username;
         private WebSocketSession wsSession;

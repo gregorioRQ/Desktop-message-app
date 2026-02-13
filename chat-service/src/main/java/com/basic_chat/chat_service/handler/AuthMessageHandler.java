@@ -9,26 +9,32 @@ import org.springframework.web.socket.WebSocketSession;
 
 import com.basic_chat.chat_service.context.SessionContext;
 import com.basic_chat.chat_service.models.UserPresenceEvent;
-import com.basic_chat.chat_service.security.JwtValidator;
 import com.basic_chat.chat_service.service.SessionManager;
+import com.basic_chat.chat_service.service.RedisSessionService;
 import com.basic_chat.proto.MessagesProto.AuthMessage;
 import com.basic_chat.proto.MessagesProto.AuthResponse;
 import com.basic_chat.proto.MessagesProto.WsMessage;
 
-import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Maneja mensajes de autenticación.
+ * 
+ * NOTA: El API Gateway es responsable de validar el JWT.
+ * Este handler solo registra la sesión WebSocket localmente
+ * usando el userId que proviene del mensaje de autenticación.
+ */
 @Component
 @Slf4j
 public class AuthMessageHandler implements WsMessageHandler{
 
-    private final JwtValidator jwtValidator;
     private final SessionManager sessionManager;
+    private final RedisSessionService redisSessionService;
     private final RabbitTemplate rabbitTemplate;
 
-    public AuthMessageHandler(JwtValidator jwtValidator, SessionManager sessionManager, RabbitTemplate rabbitTemplate) {
-        this.jwtValidator = jwtValidator;
+    public AuthMessageHandler(SessionManager sessionManager, RedisSessionService redisSessionService, RabbitTemplate rabbitTemplate) {
         this.sessionManager = sessionManager;
+        this.redisSessionService = redisSessionService;
         this.rabbitTemplate = rabbitTemplate;
     }
 
@@ -44,47 +50,35 @@ public class AuthMessageHandler implements WsMessageHandler{
         String sessionId = session.getId();
 
         try {
-            // Validar token
-            String token = authMessage.getToken();
-            if (!isValidToken(token)) {
-                log.warn("Token vacío recibido de sesión: {}", sessionId);
-                sendAuthError(session, "Token requerido");
+            // Extraer userId y username del mensaje (ya validado por el gateway)
+            String userId = authMessage.getUserId();
+            String username = authMessage.getUsername();
+
+            if (userId == null || userId.isEmpty() || username == null || username.isEmpty()) {
+                log.warn("Mensaje de autenticación incompleto - sessionId: {}", sessionId);
+                sendAuthError(session, "Datos de autenticación requeridos");
                 return;
             }
 
-            // Validar y extraer claims
-            Claims claims = jwtValidator.validateToken(token);
-            String userId = jwtValidator.getUserId(claims);
-            String username = jwtValidator.getUsername(claims);
+            // Registrar la sesión WebSocket localmente
+            sessionManager.registerSession(sessionId, userId, username, session);
 
-            // Registrar sesión y notificar
-            registerSession(sessionId, userId, username, session);
+            // Guardar sessionId en Redis (backup, normalmente lo hace el API Gateway)
+            redisSessionService.saveSessionId(userId, sessionId);
 
-            // Enviar respuesta exitosa
+            // Enviar respuesta de éxito
             sendAuthSuccess(session, userId, username);
-            log.info("Usuario autenticado: {} ({})", username, userId);
+            log.info("Sesión registrada - sessionId: {}, userId: {}, username: {}", sessionId, userId, username);
+            
+            // Publicar evento de presencia
+            rabbitTemplate.convertAndSend("user.presence",
+                new UserPresenceEvent(userId, username, true, System.currentTimeMillis()));
 
         } catch (Exception e) {
-            log.error("Error en autenticación: {}", e.getMessage());
-            sendAuthError(session, "Token inválido o expirado");
+            log.error("Error registrando sesión: {}", e.getMessage());
+            sendAuthError(session, "Error en registro de sesión");
             closeSession(session);
         }
-    }
-
-    /**
-     * Valida que el token no sea nulo o vacío
-     */
-    private boolean isValidToken(String token) {
-        return token != null && !token.isEmpty();
-    }
-
-    /**
-     * Registra la sesión autenticada en SessionManager y publica evento de presencia
-     */
-    private void registerSession(String sessionId, String userId, String username, WebSocketSession session) {
-        sessionManager.authenticateSession(sessionId, userId, username, session);
-        rabbitTemplate.convertAndSend("user.presence",
-            new UserPresenceEvent(userId, username, true, System.currentTimeMillis()));
     }
 
     /**
@@ -93,7 +87,7 @@ public class AuthMessageHandler implements WsMessageHandler{
     private void sendAuthSuccess(WebSocketSession session, String userId, String username) throws IOException {
         AuthResponse response = AuthResponse.newBuilder()
             .setSuccess(true)
-            .setMessage("Autenticación exitosa")
+            .setMessage("Sesión registrada exitosamente")
             .setUserId(userId)
             .setUsername(username)
             .build();
@@ -106,7 +100,7 @@ public class AuthMessageHandler implements WsMessageHandler{
     }
 
     /**
-     * Envía una respuesta de error de autenticación
+     * Envía una respuesta de error
      */
     private void sendAuthError(WebSocketSession session, String errorMessage) {
         try {
@@ -121,7 +115,7 @@ public class AuthMessageHandler implements WsMessageHandler{
 
             session.sendMessage(new BinaryMessage(wsResponse.toByteArray()));
         } catch (Exception e) {
-            log.error("Error enviando mensaje de error: {}", e.getMessage());
+            log.error("Error enviando respuesta de error: {}", e.getMessage());
         }
     }
 
@@ -137,3 +131,4 @@ public class AuthMessageHandler implements WsMessageHandler{
     }
 
 }
+

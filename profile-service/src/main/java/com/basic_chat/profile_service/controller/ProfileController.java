@@ -26,7 +26,7 @@ import lombok.extern.slf4j.Slf4j;
  * Principio SOLID: Single Responsibility - Solo maneja requests HTTP con protobuf
  */
 @RestController
-@RequestMapping("/profile/api/v1")
+@RequestMapping("/api/v1/")
 @RequiredArgsConstructor
 @Slf4j
 public class ProfileController {

@@ -1490,6 +1490,30 @@ public final class MessagesProto {
      */
     com.google.protobuf.ByteString
         getTokenBytes();
+
+    /**
+     * <code>string user_id = 2;</code>
+     * @return The userId.
+     */
+    java.lang.String getUserId();
+    /**
+     * <code>string user_id = 2;</code>
+     * @return The bytes for userId.
+     */
+    com.google.protobuf.ByteString
+        getUserIdBytes();
+
+    /**
+     * <code>string username = 3;</code>
+     * @return The username.
+     */
+    java.lang.String getUsername();
+    /**
+     * <code>string username = 3;</code>
+     * @return The bytes for username.
+     */
+    com.google.protobuf.ByteString
+        getUsernameBytes();
   }
   /**
    * <pre>
@@ -1509,6 +1533,8 @@ public final class MessagesProto {
     }
     private AuthMessage() {
       token_ = "";
+      userId_ = "";
+      username_ = "";
     }
 
     @java.lang.Override
@@ -1570,6 +1596,84 @@ public final class MessagesProto {
       }
     }
 
+    public static final int USER_ID_FIELD_NUMBER = 2;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object userId_ = "";
+    /**
+     * <code>string user_id = 2;</code>
+     * @return The userId.
+     */
+    @java.lang.Override
+    public java.lang.String getUserId() {
+      java.lang.Object ref = userId_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        userId_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string user_id = 2;</code>
+     * @return The bytes for userId.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getUserIdBytes() {
+      java.lang.Object ref = userId_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        userId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int USERNAME_FIELD_NUMBER = 3;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object username_ = "";
+    /**
+     * <code>string username = 3;</code>
+     * @return The username.
+     */
+    @java.lang.Override
+    public java.lang.String getUsername() {
+      java.lang.Object ref = username_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        username_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string username = 3;</code>
+     * @return The bytes for username.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getUsernameBytes() {
+      java.lang.Object ref = username_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        username_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -1587,6 +1691,12 @@ public final class MessagesProto {
       if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(token_)) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 1, token_);
       }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(userId_)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, userId_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(username_)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, username_);
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -1598,6 +1708,12 @@ public final class MessagesProto {
       size = 0;
       if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(token_)) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, token_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(userId_)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, userId_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(username_)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, username_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -1616,6 +1732,10 @@ public final class MessagesProto {
 
       if (!getToken()
           .equals(other.getToken())) return false;
+      if (!getUserId()
+          .equals(other.getUserId())) return false;
+      if (!getUsername()
+          .equals(other.getUsername())) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -1629,6 +1749,10 @@ public final class MessagesProto {
       hash = (19 * hash) + getDescriptor().hashCode();
       hash = (37 * hash) + TOKEN_FIELD_NUMBER;
       hash = (53 * hash) + getToken().hashCode();
+      hash = (37 * hash) + USER_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getUserId().hashCode();
+      hash = (37 * hash) + USERNAME_FIELD_NUMBER;
+      hash = (53 * hash) + getUsername().hashCode();
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -1765,6 +1889,8 @@ public final class MessagesProto {
         super.clear();
         bitField0_ = 0;
         token_ = "";
+        userId_ = "";
+        username_ = "";
         return this;
       }
 
@@ -1800,6 +1926,12 @@ public final class MessagesProto {
         int from_bitField0_ = bitField0_;
         if (((from_bitField0_ & 0x00000001) != 0)) {
           result.token_ = token_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.userId_ = userId_;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.username_ = username_;
         }
       }
 
@@ -1852,6 +1984,16 @@ public final class MessagesProto {
           bitField0_ |= 0x00000001;
           onChanged();
         }
+        if (!other.getUserId().isEmpty()) {
+          userId_ = other.userId_;
+          bitField0_ |= 0x00000002;
+          onChanged();
+        }
+        if (!other.getUsername().isEmpty()) {
+          username_ = other.username_;
+          bitField0_ |= 0x00000004;
+          onChanged();
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -1883,6 +2025,16 @@ public final class MessagesProto {
                 bitField0_ |= 0x00000001;
                 break;
               } // case 10
+              case 18: {
+                userId_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 18
+              case 26: {
+                username_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 26
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -1968,6 +2120,150 @@ public final class MessagesProto {
         checkByteStringIsUtf8(value);
         token_ = value;
         bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object userId_ = "";
+      /**
+       * <code>string user_id = 2;</code>
+       * @return The userId.
+       */
+      public java.lang.String getUserId() {
+        java.lang.Object ref = userId_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          userId_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string user_id = 2;</code>
+       * @return The bytes for userId.
+       */
+      public com.google.protobuf.ByteString
+          getUserIdBytes() {
+        java.lang.Object ref = userId_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          userId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string user_id = 2;</code>
+       * @param value The userId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setUserId(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        userId_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string user_id = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearUserId() {
+        userId_ = getDefaultInstance().getUserId();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string user_id = 2;</code>
+       * @param value The bytes for userId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setUserIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        userId_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object username_ = "";
+      /**
+       * <code>string username = 3;</code>
+       * @return The username.
+       */
+      public java.lang.String getUsername() {
+        java.lang.Object ref = username_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          username_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string username = 3;</code>
+       * @return The bytes for username.
+       */
+      public com.google.protobuf.ByteString
+          getUsernameBytes() {
+        java.lang.Object ref = username_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          username_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string username = 3;</code>
+       * @param value The username to set.
+       * @return This builder for chaining.
+       */
+      public Builder setUsername(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        username_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string username = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearUsername() {
+        username_ = getDefaultInstance().getUsername();
+        bitField0_ = (bitField0_ & ~0x00000004);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string username = 3;</code>
+       * @param value The bytes for username to set.
+       * @return This builder for chaining.
+       */
+      public Builder setUsernameBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        username_ = value;
+        bitField0_ |= 0x00000004;
         onChanged();
         return this;
       }
@@ -22631,82 +22927,83 @@ public final class MessagesProto {
       "tMessage\022\n\n\002id\030\001 \001(\t\022)\n\004type\030\002 \001(\0162\033.com" +
       ".basic_chat.MessageType\022\016\n\006sender\030\003 \001(\t\022" +
       "\021\n\trecipient\030\004 \001(\t\022\017\n\007content\030\005 \001(\t\022\021\n\tt" +
-      "imestamp\030\006 \001(\003\"\034\n\013AuthMessage\022\r\n\005token\030\001" +
-      " \001(\t\"R\n\014AuthResponse\022\017\n\007success\030\001 \001(\010\022\017\n" +
-      "\007message\030\002 \001(\t\022\016\n\006userId\030\003 \001(\t\022\020\n\010userna" +
-      "me\030\004 \001(\t\"/\n\010UserList\022#\n\005users\030\001 \003(\0132\024.co" +
-      "m.basic_chat.User\"C\n\022UnreadMessagesList\022" +
-      "-\n\010messages\030\001 \003(\0132\033.com.basic_chat.ChatM" +
-      "essage\"4\n\004User\022\n\n\002id\030\001 \001(\t\022\020\n\010username\030\002" +
-      " \001(\t\022\016\n\006online\030\003 \001(\010\"C\n\024DeleteMessageReq" +
-      "uest\022\022\n\nmessage_id\030\001 \001(\t\022\027\n\017sender_usern" +
-      "ame\030\002 \001(\t\"M\n\025DeleteMessageResponse\022\017\n\007su" +
-      "ccess\030\001 \001(\010\022\017\n\007message\030\002 \001(\t\022\022\n\nmessage_" +
-      "id\030\003 \001(\t\"8\n\023ClearHistoryRequest\022\016\n\006sende" +
-      "r\030\001 \001(\t\022\021\n\trecipient\030\002 \001(\t\"8\n\024ClearHisto" +
-      "ryResponse\022\017\n\007success\030\001 \001(\010\022\017\n\007message\030\002" +
-      " \001(\t\"D\n\032MessageDeletedNotification\022\022\n\nme" +
-      "ssage_id\030\001 \001(\t\022\022\n\ndeleted_by\030\002 \001(\t\"(\n\023Bl" +
-      "ockContactRequest\022\021\n\trecipient\030\001 \001(\t\"8\n\024" +
-      "BlockContactResponse\022\017\n\007success\030\001 \001(\010\022\017\n" +
-      "\007message\030\002 \001(\t\"*\n\025UnblockContactRequest\022" +
-      "\021\n\trecipient\030\001 \001(\t\":\n\026UnblockContactResp" +
-      "onse\022\017\n\007success\030\001 \001(\010\022\017\n\007message\030\002 \001(\t\"L" +
-      "\n\014MessageError\022\022\n\nmessage_id\030\001 \001(\t\022\025\n\rer" +
-      "ror_message\030\002 \001(\t\022\021\n\trecipient\030\003 \001(\t\"\221\001\n" +
-      "\023ChatMessageResponse\022\022\n\nmessage_id\030\001 \001(\t" +
-      "\022\017\n\007success\030\002 \001(\010\022+\n\005cause\030\003 \001(\0162\034.com.b" +
-      "asic_chat.FailureCause\022\025\n\rerror_message\030" +
-      "\004 \001(\t\022\021\n\trecipient\030\005 \001(\t\"#\n\022UnblockedUse" +
-      "rsList\022\r\n\005users\030\001 \003(\t\"!\n\020BlockedUsersLis" +
-      "t\022\r\n\005users\030\001 \003(\t\"S\n\031MarkMessagesAsReadRe" +
-      "quest\022\016\n\006sender\030\001 \001(\t\022\021\n\trecipient\030\002 \001(\t" +
-      "\022\023\n\013message_ids\030\003 \003(\t\"B\n\022MessagesReadUpd" +
-      "ate\022\023\n\013message_ids\030\001 \003(\t\022\027\n\017reader_usern" +
-      "ame\030\002 \001(\t\"W\n\017ContactIdentity\022\021\n\tsender_i" +
-      "d\030\001 \001(\t\022\027\n\017sender_username\030\002 \001(\t\022\030\n\020cont" +
-      "act_username\030\003 \001(\t\"\227\013\n\tWsMessage\0223\n\014chat" +
-      "_message\030\001 \001(\0132\033.com.basic_chat.ChatMess" +
-      "ageH\000\022-\n\tuser_list\030\002 \001(\0132\030.com.basic_cha" +
-      "t.UserListH\000\0223\n\014auth_message\030\003 \001(\0132\033.com" +
-      ".basic_chat.AuthMessageH\000\0225\n\rauth_respon" +
-      "se\030\004 \001(\0132\034.com.basic_chat.AuthResponseH\000" +
-      "\022F\n\026delete_message_request\030\005 \001(\0132$.com.b" +
-      "asic_chat.DeleteMessageRequestH\000\022H\n\027dele" +
-      "te_message_response\030\006 \001(\0132%.com.basic_ch" +
-      "at.DeleteMessageResponseH\000\022Q\n\033message_de" +
-      "lete_notification\030\007 \001(\0132*.com.basic_chat" +
-      ".MessageDeletedNotificationH\000\022B\n\024unread_" +
-      "messages_list\030\010 \001(\0132\".com.basic_chat.Unr" +
-      "eadMessagesListH\000\022D\n\025clear_history_reque" +
-      "st\030\t \001(\0132#.com.basic_chat.ClearHistoryRe" +
-      "questH\000\022D\n\025block_contact_request\030\n \001(\0132#" +
-      ".com.basic_chat.BlockContactRequestH\000\022F\n" +
-      "\026block_contact_response\030\013 \001(\0132$.com.basi" +
-      "c_chat.BlockContactResponseH\000\0225\n\rmessage" +
-      "_error\030\014 \001(\0132\034.com.basic_chat.MessageErr" +
-      "orH\000\022H\n\027unblock_contact_request\030\r \001(\0132%." +
-      "com.basic_chat.UnblockContactRequestH\000\022J" +
-      "\n\030unblock_contact_response\030\016 \001(\0132&.com.b" +
-      "asic_chat.UnblockContactResponseH\000\022D\n\025ch" +
-      "at_message_response\030\017 \001(\0132#.com.basic_ch" +
-      "at.ChatMessageResponseH\000\022B\n\024unblocked_us" +
-      "ers_list\030\020 \001(\0132\".com.basic_chat.Unblocke" +
-      "dUsersListH\000\022>\n\022blocked_users_list\030\021 \001(\013" +
-      "2 .com.basic_chat.BlockedUsersListH\000\022R\n\035" +
-      "mark_messages_as_read_request\030\022 \001(\0132).co" +
-      "m.basic_chat.MarkMessagesAsReadRequestH\000" +
-      "\022B\n\024messages_read_update\030\023 \001(\0132\".com.bas" +
-      "ic_chat.MessagesReadUpdateH\000\022;\n\020contact_" +
-      "identity\030\024 \001(\0132\037.com.basic_chat.ContactI" +
-      "dentityH\000\022F\n\026clear_history_response\030\025 \001(" +
-      "\0132$.com.basic_chat.ClearHistoryResponseH" +
-      "\000B\t\n\007payload*t\n\013MessageType\022\010\n\004TEXT\020\000\022\t\n" +
-      "\005LOGIN\020\001\022\n\n\006LOGOUT\020\002\022\r\n\tUSER_LIST\020\003\022\n\n\006T" +
-      "YPING\020\004\022\024\n\020DELIVERY_RECEIPT\020\005\022\t\n\005ALERT\020\006" +
-      "\022\010\n\004CHAT\020\007*.\n\014FailureCause\022\021\n\rUNKNOWN_CA" +
-      "USE\020\000\022\013\n\007BLOCKED\020\001B%\n\024com.basic_chat.pro" +
-      "toB\rMessagesProtob\006proto3"
+      "imestamp\030\006 \001(\003\"?\n\013AuthMessage\022\r\n\005token\030\001" +
+      " \001(\t\022\017\n\007user_id\030\002 \001(\t\022\020\n\010username\030\003 \001(\t\"" +
+      "R\n\014AuthResponse\022\017\n\007success\030\001 \001(\010\022\017\n\007mess" +
+      "age\030\002 \001(\t\022\016\n\006userId\030\003 \001(\t\022\020\n\010username\030\004 " +
+      "\001(\t\"/\n\010UserList\022#\n\005users\030\001 \003(\0132\024.com.bas" +
+      "ic_chat.User\"C\n\022UnreadMessagesList\022-\n\010me" +
+      "ssages\030\001 \003(\0132\033.com.basic_chat.ChatMessag" +
+      "e\"4\n\004User\022\n\n\002id\030\001 \001(\t\022\020\n\010username\030\002 \001(\t\022" +
+      "\016\n\006online\030\003 \001(\010\"C\n\024DeleteMessageRequest\022" +
+      "\022\n\nmessage_id\030\001 \001(\t\022\027\n\017sender_username\030\002" +
+      " \001(\t\"M\n\025DeleteMessageResponse\022\017\n\007success" +
+      "\030\001 \001(\010\022\017\n\007message\030\002 \001(\t\022\022\n\nmessage_id\030\003 " +
+      "\001(\t\"8\n\023ClearHistoryRequest\022\016\n\006sender\030\001 \001" +
+      "(\t\022\021\n\trecipient\030\002 \001(\t\"8\n\024ClearHistoryRes" +
+      "ponse\022\017\n\007success\030\001 \001(\010\022\017\n\007message\030\002 \001(\t\"" +
+      "D\n\032MessageDeletedNotification\022\022\n\nmessage" +
+      "_id\030\001 \001(\t\022\022\n\ndeleted_by\030\002 \001(\t\"(\n\023BlockCo" +
+      "ntactRequest\022\021\n\trecipient\030\001 \001(\t\"8\n\024Block" +
+      "ContactResponse\022\017\n\007success\030\001 \001(\010\022\017\n\007mess" +
+      "age\030\002 \001(\t\"*\n\025UnblockContactRequest\022\021\n\tre" +
+      "cipient\030\001 \001(\t\":\n\026UnblockContactResponse\022" +
+      "\017\n\007success\030\001 \001(\010\022\017\n\007message\030\002 \001(\t\"L\n\014Mes" +
+      "sageError\022\022\n\nmessage_id\030\001 \001(\t\022\025\n\rerror_m" +
+      "essage\030\002 \001(\t\022\021\n\trecipient\030\003 \001(\t\"\221\001\n\023Chat" +
+      "MessageResponse\022\022\n\nmessage_id\030\001 \001(\t\022\017\n\007s" +
+      "uccess\030\002 \001(\010\022+\n\005cause\030\003 \001(\0162\034.com.basic_" +
+      "chat.FailureCause\022\025\n\rerror_message\030\004 \001(\t" +
+      "\022\021\n\trecipient\030\005 \001(\t\"#\n\022UnblockedUsersLis" +
+      "t\022\r\n\005users\030\001 \003(\t\"!\n\020BlockedUsersList\022\r\n\005" +
+      "users\030\001 \003(\t\"S\n\031MarkMessagesAsReadRequest" +
+      "\022\016\n\006sender\030\001 \001(\t\022\021\n\trecipient\030\002 \001(\t\022\023\n\013m" +
+      "essage_ids\030\003 \003(\t\"B\n\022MessagesReadUpdate\022\023" +
+      "\n\013message_ids\030\001 \003(\t\022\027\n\017reader_username\030\002" +
+      " \001(\t\"W\n\017ContactIdentity\022\021\n\tsender_id\030\001 \001" +
+      "(\t\022\027\n\017sender_username\030\002 \001(\t\022\030\n\020contact_u" +
+      "sername\030\003 \001(\t\"\227\013\n\tWsMessage\0223\n\014chat_mess" +
+      "age\030\001 \001(\0132\033.com.basic_chat.ChatMessageH\000" +
+      "\022-\n\tuser_list\030\002 \001(\0132\030.com.basic_chat.Use" +
+      "rListH\000\0223\n\014auth_message\030\003 \001(\0132\033.com.basi" +
+      "c_chat.AuthMessageH\000\0225\n\rauth_response\030\004 " +
+      "\001(\0132\034.com.basic_chat.AuthResponseH\000\022F\n\026d" +
+      "elete_message_request\030\005 \001(\0132$.com.basic_" +
+      "chat.DeleteMessageRequestH\000\022H\n\027delete_me" +
+      "ssage_response\030\006 \001(\0132%.com.basic_chat.De" +
+      "leteMessageResponseH\000\022Q\n\033message_delete_" +
+      "notification\030\007 \001(\0132*.com.basic_chat.Mess" +
+      "ageDeletedNotificationH\000\022B\n\024unread_messa" +
+      "ges_list\030\010 \001(\0132\".com.basic_chat.UnreadMe" +
+      "ssagesListH\000\022D\n\025clear_history_request\030\t " +
+      "\001(\0132#.com.basic_chat.ClearHistoryRequest" +
+      "H\000\022D\n\025block_contact_request\030\n \001(\0132#.com." +
+      "basic_chat.BlockContactRequestH\000\022F\n\026bloc" +
+      "k_contact_response\030\013 \001(\0132$.com.basic_cha" +
+      "t.BlockContactResponseH\000\0225\n\rmessage_erro" +
+      "r\030\014 \001(\0132\034.com.basic_chat.MessageErrorH\000\022" +
+      "H\n\027unblock_contact_request\030\r \001(\0132%.com.b" +
+      "asic_chat.UnblockContactRequestH\000\022J\n\030unb" +
+      "lock_contact_response\030\016 \001(\0132&.com.basic_" +
+      "chat.UnblockContactResponseH\000\022D\n\025chat_me" +
+      "ssage_response\030\017 \001(\0132#.com.basic_chat.Ch" +
+      "atMessageResponseH\000\022B\n\024unblocked_users_l" +
+      "ist\030\020 \001(\0132\".com.basic_chat.UnblockedUser" +
+      "sListH\000\022>\n\022blocked_users_list\030\021 \001(\0132 .co" +
+      "m.basic_chat.BlockedUsersListH\000\022R\n\035mark_" +
+      "messages_as_read_request\030\022 \001(\0132).com.bas" +
+      "ic_chat.MarkMessagesAsReadRequestH\000\022B\n\024m" +
+      "essages_read_update\030\023 \001(\0132\".com.basic_ch" +
+      "at.MessagesReadUpdateH\000\022;\n\020contact_ident" +
+      "ity\030\024 \001(\0132\037.com.basic_chat.ContactIdenti" +
+      "tyH\000\022F\n\026clear_history_response\030\025 \001(\0132$.c" +
+      "om.basic_chat.ClearHistoryResponseH\000B\t\n\007" +
+      "payload*t\n\013MessageType\022\010\n\004TEXT\020\000\022\t\n\005LOGI" +
+      "N\020\001\022\n\n\006LOGOUT\020\002\022\r\n\tUSER_LIST\020\003\022\n\n\006TYPING" +
+      "\020\004\022\024\n\020DELIVERY_RECEIPT\020\005\022\t\n\005ALERT\020\006\022\010\n\004C" +
+      "HAT\020\007*.\n\014FailureCause\022\021\n\rUNKNOWN_CAUSE\020\000" +
+      "\022\013\n\007BLOCKED\020\001B%\n\024com.basic_chat.protoB\rM" +
+      "essagesProtob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -22723,7 +23020,7 @@ public final class MessagesProto {
     internal_static_com_basic_chat_AuthMessage_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_basic_chat_AuthMessage_descriptor,
-        new java.lang.String[] { "Token", });
+        new java.lang.String[] { "Token", "UserId", "Username", });
     internal_static_com_basic_chat_AuthResponse_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_com_basic_chat_AuthResponse_fieldAccessorTable = new

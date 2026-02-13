@@ -30,6 +30,8 @@ message ChatMessage {
 // Mensaje de autenticación WebSocket
 message AuthMessage {
     string token = 1;
+    string user_id = 2;
+    string username = 3;
 }
 
 // Respuesta de autenticación

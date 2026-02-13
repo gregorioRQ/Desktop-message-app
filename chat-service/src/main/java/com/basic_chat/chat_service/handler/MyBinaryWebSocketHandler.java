@@ -1,8 +1,6 @@
 package com.basic_chat.chat_service.handler;
 
 import com.basic_chat.chat_service.context.SessionContext;
-import com.basic_chat.chat_service.security.JwtValidator;
-import com.basic_chat.chat_service.service.AuthenticationGuard;
 import com.basic_chat.chat_service.service.SessionManager;
 import com.basic_chat.chat_service.service.WsMessageDispatcher;
 import com.basic_chat.chat_service.service.WebSocketConnectionManager;
@@ -17,32 +15,29 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.AbstractWebSocketHandler;
 
+/**
+ * Manejador de mensajes WebSocket binarios.
+ * 
+ * NOTA: Se asume que la validación del token ya fue hecha por el API Gateway.
+ */
 @Component
 @Slf4j
 public class MyBinaryWebSocketHandler extends AbstractWebSocketHandler {
 
     private final SessionManager sessionManager;
-    private final AuthenticationGuard authenticationGuard;
     private final WsMessageDispatcher dispatcher;
     private final WebSocketConnectionManager connectionManager;
     private final PendingMessagesHandler pendingMessagesHandler;
 
     public MyBinaryWebSocketHandler(
             SessionManager sessionManager,
-            AuthenticationGuard authenticationGuard,
             WsMessageDispatcher dispatcher,
             WebSocketConnectionManager connectionManager,
             PendingMessagesHandler pendingMessagesHandler) {
         this.sessionManager = sessionManager;
-        this.authenticationGuard = authenticationGuard;
         this.dispatcher = dispatcher;
         this.connectionManager = connectionManager;
         this.pendingMessagesHandler = pendingMessagesHandler;
-    }
-
-    @Override
-    public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-        connectionManager.handleConnectionEstablished(session);
     }
 
     @Override
@@ -51,13 +46,11 @@ public class MyBinaryWebSocketHandler extends AbstractWebSocketHandler {
             MessagesProto.WsMessage wsMessage = MessagesProto.WsMessage.parseFrom(message.getPayload().array());
             SessionContext context = new SessionContext(session, sessionManager);
 
-            if (!wsMessage.hasAuthMessage()) {
-                authenticationGuard.check(context);
-            }
-
+            // Despachar el mensaje (todos ya son autenticados por el gateway)
             dispatcher.dispatch(context, wsMessage);
 
-            if (wsMessage.hasAuthMessage() && sessionManager.isAuthenticated(session.getId())) {
+            // Después de autenticación exitosa, enviar mensajes pendientes
+            if (wsMessage.hasAuthMessage() && sessionManager.getSessionInfo(session.getId()) != null) {
                 String username = sessionManager.getSessionInfo(session.getId()).getUsername();
                 sendAllPendingMessages(session, username);
             }
@@ -84,16 +77,15 @@ public class MyBinaryWebSocketHandler extends AbstractWebSocketHandler {
     }
 
     private void sendAllPendingMessages(WebSocketSession session, String username) {
-        try{
+        try {
             pendingMessagesHandler.sendPendingMessages(session, username);
             pendingMessagesHandler.sendPendingDeletions(session, username);
             pendingMessagesHandler.sendPendingUnblocks(session, username);
             pendingMessagesHandler.sendPendingReadReceipts(session, username);
             pendingMessagesHandler.sendPendingContactIdentities(session, username); 
-        }catch(Exception ex){
+        } catch (Exception ex) {
             throw new RuntimeException(ex.getMessage());
         }
-        
     }
 
     private void closeSession(WebSocketSession session) {

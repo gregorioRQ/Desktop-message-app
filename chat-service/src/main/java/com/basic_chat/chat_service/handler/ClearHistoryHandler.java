@@ -7,6 +7,7 @@ import org.springframework.web.socket.WebSocketSession;
 import com.basic_chat.chat_service.context.SessionContext;
 import com.basic_chat.chat_service.service.MessageService;
 import com.basic_chat.chat_service.service.SessionManager;
+import com.basic_chat.chat_service.service.RedisSessionService;
 import com.basic_chat.proto.MessagesProto;
 import com.basic_chat.proto.MessagesProto.ClearHistoryRequest;
 import com.basic_chat.proto.MessagesProto.ClearHistoryResponse;
@@ -20,10 +21,12 @@ public class ClearHistoryHandler implements WsMessageHandler {
     
     private final MessageService messageService;
     private final SessionManager sessionManager;
+    private final RedisSessionService redisSessionService;
 
-    public ClearHistoryHandler(MessageService messageService, SessionManager sessionManager) {
+    public ClearHistoryHandler(MessageService messageService, SessionManager sessionManager, RedisSessionService redisSessionService) {
         this.messageService = messageService;
         this.sessionManager = sessionManager;
+        this.redisSessionService = redisSessionService;
     }
 
     @Override
@@ -123,13 +126,18 @@ public class ClearHistoryHandler implements WsMessageHandler {
     private void forwardClearHistoryToRecipient(String recipient, WsMessage message) {
         try {
             // Verificar que el usuario está online
-            if (!sessionManager.isUserOnline(recipient)) {
+            if (!redisSessionService.isUserOnlineByUsername(recipient)) {
                 log.debug("Usuario {} está offline. No se reenvia solicitud de clear_history", recipient);
                 return;
             }
 
             // Obtener la sesión del destinatario
-            SessionManager.SessionInfo recipientInfo = sessionManager.findByUsername(recipient);
+            String sessionId = redisSessionService.getSessionIdByUsername(recipient);
+            if (sessionId == null) {
+                log.warn("No se encontró sessionId para usuario {} aunque está marcado como online", recipient);
+                return;
+            }
+            SessionManager.SessionInfo recipientInfo = sessionManager.getSessionInfo(sessionId);
 
             if (recipientInfo == null) {
                 log.warn("No se encontró sesión para usuario {} aunque está marcado como online", recipient);

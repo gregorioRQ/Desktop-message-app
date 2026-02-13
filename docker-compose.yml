@@ -47,6 +47,21 @@ services:
     networks:
       - app-chat
 
+  api-gateway:
+    build: ./api-gateway
+    container_name: api-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      PROFILE_SERVICE_URL: http://profile-service:8088
+      NOTIFICATION_SERVICE_URL: ws://notification-service:8084
+      CHAT_SERVICE_URL: ws://chat-service:8085
+      MEDIA_SERVICE_URL: http://media-service:8086
+      MEDIA_SERVICE_WS_URL: ws://media-service:8086
+      REDIS_HOST: redis-notifications
+    networks:
+      - app-chat
+
 networks:
   app-chat:
     external: true  # Indica que la red ya existe

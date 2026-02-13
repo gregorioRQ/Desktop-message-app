@@ -8,6 +8,7 @@ import com.basic_chat.chat_service.context.SessionContext;
 import com.basic_chat.chat_service.models.Message;
 import com.basic_chat.chat_service.service.MessageService;
 import com.basic_chat.chat_service.service.SessionManager;
+import com.basic_chat.chat_service.service.RedisSessionService;
 import com.basic_chat.chat_service.util.WebSocketValidationUtil;
 import com.basic_chat.proto.MessagesProto;
 import com.basic_chat.proto.MessagesProto.DeleteMessageRequest;
@@ -22,11 +23,13 @@ public class DeleteMessageHandler implements WsMessageHandler {
     
     private final MessageService messageService;
     private final SessionManager sessionManager;
+    private final RedisSessionService redisSessionService;
     private final WebSocketValidationUtil validationUtil;
 
-    public DeleteMessageHandler(MessageService messageService, SessionManager sessionManager, WebSocketValidationUtil validationUtil) {
+    public DeleteMessageHandler(MessageService messageService, SessionManager sessionManager, RedisSessionService redisSessionService, WebSocketValidationUtil validationUtil) {
         this.messageService = messageService;
         this.sessionManager = sessionManager;
+        this.redisSessionService = redisSessionService;
         this.validationUtil = validationUtil;
     }
 
@@ -160,7 +163,7 @@ public class DeleteMessageHandler implements WsMessageHandler {
         }
 
         try {
-            if (!sessionManager.isUserOnline(recipient)) {
+            if (!redisSessionService.isUserOnlineByUsername(recipient)) {
                 log.debug("Usuario {} offline. Guardando eliminación como pendiente", recipient);
                 savePendingDeletion(recipient, message.getDeleteMessageRequest().getMessageId());
                 return;
@@ -189,7 +192,13 @@ public class DeleteMessageHandler implements WsMessageHandler {
      */
     private void deliverDeletionNotificationRealtime(String recipient, WsMessage message) {
         try {
-            SessionManager.SessionInfo recipientInfo = sessionManager.findByUsername(recipient);
+            String sessionId = redisSessionService.getSessionIdByUsername(recipient);
+            if (sessionId == null) {
+                log.warn("SessionId no encontrado para usuario online: {}", recipient);
+                savePendingDeletion(recipient, message.getDeleteMessageRequest().getMessageId());
+                return;
+            }
+            SessionManager.SessionInfo recipientInfo = sessionManager.getSessionInfo(sessionId);
 
             if (recipientInfo == null) {
                 log.warn("SessionInfo no encontrada para usuario online: {}", recipient);
