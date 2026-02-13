@@ -31,7 +31,7 @@ public class HttpServiceImpl implements HttpService{
 
     @Override
     public <T, R> CompletableFuture<R> login(T request, Class<R> responseClass) {
-        return sendPostRequest("/auth/login", request, responseClass);
+        return sendPostRequest("auth/login", request, responseClass);
     }
 
     @Override
@@ -50,8 +50,25 @@ public class HttpServiceImpl implements HttpService{
     }
 
     @Override
-    public <T, R> CompletableFuture<R> logout(T request, Class<R> responseClass) {
+    public <T, R> CompletableFuture<R> logout(T request, String accessToken, Class<R> responseClass) {
         return sendPostRequest("/auth/logout", request, responseClass);
+    }
+
+    @Override
+    public CompletableFuture<Boolean> sendHeartbeat(String accessToken) {
+        try {
+            HttpRequest httpRequest = HttpRequest.newBuilder()
+                    .uri(URI.create(baseUrl + "auth/heartbeat"))
+                    .header("Authorization", "Bearer " + accessToken)
+                    .GET()
+                    .timeout(Duration.ofSeconds(10))
+                    .build();
+            
+            return httpClient.sendAsync(httpRequest, HttpResponse.BodyHandlers.discarding())
+                    .thenApply(response -> response.statusCode() == 200);
+        } catch (Exception e) {
+            return CompletableFuture.failedFuture(e);
+        }
     }
 
     /**
