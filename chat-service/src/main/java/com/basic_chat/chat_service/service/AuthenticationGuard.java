@@ -7,17 +7,16 @@ import org.springframework.web.socket.CloseStatus;
 
 import com.basic_chat.chat_service.context.SessionContext;
 
+/**
+ * @deprecated Esta clase ya no es necesaria.
+ * La validación de autenticación es responsabilidad del API Gateway.
+ * Se mantiene solo para compatibilidad hacia atrás.
+ */
+@Deprecated(forRemoval = true)
 @Component
 public class AuthenticationGuard {
     public void check(SessionContext context) throws IOException {
-        if(context.isAuthenticated()) return;
-
-        if(context.isPendingAuthentication()){
-            if(context.hasAuthenticationExpired()){
-                context.close(CloseStatus.POLICY_VIOLATION);
-            }
-            throw new SecurityException("Pendiente de autenticacion");
-        }
-        throw new SecurityException("No autenticado");
+        // Esta clase ya no realiza validación de autenticación
+        // El API Gateway es responsable de ello
     }
 }

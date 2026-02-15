@@ -2,22 +2,25 @@ package com.pola.service;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-import jakarta.websocket.ClientEndpoint;
+import jakarta.websocket.ClientEndpointConfig;
 import jakarta.websocket.CloseReason;
 import jakarta.websocket.ContainerProvider;
-import jakarta.websocket.OnClose;
-import jakarta.websocket.OnMessage;
-import jakarta.websocket.OnOpen;
+import jakarta.websocket.Endpoint;
+import jakarta.websocket.EndpointConfig;
+import jakarta.websocket.MessageHandler;
 import jakarta.websocket.Session;
 import jakarta.websocket.WebSocketContainer;
 
-@ClientEndpoint
-public class NotificationService {
-    private static final String SERVER_URI = "ws://localhost:8084/ws";
+import com.pola.config.WebSocketConfig;
+
+public class NotificationService extends Endpoint {
+    // URL gestionada en WebSocketConfig
 
     private Session session;
     private final CopyOnWriteArrayList<Consumer<String>> listeners = new CopyOnWriteArrayList<>();
@@ -26,20 +29,35 @@ public class NotificationService {
     private Runnable onStompConnected;
     private BiConsumer<String, Boolean> presenceListener;
     private NotificationHelper helper;
+    private Consumer<Throwable> errorListener;
 
     public NotificationService(String userId, String username) {
         this.userId = userId;
         this.username = username;
     }
 
-    public void connect() {
+    public void connect(String token) {
         try {
+            ClientEndpointConfig config = ClientEndpointConfig.Builder.create()
+                .configurator(new ClientEndpointConfig.Configurator() {
+                    @Override
+                    public void beforeRequest(Map<String, List<String>> headers) {
+                        if (token != null && !token.isEmpty()) {
+                            System.out.println("Enviando token en Notification WS Header");
+                            headers.put("Authorization", java.util.Collections.singletonList("Bearer " + token.trim()));
+                        }
+                    }
+                })
+                .build();
             WebSocketContainer container = ContainerProvider.getWebSocketContainer();
-            container.connectToServer(this, URI.create(SERVER_URI));
+            container.connectToServer(this, config, URI.create(WebSocketConfig.NOTIFICATION_WS_URL));
             System.out.println("Conectando al servidor websocket de notificaciones");
         } catch (Exception e) {
-            System.err.println("Error al conectar con el servicio de notificaciones: " + e.getMessage());
-            e.printStackTrace();
+            System.err.println("[NotificationService] Error crítico de conexión: " + e.getMessage());
+            e.printStackTrace(); // Log para desarrollo
+            if (errorListener != null) {
+                errorListener.accept(e);
+            }
         }
     }
 
@@ -59,6 +77,10 @@ public class NotificationService {
         listeners.add(listener);
     }
 
+    public void setErrorListener(Consumer<Throwable> listener) {
+        this.errorListener = listener;
+    }
+
     public void setPresenceListener(BiConsumer<String, Boolean> listener) {
         this.presenceListener = listener;
     }
@@ -67,12 +89,19 @@ public class NotificationService {
         this.onStompConnected = onStompConnected;
     }
 
-    @OnOpen
-    public void onOpen(Session session) {
+    @Override
+    public void onOpen(Session session, EndpointConfig config) {
         this.session = session;
         this.helper = new NotificationHelper(session);
         System.out.println("Conexión WebSocket establecida. Enviando frame CONNECT de STOMP.");
         helper.sendConnectFrame(this.userId);
+        
+        session.addMessageHandler(new MessageHandler.Whole<String>() {
+            @Override
+            public void onMessage(String message) {
+                processMessage(message);
+            }
+        });
     }
     /**
      * Procesa un mensaje 
@@ -83,8 +112,7 @@ public class NotificationService {
      * @param message
      */
 
-    @OnMessage
-    public void onMessage(String message) {
+    private void processMessage(String message) {
         System.out.println("Mensaje STOMP recibido: " + message);
 
         if (message.startsWith("CONNECTED")) {
@@ -205,7 +233,7 @@ public class NotificationService {
         System.err.println("Tipo de mensaje desconocido: " + type + ". Cuerpo: " + body);
     }
 
-    @OnClose
+    @Override
     public void onClose(Session session, CloseReason closeReason) {
         System.out.println("Conexión de notificaciones cerrada: " + closeReason);
     }

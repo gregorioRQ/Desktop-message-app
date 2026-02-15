@@ -3,6 +3,8 @@ package com.pola.service;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.ByteBuffer;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
 import org.glassfish.tyrus.client.ClientManager;
@@ -11,12 +13,11 @@ import com.pola.config.WebSocketConfig;
 import com.pola.proto.MessagesProto.AuthResponse;
 import com.pola.proto.MessagesProto.WsMessage;
 
-import jakarta.websocket.ClientEndpoint;
+import jakarta.websocket.ClientEndpointConfig;
 import jakarta.websocket.CloseReason;
-import jakarta.websocket.OnClose;
-import jakarta.websocket.OnError;
-import jakarta.websocket.OnMessage;
-import jakarta.websocket.OnOpen;
+import jakarta.websocket.Endpoint;
+import jakarta.websocket.EndpointConfig;
+import jakarta.websocket.MessageHandler;
 import jakarta.websocket.Session;
 
 /**
@@ -24,8 +25,7 @@ import jakarta.websocket.Session;
  * Principio SOLID: Single Responsibility - Solo maneja la comunicación WebSocket
  */
 
-@ClientEndpoint
-public class WebSocketServiceImpl implements WebSocketService{
+public class WebSocketServiceImpl extends Endpoint implements WebSocketService {
     private Session session;
     private final ClientManager client;
     private Consumer<WsMessage> messageListener;
@@ -38,11 +38,33 @@ public class WebSocketServiceImpl implements WebSocketService{
     }
     
     @Override
-    public void connect() {
+    public void connect(String token) {
         try {
+            ClientEndpointConfig config = ClientEndpointConfig.Builder.create()
+                .configurator(new ClientEndpointConfig.Configurator() {
+                    @Override
+                    public void beforeRequest(Map<String, List<String>> headers) {
+                        if (token != null && !token.isEmpty()) {
+                            // DEBUG: Verificar contenido del token (Payload)
+                            try {
+                                String[] parts = token.split("\\.");
+                                if (parts.length > 1) {
+                                    String payload = new String(java.util.Base64.getUrlDecoder().decode(parts[1]));
+                                    System.out.println("[DEBUG] Payload del Token enviado: " + payload);
+                                }
+                            } catch (Exception e) {
+                                System.out.println("[DEBUG] No se pudo decodificar el payload del token: " + e.getMessage());
+                            }
+
+                            // Trim para evitar espacios accidentales y log para depuración
+                            System.out.println("Enviando token en WS Header (primeros 10 chars): " + token.substring(0, Math.min(token.length(), 10)) + "...");
+                            headers.put("Authorization", java.util.Collections.singletonList("Bearer " + token.trim()));
+                        }
+                    }
+                })
+                .build();
             URI uri = new URI(WebSocketConfig.WS_URL);
-            session = client.connectToServer(this, uri);
-            notifyConnectionChange(true);
+            client.connectToServer(this, config, uri);
         } catch (Exception e) {
             notifyError(e);
         }
@@ -80,13 +102,21 @@ public class WebSocketServiceImpl implements WebSocketService{
         }
     }
     
-    @OnOpen
-    public void onOpen(Session session) {
+    @Override
+    public void onOpen(Session session, EndpointConfig config) {
+        this.session = session;
         System.out.println("Conexión WebSocket establecida: " + session.getId());
+        notifyConnectionChange(true);
+        
+        session.addMessageHandler(new MessageHandler.Whole<ByteBuffer>() {
+            @Override
+            public void onMessage(ByteBuffer message) {
+                processMessage(message);
+            }
+        });
     }
     
-    @OnMessage
-    public void onMessage(ByteBuffer buffer) {
+    private void processMessage(ByteBuffer buffer) {
         try {
             byte[] data = new byte[buffer.remaining()];
             buffer.get(data);
@@ -118,13 +148,13 @@ public class WebSocketServiceImpl implements WebSocketService{
         }
     }
     
-    @OnClose
+    @Override
     public void onClose(Session session, CloseReason closeReason) {
         System.out.println("Conexión WebSocket cerrada: " + closeReason.getReasonPhrase());
         notifyConnectionChange(false);
     }
     
-    @OnError
+    @Override
     public void onError(Session session, Throwable throwable) {
         System.err.println("Error en WebSocket: " + throwable.getMessage());
         notifyError(throwable);

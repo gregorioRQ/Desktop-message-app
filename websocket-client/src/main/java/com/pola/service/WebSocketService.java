@@ -14,7 +14,7 @@ public interface WebSocketService {
     /**
      * Conecta al servidor WebSocket
      */
-    void connect();
+    void connect(String token);
     
     /**
      * Desconecta del servidor WebSocket

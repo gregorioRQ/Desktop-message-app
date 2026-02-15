@@ -31,3 +31,18 @@ build/
 
 ### VS Code ###
 .vscode/
+# Maven
+target/
+**/target/
+
+# Protobuf
+protoc-dependencies/
+protoc-plugins/
+
+# Binarios
+*.exe
+
+# IDEs
+.idea/
+.vscode/
+*.iml

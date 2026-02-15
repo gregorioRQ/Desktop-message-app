@@ -21,6 +21,10 @@ import com.pola.view.ContactListCell;
 import com.pola.view.ChatDialogs;
 import com.pola.view.ViewManager;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -116,6 +120,8 @@ public class ChatController {
     private MessageActionHelper messageActionHelper;
     private ConnectionActionHelper connectionActionHelper;
     private LogoutHandler logoutHandler;
+    private AuthService authService;
+    private ScheduledExecutorService heartbeatExecutor;
     
     public void initialize(String username, String userId, String token) {
         this.currentUsername = username;
@@ -129,6 +135,13 @@ public class ChatController {
         contactService.setCurrentUserId(userId);
         contactService.setCurrentUsername(username);
         contactService.setWebSocketService(webSocketService);
+        
+        // Asegurar que el servicio de notificaciones esté instanciado
+        if (this.notificationService == null) {
+            this.notificationService = new NotificationService(userId, username);
+        }
+        // Vincular servicio de notificaciones al servicio de contactos
+        contactService.setNotificationService(this.notificationService);
         
         this.contactActionHelper = new ContactActionHelper(contactService, this);
         this.messageActionHelper = new MessageActionHelper(messageService, webSocketService, contactService, this);
@@ -144,10 +157,10 @@ public class ChatController {
         );
         // 2. Instanciar el handler con el objeto de contexto
         // Necesitamos AuthService para el logout remoto
-        AuthService authService = new AuthService(new HttpServiceImpl(), logoutCtx.getTokenRepository());
+        this.authService = new AuthService(new HttpServiceImpl(), logoutCtx.getTokenRepository());
         
         this.logoutHandler = new LogoutHandler(
-            this, authService, logoutCtx, logoutButton
+            this, this.authService, logoutCtx, logoutButton
         );
 
         setupUI();
@@ -158,6 +171,12 @@ public class ChatController {
         // Delegar la visualización de notificaciones al nuevo componente
         this.notificationUIController = new NotificationUIController(
             notificationsListView, notificationBadge, clearNotificationsButton, messageService.getNotifications());
+            
+        // Conexión automática a los servicios
+        connectToServices();
+        
+        // Iniciar latidos para mantener la sesión viva (Dead Man's Switch)
+        startHeartbeat();
     }
     
     public void setWebSocketService(WebSocketService webSocketService) {
@@ -175,6 +194,18 @@ public class ChatController {
     public void setViewManager(ViewManager viewManager) {
         this.viewManager = viewManager;
     }
+
+    private void connectToServices() {
+        // Conectar Chat WebSocket
+        if (webSocketService != null && !webSocketService.isConnected()) {
+            webSocketService.connect(authToken);
+        }
+        
+        // Conectar Notification WebSocket
+        if (notificationService != null) {
+            notificationService.connect(authToken);
+        }
+    }
     
     private void setupUI() {
         usernameLabel.setText("Usuario: " + currentUsername);
@@ -182,12 +213,24 @@ public class ChatController {
         
         // Configurar botones
         sendButton.setOnAction(event -> messageActionHelper.handleSendMessage());
-        connectButton.setOnAction(event -> connectionActionHelper.handleConnect());
-        disconnectButton.setOnAction(event -> connectionActionHelper.handleDisconnect());
+        
+        // El botón de conectar ya no es necesario en la UI (conexión automática)
+        if (connectButton != null) {
+            connectButton.setVisible(false);
+            connectButton.setManaged(false);
+        }
+        
+        disconnectButton.setOnAction(event -> {
+            stopHeartbeat();
+            connectionActionHelper.handleDisconnect();
+        });
         addContactButton.setOnAction(e -> contactActionHelper.handleAddContact());
         if (clearChatButton != null) clearChatButton.setOnAction(e -> messageActionHelper.handleClearChat());
         if (blockButton != null) blockButton.setOnAction(e -> contactActionHelper.confirmBlockContact(selectedContact));
-        if (logoutButton != null) logoutButton.setOnAction(e -> logoutHandler.handleLogout());
+        if (logoutButton != null) logoutButton.setOnAction(e -> {
+            stopHeartbeat();
+            logoutHandler.handleLogout();
+        });
 
         setupMessageListView();
         
@@ -380,11 +423,34 @@ public class ChatController {
         
         // Listener de errores
         webSocketService.setErrorListener(error -> {
+            // Log detallado para desarrollo
+            System.err.println("[WebSocket Chat Error] Detalle: " + error);
+            error.printStackTrace();
+            
             Platform.runLater(() -> {
-                statusLabel.setText("Error: " + error.getMessage());
-                statusLabel.setStyle("-fx-text-fill: red;");
+                String msg = error.getMessage();
+                Throwable cause = error.getCause();
+                // Detectar errores de autenticación (Handshake 401/403)
+                if ((msg != null && (msg.contains("Handshake error") || msg.contains("401") || msg.contains("403"))) || 
+                    (cause != null && cause.getMessage() != null && cause.getMessage().contains("Authentication failed"))) {
+                    statusLabel.setText("Sesión inválida (Firma rechazada)");
+                    statusLabel.setStyle("-fx-text-fill: orange;");
+                } else {
+                    statusLabel.setText("Servicio no disponible");
+                    statusLabel.setStyle("-fx-text-fill: red;");
+                }
             });
         });
+
+        // Listener de errores para notificaciones
+        if (notificationService != null) {
+            notificationService.setErrorListener(error -> {
+                System.err.println("[Notification Service Error] Detalle: " + error);
+                error.printStackTrace();
+                // Opcional: Mostrar advertencia en UI si es crítico, o solo loguear
+                // Platform.runLater(() -> showStatus("Sin notificaciones", Color.ORANGE));
+            });
+        }
 
         // Listener de autenticación exitosa
         webSocketService.setAuthSuccessListener(userId -> {
@@ -444,7 +510,6 @@ public class ChatController {
         if (connected) {
             statusLabel.setText("Conectado");
             statusLabel.setStyle("-fx-text-fill: green;");
-            connectButton.setDisable(true);
             disconnectButton.setDisable(false);
 
             // habilitar envio si hay contacto selecicondo
@@ -454,7 +519,6 @@ public class ChatController {
         } else {
             statusLabel.setText("Desconectado");
             statusLabel.setStyle("-fx-text-fill: red;");
-            connectButton.setDisable(false);
             disconnectButton.setDisable(true);
             sendButton.setDisable(true);
             messageInput.setDisable(true);
@@ -462,6 +526,27 @@ public class ChatController {
             if (contactService != null) {
                 contactService.clearOnlineUsers();
             }
+        }
+    }
+
+    private void startHeartbeat() {
+        stopHeartbeat(); // Asegurar que no haya uno previo corriendo
+        heartbeatExecutor = Executors.newSingleThreadScheduledExecutor();
+        // Ejecutar cada 60 segundos
+        heartbeatExecutor.scheduleAtFixedRate(() -> {
+            if (authToken != null && !authToken.isEmpty()) {
+                authService.sendHeartbeat(authToken)
+                    .exceptionally(e -> {
+                        System.err.println("[Heartbeat] Error enviando latido: " + e.getMessage());
+                        return false;
+                    });
+            }
+        }, 0, 60, TimeUnit.SECONDS);
+    }
+
+    private void stopHeartbeat() {
+        if (heartbeatExecutor != null && !heartbeatExecutor.isShutdown()) {
+            heartbeatExecutor.shutdownNow();
         }
     }
 

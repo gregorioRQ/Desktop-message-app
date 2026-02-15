@@ -49,7 +49,7 @@ public interface HttpService {
      * @param request Request de logout (Protobuf)
      * @return CompletableFuture con la respuesta
      */
-    <T, R> CompletableFuture<R> logout(T request, Class<R> responseClass);
+    <T, R> CompletableFuture<R> logout(T request, String accessToken, Class<R> responseClass);
 
     /**
      * Obtiene el historial de mensajes 
@@ -58,4 +58,11 @@ public interface HttpService {
     /**
      * Obtiene el contacto/lista de contactos del usuario
      */
+
+    /**
+     * Envía un latido al servidor para mantener la sesión activa.
+     * @param accessToken Token de acceso.
+     * @return CompletableFuture indicando si el latido fue exitoso.
+     */
+    CompletableFuture<Boolean> sendHeartbeat(String accessToken);
 }

@@ -8,6 +8,7 @@ import com.basic_chat.chat_service.models.PendingUnblock;
 import com.basic_chat.chat_service.repository.PendingUnblockRepository;
 import com.basic_chat.chat_service.service.BlockService;
 import com.basic_chat.chat_service.service.SessionManager;
+import com.basic_chat.chat_service.service.RedisSessionService;
 import com.basic_chat.proto.MessagesProto;
 import com.basic_chat.proto.MessagesProto.UnblockContactRequest;
 import com.basic_chat.proto.MessagesProto.UnblockContactResponse;
@@ -21,11 +22,13 @@ public class UnblockContactHandler implements WsMessageHandler {
 
     private final BlockService blockService;
     private final SessionManager sessionManager;
+    private final RedisSessionService redisSessionService;
     private final PendingUnblockRepository pendingUnblockRepository;
 
-    public UnblockContactHandler(BlockService blockService, SessionManager sessionManager, PendingUnblockRepository pendingUnblockRepository) {
+    public UnblockContactHandler(BlockService blockService, SessionManager sessionManager, RedisSessionService redisSessionService, PendingUnblockRepository pendingUnblockRepository) {
         this.blockService = blockService;
         this.sessionManager = sessionManager;
+        this.redisSessionService = redisSessionService;
         this.pendingUnblockRepository = pendingUnblockRepository;
     }
 
@@ -75,7 +78,7 @@ public class UnblockContactHandler implements WsMessageHandler {
 
 
             // Verificar si el usuario desbloqueado está en línea para notificarle
-            if (sessionManager.isUserOnline(blocked)) {
+            if (redisSessionService.isUserOnlineByUsername(blocked)) {
                 notifyUnBlockedUserIfOnline(blocked, blocker);
             } else {
                 // Si está offline, guardar pendiente
@@ -103,7 +106,11 @@ public class UnblockContactHandler implements WsMessageHandler {
      */
     private void notifyUnBlockedUserIfOnline(String blocked, String blocker){
         try {
-            SessionManager.SessionInfo blockedSession = sessionManager.findByUsername(blocked);
+            String sessionId = redisSessionService.getSessionIdByUsername(blocked);
+            if (sessionId == null) {
+                return;
+            }
+            SessionManager.SessionInfo blockedSession = sessionManager.getSessionInfo(sessionId);
             if (blockedSession != null) {
                     sendUnblockNotification(blockedSession.getWsSession(), blocker);
                     log.debug("Notificación de desbloqueo enviada a {}", blocked);

@@ -71,11 +71,21 @@ public class AuthService {
     }
 
     public CompletableFuture<LogoutResponse> logout(String refreshToken) {
+        String accessToken = "";
+        Session session = tokenRepository.loadSession();
+        if (session != null) {
+            accessToken = session.getAccessToken();
+        }
+
         LogoutRequest request = LogoutRequest.newBuilder()
                 .setRefreshToken(refreshToken)
                 .build();
 
-        return httpService.logout(request, LogoutResponse.class);
+        return httpService.logout(request, accessToken, LogoutResponse.class);
+    }
+
+    public CompletableFuture<Boolean> sendHeartbeat(String accessToken) {
+        return httpService.sendHeartbeat(accessToken);
     }
 
     private CompletableFuture<Session> refreshSession(Session currentSession) {

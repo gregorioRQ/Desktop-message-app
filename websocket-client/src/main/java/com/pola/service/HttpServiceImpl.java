@@ -31,7 +31,7 @@ public class HttpServiceImpl implements HttpService{
 
     @Override
     public <T, R> CompletableFuture<R> login(T request, Class<R> responseClass) {
-        return sendPostRequest("/auth/login", request, responseClass);
+        return sendPostRequest("auth/login", request, responseClass);
     }
 
     @Override
@@ -49,9 +49,51 @@ public class HttpServiceImpl implements HttpService{
         return sendPostRequest("/auth/refresh", request, responseClass);
     }
 
+    /**
+     * Envia al servidor una peticion de logout.
+     * 
+     * @param request La peticion de logout con el refreshToken
+     * @param accessToken El token necesario para pasar el filtro del apigateya
+     * @param responseClass La clase de respuesta a la que sera mapeada la respuesta obtenida
+     */
     @Override
-    public <T, R> CompletableFuture<R> logout(T request, Class<R> responseClass) {
-        return sendPostRequest("/auth/logout", request, responseClass);
+    public <T, R> CompletableFuture<R> logout(T request, String accessToken, Class<R> responseClass) {
+         try {
+            byte[] requestBody = serializeProtobuf(request);
+            
+            HttpRequest httpRequest = HttpRequest.newBuilder()
+                    .uri(URI.create(baseUrl + "auth/logout"))
+                    .header("Content-Type", "application/x-protobuf")
+                    .header("Accept", "application/x-protobuf")
+                    .header("Authorization", "Bearer " + accessToken)
+                    .header("LOGOUT", "true")
+                    .POST(HttpRequest.BodyPublishers.ofByteArray(requestBody))
+                    .timeout(Duration.ofSeconds(30))
+                    .build();
+            
+            return httpClient.sendAsync(httpRequest, HttpResponse.BodyHandlers.ofByteArray())
+                    .thenApply(response -> handleResponse(response, responseClass));
+                    
+        } catch (Exception e) {
+            return CompletableFuture.failedFuture(e);
+        }
+    }
+
+    @Override
+    public CompletableFuture<Boolean> sendHeartbeat(String accessToken) {
+        try {
+            HttpRequest httpRequest = HttpRequest.newBuilder()
+                    .uri(URI.create(baseUrl + "auth/heartbeat"))
+                    .header("Authorization", "Bearer " + accessToken)
+                    .GET()
+                    .timeout(Duration.ofSeconds(10))
+                    .build();
+            
+            return httpClient.sendAsync(httpRequest, HttpResponse.BodyHandlers.discarding())
+                    .thenApply(response -> response.statusCode() == 200);
+        } catch (Exception e) {
+            return CompletableFuture.failedFuture(e);
+        }
     }
 
     /**

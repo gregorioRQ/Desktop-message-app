@@ -10,6 +10,7 @@ import com.basic_chat.chat_service.repository.PendingBlockRepository;
 import com.basic_chat.chat_service.repository.PendingUnblockRepository;
 import com.basic_chat.chat_service.service.BlockService;
 import com.basic_chat.chat_service.service.SessionManager;
+import com.basic_chat.chat_service.service.RedisSessionService;
 import com.basic_chat.proto.MessagesProto;
 import com.basic_chat.proto.MessagesProto.BlockContactRequest;
 import com.basic_chat.proto.MessagesProto.BlockContactResponse;
@@ -23,13 +24,16 @@ public class BlockContactHandler implements WsMessageHandler{
     
     private final BlockService blockService;
     private final SessionManager sessionManager;
+    private final RedisSessionService redisSessionService;
     private final PendingBlockRepository pendingBlockRepository;
 
     public BlockContactHandler(BlockService blockService, 
                               SessionManager sessionManager,
+                              RedisSessionService redisSessionService,
                               PendingBlockRepository pendingBlockRepository) {
         this.blockService = blockService;
         this.sessionManager = sessionManager;
+        this.redisSessionService = redisSessionService;
         this.pendingBlockRepository = pendingBlockRepository;
     }
 
@@ -82,7 +86,7 @@ public class BlockContactHandler implements WsMessageHandler{
             log.info("Bloqueo exitoso: {} bloqueó a {}", blocker, blocked);
 
             // Verifica si el usuario bloqueado está conectado en este momento
-            if (sessionManager.isUserOnline(blocked)) {
+            if (redisSessionService.isUserOnlineByUsername(blocked)) {
                 notifyBlockedUserIfOnline(blocked, blocker);
             } else {
                 // Si el usuario está offline, guarda el bloqueo como pendiente para notificación posterior
@@ -111,7 +115,11 @@ public class BlockContactHandler implements WsMessageHandler{
      */
     private void notifyBlockedUserIfOnline(String blocked, String blocker) {
         try {
-            SessionManager.SessionInfo blockedSession = sessionManager.findByUsername(blocked);
+            String sessionId = redisSessionService.getSessionIdByUsername(blocked);
+            if (sessionId == null) {
+                return;
+            }
+            SessionManager.SessionInfo blockedSession = sessionManager.getSessionInfo(sessionId);
             
             if (blockedSession != null && blockedSession.getWsSession().isOpen()) {
                 sendBlockNotification(blockedSession.getWsSession(), blocker);

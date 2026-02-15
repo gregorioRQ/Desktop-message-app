@@ -12,6 +12,8 @@ import com.basic_chat.chat_service.context.SessionContext;
 import com.basic_chat.chat_service.models.Message;
 import com.basic_chat.chat_service.service.MessageService;
 import com.basic_chat.chat_service.service.SessionManager;
+import com.basic_chat.chat_service.service.RedisSessionService;
+import com.basic_chat.chat_service.service.RedisSessionService;
 import com.basic_chat.chat_service.util.WebSocketValidationUtil;
 import com.basic_chat.proto.MessagesProto;
 import com.basic_chat.proto.MessagesProto.MarkMessagesAsReadRequest;
@@ -26,11 +28,13 @@ public class MarkAsReadHandler implements WsMessageHandler {
 
     private final MessageService messageService;
     private final SessionManager sessionManager;
+    private final RedisSessionService redisSessionService;
     private final WebSocketValidationUtil validationUtil;
 
-    public MarkAsReadHandler(MessageService messageService, SessionManager sessionManager, WebSocketValidationUtil validationUtil) {
+    public MarkAsReadHandler(MessageService messageService, SessionManager sessionManager, RedisSessionService redisSessionService, WebSocketValidationUtil validationUtil) {
         this.messageService = messageService;
         this.sessionManager = sessionManager;
+        this.redisSessionService = redisSessionService;
         this.validationUtil = validationUtil;
     }
 
@@ -160,7 +164,7 @@ public class MarkAsReadHandler implements WsMessageHandler {
 
         try {
             // Si el usuario está online, entregar en tiempo real
-            if (sessionManager.isUserOnline(sender)) {
+            if (redisSessionService.isUserOnlineByUsername(sender)) {
                 deliverReadNotificationRealtime(sender, messageIds, reader);
             } else {
                 // Si está offline, guardar como pendiente
@@ -187,7 +191,13 @@ public class MarkAsReadHandler implements WsMessageHandler {
      */
     private void deliverReadNotificationRealtime(String sender, List<String> messageIds, String reader) {
         try {
-            SessionManager.SessionInfo senderSession = sessionManager.findByUsername(sender);
+            String sessionId = redisSessionService.getSessionIdByUsername(sender);
+            if (sessionId == null) {
+                log.warn("SessionId no encontrado para remitente online: {}", sender);
+                savePendingReadReceipt(sender, messageIds, reader);
+                return;
+            }
+            SessionManager.SessionInfo senderSession = sessionManager.getSessionInfo(sessionId);
 
             if (senderSession == null) {
                 log.warn("SessionInfo no encontrada para remitente online: {}", sender);

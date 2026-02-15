@@ -10,6 +10,7 @@ import com.basic_chat.chat_service.models.MessageSentEvent;
 import com.basic_chat.chat_service.service.BlockService;
 import com.basic_chat.chat_service.service.MessageService;
 import com.basic_chat.chat_service.service.SessionManager;
+import com.basic_chat.chat_service.service.RedisSessionService;
 import com.basic_chat.proto.MessagesProto;
 
 import lombok.extern.slf4j.Slf4j;
@@ -19,12 +20,14 @@ import lombok.extern.slf4j.Slf4j;
 public class ChatMessageHandler implements WsMessageHandler {
 
     private final SessionManager sessionManager;
+    private final RedisSessionService redisSessionService;
     private final MessageService messageService;
     private final RabbitTemplate rabbitTemplate;
     private final BlockService blockService;
 
-    public ChatMessageHandler(SessionManager sessionManager, MessageService messageService, RabbitTemplate rabbitTemplate, BlockService blockService) {
+    public ChatMessageHandler(SessionManager sessionManager, RedisSessionService redisSessionService, MessageService messageService, RabbitTemplate rabbitTemplate, BlockService blockService) {
         this.sessionManager = sessionManager;
+        this.redisSessionService = redisSessionService;
         this.messageService = messageService;
         this.rabbitTemplate = rabbitTemplate;
         this.blockService = blockService;
@@ -72,12 +75,17 @@ public class ChatMessageHandler implements WsMessageHandler {
     
     private void deliverMessage(MessagesProto.WsMessage message, MessagesProto.ChatMessage chat) {
         try {
-            SessionManager.SessionInfo recipientSession = sessionManager.findByUsername(chat.getRecipient());
-            if (sessionManager.isUserOnline(chat.getRecipient()) && recipientSession != null) {
-                sendRealTimeMessage(recipientSession.getWsSession(), message);
-            } else {
-                queueOfflineMessage(chat);
+            if (redisSessionService.isUserOnlineByUsername(chat.getRecipient())) {
+                String sessionId = redisSessionService.getSessionIdByUsername(chat.getRecipient());
+                if (sessionId != null) {
+                    SessionManager.SessionInfo recipientSession = sessionManager.getSessionInfo(sessionId);
+                    if (recipientSession != null) {
+                        sendRealTimeMessage(recipientSession.getWsSession(), message);
+                        return;
+                    }
+                }
             }
+            queueOfflineMessage(chat);
         } catch (Exception e) {
             log.error("Failed to deliver message ID: {}", chat.getId(), e);
         }

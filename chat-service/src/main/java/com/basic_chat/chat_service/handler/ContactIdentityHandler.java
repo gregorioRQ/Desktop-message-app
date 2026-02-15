@@ -8,6 +8,7 @@ import com.basic_chat.chat_service.context.SessionContext;
 import com.basic_chat.chat_service.models.PendingContactIdentity;
 import com.basic_chat.chat_service.repository.PendingContactIdentityRepository;
 import com.basic_chat.chat_service.service.SessionManager;
+import com.basic_chat.chat_service.service.RedisSessionService;
 import com.basic_chat.proto.MessagesProto.ContactIdentity;
 import com.basic_chat.proto.MessagesProto.WsMessage;
 
@@ -18,10 +19,12 @@ import lombok.extern.slf4j.Slf4j;
 public class ContactIdentityHandler implements WsMessageHandler {
 
     private final SessionManager sessionManager;
+    private final RedisSessionService redisSessionService;
     private final PendingContactIdentityRepository pendingContactIdentityRepository;
 
-    public ContactIdentityHandler(SessionManager sessionManager, PendingContactIdentityRepository pendingContactIdentityRepository) {
+    public ContactIdentityHandler(SessionManager sessionManager, RedisSessionService redisSessionService, PendingContactIdentityRepository pendingContactIdentityRepository) {
         this.sessionManager = sessionManager;
+        this.redisSessionService = redisSessionService;
         this.pendingContactIdentityRepository = pendingContactIdentityRepository;
     }
 
@@ -74,7 +77,7 @@ public class ContactIdentityHandler implements WsMessageHandler {
                     senderUsername, senderId, recipient);
 
             // Intentar entregar en tiempo real si el usuario está online
-            if (sessionManager.isUserOnline(recipient)) {
+            if (redisSessionService.isUserOnlineByUsername(recipient)) {
                 deliverContactIdentityRealtime(recipient, message);
             } else {
                 // Si está offline, guardar como pendiente para entrega posterior
@@ -102,7 +105,15 @@ public class ContactIdentityHandler implements WsMessageHandler {
     private void deliverContactIdentityRealtime(String recipient, WsMessage message) {
         try {
             // Buscar la sesión del destinatario
-            SessionManager.SessionInfo recipientSession = sessionManager.findByUsername(recipient);
+            String sessionId = redisSessionService.getSessionIdByUsername(recipient);
+            if (sessionId == null) {
+                log.warn("SessionId no encontrado para usuario online: {}", recipient);
+                // Guardar como pendiente en caso de que haya desaparecido
+                ContactIdentity identity = message.getContactIdentity();
+                savePendingContactIdentity(recipient, identity.getSenderId(), identity.getSenderUsername());
+                return;
+            }
+            SessionManager.SessionInfo recipientSession = sessionManager.getSessionInfo(sessionId);
 
             if (recipientSession == null) {
                 log.warn("Sesión no encontrada para usuario online: {}", recipient);

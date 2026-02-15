@@ -3,7 +3,7 @@ package com.pola.config;
 
 public class HttpConfig {
     // URL del servicio de perfiles
-    public static final String PROFILE_SERVICE_URL = "http://localhost:8088/profile/api/v1";
+    public static final String PROFILE_SERVICE_URL = "http://localhost:8080/api/v1/";
     
     // Timeouts (en segundos)
     public static final int CONNECT_TIMEOUT = 10;
