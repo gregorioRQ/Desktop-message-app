@@ -49,9 +49,34 @@ public class HttpServiceImpl implements HttpService{
         return sendPostRequest("/auth/refresh", request, responseClass);
     }
 
+    /**
+     * Envia al servidor una peticion de logout.
+     * 
+     * @param request La peticion de logout con el refreshToken
+     * @param accessToken El token necesario para pasar el filtro del apigateya
+     * @param responseClass La clase de respuesta a la que sera mapeada la respuesta obtenida
+     */
     @Override
     public <T, R> CompletableFuture<R> logout(T request, String accessToken, Class<R> responseClass) {
-        return sendPostRequest("/auth/logout", request, responseClass);
+         try {
+            byte[] requestBody = serializeProtobuf(request);
+            
+            HttpRequest httpRequest = HttpRequest.newBuilder()
+                    .uri(URI.create(baseUrl + "auth/logout"))
+                    .header("Content-Type", "application/x-protobuf")
+                    .header("Accept", "application/x-protobuf")
+                    .header("Authorization", "Bearer " + accessToken)
+                    .header("LOGOUT", "true")
+                    .POST(HttpRequest.BodyPublishers.ofByteArray(requestBody))
+                    .timeout(Duration.ofSeconds(30))
+                    .build();
+            
+            return httpClient.sendAsync(httpRequest, HttpResponse.BodyHandlers.ofByteArray())
+                    .thenApply(response -> handleResponse(response, responseClass));
+                    
+        } catch (Exception e) {
+            return CompletableFuture.failedFuture(e);
+        }
     }
 
     @Override

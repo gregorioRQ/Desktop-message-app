@@ -110,7 +110,8 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
     }
 
     private boolean isLogoutEndpoint(ServerHttpRequest request) {
-        return request.getURI().getPath().contains("/logout");
+        return request.getHeaders().containsKey("LOGOUT") || 
+               request.getPath().value().contains("/auth/logout");
     }
 
     private Mono<Void> handleWebSocketSession(ServerWebExchange exchange, GatewayFilterChain chain, String userId) {
@@ -129,6 +130,11 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
         String redisKey = "ws:sessionid:" + userId;
         logger.info("Logout detectado. Eliminando sesión Redis para usuario: {}", userId);
         return redisTemplate.delete(redisKey)
+                .doOnNext(count -> logger.info("Sesión eliminada. Keys eliminadas: {}", count))
+                .onErrorResume(e -> {
+                    logger.error("Error al eliminar sesión de Redis durante logout: {}", e.getMessage());
+                    return Mono.just(0L); // Retornamos 0 para que el flujo continúe y no rompa la request
+                })
                 .flatMap(count -> chain.filter(exchange));
     }
 
