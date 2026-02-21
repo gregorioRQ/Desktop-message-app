@@ -18,6 +18,7 @@ private static final long serialVersionUID = 0L;
   }
   private DownloadImageRequest() {
     mediaId_ = "";
+    userId_ = "";
   }
 
   @java.lang.Override
@@ -29,13 +30,13 @@ private static final long serialVersionUID = 0L;
 
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return com.pola.media_service.proto.MediaProto.internal_static_com_pola_media_service_DownloadImageRequest_descriptor;
+    return com.pola.media_service.proto.ImageData.internal_static_com_pola_media_service_DownloadImageRequest_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return com.pola.media_service.proto.MediaProto.internal_static_com_pola_media_service_DownloadImageRequest_fieldAccessorTable
+    return com.pola.media_service.proto.ImageData.internal_static_com_pola_media_service_DownloadImageRequest_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
             com.pola.media_service.proto.DownloadImageRequest.class, com.pola.media_service.proto.DownloadImageRequest.Builder.class);
   }
@@ -80,18 +81,50 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int USER_ID_FIELD_NUMBER = 2;
-  private long userId_ = 0L;
+  @SuppressWarnings("serial")
+  private volatile java.lang.Object userId_ = "";
   /**
    * <pre>
    * Para validar permisos
    * </pre>
    *
-   * <code>int64 user_id = 2;</code>
+   * <code>string user_id = 2;</code>
    * @return The userId.
    */
   @java.lang.Override
-  public long getUserId() {
-    return userId_;
+  public java.lang.String getUserId() {
+    java.lang.Object ref = userId_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      userId_ = s;
+      return s;
+    }
+  }
+  /**
+   * <pre>
+   * Para validar permisos
+   * </pre>
+   *
+   * <code>string user_id = 2;</code>
+   * @return The bytes for userId.
+   */
+  @java.lang.Override
+  public com.google.protobuf.ByteString
+      getUserIdBytes() {
+    java.lang.Object ref = userId_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      userId_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
   }
 
   private byte memoizedIsInitialized = -1;
@@ -111,8 +144,8 @@ private static final long serialVersionUID = 0L;
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(mediaId_)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 1, mediaId_);
     }
-    if (userId_ != 0L) {
-      output.writeInt64(2, userId_);
+    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(userId_)) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 2, userId_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -126,9 +159,8 @@ private static final long serialVersionUID = 0L;
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(mediaId_)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, mediaId_);
     }
-    if (userId_ != 0L) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeInt64Size(2, userId_);
+    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(userId_)) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, userId_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -147,8 +179,8 @@ private static final long serialVersionUID = 0L;
 
     if (!getMediaId()
         .equals(other.getMediaId())) return false;
-    if (getUserId()
-        != other.getUserId()) return false;
+    if (!getUserId()
+        .equals(other.getUserId())) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -163,8 +195,7 @@ private static final long serialVersionUID = 0L;
     hash = (37 * hash) + MEDIA_ID_FIELD_NUMBER;
     hash = (53 * hash) + getMediaId().hashCode();
     hash = (37 * hash) + USER_ID_FIELD_NUMBER;
-    hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-        getUserId());
+    hash = (53 * hash) + getUserId().hashCode();
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -271,13 +302,13 @@ private static final long serialVersionUID = 0L;
       com.pola.media_service.proto.DownloadImageRequestOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.pola.media_service.proto.MediaProto.internal_static_com_pola_media_service_DownloadImageRequest_descriptor;
+      return com.pola.media_service.proto.ImageData.internal_static_com_pola_media_service_DownloadImageRequest_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.pola.media_service.proto.MediaProto.internal_static_com_pola_media_service_DownloadImageRequest_fieldAccessorTable
+      return com.pola.media_service.proto.ImageData.internal_static_com_pola_media_service_DownloadImageRequest_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               com.pola.media_service.proto.DownloadImageRequest.class, com.pola.media_service.proto.DownloadImageRequest.Builder.class);
     }
@@ -297,14 +328,14 @@ private static final long serialVersionUID = 0L;
       super.clear();
       bitField0_ = 0;
       mediaId_ = "";
-      userId_ = 0L;
+      userId_ = "";
       return this;
     }
 
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return com.pola.media_service.proto.MediaProto.internal_static_com_pola_media_service_DownloadImageRequest_descriptor;
+      return com.pola.media_service.proto.ImageData.internal_static_com_pola_media_service_DownloadImageRequest_descriptor;
     }
 
     @java.lang.Override
@@ -388,8 +419,10 @@ private static final long serialVersionUID = 0L;
         bitField0_ |= 0x00000001;
         onChanged();
       }
-      if (other.getUserId() != 0L) {
-        setUserId(other.getUserId());
+      if (!other.getUserId().isEmpty()) {
+        userId_ = other.userId_;
+        bitField0_ |= 0x00000002;
+        onChanged();
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -422,11 +455,11 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000001;
               break;
             } // case 10
-            case 16: {
-              userId_ = input.readInt64();
+            case 18: {
+              userId_ = input.readStringRequireUtf8();
               bitField0_ |= 0x00000002;
               break;
-            } // case 16
+            } // case 18
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -516,30 +549,60 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private long userId_ ;
+    private java.lang.Object userId_ = "";
     /**
      * <pre>
      * Para validar permisos
      * </pre>
      *
-     * <code>int64 user_id = 2;</code>
+     * <code>string user_id = 2;</code>
      * @return The userId.
      */
-    @java.lang.Override
-    public long getUserId() {
-      return userId_;
+    public java.lang.String getUserId() {
+      java.lang.Object ref = userId_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        userId_ = s;
+        return s;
+      } else {
+        return (java.lang.String) ref;
+      }
     }
     /**
      * <pre>
      * Para validar permisos
      * </pre>
      *
-     * <code>int64 user_id = 2;</code>
+     * <code>string user_id = 2;</code>
+     * @return The bytes for userId.
+     */
+    public com.google.protobuf.ByteString
+        getUserIdBytes() {
+      java.lang.Object ref = userId_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        userId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    /**
+     * <pre>
+     * Para validar permisos
+     * </pre>
+     *
+     * <code>string user_id = 2;</code>
      * @param value The userId to set.
      * @return This builder for chaining.
      */
-    public Builder setUserId(long value) {
-
+    public Builder setUserId(
+        java.lang.String value) {
+      if (value == null) { throw new NullPointerException(); }
       userId_ = value;
       bitField0_ |= 0x00000002;
       onChanged();
@@ -550,12 +613,30 @@ private static final long serialVersionUID = 0L;
      * Para validar permisos
      * </pre>
      *
-     * <code>int64 user_id = 2;</code>
+     * <code>string user_id = 2;</code>
      * @return This builder for chaining.
      */
     public Builder clearUserId() {
+      userId_ = getDefaultInstance().getUserId();
       bitField0_ = (bitField0_ & ~0x00000002);
-      userId_ = 0L;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Para validar permisos
+     * </pre>
+     *
+     * <code>string user_id = 2;</code>
+     * @param value The bytes for userId to set.
+     * @return This builder for chaining.
+     */
+    public Builder setUserIdBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) { throw new NullPointerException(); }
+      checkByteStringIsUtf8(value);
+      userId_ = value;
+      bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }

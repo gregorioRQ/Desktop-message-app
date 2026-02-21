@@ -46,3 +46,5 @@ protoc-plugins/
 .idea/
 .vscode/
 *.iml
+
+.continue

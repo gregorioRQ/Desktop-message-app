@@ -87,7 +87,7 @@ public class MediaHttpController {
     @GetMapping(value = "/download/{mediaId}", produces = "application/octet-stream")
     public ResponseEntity<byte[]> downloadImageById(
             @PathVariable String mediaId,
-            @RequestHeader("X-User-Id") Long userId) {
+            @RequestHeader("X-User-Id") String userId) {
         
         try {
             DownloadImageRequest request = DownloadImageRequest.newBuilder()

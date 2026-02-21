@@ -22,6 +22,6 @@ public interface MediaRepository extends JpaRepository<MediaEntity, Long>{
     
     void deleteByMediaId(String mediaId);
     
-    //@Query("SELECT m FROM MediaEntity m WHERE m.senderId = :userId OR m.receiverId = :userId")
-    //List<MediaEntity> findAllByUser(@Param("userId") Long userId);
+    @Query("SELECT m FROM MediaEntity m WHERE m.senderId = :userId OR m.receiverId = :userId")
+    List<MediaEntity> findAllByUser(@Param("userId") String userId);
 }

@@ -33,10 +33,10 @@ public class MediaEntity {
     @Column(name = "media_id", unique = true, nullable = false, length = 36)
     private String mediaId;  // UUID
     
-    @Column(name = "sender_id", nullable = false)
+    @Column(name = "sender_id", nullable = false, length = 50)
     private String senderId;
     
-    @Column(name = "receiver_id", nullable = false)
+    @Column(name = "receiver_id", nullable = false, length = 50)
     private String receiverId;
     
     @Column(name = "original_filename", length = 255)

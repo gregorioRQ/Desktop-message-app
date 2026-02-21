@@ -4,7 +4,7 @@ package com.pola.media_service;
 
 option java_multiple_files = true;
 option java_package = "com.pola.media_service.proto";
-option java_outer_classname = "MediaProto";
+option java_outer_classname = "ImageData";
 
 // ===== MENSAJES PARA HTTP (Imagen Completa) =====
 
@@ -29,7 +29,7 @@ message UploadImageResponse {
 
 message DownloadImageRequest {
     string media_id = 1;
-    int64 user_id = 2;             // Para validar permisos
+    string user_id = 2;             // Para validar permisos
 }
 
 message DownloadImageResponse {
@@ -73,7 +73,7 @@ message ThumbnailAck {
 
 message DeleteMediaRequest {
     string media_id = 1;
-    int64 user_id = 2;
+    string user_id = 2;
 }
 
 message DeleteMediaResponse {

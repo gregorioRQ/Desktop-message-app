@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.BinaryMessage;
 import org.springframework.web.socket.CloseStatus;
@@ -14,31 +15,38 @@ import org.springframework.web.socket.handler.BinaryWebSocketHandler;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.pola.media_service.proto.ThumbnailAck;
 import com.pola.media_service.proto.ThumbnailMessage;
-import com.pola.media_service.service.MediaService;
+import com.pola.media_service.service.RedisSessionService;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
 public class MediaWebSocketHandler extends BinaryWebSocketHandler{
-    @Autowired
-    private MediaService mediaService;
+ 
+    private final RedisSessionService redisSessionService;
+    
     
     // Mapa de sesiones activas: userId -> WebSocketSession
-    private final Map<Long, WebSocketSession> activeSessions = new ConcurrentHashMap<>();
+    private final Map<String, WebSocketSession> activeSessions = new ConcurrentHashMap<>();
+
+    public MediaWebSocketHandler(RedisSessionService redisSessionService){
+        this.redisSessionService = redisSessionService;
+    }
     
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-        // Extraer userId de los headers o query params
-        Long userId = extractUserId(session);
-        
-        if (userId != null) {
-            activeSessions.put(userId, session);
-            log.info("WebSocket connected: userId={}, sessionId={}", userId, session.getId());
-        } else {
-            log.warn("Connection rejected: no userId found");
-            session.close(CloseStatus.POLICY_VIOLATION);
+        // Extraer userId y username de las cabeceras (inyectadas por el API Gateway)
+        String userId = extractHeader(session, "X-User-ID");
+        String username = extractHeader(session, "X-Username");
+
+        if (userId == null || username == null || !isSessionValidInRedis(userId)) {
+            log.warn("Cerrando sesión {}: cabeceras incompletas o sesión de Redis no válida. UserId: {}, Username: {}", 
+                     session.getId(), userId, username);
+            session.close(CloseStatus.POLICY_VIOLATION.withReason("User-ID/Username headers missing or invalid session"));
+            return;
         }
+        activeSessions.put(userId, session);
+        log.info("WebSocket connected: userId={}, sessionId={}", userId, session.getId());
     }
     
     @Override
@@ -55,18 +63,18 @@ public class MediaWebSocketHandler extends BinaryWebSocketHandler{
                 thumbnailMessage.getReceiverId());
             
             // Buscar sesión del receptor
-            Long receiverId = thumbnailMessage.getReceiverId();
+            String receiverId = thumbnailMessage.getReceiverId();
             WebSocketSession receiverSession = activeSessions.get(receiverId);
             
             if (receiverSession != null && receiverSession.isOpen()) {
                 // Receptor está ONLINE → enviar thumbnail directamente
-                receiverSession.sendMessage(new BinaryMessage(payload));
+                //receiverSession.sendMessage(new BinaryMessage(payload));
                 
                 // Enviar ACK al emisor
-                sendAck(session, thumbnailMessage.getMediaId(), true);
+                //sendAck(session, thumbnailMessage.getMediaId(), true);
                 
                 // TODO: Marcar como delivered en BD
-                mediaService.markAsDelivered(thumbnailMessage.getMediaId());
+                //mediaService.markAsDelivered(thumbnailMessage.getMediaId());
                 
             } else {
                 // Receptor está OFFLINE → guardar para enviar después
@@ -75,7 +83,7 @@ public class MediaWebSocketHandler extends BinaryWebSocketHandler{
                 // TODO: Guardar en BD como pendiente (ya está guardado del upload HTTP)
                 
                 // Enviar ACK al emisor (guardado para envío posterior)
-                sendAck(session, thumbnailMessage.getMediaId(), false);
+                //sendAck(session, thumbnailMessage.getMediaId(), false);
             }
             
         } catch (InvalidProtocolBufferException e) {
@@ -87,7 +95,7 @@ public class MediaWebSocketHandler extends BinaryWebSocketHandler{
     
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
-        Long userId = extractUserId(session);
+         String userId = extractHeader(session, "X-User-ID");
         if (userId != null) {
             activeSessions.remove(userId);
             log.info("WebSocket disconnected: userId={}, status={}", userId, status);
@@ -100,46 +108,9 @@ public class MediaWebSocketHandler extends BinaryWebSocketHandler{
     public void handleTransportError(WebSocketSession session, Throwable exception) {
         log.error("WebSocket error for session {}: {}", session.getId(), exception.getMessage());
     }
+   
     
-    /**
-     * Envía ACK al emisor confirmando recepción
-     */
-    private void sendAck(WebSocketSession session, String mediaId, boolean delivered) {
-        try {
-            ThumbnailAck ack = ThumbnailAck.newBuilder()
-                .setMediaId(mediaId)
-                .setReceived(true)
-                .setTimestamp(System.currentTimeMillis())
-                .build();
-            
-            session.sendMessage(new BinaryMessage(ack.toByteArray()));
-            
-        } catch (IOException e) {
-            log.error("Error sending ACK", e);
-        }
-    }
-    
-    /**
-     * Extrae userId de la sesión WebSocket
-     * Puedes obtenerlo de: query params, headers, o atributos de sesión
-     */
-    private Long extractUserId(WebSocketSession session) {
-        // Opción 1: Desde query params
-        // ws://localhost:8080/ws/media?userId=123
-        String query = session.getUri().getQuery();
-        if (query != null && query.contains("userId=")) {
-            String userIdStr = query.split("userId=")[1].split("&")[0];
-            return Long.parseLong(userIdStr);
-        }
-        
-        // Opción 2: Desde atributos de sesión (si usas interceptor)
-        Object userIdAttr = session.getAttributes().get("userId");
-        if (userIdAttr != null) {
-            return (Long) userIdAttr;
-        }
-        
-        return null;
-    }
+  
     
     /**
      * Método público para enviar thumbnails pendientes cuando usuario se conecta
@@ -156,5 +127,23 @@ public class MediaWebSocketHandler extends BinaryWebSocketHandler{
             //     }
             // });
         }
+    }
+
+     private String extractHeader(WebSocketSession session, String headerName) {
+        try {
+            String headerValue = session.getHandshakeHeaders().getFirst(headerName);
+            return (headerValue != null && !headerValue.trim().isEmpty()) ? headerValue : null;
+        } catch (Exception e) {
+            log.error("Error al procesar cabecera {}", headerName, e);
+            return null;
+        }
+    }
+
+    private boolean isSessionValidInRedis(String userId) {
+        if (!redisSessionService.hasSessionMapping(userId)) {
+            log.warn("Conexión rechazada: No se encontró sesión en Redis para userId={}", userId);
+            return false;
+        }
+        return true;
     }
 }

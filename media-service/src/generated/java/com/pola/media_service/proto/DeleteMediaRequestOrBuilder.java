@@ -21,8 +21,14 @@ public interface DeleteMediaRequestOrBuilder extends
       getMediaIdBytes();
 
   /**
-   * <code>int64 user_id = 2;</code>
+   * <code>string user_id = 2;</code>
    * @return The userId.
    */
-  long getUserId();
+  java.lang.String getUserId();
+  /**
+   * <code>string user_id = 2;</code>
+   * @return The bytes for userId.
+   */
+  com.google.protobuf.ByteString
+      getUserIdBytes();
 }

@@ -25,8 +25,18 @@ public interface DownloadImageRequestOrBuilder extends
    * Para validar permisos
    * </pre>
    *
-   * <code>int64 user_id = 2;</code>
+   * <code>string user_id = 2;</code>
    * @return The userId.
    */
-  long getUserId();
+  java.lang.String getUserId();
+  /**
+   * <pre>
+   * Para validar permisos
+   * </pre>
+   *
+   * <code>string user_id = 2;</code>
+   * @return The bytes for userId.
+   */
+  com.google.protobuf.ByteString
+      getUserIdBytes();
 }

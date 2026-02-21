@@ -30,13 +30,13 @@ private static final long serialVersionUID = 0L;
 
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return com.pola.media_service.proto.MediaProto.internal_static_com_pola_media_service_DeleteMediaResponse_descriptor;
+    return com.pola.media_service.proto.ImageData.internal_static_com_pola_media_service_DeleteMediaResponse_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return com.pola.media_service.proto.MediaProto.internal_static_com_pola_media_service_DeleteMediaResponse_fieldAccessorTable
+    return com.pola.media_service.proto.ImageData.internal_static_com_pola_media_service_DeleteMediaResponse_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
             com.pola.media_service.proto.DeleteMediaResponse.class, com.pola.media_service.proto.DeleteMediaResponse.Builder.class);
   }
@@ -317,13 +317,13 @@ private static final long serialVersionUID = 0L;
       com.pola.media_service.proto.DeleteMediaResponseOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.pola.media_service.proto.MediaProto.internal_static_com_pola_media_service_DeleteMediaResponse_descriptor;
+      return com.pola.media_service.proto.ImageData.internal_static_com_pola_media_service_DeleteMediaResponse_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.pola.media_service.proto.MediaProto.internal_static_com_pola_media_service_DeleteMediaResponse_fieldAccessorTable
+      return com.pola.media_service.proto.ImageData.internal_static_com_pola_media_service_DeleteMediaResponse_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               com.pola.media_service.proto.DeleteMediaResponse.class, com.pola.media_service.proto.DeleteMediaResponse.Builder.class);
     }
@@ -351,7 +351,7 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return com.pola.media_service.proto.MediaProto.internal_static_com_pola_media_service_DeleteMediaResponse_descriptor;
+      return com.pola.media_service.proto.ImageData.internal_static_com_pola_media_service_DeleteMediaResponse_descriptor;
     }
 
     @java.lang.Override

@@ -104,7 +104,7 @@ public enum MessageStatus
   }
   public static final com.google.protobuf.Descriptors.EnumDescriptor
       getDescriptor() {
-    return com.pola.media_service.proto.MediaProto.getDescriptor().getEnumTypes().get(0);
+    return com.pola.media_service.proto.ImageData.getDescriptor().getEnumTypes().get(0);
   }
 
   private static final MessageStatus[] VALUES = values();
