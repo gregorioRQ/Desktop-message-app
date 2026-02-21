@@ -1,3 +1,10 @@
+
+/**
+ * UserWebSocketController gestiona eventos WebSocket relacionados con usuarios.
+ * Permite la creación de nuevos usuarios y la notificación de presencia en línea,
+ * recibiendo mensajes del cliente y delegando la lógica a los servicios correspondientes.
+ * Facilita la integración de la gestión de usuarios y presencia en tiempo real.
+ */
 package com.basic_chat.notifiation_service.controller;
 
 import org.springframework.messaging.handler.annotation.MessageMapping;

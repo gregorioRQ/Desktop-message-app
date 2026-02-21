@@ -58,6 +58,10 @@ public class WebSocketEventListener {
         }
     }
 
+    /**
+     * Listener websocket que escucha los eventos de suscripcion.
+     * @param event El evento enviado por el cliente cuando se suscribe a un topic.
+     */
     @EventListener
     public void handleWebSocketSubscribeListener(SessionSubscribeEvent event) {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());

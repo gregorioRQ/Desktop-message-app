@@ -1,3 +1,9 @@
+
+/**
+ * ContactWebSocketController expone endpoints WebSocket para gestionar la relación de contactos entre usuarios.
+ * Permite agregar y eliminar contactos en tiempo real, recibiendo eventos desde el cliente y delegando la lógica
+ * al NotificationService. Facilita la interacción dinámica de la agenda de contactos en la aplicación de mensajería.
+ */
 package com.basic_chat.notifiation_service.controller;
 
 import com.basic_chat.notifiation_service.model.ContactAddEvent;

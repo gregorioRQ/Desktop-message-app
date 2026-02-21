@@ -1,3 +1,11 @@
+
+/**
+ * NotificationService gestiona la lógica central de notificaciones en la aplicación de mensajería.
+ * Se encarga de crear, eliminar y distribuir notificaciones a los usuarios a través de WebSocket,
+ * así como de administrar relaciones de contactos y suscripciones de presencia. Orquesta la integración
+ * entre la base de datos, Redis y la mensajería en tiempo real, asegurando la coherencia y entrega
+ * eficiente de eventos relevantes para los usuarios.
+ */
 package com.basic_chat.notifiation_service.service;
 
 import java.util.ArrayList;

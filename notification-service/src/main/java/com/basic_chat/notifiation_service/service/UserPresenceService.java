@@ -185,7 +185,7 @@ public class UserPresenceService {
     }
 
     /**
-     * Notifica a todos los suscriptores de un usuario que este ha conectado.
+     * Notifica a todos los suscriptores de un usuario que este se ha conectado.
      * 
      * Envía un mensaje de presencia online a través de WebSocket a cada usuario que está
      * suscrito a los cambios de presencia del usuario especificado.
