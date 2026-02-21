@@ -89,6 +89,7 @@
                   <HBox spacing="5.0">
                      <children>
                         <TextArea fx:id="messageInput" disable="true" prefHeight="60.0" prefRowCount="2" promptText="Escribe un mensaje..." wrapText="true" HBox.hgrow="ALWAYS" />
+                        <Button fx:id="attachButton" disable="true" maxHeight="1.7976931348623157E308" mnemonicParsing="false" styleClass="attach-button" text="📎" />
                         <Button fx:id="sendButton" disable="true" maxHeight="1.7976931348623157E308" mnemonicParsing="false" prefWidth="80.0" style="-fx-base: #4CAF50;" text="Enviar" />
                      </children>
                   </HBox>

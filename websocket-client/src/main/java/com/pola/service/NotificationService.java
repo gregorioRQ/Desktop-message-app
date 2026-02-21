@@ -36,12 +36,18 @@ public class NotificationService extends Endpoint {
         this.username = username;
     }
 
-    public void connect(String token) {
+    public void connect(String token, String userId) {
         try {
             ClientEndpointConfig config = ClientEndpointConfig.Builder.create()
                 .configurator(new ClientEndpointConfig.Configurator() {
                     @Override
                     public void beforeRequest(Map<String, List<String>> headers) {
+                        if (userId != null && !userId.isEmpty()) {
+                            headers.put("X-User-ID", java.util.Collections.singletonList(userId));
+                        }
+                        if (username != null && !username.isEmpty()) {
+                            headers.put("X-Username", java.util.Collections.singletonList(username));
+                        }
                         if (token != null && !token.isEmpty()) {
                             System.out.println("Enviando token en Notification WS Header");
                             headers.put("Authorization", java.util.Collections.singletonList("Bearer " + token.trim()));

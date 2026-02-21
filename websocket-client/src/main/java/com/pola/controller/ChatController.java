@@ -10,9 +10,11 @@ import com.pola.proto.MessagesProto.WsMessage;
 import com.pola.service.ContactService;
 import com.pola.service.AuthService;
 import com.pola.service.HttpServiceImpl;
+import com.pola.service.ImageActionHelper;
 import com.pola.service.MessageService;
 import com.pola.service.NotificationService;
 import com.pola.service.WebSocketService;
+import com.pola.service.WebSocketServiceImpl;
 import com.pola.util.LogoutContext;
 import com.pola.util.LogoutHandler;
 import com.pola.repository.TokenRepository;
@@ -30,6 +32,7 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ListView;
@@ -37,6 +40,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.geometry.Side;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Circle;
@@ -66,6 +70,9 @@ public class ChatController {
     
     @FXML
     private Button sendButton;
+
+    @FXML
+    private Button attachButton;
     
     @FXML
     private Button connectButton;
@@ -107,6 +114,7 @@ public class ChatController {
     private Button clearNotificationsButton;
 
     private WebSocketService webSocketService;
+    private WebSocketService mediaWebSocketService;
     private MessageService messageService;
     private ContactService contactService;
     private NotificationService notificationService;
@@ -119,6 +127,7 @@ public class ChatController {
     private ContactActionHelper contactActionHelper;
     private MessageActionHelper messageActionHelper;
     private ConnectionActionHelper connectionActionHelper;
+    private ImageActionHelper imageActionHelper;
     private LogoutHandler logoutHandler;
     private AuthService authService;
     private ScheduledExecutorService heartbeatExecutor;
@@ -136,6 +145,12 @@ public class ChatController {
         contactService.setCurrentUsername(username);
         contactService.setWebSocketService(webSocketService);
         
+        // Inicializar servicio WebSocket para Media
+        this.mediaWebSocketService = new WebSocketServiceImpl(com.pola.config.WebSocketConfig.WS_MEDIA_URL);
+        
+        // Configurar el servicio de mensajes con el socket de media
+        messageService.setMediaWebSocketService(this.mediaWebSocketService);
+
         // Asegurar que el servicio de notificaciones esté instanciado
         if (this.notificationService == null) {
             this.notificationService = new NotificationService(userId, username);
@@ -146,6 +161,7 @@ public class ChatController {
         this.contactActionHelper = new ContactActionHelper(contactService, this);
         this.messageActionHelper = new MessageActionHelper(messageService, webSocketService, contactService, this);
         this.connectionActionHelper = new ConnectionActionHelper(webSocketService, contactService, this);
+        this.imageActionHelper = new ImageActionHelper(this, new HttpServiceImpl());
 
         // 1. Crear el objeto de contexto con las dependencias
         LogoutContext logoutCtx = new LogoutContext(
@@ -198,12 +214,17 @@ public class ChatController {
     private void connectToServices() {
         // Conectar Chat WebSocket
         if (webSocketService != null && !webSocketService.isConnected()) {
-            webSocketService.connect(authToken);
+            webSocketService.connect(authToken, currentUserId, currentUsername);
+        }
+
+        // Conectar Media WebSocket
+        if (mediaWebSocketService != null && !mediaWebSocketService.isConnected()) {
+            mediaWebSocketService.connect(authToken, currentUserId, currentUsername);
         }
         
         // Conectar Notification WebSocket
         if (notificationService != null) {
-            notificationService.connect(authToken);
+            notificationService.connect(authToken, currentUserId);
         }
     }
     
@@ -213,6 +234,16 @@ public class ChatController {
         
         // Configurar botones
         sendButton.setOnAction(event -> messageActionHelper.handleSendMessage());
+        
+        if (attachButton != null) {
+            ContextMenu attachMenu = new ContextMenu();
+            MenuItem imageItem = new MenuItem("Enviar Imagen");
+            imageItem.setOnAction(event -> imageActionHelper.handleAttachImage());
+            attachMenu.getItems().add(imageItem);
+
+            // Mostrar el menú al hacer clic en el botón
+            attachButton.setOnAction(event -> attachMenu.show(attachButton, Side.TOP, 0, 0));
+        }
         
         // El botón de conectar ya no es necesario en la UI (conexión automática)
         if (connectButton != null) {
@@ -245,6 +276,7 @@ public class ChatController {
         // Deshabilitar envío si no está conectado
         sendButton.setDisable(true);
         messageInput.setDisable(true);
+        if (attachButton != null) attachButton.setDisable(true);
 
         // Configurar celdas para contactos (Botón Bloquear)
         contactsListView.setCellFactory(param -> new ContactListCell(false, contactActionHelper::confirmBlockContact, contactActionHelper::confirmUnblockContact, contactActionHelper::confirmAddContact) {
@@ -415,6 +447,14 @@ public class ChatController {
         webSocketService.setMessageListener(wsMessage -> {
             messageService.processReceivedMessage(wsMessage);
         });
+
+        // Listener de mensajes Media (si recibimos confirmaciones o thumbnails por aquí)
+        if (mediaWebSocketService != null) {
+            mediaWebSocketService.setConnectionListener(connected -> {
+                System.out.println("Media WebSocket " + (connected ? "Conectado" : "Desconectado"));
+            });
+            // Aquí podrías añadir un listener de mensajes si el servidor envía respuestas por este canal
+        }
         
         // Listener de conexión
         webSocketService.setConnectionListener(connected -> {
@@ -558,6 +598,7 @@ public class ChatController {
         
         sendButton.setDisable(!canSend);
         messageInput.setDisable(!canSend);
+        if (attachButton != null) attachButton.setDisable(!canSend);
         
         if (isBlocked) {
             messageInput.setPromptText("No puedes enviar mensajes a este usuario.");
@@ -577,6 +618,7 @@ public class ChatController {
             chatTitleLabel.setText("");
             sendButton.setDisable(true);
             messageInput.setDisable(true);
+            if (attachButton != null) attachButton.setDisable(true);
             if (blockButton != null) blockButton.setDisable(true);
             if (clearChatButton != null) clearChatButton.setDisable(true);
         }
@@ -606,6 +648,10 @@ public class ChatController {
 
     public NotificationService getNotificationService() {
         return notificationService;
+    }
+
+    public MessageActionHelper getMessageActionHelper() {
+        return messageActionHelper;
     }
 
     public void setNotificationService(NotificationService notificationService) {

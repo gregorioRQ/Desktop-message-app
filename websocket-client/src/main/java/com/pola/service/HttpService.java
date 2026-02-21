@@ -2,6 +2,9 @@ package com.pola.service;
 
 import java.util.concurrent.CompletableFuture;
 
+import com.pola.proto.UploadImageRequest;
+import com.pola.proto.UploadImageResponse;
+
 /**
  * Interface para el servicio HTTP
  * Principio SOLID: Dependency Inversion - Los clientes dependen de esta abstracción
@@ -65,4 +68,12 @@ public interface HttpService {
      * @return CompletableFuture indicando si el latido fue exitoso.
      */
     CompletableFuture<Boolean> sendHeartbeat(String accessToken);
+
+    /**
+     * Sube un archivo multimedia (imagen) al servidor usando Protobuf.
+     * @param request Petición de subida con datos de imagen.
+     * @param accessToken Token de autorización.
+     * @return CompletableFuture con la respuesta del servidor (UploadImageResponse).
+     */
+    CompletableFuture<UploadImageResponse> uploadMedia(UploadImageRequest request, String accessToken);
 }

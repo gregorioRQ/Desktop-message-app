@@ -125,14 +125,19 @@ public class IncomingMessageProcessor {
             System.err.println("Error al procesar eliminación: " + e.getMessage());
         }
     }
-
+    /**
+     * Elimina los mensajes de un usuario de la db local.
+     * Limpia la ui de chat de todos los mensajes.
+     * 
+     */
     private void processClearHistoryRequest(MessagesProto.ClearHistoryRequest request) {
         try {
             String senderUsername = request.getSender();
             context.getMessageRepository().deleteByContactUsername(senderUsername);
-            
+            // Verifica si el contacto actual es igual al de la peticion
             Contact current = context.getCurrentContactSupplier().get();
             if (current != null && current.getContactUsername().equals(senderUsername)) {
+                // Limpia la ui de los mensajes.
                 Platform.runLater(() -> context.getCurrentChatMessages().clear());
             }
         } catch (SQLException e) {

@@ -6,6 +6,9 @@ import java.util.function.Consumer;
 import java.util.UUID;
 
 import com.pola.model.ChatMessage;
+import com.pola.model.ImageChatMessage;
+import com.pola.model.ImageProcessingResult;
+import com.pola.proto.UploadImageResponse;
 import com.pola.model.Contact;
 import com.pola.model.Notification;
 import com.pola.proto.MessagesProto.WsMessage;
@@ -57,6 +60,10 @@ public class MessageService {
         );
 
         this.messageProcessor = new IncomingMessageProcessor(context);
+    }
+
+    public void setMediaWebSocketService(WebSocketService mediaWebSocketService) {
+        this.messageSender.setMediaWebSocketService(mediaWebSocketService);
     }
 
     // Establece el usuario actual
@@ -142,6 +149,54 @@ public class MessageService {
             messageSender.sendTextMessage(id, content, username, currentContact.getContactUsername());
 
             System.out.println("Mensaje enviado a: " + currentContact.getContactUsername() + "id: " + localMessage.getId());
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Envía un mensaje de imagen
+     * NOTA: mostrar el thumbnail en la preview y mostrar la original cuando el usuario presione sobre ella.
+     */
+    public void sendImageMessage(ImageProcessingResult localResult, UploadImageResponse serverResponse, String username) {
+        if(currentContact == null){
+            System.out.println("No hay contacto seleccionado");
+            return;
+        }
+
+        if (contactService.isUserBlockingMe(currentContact.getContactUsername())) {
+            System.out.println("Intento de envío bloqueado: El destinatario te ha bloqueado.");
+            return;
+        }
+
+        try {
+            // guardar en la db local
+            // Usamos la nueva clase ImageChatMessage
+            ImageChatMessage localMessage = new ImageChatMessage(
+                currentContact.getContactUsername(), 
+                username,
+                localResult.getThumbnail(),
+                serverResponse.getFullImageUrl(),
+                serverResponse.getMediaId(),
+                localResult.getMetadata().getOriginalWidth(),
+                localResult.getMetadata().getOriginalHeight()
+            );
+            
+            // Nota: Aquí deberías actualizar tu repositorio para soportar guardar los campos extra de imagen
+            // Por ahora guardamos lo básico compatible con ChatMessage
+            localMessage.setId(Math.abs(UUID.randomUUID().getLeastSignificantBits()));
+            
+            ChatMessage saved = messageRepository.create(localMessage);
+
+            // mostrar en la UI
+            // Añadimos la instancia de ImageChatMessage (que extiende ChatMessage)
+            currentChatMessages.add(localMessage);
+
+            // enviar por websocket el ThumbnailMessage
+            messageSender.sendImageMessage(serverResponse.getMediaId(), localResult.getThumbnail(), serverResponse.getFullImageUrl(), username, currentContact.getContactUsername(), localResult.getMetadata().getOriginalWidth(), localResult.getMetadata().getOriginalHeight(), serverResponse.getFullImageSize());
+
+            System.out.println("Imagen enviada a: " + currentContact.getContactUsername() + " mediaId: " + serverResponse.getMediaId());
 
         } catch (SQLException e) {
             e.printStackTrace();

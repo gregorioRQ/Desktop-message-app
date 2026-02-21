@@ -25,7 +25,7 @@ public class ConnectionActionHelper {
         
         new Thread(() -> {
             try {
-                webSocketService.connect(chatController.getAuthToken());
+                webSocketService.connect(chatController.getAuthToken(), chatController.getCurrentUserId(), chatController.getCurrentUsername());
                 
                 // Conectar servicio de notificaciones
                 if (chatController.getNotificationService() == null) {
@@ -54,7 +54,7 @@ public class ConnectionActionHelper {
                     contactService.setNotificationService(ns);
                 }
 
-                chatController.getNotificationService().connect(chatController.getAuthToken());
+                chatController.getNotificationService().connect(chatController.getAuthToken(), chatController.getCurrentUserId());
 
                 Thread.sleep(200);
 

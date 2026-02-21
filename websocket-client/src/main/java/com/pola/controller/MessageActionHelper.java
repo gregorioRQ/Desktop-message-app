@@ -1,6 +1,8 @@
 package com.pola.controller;
 
 import com.pola.model.ChatMessage;
+import com.pola.model.ImageProcessingResult;
+import com.pola.proto.UploadImageResponse;
 import com.pola.service.ContactService;
 import com.pola.service.MessageService;
 import com.pola.service.WebSocketService;
@@ -66,5 +68,14 @@ public class MessageActionHelper {
             () -> messageService.clearChatHistory(chatController.getSelectedContact(), true)
         );
     }
-}
 
+    public void handleSendImage(ImageProcessingResult localResult, UploadImageResponse serverResponse) {
+        if (chatController.getSelectedContact() == null) return;
+        
+        try {
+            messageService.sendImageMessage(localResult, serverResponse, chatController.getCurrentUsername());
+        } catch (Exception e) {
+            chatController.showStatus("Error al enviar imagen: " + e.getMessage(), Color.RED);
+        }
+    }
+}

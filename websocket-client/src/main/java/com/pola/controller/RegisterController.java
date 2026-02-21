@@ -122,7 +122,7 @@ public class RegisterController {
                                         try { Thread.sleep(500); } catch (InterruptedException e) {}
                                         ns.disconnect();
                                     });
-                                    ns.connect(null); // No hay token disponible en registro aun
+                                    ns.connect(null, newUserId); // No hay token disponible en registro aun
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }

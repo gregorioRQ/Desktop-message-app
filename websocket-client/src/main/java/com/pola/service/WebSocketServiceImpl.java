@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
+import com.google.protobuf.Message;
 import org.glassfish.tyrus.client.ClientManager;
 
 import com.pola.config.WebSocketConfig;
@@ -32,18 +33,30 @@ public class WebSocketServiceImpl extends Endpoint implements WebSocketService {
     private Consumer<Boolean> connectionListener;
     private Consumer<Throwable> errorListener;
     private Consumer<String> authSuccessListener;
+    private final String endpointUrl;
     
     public WebSocketServiceImpl() {
+        this(WebSocketConfig.WS_URL);
+    }
+
+    public WebSocketServiceImpl(String endpointUrl) {
         this.client = ClientManager.createClient();
+        this.endpointUrl = endpointUrl;
     }
     
     @Override
-    public void connect(String token) {
+    public void connect(String token, String userId, String username) {
         try {
             ClientEndpointConfig config = ClientEndpointConfig.Builder.create()
                 .configurator(new ClientEndpointConfig.Configurator() {
                     @Override
                     public void beforeRequest(Map<String, List<String>> headers) {
+                        if (userId != null && !userId.isEmpty()) {
+                            headers.put("X-User-ID", java.util.Collections.singletonList(userId));
+                        }
+                        if (username != null && !username.isEmpty()) {
+                            headers.put("X-Username", java.util.Collections.singletonList(username));
+                        }
                         if (token != null && !token.isEmpty()) {
                             // DEBUG: Verificar contenido del token (Payload)
                             try {
@@ -63,7 +76,7 @@ public class WebSocketServiceImpl extends Endpoint implements WebSocketService {
                     }
                 })
                 .build();
-            URI uri = new URI(WebSocketConfig.WS_URL);
+            URI uri = new URI(endpointUrl);
             client.connectToServer(this, config, uri);
         } catch (Exception e) {
             notifyError(e);
@@ -88,7 +101,7 @@ public class WebSocketServiceImpl extends Endpoint implements WebSocketService {
     }
     
     @Override
-    public void sendMessage(WsMessage message) {
+    public void sendMessage(Message message) {
         if (!isConnected()) {
             throw new IllegalStateException("WebSocket no está conectado");
         }

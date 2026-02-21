@@ -1,6 +1,9 @@
 package com.pola.service;
 
+import com.google.protobuf.Message;
 import com.pola.model.ChatMessage;
+import com.pola.proto.ThumbnailMessage;
+import com.pola.proto.MessageStatus;
 import com.pola.proto.MessagesProto;
 import com.pola.proto.MessagesProto.MessageType;
 import com.pola.proto.MessagesProto.WsMessage;
@@ -13,9 +16,14 @@ import java.util.List;
  */
 public class MessageSender {
     private final WebSocketService webSocketService;
+    private WebSocketService mediaWebSocketService;
 
     public MessageSender(WebSocketService webSocketService) {
         this.webSocketService = webSocketService;
+    }
+
+    public void setMediaWebSocketService(WebSocketService mediaWebSocketService) {
+        this.mediaWebSocketService = mediaWebSocketService;
     }
 
     public void sendTextMessage(long id, String content, String sender, String recipient) {
@@ -29,6 +37,29 @@ public class MessageSender {
             .build();
 
         sendMessage(WsMessage.newBuilder().setChatMessage(chatMessage).build());
+    }
+
+    public void sendImageMessage(String mediaId, byte[] thumbnailData, String fullImageUrl, 
+                               String sender, String recipient, int width, int height, long fileSize) {
+        
+        ThumbnailMessage thumbnailMsg = ThumbnailMessage.newBuilder()
+            .setMediaId(mediaId)
+            .setSenderId(sender)
+            .setReceiverId(recipient)
+            .setThumbnailData(com.google.protobuf.ByteString.copyFrom(thumbnailData))
+            .setFullImageUrl(fullImageUrl)
+            .setOriginalWidth(width)
+            .setOriginalHeight(height)
+            .setFileSize(fileSize)
+            .setTimestamp(Instant.now().toEpochMilli())
+            .setStatus(MessageStatus.SENT)
+            .build();
+
+        if (mediaWebSocketService != null && mediaWebSocketService.isConnected()) {
+            mediaWebSocketService.sendMessage(thumbnailMsg);
+        } else {
+            System.err.println("Error: Servicio de media no conectado. No se pudo enviar el thumbnail.");
+        }
     }
 
     public void sendDeleteMessage(String messageId, String senderUsername) {
@@ -80,7 +111,7 @@ public class MessageSender {
         sendMessage(WsMessage.newBuilder().setContactIdentity(identity).build());
     }
 
-    private void sendMessage(WsMessage message) {
+    private void sendMessage(Message message) {
         if (webSocketService.isConnected()) {
             webSocketService.sendMessage(message);
         }

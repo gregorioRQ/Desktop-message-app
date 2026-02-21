@@ -10,6 +10,8 @@ import java.util.concurrent.CompletableFuture;
 
 import com.google.protobuf.Message;
 import com.pola.config.HttpConfig;
+import com.pola.proto.UploadImageRequest;
+import com.pola.proto.UploadImageResponse;
 
 public class HttpServiceImpl implements HttpService{
 
@@ -217,4 +219,28 @@ public class HttpServiceImpl implements HttpService{
         Method parseFromMethod = responseClass.getMethod("parseFrom", byte[].class);
         return responseClass.cast(parseFromMethod.invoke(null, (Object) data));
     }
+
+    @Override
+    public CompletableFuture<UploadImageResponse> uploadMedia(UploadImageRequest request, String accessToken) {
+        try {
+            byte[] requestBody = serializeProtobuf(request);
+
+            HttpRequest httpRequest = HttpRequest.newBuilder()
+                    .uri(URI.create(baseUrl + "media/upload"))
+                    .header("Authorization", "Bearer " + accessToken)
+                    .header("Content-Type", "application/x-protobuf")
+                    .header("Accept", "application/x-protobuf")
+                    .POST(HttpRequest.BodyPublishers.ofByteArray(requestBody))
+                    .timeout(Duration.ofSeconds(60)) // Mayor timeout para subidas
+                    .build();
+            
+            return httpClient.sendAsync(httpRequest, HttpResponse.BodyHandlers.ofByteArray())
+                    .thenApply(response -> {
+                        return handleResponse(response, UploadImageResponse.class);
+                    });
+        } catch (Exception e) {
+            return CompletableFuture.failedFuture(e);
+        }
+    }
+    
 }
