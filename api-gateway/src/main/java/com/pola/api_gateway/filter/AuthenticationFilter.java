@@ -106,14 +106,20 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
     }
 
     private boolean isWebSocketEndpoint(ServerHttpRequest request) {
-        return request.getURI().getPath().contains("/ws-binary");
+        return request.getURI().getPath().contains("/ws-binary") || request.getURI().getPath().contains("/ws-media");
     }
 
     private boolean isLogoutEndpoint(ServerHttpRequest request) {
         return request.getHeaders().containsKey("LOGOUT") || 
                request.getPath().value().contains("/auth/logout");
     }
-
+    /**
+     * Guarda en redis la sesion websocket para que otros servicios tengan acceso.
+     * @param exchange
+     * @param chain
+     * @param userId
+     * @return
+     */
     private Mono<Void> handleWebSocketSession(ServerWebExchange exchange, GatewayFilterChain chain, String userId) {
         String sessionId = UUID.randomUUID().toString();
         String redisKey = "ws:sessionid:" + userId;
@@ -126,6 +132,13 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                 .flatMap(success -> chain.filter(exchange));
     }
 
+    /**
+     * Remueve de redis la sesion cuando el usuario se desconecta o hace logout.
+     * @param exchange
+     * @param chain
+     * @param userId
+     * @return
+     */
     private Mono<Void> handleLogout(ServerWebExchange exchange, GatewayFilterChain chain, String userId) {
         String redisKey = "ws:sessionid:" + userId;
         logger.info("Logout detectado. Eliminando sesión Redis para usuario: {}", userId);

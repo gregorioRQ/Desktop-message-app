@@ -60,7 +60,6 @@ public class DeleteMessageHandler implements WsMessageHandler {
         String responseMessage = "Error desconocido al eliminar mensaje";
 
         try {
-            // ==================== VALIDACIÓN INICIAL ====================
             // Validar que el contexto es válido
             if (!validationUtil.isValidContext(context)) {
                 log.error("Contexto nulo o sesión inválida al procesar DeleteMessageRequest");
@@ -88,7 +87,6 @@ public class DeleteMessageHandler implements WsMessageHandler {
 
             log.info("Procesando solicitud de eliminación para mensaje ID: {}", messageId);
 
-            // ==================== ELIMINAR MENSAJE ====================
             Message deletedMessage = deleteMessageFromDatabase(request);
 
             if (deletedMessage == null) {
@@ -102,7 +100,6 @@ public class DeleteMessageHandler implements WsMessageHandler {
             responseMessage = "Mensaje eliminado correctamente";
             log.info("Mensaje {} eliminado exitosamente de la BD", messageId);
 
-            // ==================== NOTIFICAR AL RECEPTOR ====================
             notifyRecipientOfDeletion(recipient, message);
 
         } catch (Exception e) {
@@ -110,7 +107,6 @@ public class DeleteMessageHandler implements WsMessageHandler {
             responseMessage = "Error al eliminar mensaje: " + e.getMessage();
         }
 
-        // ==================== ENVIAR RESPUESTA AL SOLICITANTE ====================
         try {
             sendDeleteResponse(context.getSession(), success, responseMessage);
         } catch (Exception e) {

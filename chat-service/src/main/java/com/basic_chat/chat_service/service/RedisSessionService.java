@@ -118,4 +118,18 @@ public class RedisSessionService {
         log.debug("SessionId removido de Redis - userId: {}", userId);
     }
 
+    /**
+     * Verifica si existe un mapeo de sesión para un usuario en Redis.
+     * Esto es usado para validar que el API Gateway ha preparado la sesión.
+     *
+     * @param userId ID del usuario
+     * @return true si el mapeo de sesión existe
+     */
+    public boolean hasSessionMapping(String userId) {
+        String key = SESSION_ID_KEY_PREFIX + userId;
+        Boolean exists = redisTemplate.hasKey(key);
+        log.debug("Verificando si existe mapeo de sesión para userId: {} - Resultado: {}", userId, exists != null && exists);
+        return exists != null && exists;
+    }
+
 }

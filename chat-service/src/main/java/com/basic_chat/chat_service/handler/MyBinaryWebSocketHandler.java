@@ -2,6 +2,7 @@ package com.basic_chat.chat_service.handler;
 
 import com.basic_chat.chat_service.context.SessionContext;
 import com.basic_chat.chat_service.service.SessionManager;
+import com.basic_chat.chat_service.service.RedisSessionService;
 import com.basic_chat.chat_service.service.WsMessageDispatcher;
 import com.basic_chat.chat_service.service.WebSocketConnectionManager;
 import com.basic_chat.proto.MessagesProto;
@@ -28,32 +29,60 @@ public class MyBinaryWebSocketHandler extends AbstractWebSocketHandler {
     private final WsMessageDispatcher dispatcher;
     private final WebSocketConnectionManager connectionManager;
     private final PendingMessagesHandler pendingMessagesHandler;
+    private final RedisSessionService redisSessionService;
 
     public MyBinaryWebSocketHandler(
             SessionManager sessionManager,
             WsMessageDispatcher dispatcher,
             WebSocketConnectionManager connectionManager,
-            PendingMessagesHandler pendingMessagesHandler) {
+            PendingMessagesHandler pendingMessagesHandler,
+            RedisSessionService redisSessionService) {
         this.sessionManager = sessionManager;
         this.dispatcher = dispatcher;
         this.connectionManager = connectionManager;
         this.pendingMessagesHandler = pendingMessagesHandler;
+        this.redisSessionService = redisSessionService;
+    }
+
+    @Override
+    public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+        // Extraer userId y username de las cabeceras (inyectadas por el API Gateway)
+        String userId = extractHeader(session, "X-User-ID");
+        String username = extractHeader(session, "X-Username");
+
+        if (userId == null || username == null || !isSessionValidInRedis(userId)) {
+            log.warn("Cerrando sesión {}: cabeceras incompletas o sesión de Redis no válida. UserId: {}, Username: {}", 
+                     session.getId(), userId, username);
+            session.close(CloseStatus.POLICY_VIOLATION.withReason("User-ID/Username headers missing or invalid session"));
+            return;
+        }
+
+        // Registrar la sesión completamente en el SessionManager local
+        sessionManager.registerSession(session.getId(), userId, username, session);
+        
+        // Guardar el sessionId en Redis como backup/consistencia
+        //redisSessionService.saveSessionId(userId, session.getId());
+
+        log.info("Sesión registrada - sessionId: {}, userId: {}, username: {}", session.getId(), userId, username);
+
+        // Ahora que la sesión está registrada, enviar todos los mensajes/eventos pendientes
+        sendAllPendingMessages(session, username);
     }
 
     @Override
     protected void handleBinaryMessage(WebSocketSession session, BinaryMessage message) throws Exception {
         try {
+            // Validar que la sesión esté completamente registrada antes de procesar mensajes
+            if (sessionManager.getSessionInfo(session.getId()) == null) {
+                log.warn("Mensaje recibido en sesión no registrada: {}. Ignorando.", session.getId());
+                return;
+            }
+
             MessagesProto.WsMessage wsMessage = MessagesProto.WsMessage.parseFrom(message.getPayload().array());
             SessionContext context = new SessionContext(session, sessionManager);
 
             // Despachar el mensaje (todos ya son autenticados por el gateway)
             dispatcher.dispatch(context, wsMessage);
-
-            // Después de autenticación exitosa, enviar mensajes pendientes
-            if (wsMessage.hasAuthMessage() && sessionManager.getSessionInfo(session.getId()) != null) {
-                String username = sessionManager.getSessionInfo(session.getId()).getUsername();
-                sendAllPendingMessages(session, username);
-            }
         } catch (Exception e) {
             log.error("Error procesando mensaje WebSocket - ID sesión: {}", session.getId(), e);
             closeSession(session);
@@ -95,5 +124,23 @@ public class MyBinaryWebSocketHandler extends AbstractWebSocketHandler {
         } catch (Exception e) {
             log.error("Error al cerrar sesión - ID sesión: {}", session.getId(), e);
         }
+    }
+
+    private String extractHeader(WebSocketSession session, String headerName) {
+        try {
+            String headerValue = session.getHandshakeHeaders().getFirst(headerName);
+            return (headerValue != null && !headerValue.trim().isEmpty()) ? headerValue : null;
+        } catch (Exception e) {
+            log.error("Error al procesar cabecera {}", headerName, e);
+            return null;
+        }
+    }
+
+    private boolean isSessionValidInRedis(String userId) {
+        if (!redisSessionService.hasSessionMapping(userId)) {
+            log.warn("Conexión rechazada: No se encontró sesión en Redis para userId={}", userId);
+            return false;
+        }
+        return true;
     }
 }
