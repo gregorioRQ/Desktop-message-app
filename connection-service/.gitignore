@@ -1,1 +1,34 @@
 AGENTS.md
+generated/*
+
+# Maven
+target/
+.mvn/
+mvnw
+mvnw.cmd
+
+# IDE
+.idea/
+*.iml
+.project
+.classpath
+.settings/
+.factorypath
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Environment files
+.env
+.env.local
+
+# Spring Boot environment-specific configs
+src/main/resources/application-dev.properties
+src/main/resources/application-local.properties
+src/main/resources/application-test.properties
