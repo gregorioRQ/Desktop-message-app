@@ -69,8 +69,6 @@ public class WebSocketEventListener {
         }
     }
 
-<<<<<<< Updated upstream
-=======
     /**
      * Maneja el evento de suscripción del cliente.
      * Se ejecuta cuando el cliente se suscribe a un topic o queue.
@@ -78,7 +76,6 @@ public class WebSocketEventListener {
      * 
      * @param event Evento de suscripción de sesión STOMP
      */
->>>>>>> Stashed changes
     @EventListener
     public void handleWebSocketSubscribeListener(SessionSubscribeEvent event) {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
