@@ -1,6 +1,7 @@
 .vscode
 chat_client.db
 target/
+src/generated/
 
 AGENTS.md
 
