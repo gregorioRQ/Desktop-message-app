@@ -1,10 +1,14 @@
 package com.pola.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.pola.model.ChatMessage;
 import com.pola.model.Contact;
 import com.pola.model.Notification;
 import com.pola.proto.MessagesProto;
 import com.pola.proto.MessagesProto.WsMessage;
+import com.pola.proto.MessagesProto.PendingClearHistoryList;
 import com.pola.util.MessageProcessingContext;
 import javafx.application.Platform;
 
@@ -20,6 +24,8 @@ import java.util.function.Consumer;
  * Principio SOLID: Open/Closed - Fácil de extender con nuevos handlers en el mapa.
  */
 public class IncomingMessageProcessor {
+    private static final Logger log = LoggerFactory.getLogger(IncomingMessageProcessor.class);
+    
     private final MessageProcessingContext context;
     private final Map<WsMessage.PayloadCase, Consumer<WsMessage>> handlers = new HashMap<>();
     private Consumer<String> errorListener;
@@ -33,17 +39,30 @@ public class IncomingMessageProcessor {
         this.errorListener = listener;
     }
 
-    private void initializeHandlers() {
-        handlers.put(WsMessage.PayloadCase.CHAT_MESSAGE_RESPONSE, this::handleMessageError);
-        handlers.put(WsMessage.PayloadCase.UNREAD_MESSAGES_LIST, msg -> processUnreadMessages(msg.getUnreadMessagesList()));
-        handlers.put(WsMessage.PayloadCase.DELETE_MESSAGE_REQUEST, msg -> processDeleteMessageRequest(msg.getDeleteMessageRequest()));
-        handlers.put(WsMessage.PayloadCase.CLEAR_HISTORY_REQUEST, msg -> processClearHistoryRequest(msg.getClearHistoryRequest()));
-        handlers.put(WsMessage.PayloadCase.CHAT_MESSAGE, this::handleChatMessage);
-        handlers.put(WsMessage.PayloadCase.UNBLOCKED_USERS_LIST, msg -> processUnblockedUsersList(msg.getUnblockedUsersList()));
-        handlers.put(WsMessage.PayloadCase.BLOCKED_USERS_LIST, msg -> processBlockedUsersList(msg.getBlockedUsersList()));
-        handlers.put(WsMessage.PayloadCase.MESSAGES_READ_UPDATE, msg -> processMessagesReadUpdate(msg.getMessagesReadUpdate()));
-        handlers.put(WsMessage.PayloadCase.CONTACT_IDENTITY, msg -> processContactIdentity(msg.getContactIdentity()));
-    }
+    /**
+     * Inicializa el mapa de handlers para cada tipo de mensaje entrante.
+     * Cada handler procesa un tipo específico de mensaje Protobuf.
+     * 
+     * NOTA: DELETE_MESSAGE_REQUEST no se maneja aquí porque ese tipo de mensaje
+     * es enviado por el cliente al servidor, no del servidor al cliente.
+     * El servidor envía MessageDeletedNotification cuando otro usuario elimina un mensaje.
+     */
+     private void initializeHandlers() {
+         handlers.put(WsMessage.PayloadCase.CHAT_MESSAGE_RESPONSE, this::handleMessageError);
+         handlers.put(WsMessage.PayloadCase.UNREAD_MESSAGES_LIST, msg -> processUnreadMessages(msg.getUnreadMessagesList()));
+         // MessageDeletedNotification: recibida cuando otro usuario elimina un mensaje "para todos"
+         handlers.put(WsMessage.PayloadCase.MESSAGE_DELETE_NOTIFICATION, msg -> processMessageDeletedNotification(msg.getMessageDeleteNotification()));
+         handlers.put(WsMessage.PayloadCase.CLEAR_HISTORY_REQUEST, msg -> processClearHistoryRequest(msg.getClearHistoryRequest()));
+         
+         // PendingClearHistoryList: lista de solicitudes pendientes de limpieza de historial
+         handlers.put(WsMessage.PayloadCase.PENDING_CLEAR_HISTORY_LIST, msg -> processPendingClearHistoryList(msg.getPendingClearHistoryList()));
+         
+         handlers.put(WsMessage.PayloadCase.CHAT_MESSAGE, this::handleChatMessage);
+         handlers.put(WsMessage.PayloadCase.UNBLOCKED_USERS_LIST, msg -> processUnblockedUsersList(msg.getUnblockedUsersList()));
+         handlers.put(WsMessage.PayloadCase.BLOCKED_USERS_LIST, msg -> processBlockedUsersList(msg.getBlockedUsersList()));
+         handlers.put(WsMessage.PayloadCase.MESSAGES_READ_UPDATE, msg -> processMessagesReadUpdate(msg.getMessagesReadUpdate()));
+         handlers.put(WsMessage.PayloadCase.CONTACT_IDENTITY, msg -> processContactIdentity(msg.getContactIdentity()));
+     }
 
     public void process(WsMessage message) {
         Consumer<WsMessage> handler = handlers.get(message.getPayloadCase());
@@ -75,7 +94,7 @@ public class IncomingMessageProcessor {
             Contact current = context.getCurrentContactSupplier().get();
             if (current != null && current.getContactUsername().equals(recipient)) {
                 Platform.runLater(() -> {
-                    ChatMessage systemMessage = new ChatMessage(recipient, errorContent, "Sistema");
+                    ChatMessage systemMessage = new ChatMessage(recipient, "Sistema", errorContent, "Sistema");
                     systemMessage.setId(System.currentTimeMillis());
                     context.getCurrentChatMessages().add(systemMessage);
                 });
@@ -100,7 +119,7 @@ public class IncomingMessageProcessor {
 
             if(contact == null) return;
 
-            ChatMessage localMessage = new ChatMessage(contact.getContactUsername(), content, senderId);
+            ChatMessage localMessage = new ChatMessage(contact.getContactUsername(), senderId, content, senderId);
             localMessage.setId(messageId);
             ChatMessage saved = context.getMessageRepository().create(localMessage);
 
@@ -116,26 +135,74 @@ public class IncomingMessageProcessor {
         }
     }
 
-    private void processDeleteMessageRequest(MessagesProto.DeleteMessageRequest request) {
+    /**
+     * Procesa la notificación de eliminación de mensaje recibida del servidor.
+     * 
+     * Esta notificación es enviada cuando OTRO usuario elimina un mensaje "para todos".
+     * El cliente debe eliminar el mensaje de su base de datos local y de la UI.
+     * 
+     * NOTA: Esta NO es una DeleteMessageRequest (que es enviada por el propio cliente al servidor).
+     * El servidor envía MessageDeletedNotification cuando un mensaje es eliminado por otro usuario.
+     * 
+     * @param notification la notificación de eliminación con el ID del mensaje y quién lo eliminó
+     */
+    private void processMessageDeletedNotification(MessagesProto.MessageDeletedNotification notification) {
         try {
-            long messageId = Long.parseLong(request.getMessageId());
+            long messageId = Long.parseLong(notification.getMessageId());
+            String deletedBy = notification.getDeletedBy();
+            
+            // Eliminar de la base de datos local
             context.getMessageRepository().delete(messageId);
-            Platform.runLater(() -> context.getCurrentChatMessages().removeIf(m -> m.getId() == messageId));
+            
+            // Eliminar de la UI si el mensaje está visible
+            Platform.runLater(() -> {
+                boolean removed = context.getCurrentChatMessages().removeIf(m -> m.getId() == messageId);
+                if (removed) {
+                    System.out.println("Mensaje " + messageId + " eliminado de la vista por eliminación de: " + deletedBy);
+                } else {
+                    System.out.println("Mensaje " + messageId + " eliminado de BD (no estaba en vista)");
+                }
+            });
+            
+            System.out.println("MessageDeletedNotification procesada - mensajeID: " + messageId + ", eliminadoPor: " + deletedBy);
+            
         } catch (Exception e) {
-            System.err.println("Error al procesar eliminación: " + e.getMessage());
+            System.err.println("Error al procesar MessageDeletedNotification: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
+    /**
+     * Procesa una solicitud directa de limpieza de historial recibida en tiempo real.
+     * Este método se invoca cuando el usuario RECIBE una solicitud de ClearHistoryRequest
+     * del otro usuario mientras está conectado (en tiempo real).
+     * 
+     * Diferencia con processPendingClearHistoryList:
+     * - processClearHistoryRequest: El otro usuario eliminó historial contigo MIENTRAS estabas online
+     * - processPendingClearHistoryList: El otro usuario eliminó historial contigo mientras estabas offline
+     * 
+     * En ambos casos, se elimina el historial local con el usuario que solicitó la limpieza.
+     * 
+     * @param request Solicitud de limpieza de historial recibida
+     */
     private void processClearHistoryRequest(MessagesProto.ClearHistoryRequest request) {
+        String senderUsername = request.getSender();
+        log.info("Recibida solicitud de limpieza de historial en tiempo real - Solicitante: {}", senderUsername);
+        System.out.println("Recibida solicitud de limpieza de historial en tiempo real - Solicitante: " + senderUsername);
+        
         try {
-            String senderUsername = request.getSender();
+            // Eliminar todos los mensajes con el usuario que solicitó la limpieza
             context.getMessageRepository().deleteByContactUsername(senderUsername);
+            log.info("Historial eliminado para contacto: {}", senderUsername);
             
+            // Si estamos viendo el chat de este contacto, limpiar la UI
             Contact current = context.getCurrentContactSupplier().get();
             if (current != null && current.getContactUsername().equals(senderUsername)) {
                 Platform.runLater(() -> context.getCurrentChatMessages().clear());
+                log.debug("Vista de chat limpiada para contacto: {}", senderUsername);
             }
         } catch (SQLException e) {
+            log.error("Error al procesar solicitud de limpieza de historial para {}: {}", senderUsername, e.getMessage());
             e.printStackTrace();
         }
     }
@@ -151,7 +218,7 @@ public class IncomingMessageProcessor {
 
                 if (contact == null || context.getMessageRepository().existsById(messageId)) continue;
 
-                ChatMessage localMessage = new ChatMessage(contact.getContactUsername(), protoMessage.getContent(), senderUsername);
+                ChatMessage localMessage = new ChatMessage(contact.getContactUsername(), senderUsername, protoMessage.getContent(), senderUsername);
                 localMessage.setId(messageId);
                 ChatMessage saved = context.getMessageRepository().create(localMessage);
 
@@ -238,7 +305,7 @@ public class IncomingMessageProcessor {
         for (String username : users) {
             action.accept(username);
             try {
-                ChatMessage localMessage = new ChatMessage(username, systemMsg, "Sistema");
+                ChatMessage localMessage = new ChatMessage(username, "Sistema", systemMsg, "Sistema");
                 localMessage.setId(System.currentTimeMillis());
                 context.getMessageRepository().create(localMessage);
                 
@@ -252,6 +319,119 @@ public class IncomingMessageProcessor {
                 e.printStackTrace();
             }
         }
+    }
+
+    /**
+     * Procesa una lista de solicitudes pendientes de limpieza de historial.
+     * Cada entrada representa un contacto que ha solicitado borrar todo el historial
+     * de conversación con este usuario. Se eliminan localmente todos los mensajes
+     * intercambiados con cada contacto.
+     * 
+     * Esta lista se recibe cuando el cliente se conecta después de haber estado offline.
+     * El servidor envía las solicitudes de limpieza de historial que otros usuarios
+     * hicieron mientras este usuario estaba desconectado.
+     * 
+     * Estructura esperada en cada PendingClearHistory:
+     * - sender: Username del usuario que solicitó la limpieza (el otro usuario)
+     * - recipient: Username de este usuario (quien debe aplicar la limpieza local)
+     * 
+     * Ejemplo: Si "juan" eliminó historial con "pedro", cuando "pedro" se conecte
+     * recibirá PendingClearHistory con sender="juan", recipient="pedro".
+     * 
+     * @param pendingClearHistoryList Lista de solicitudes pendientes de limpieza de historial
+     */
+    private void processPendingClearHistoryList(PendingClearHistoryList pendingClearHistoryList) {
+        log.info("=== Procesando PendingClearHistoryList con {} entradas ===", pendingClearHistoryList.getClearHistoriesCount());
+        
+        List<MessagesProto.PendingClearHistory> clearHistories = pendingClearHistoryList.getClearHistoriesList();
+        if (clearHistories == null || clearHistories.isEmpty()) {
+            log.debug("Lista de limpiezas pendientes vacía");
+            return;
+        }
+        
+        // Usar currentUsername para comparar con el campo recipient de PendingClearHistory
+        // IMPORTANTE: PendingClearHistory.recipient contiene el username, NO el userId
+        String currentUsername = context.getCurrentUsernameSupplier().get();
+        if (currentUsername == null) {
+            log.warn("No se puede procesar PendingClearHistoryList: currentUsername es null");
+            System.out.println("No se puede procesar PendingClearHistoryList: currentUsername es null");
+            return;
+        }
+        
+        log.debug("Usuario actual para comparación: {}", currentUsername);
+        
+        Platform.runLater(() -> {
+            int historialesEliminados = 0;
+            int contactosNoEncontrados = 0;
+            
+            for (MessagesProto.PendingClearHistory clearHistory : clearHistories) {
+                String senderUsername = clearHistory.getSender();
+                String recipientUsername = clearHistory.getRecipient();
+                
+                log.debug("Procesando limpieza pendiente: sender={}, recipient={}", senderUsername, recipientUsername);
+                System.out.println("Procesando limpieza pendiente: de " + senderUsername + " para " + recipientUsername);
+                
+                // Verificar que esta solicitud es para este usuario
+                // IMPORTANTE: Comparar recipientUsername (username) con currentUsername, NO con currentUserId
+                if (!recipientUsername.equals(currentUsername)) {
+                    log.debug("Solicitud de limpieza ignorada: recipient {} no coincide con currentUsername {}", 
+                        recipientUsername, currentUsername);
+                    System.out.println("Solicitud de limpieza ignorada: recipient " + recipientUsername + " no coincide con currentUsername " + currentUsername);
+                    continue;
+                }
+                
+                try {
+                    // Buscar el contacto por username (el que solicitó la limpieza)
+                    // IMPORTANTE: findContactByUsername requiere userId (no username) como primer parámetro
+                    String currentUserId = context.getCurrentUserIdSupplier().get();
+                    Optional<Contact> contactOpt = context.getContactService()
+                        .findContactByUsername(currentUserId, senderUsername);
+                    
+                    if (contactOpt.isPresent()) {
+                        Contact contact = contactOpt.get();
+                        String contactUsername = contact.getContactUsername();
+                        
+                        log.info("Eliminando historial con contacto: {} (solicitado por: {})", contactUsername, senderUsername);
+                        System.out.println("Eliminando historial con contacto: " + contactUsername + " (solicitado por: " + senderUsername + ")");
+                        
+                        // Eliminar mensajes de la BD local (todos los mensajes con este contacto)
+                        try {
+                            context.getMessageRepository().deleteByContactUsername(contactUsername);
+                            
+                            // Si estamos viendo el chat de este contacto, limpiar la UI
+                            Contact currentContact = context.getCurrentContactSupplier().get();
+                            if (currentContact != null && 
+                                currentContact.getContactUsername().equals(contactUsername)) {
+                                context.getCurrentChatMessages().clear();
+                                log.debug("Historial del contacto {} eliminado de la vista actual", contactUsername);
+                            }
+                            
+                            historialesEliminados++;
+                            log.info("Historial con usuario {} eliminado completamente", contactUsername);
+                            System.out.println("Historial con usuario " + contactUsername + " (ID: " + senderUsername + ") eliminado completamente");
+                        } catch (SQLException e) {
+                            log.error("Error eliminando mensajes del contacto {}: {}", contactUsername, e.getMessage());
+                            System.err.println("Error eliminando mensajes del contacto " + contactUsername + ": " + e.getMessage());
+                            e.printStackTrace();
+                        }
+                    } else {
+                        contactosNoEncontrados++;
+                        log.warn("No se encontró contacto local para usuario: {}. La solicitud de limpieza se ignora.", senderUsername);
+                        System.out.println("No se encontró contacto local para usuario: " + senderUsername + ". La solicitud de limpieza se ignora.");
+                    }
+                    
+                } catch (Exception e) {
+                    log.error("Error procesando PendingClearHistory para sender {}: {}", senderUsername, e.getMessage());
+                    System.err.println("Error procesando PendingClearHistory para sender " + senderUsername + ": " + e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+            
+            log.info("=== Finalizado procesamiento de PendingClearHistoryList ===");
+            log.info("Total procesados: {} historiales eliminados, {} contactos no encontrados", historialesEliminados, contactosNoEncontrados);
+            System.out.println("=== Finalizado procesamiento de PendingClearHistoryList ===");
+            System.out.println("Total procesados: " + historialesEliminados + " historiales eliminados, " + contactosNoEncontrados + " contactos no encontrados");
+        });
     }
 
     private void updateNotification(String senderUsername) {

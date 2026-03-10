@@ -159,6 +159,16 @@ message ContactIdentity {
   string contact_username = 3; // El username del contacto parcial
 }
 
+message PendingClearHistory {
+  string sender = 1;
+  string recipient = 2;
+}
+
+// Lista de usernames cuyo historial fue eliminado (pendiente para entregar al conectarse)
+message PendingClearHistoryList {
+  repeated PendingClearHistory pendingClearHistory = 1;
+}
+
 // Wrapper para todos los mensajes
 message WsMessage {
   oneof payload {
@@ -183,5 +193,7 @@ message WsMessage {
     MessagesReadUpdate messages_read_update = 19;
     ContactIdentity contact_identity = 20;
     ClearHistoryResponse clear_history_response = 21;
-  }
+    PendingClearHistoryList pending_clear_history_list = 22;
+    PendingClearHistory pending_clear_history = 23;
+      }
 }

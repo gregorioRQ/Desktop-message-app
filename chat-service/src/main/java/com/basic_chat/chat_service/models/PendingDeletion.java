@@ -17,4 +17,5 @@ public class PendingDeletion {
     
     private String recipient;
     private String messageId; // ID del mensaje a eliminar
+    private String deletedBy;  // Username del usuario que eliminó el mensaje (para enviar en la notificación)
 }

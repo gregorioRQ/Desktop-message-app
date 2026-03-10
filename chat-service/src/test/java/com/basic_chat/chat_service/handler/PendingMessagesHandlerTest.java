@@ -57,7 +57,7 @@ class PendingMessagesHandlerTest {
     void sendPendingMessages_ShouldSendMessages_WhenTheyExist() throws IOException {
         // Given
         List<MessagesProto.ChatMessage> messages = List.of(MessagesProto.ChatMessage.newBuilder().setId("1").build());
-        when(messageService.getUnreadMessages(USERNAME)).thenReturn(messages);
+        when(messageService.getAndDeleteUnreadMessages(USERNAME)).thenReturn(messages);
 
         // When
         pendingMessagesHandler.sendPendingMessages(session, USERNAME);
@@ -68,8 +68,8 @@ class PendingMessagesHandlerTest {
 
     @Test
     void sendPendingMessages_ShouldDoNothing_WhenNoMessagesExist() throws IOException {
-        // Given
-        when(messageService.getUnreadMessages(USERNAME)).thenReturn(Collections.emptyList());
+        // Given - El método getAndDeleteUnreadMessages retorna lista vacía cuando no hay mensajes
+        lenient().when(messageService.getAndDeleteUnreadMessages(USERNAME)).thenReturn(Collections.emptyList());
 
         // When
         pendingMessagesHandler.sendPendingMessages(session, USERNAME);
@@ -82,7 +82,7 @@ class PendingMessagesHandlerTest {
     void sendPendingMessages_ShouldThrowIOException_WhenSendFails() throws IOException {
         // Given
         List<MessagesProto.ChatMessage> messages = List.of(MessagesProto.ChatMessage.newBuilder().setId("1").build());
-        when(messageService.getUnreadMessages(USERNAME)).thenReturn(messages);
+        when(messageService.getAndDeleteUnreadMessages(USERNAME)).thenReturn(messages);
         doThrow(new IOException("Network error")).when(session).sendMessage(any(BinaryMessage.class));
 
         // When & Then

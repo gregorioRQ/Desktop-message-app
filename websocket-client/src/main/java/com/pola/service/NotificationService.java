@@ -1,201 +1,260 @@
 package com.pola.service;
 
-import java.io.IOException;
-import java.net.URI;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-import jakarta.websocket.ClientEndpointConfig;
-import jakarta.websocket.CloseReason;
-import jakarta.websocket.ContainerProvider;
-import jakarta.websocket.Endpoint;
-import jakarta.websocket.EndpointConfig;
-import jakarta.websocket.MessageHandler;
-import jakarta.websocket.Session;
-import jakarta.websocket.WebSocketContainer;
+import org.springframework.messaging.simp.stomp.StompCommand;
+import org.springframework.messaging.simp.stomp.StompHeaders;
+import org.springframework.messaging.simp.stomp.StompSession;
+import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
+import org.springframework.messaging.simp.stomp.ConnectionLostException;
+import org.springframework.messaging.converter.StringMessageConverter;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import org.springframework.web.socket.WebSocketHttpHeaders;
+import org.springframework.web.socket.client.standard.StandardWebSocketClient;
+import org.springframework.web.socket.messaging.WebSocketStompClient;
 
 import com.pola.config.WebSocketConfig;
 
-public class NotificationService extends Endpoint {
-    // URL gestionada en WebSocketConfig
+public class NotificationService {
 
-    private Session session;
+    private WebSocketStompClient stompClient;
+    private StompSession stompSession;
     private final CopyOnWriteArrayList<Consumer<String>> listeners = new CopyOnWriteArrayList<>();
     private final String userId;
     private final String username;
+    private String token;
     private Runnable onStompConnected;
     private BiConsumer<String, Boolean> presenceListener;
-    private NotificationHelper helper;
     private Consumer<Throwable> errorListener;
+    private boolean isConnected = false;
 
     public NotificationService(String userId, String username) {
         this.userId = userId;
         this.username = username;
     }
 
-    public void connect(String token) {
+    /**
+     * Establece la conexión STOMP con el servidor de notificaciones.
+     * 
+     * Separamos los headers en dos grupos:
+     * - WebSocketHttpHeaders: Headers para el handshake HTTP/WebSocket (Authorization)
+     * - StompHeaders: Headers para el frame STOMP CONNECT (userId, username)
+     * 
+     * Esto evita que Tyrus interprete los headers STOMP como autenticación HTTP.
+     * 
+     * @param token Token de autenticación JWT
+     * @param userId ID del usuario
+     */
+    public void connect(String token, String userId) {
+        this.token = token;
+        
         try {
-            ClientEndpointConfig config = ClientEndpointConfig.Builder.create()
-                .configurator(new ClientEndpointConfig.Configurator() {
-                    @Override
-                    public void beforeRequest(Map<String, List<String>> headers) {
-                        if (token != null && !token.isEmpty()) {
-                            System.out.println("Enviando token en Notification WS Header");
-                            headers.put("Authorization", java.util.Collections.singletonList("Bearer " + token.trim()));
-                        }
-                    }
-                })
-                .build();
-            WebSocketContainer container = ContainerProvider.getWebSocketContainer();
-            container.connectToServer(this, config, URI.create(WebSocketConfig.NOTIFICATION_WS_URL));
-            System.out.println("Conectando al servidor websocket de notificaciones");
+            StandardWebSocketClient wsClient = new StandardWebSocketClient();
+            
+            stompClient = new WebSocketStompClient(wsClient);
+            stompClient.setMessageConverter(new StringMessageConverter());
+            
+            ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
+            scheduler.setPoolSize(2);
+            scheduler.setThreadNamePrefix("stomp-heartbeat-");
+            scheduler.setWaitForTasksToCompleteOnShutdown(true);
+            scheduler.setAwaitTerminationSeconds(5);
+            scheduler.initialize();
+            stompClient.setTaskScheduler(scheduler);
+            
+            System.out.println("[NotificationService] Iniciando conexión STOMP al servidor de notificaciones...");
+            
+            // Headers para el handshake WebSocket (HTTP)
+            WebSocketHttpHeaders wsHeaders = new WebSocketHttpHeaders();
+            if (token != null && !token.isEmpty()) {
+                wsHeaders.set("Authorization", "Bearer " + token.trim());
+            }
+            
+            // Headers para el frame STOMP CONNECT
+            StompHeaders stompHeaders = new StompHeaders();
+            stompHeaders.add("userId", userId);
+            if (username != null && !username.isEmpty()) {
+                stompHeaders.add("username", username);
+            }
+            
+            // Usar método con 4 parámetros para separar headers de WebSocket y STOMP
+            stompClient.connectAsync(
+                WebSocketConfig.NOTIFICATION_WS_URL,
+                wsHeaders,
+                stompHeaders,
+                new NotificationStompHandler()
+            );
+            
+            System.out.println("[NotificationService] Conexión WebSocket en progreso...");
+            
         } catch (Exception e) {
             System.err.println("[NotificationService] Error crítico de conexión: " + e.getMessage());
-            e.printStackTrace(); // Log para desarrollo
+            e.printStackTrace();
             if (errorListener != null) {
                 errorListener.accept(e);
             }
         }
     }
 
+    /**
+     * Desconecta el cliente STOMP del servidor de notificaciones.
+     * Envía frame DISCONNECT y detiene el cliente WebSocket.
+     */
     public void disconnect() {
-        if (session != null && session.isOpen()) {
+        isConnected = false;
+        if (stompSession != null && stompSession.isConnected()) {
             try {
-                String disconnectFrame = "DISCONNECT\n\n\u0000";
-                session.getBasicRemote().sendText(disconnectFrame);
-                session.close();
-            } catch (IOException e) {
-                System.err.println("Error al desconectar: " + e.getMessage());
+                stompSession.disconnect();
+                System.out.println("[NotificationService] Desconexión STOMP enviada");
+            } catch (Exception e) {
+                System.err.println("[NotificationService] Error al desconectar: " + e.getMessage());
+            }
+        }
+        
+        if (stompClient != null) {
+            try {
+                stompClient.stop();
+            } catch (Exception e) {
+                System.err.println("[NotificationService] Error al detener cliente STOMP: " + e.getMessage());
             }
         }
     }
 
+    /**
+     * Registra un listener para recibir notificaciones de chat.
+     * @param listener Consumer que procesa los mensajes recibidos
+     */
     public void addNotificationListener(Consumer<String> listener) {
         listeners.add(listener);
     }
 
+    /**
+     * Configura el listener para errores de conexión.
+     * @param listener Consumer que maneja los errores
+     */
     public void setErrorListener(Consumer<Throwable> listener) {
         this.errorListener = listener;
     }
 
+    /**
+     * Configura el listener para eventos de presencia (usuario conectado/desconectado).
+     * @param listener BiConsumer que recibe (userId, isOnline)
+     */
     public void setPresenceListener(BiConsumer<String, Boolean> listener) {
         this.presenceListener = listener;
     }
 
+    /**
+     * Configura callback para cuando la conexión STOMP se establece exitosamente.
+     * @param onStompConnected Runnable a ejecutar tras conexión exitosa
+     */
     public void setOnStompConnected(Runnable onStompConnected) {
         this.onStompConnected = onStompConnected;
     }
 
-    @Override
-    public void onOpen(Session session, EndpointConfig config) {
-        this.session = session;
-        this.helper = new NotificationHelper(session);
-        System.out.println("Conexión WebSocket establecida. Enviando frame CONNECT de STOMP.");
-        helper.sendConnectFrame(this.userId);
-        
-        session.addMessageHandler(new MessageHandler.Whole<String>() {
-            @Override
-            public void onMessage(String message) {
-                processMessage(message);
-            }
-        });
-    }
     /**
-     * Procesa un mensaje 
-     * 
-     * Flujo:
-     * 1. Verifica el tipo de comando STTOMP.
-     * 2. Suscribe el usuario actual a los topics
-     * @param message
+     * Handler interno para manejar eventos de la sesión STOMP.
+     * Maneja: conexión, mensajes, errores de transporte y excepciones.
      */
+    private class NotificationStompHandler extends StompSessionHandlerAdapter {
 
-    private void processMessage(String message) {
-        System.out.println("Mensaje STOMP recibido: " + message);
-
-        if (message.startsWith("CONNECTED")) {
-            handleConnectedMessage();
-        } else if (message.startsWith("RECEIPT")) {
-            handleReceiptMessage();
-        } else if (message.startsWith("MESSAGE")) {
-            handleStompMessage(message);
-        }
-    }
-
-    private void handleConnectedMessage() {
-        System.out.println("STOMP CONNECTED. Suscribiendo a /topic/notifications/" + userId);
-
-        // Suscribirse a notificaciones
-        if (helper != null) {
-            helper.sendMessage(helper.buildSubscribeFrame("sub-0", "/topic/notifications/" + userId));
-
-            // Suscribirse a presencia
-            helper.sendMessage(helper.buildSubscribeFrame("sub-1", "/queue/presence/" + userId));
+        @Override
+        public void afterConnected(StompSession session, StompHeaders connectedHeaders) {
+            stompSession = session;
+            isConnected = true;
+            
+            long[] heartbeat = connectedHeaders.getHeartbeat();
+            System.out.println("[NotificationService] Conexión STOMP establecida.");
+            System.out.println("[NotificationService] Heartbeat configurado: servidorenvía cada " + heartbeat[0] + "ms, cliente debe enviar cada " + heartbeat[1] + "ms");
+            
+            session.subscribe("/topic/notifications/" + userId, this);
+            session.subscribe("/queue/presence/" + userId, this);
+            
+            System.out.println("[NotificationService] Suscrito a /topic/notifications/" + userId);
+            System.out.println("[NotificationService] Suscrito a /queue/presence/" + userId);
+            
+            if (onStompConnected != null) {
+                onStompConnected.run();
+            }
         }
 
-        if (onStompConnected != null) {
-            onStompConnected.run();
-        }
-    }
-
-    private void handleReceiptMessage() {
-        System.out.println("Confirmación de suscripción recibida exitosamente (RECEIPT frame).");
-    }
-
-    private void handleStompMessage(String message) {
-        int bodyStart = message.indexOf("\n\n");
-        if (bodyStart == -1) {
-            System.err.println("Mensaje STOMP inválido: no se encontró el cuerpo.");
-            return;
+        @Override
+        public void handleException(StompSession session, StompCommand command, 
+                StompHeaders headers, byte[] payload, Throwable exception) {
+            System.err.println("[NotificationService] STOMP Exception: " + exception.getMessage());
+            exception.printStackTrace();
+            if (errorListener != null) {
+                errorListener.accept(exception);
+            }
         }
 
-        String headers = message.substring(0, bodyStart);
-        String body = message.substring(bodyStart + 2).replace("\u0000", "");
-
-        // Extraer cabeceras relevantes
-        String subscriptionId = helper.extractHeader(headers, "subscription");
-        String type = helper.extractHeader(headers, "type");
-
-        if (subscriptionId == null || type == null) {
-            System.err.println("Mensaje STOMP inválido: faltan cabeceras obligatorias.");
-            return;
+        @Override
+        public void handleTransportError(StompSession session, Throwable exception) {
+            System.err.println("[NotificationService] Error de transporte WebSocket: " + exception.getMessage());
+            System.err.println("[NotificationService] Tipo de error: " + exception.getClass().getSimpleName());
+            
+            if (exception instanceof ConnectionLostException) {
+                System.err.println("[NotificationService] ERROR: Conexión perdida por falta de heartbeat o red");
+                System.err.println("[NotificationService] El servidor debería detectar esto y limpiar la sesión en Redis");
+            }
+            
+            isConnected = false;
+            
+            if (errorListener != null) {
+                errorListener.accept(exception);
+            }
         }
 
-        // Delegar el procesamiento según el tipo
-        switch (type) {
-            case "user_online":
-                handleUserPresenceMessage(body, true);
-                break;
-            case "user_offline":
-                handleUserPresenceMessage(body, false);
-                break;
-            case "chat_message":
-                handleChatMessage(body);
-                break;
-            case "contact_added_you":
-                handleContactNotification(body);
-                break;
-            case "contact_blocked":
-                handleContactBlockedNotification(body);
-                break;
-            case "contact_unblocked":
-                handleContactUnblockedNotification(body);
-                break;
-            case "contact_dropped":
-                handleContactDroppedNotification(body);
-                break;
-            default:
-                handleUnknownMessage(type, body);
-                break;
+        @Override
+        public void handleFrame(StompHeaders headers, Object payload) {
+            String body = (String) payload;
+            String type = headers.getFirst("type");
+            String subscriptionId = headers.getFirst("subscription");
+            
+            System.out.println("[NotificationService] Frame recibido - Type: " + type + ", Subscription: " + subscriptionId);
+            
+            if (type == null || subscriptionId == null) {
+                return;
+            }
+            
+            switch (type) {
+                case "user_online":
+                    handleUserPresenceMessage(body, true);
+                    break;
+                case "user_offline":
+                    handleUserPresenceMessage(body, false);
+                    break;
+                case "chat_message":
+                    handleChatMessage(body);
+                    break;
+                case "contact_added_you":
+                    handleContactNotification(body);
+                    break;
+                case "contact_blocked":
+                    handleContactBlockedNotification(body);
+                    break;
+                case "contact_unblocked":
+                    handleContactUnblockedNotification(body);
+                    break;
+                case "contact_dropped":
+                    handleContactDroppedNotification(body);
+                    break;
+                default:
+                    handleUnknownMessage(type, body);
+                    break;
+            }
         }
     }
 
     private void handleUserPresenceMessage(String body, boolean isOnline) {
         System.out.println((isOnline ? "Usuario conectado: " : "Usuario desconectado: ") + body);
-        if (helper != null) {
-            helper.handlePresenceMessage(body, isOnline, presenceListener);
+        
+        String userId = extractJsonValue(body, "userId");
+        if (userId != null && presenceListener != null) {
+            presenceListener.accept(userId, isOnline);
         }
     }
 
@@ -206,7 +265,7 @@ public class NotificationService extends Endpoint {
 
     private void handleContactNotification(String body) {
         System.out.println("Notificación de contacto recibida: " + body);
-        listeners.forEach(listener -> listener.accept(body)); // Aquí puedes enviar al panel de notificaciones
+        listeners.forEach(listener -> listener.accept(body));
     }
 
     private void handleContactBlockedNotification(String body) {
@@ -220,10 +279,7 @@ public class NotificationService extends Endpoint {
     }
 
     private void handleContactDroppedNotification(String body) {
-        boolean success = false;
-        if (helper != null) {
-            success = helper.extractJsonBoolean(body, "success");
-        }
+        boolean success = extractJsonBoolean(body, "success");
         String message = success ? "Contacto eliminado correctamente." : "No se pudo eliminar el contacto.";
         System.out.println("Notificación de eliminación: " + message);
         listeners.forEach(listener -> listener.accept(message));
@@ -233,40 +289,56 @@ public class NotificationService extends Endpoint {
         System.err.println("Tipo de mensaje desconocido: " + type + ". Cuerpo: " + body);
     }
 
-    @Override
-    public void onClose(Session session, CloseReason closeReason) {
-        System.out.println("Conexión de notificaciones cerrada: " + closeReason);
+    private String extractJsonValue(String json, String key) {
+        if (json == null) return null;
+        String pattern = "\"" + key + "\"\\s*:\\s*\"([^\"]+)\"";
+        java.util.regex.Pattern p = java.util.regex.Pattern.compile(pattern);
+        java.util.regex.Matcher m = p.matcher(json);
+        return m.find() ? m.group(1) : null;
     }
-    /**
-     * envia al servicio de notificaciones los datos para actualizar los contactos de un usuario.
-     * @param fromUserId Id del contacto.
-     * @param toUserId  Id del usuario actual.
-     */
+
+    private boolean extractJsonBoolean(String json, String key) {
+        if (json == null) return false;
+        String pattern = "\"" + key + "\"\\s*:\\s*(true|false)";
+        java.util.regex.Pattern p = java.util.regex.Pattern.compile(pattern);
+        java.util.regex.Matcher m = p.matcher(json);
+        return m.find() && Boolean.parseBoolean(m.group(1));
+    }
+
     public void sendAddContactNotification(String fromUserId, String toUserId) {
-        if (helper != null) {
-            helper.sendAddContactNotification(fromUserId, toUserId);
+        if (stompSession != null && stompSession.isConnected()) {
+            String body = String.format("{\"from\": \"%s\", \"to\": \"%s\"}", fromUserId, toUserId);
+            stompSession.send("/app/contact.add", body);
         }
     }
 
-    /**
-     * Envia al servicio de notificaciones el id para que lo retransmita al remitente.
-     * @param userId Id oficial de este usuario que acepto como contacto al remitente.
-     */
     public void sendUserCreateNotification(String userId) {
-        if (helper != null) {
-            helper.sendUserCreateNotification(userId);
-        }
-    }
-    
-    public void sendUserOnlineNotification(String userId) {
-        if (helper != null) {
-            helper.sendUserOnlineNotification(userId);
+        if (stompSession != null && stompSession.isConnected()) {
+            String body = String.format("{\"user_id\": \"%s\"}", userId);
+            stompSession.send("/app/user.add", body);
         }
     }
 
-    public void sendDropContactNotification(String userId, java.util.List<String> contactIds) {
-        if (helper != null) {
-            helper.sendDropContactNotification(userId, contactIds);
+    public void sendUserOnlineNotification(String userId) {
+        if (stompSession != null && stompSession.isConnected()) {
+            String body = String.format("{\"userId\": \"%s\"}", userId);
+            stompSession.send("/app/user.online", body);
+        }
+    }
+
+    public void sendDropContactNotification(String userId, List<String> contactIds) {
+        if (stompSession != null && stompSession.isConnected()) {
+            StringBuilder contactsJson = new StringBuilder("[");
+            for (int i = 0; i < contactIds.size(); i++) {
+                contactsJson.append("\"").append(contactIds.get(i)).append("\"");
+                if (i < contactIds.size() - 1) {
+                    contactsJson.append(",");
+                }
+            }
+            contactsJson.append("]");
+            
+            String body = String.format("{\"userId\": \"%s\", \"contactIds\": %s}", userId, contactsJson.toString());
+            stompSession.send("/app/contact.drop", body);
         }
     }
 }

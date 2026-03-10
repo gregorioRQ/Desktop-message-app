@@ -79,22 +79,6 @@ public class HttpServiceImpl implements HttpService{
         }
     }
 
-    @Override
-    public CompletableFuture<Boolean> sendHeartbeat(String accessToken) {
-        try {
-            HttpRequest httpRequest = HttpRequest.newBuilder()
-                    .uri(URI.create(baseUrl + "auth/heartbeat"))
-                    .header("Authorization", "Bearer " + accessToken)
-                    .GET()
-                    .timeout(Duration.ofSeconds(10))
-                    .build();
-            
-            return httpClient.sendAsync(httpRequest, HttpResponse.BodyHandlers.discarding())
-                    .thenApply(response -> response.statusCode() == 200);
-        } catch (Exception e) {
-            return CompletableFuture.failedFuture(e);
-        }
-    }
 
     /**
      * Envía una petición POST con Protobuf
@@ -217,4 +201,11 @@ public class HttpServiceImpl implements HttpService{
         Method parseFromMethod = responseClass.getMethod("parseFrom", byte[].class);
         return responseClass.cast(parseFromMethod.invoke(null, (Object) data));
     }
+
+    // TODO: MEDIA - Reactivar cuando se implemente funcionalidad de envío de imágenes
+    // @Override
+    // public CompletableFuture<UploadImageResponse> uploadMedia(UploadImageRequest request, String accessToken) {
+    //     // TODO Auto-generated method stub
+    //     throw new UnsupportedOperationException("Unimplemented method 'uploadMedia'");
+    // }
 }

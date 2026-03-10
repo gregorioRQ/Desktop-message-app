@@ -59,10 +59,12 @@ public interface HttpService {
      * Obtiene el contacto/lista de contactos del usuario
      */
 
-    /**
-     * Envía un latido al servidor para mantener la sesión activa.
-     * @param accessToken Token de acceso.
-     * @return CompletableFuture indicando si el latido fue exitoso.
-     */
-    CompletableFuture<Boolean> sendHeartbeat(String accessToken);
+    // TODO: MEDIA - Reactivar cuando se implemente funcionalidad de envío de imágenes
+    // /**
+    //  * Sube un archivo multimedia (imagen) al servidor usando Protobuf.
+    //  * @param request Petición de subida con datos de imagen.
+    //  * @param accessToken Token de autorización.
+    //  * @return CompletableFuture con la respuesta del servidor (UploadImageResponse).
+    //  */
+    // CompletableFuture<UploadImageResponse> uploadMedia(UploadImageRequest request, String accessToken);
 }

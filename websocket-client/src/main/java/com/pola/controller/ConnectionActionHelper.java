@@ -50,11 +50,11 @@ public class ConnectionActionHelper {
                         });
                     });
 
-                    chatController.setNotificationService(ns);
-                    contactService.setNotificationService(ns);
-                }
+                chatController.setNotificationService(ns);
+                contactService.setNotificationService(ns);
+            }
 
-                chatController.getNotificationService().connect(chatController.getAuthToken());
+                chatController.getNotificationService().connect(chatController.getAuthToken(), chatController.getCurrentUserId());
 
                 Thread.sleep(200);
 

@@ -1490,6 +1490,30 @@ public final class MessagesProto {
      */
     com.google.protobuf.ByteString
         getTokenBytes();
+
+    /**
+     * <code>string user_id = 2;</code>
+     * @return The userId.
+     */
+    java.lang.String getUserId();
+    /**
+     * <code>string user_id = 2;</code>
+     * @return The bytes for userId.
+     */
+    com.google.protobuf.ByteString
+        getUserIdBytes();
+
+    /**
+     * <code>string username = 3;</code>
+     * @return The username.
+     */
+    java.lang.String getUsername();
+    /**
+     * <code>string username = 3;</code>
+     * @return The bytes for username.
+     */
+    com.google.protobuf.ByteString
+        getUsernameBytes();
   }
   /**
    * <pre>
@@ -1509,6 +1533,8 @@ public final class MessagesProto {
     }
     private AuthMessage() {
       token_ = "";
+      userId_ = "";
+      username_ = "";
     }
 
     @java.lang.Override
@@ -1570,6 +1596,84 @@ public final class MessagesProto {
       }
     }
 
+    public static final int USER_ID_FIELD_NUMBER = 2;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object userId_ = "";
+    /**
+     * <code>string user_id = 2;</code>
+     * @return The userId.
+     */
+    @java.lang.Override
+    public java.lang.String getUserId() {
+      java.lang.Object ref = userId_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        userId_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string user_id = 2;</code>
+     * @return The bytes for userId.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getUserIdBytes() {
+      java.lang.Object ref = userId_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        userId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int USERNAME_FIELD_NUMBER = 3;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object username_ = "";
+    /**
+     * <code>string username = 3;</code>
+     * @return The username.
+     */
+    @java.lang.Override
+    public java.lang.String getUsername() {
+      java.lang.Object ref = username_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        username_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string username = 3;</code>
+     * @return The bytes for username.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getUsernameBytes() {
+      java.lang.Object ref = username_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        username_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -1587,6 +1691,12 @@ public final class MessagesProto {
       if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(token_)) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 1, token_);
       }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(userId_)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, userId_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(username_)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, username_);
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -1598,6 +1708,12 @@ public final class MessagesProto {
       size = 0;
       if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(token_)) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, token_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(userId_)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, userId_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(username_)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, username_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -1616,6 +1732,10 @@ public final class MessagesProto {
 
       if (!getToken()
           .equals(other.getToken())) return false;
+      if (!getUserId()
+          .equals(other.getUserId())) return false;
+      if (!getUsername()
+          .equals(other.getUsername())) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -1629,6 +1749,10 @@ public final class MessagesProto {
       hash = (19 * hash) + getDescriptor().hashCode();
       hash = (37 * hash) + TOKEN_FIELD_NUMBER;
       hash = (53 * hash) + getToken().hashCode();
+      hash = (37 * hash) + USER_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getUserId().hashCode();
+      hash = (37 * hash) + USERNAME_FIELD_NUMBER;
+      hash = (53 * hash) + getUsername().hashCode();
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -1765,6 +1889,8 @@ public final class MessagesProto {
         super.clear();
         bitField0_ = 0;
         token_ = "";
+        userId_ = "";
+        username_ = "";
         return this;
       }
 
@@ -1800,6 +1926,12 @@ public final class MessagesProto {
         int from_bitField0_ = bitField0_;
         if (((from_bitField0_ & 0x00000001) != 0)) {
           result.token_ = token_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.userId_ = userId_;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.username_ = username_;
         }
       }
 
@@ -1852,6 +1984,16 @@ public final class MessagesProto {
           bitField0_ |= 0x00000001;
           onChanged();
         }
+        if (!other.getUserId().isEmpty()) {
+          userId_ = other.userId_;
+          bitField0_ |= 0x00000002;
+          onChanged();
+        }
+        if (!other.getUsername().isEmpty()) {
+          username_ = other.username_;
+          bitField0_ |= 0x00000004;
+          onChanged();
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -1883,6 +2025,16 @@ public final class MessagesProto {
                 bitField0_ |= 0x00000001;
                 break;
               } // case 10
+              case 18: {
+                userId_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 18
+              case 26: {
+                username_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 26
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -1968,6 +2120,150 @@ public final class MessagesProto {
         checkByteStringIsUtf8(value);
         token_ = value;
         bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object userId_ = "";
+      /**
+       * <code>string user_id = 2;</code>
+       * @return The userId.
+       */
+      public java.lang.String getUserId() {
+        java.lang.Object ref = userId_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          userId_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string user_id = 2;</code>
+       * @return The bytes for userId.
+       */
+      public com.google.protobuf.ByteString
+          getUserIdBytes() {
+        java.lang.Object ref = userId_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          userId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string user_id = 2;</code>
+       * @param value The userId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setUserId(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        userId_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string user_id = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearUserId() {
+        userId_ = getDefaultInstance().getUserId();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string user_id = 2;</code>
+       * @param value The bytes for userId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setUserIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        userId_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object username_ = "";
+      /**
+       * <code>string username = 3;</code>
+       * @return The username.
+       */
+      public java.lang.String getUsername() {
+        java.lang.Object ref = username_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          username_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string username = 3;</code>
+       * @return The bytes for username.
+       */
+      public com.google.protobuf.ByteString
+          getUsernameBytes() {
+        java.lang.Object ref = username_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          username_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string username = 3;</code>
+       * @param value The username to set.
+       * @return This builder for chaining.
+       */
+      public Builder setUsername(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        username_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string username = 3;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearUsername() {
+        username_ = getDefaultInstance().getUsername();
+        bitField0_ = (bitField0_ & ~0x00000004);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string username = 3;</code>
+       * @param value The bytes for username to set.
+       * @return This builder for chaining.
+       */
+      public Builder setUsernameBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        username_ = value;
+        bitField0_ |= 0x00000004;
         onChanged();
         return this;
       }
@@ -5334,19 +5630,11 @@ public final class MessagesProto {
         getMessageIdBytes();
 
     /**
-     * <pre>
-     * Para verificar permisos
-     * </pre>
-     *
      * <code>string sender_username = 2;</code>
      * @return The senderUsername.
      */
     java.lang.String getSenderUsername();
     /**
-     * <pre>
-     * Para verificar permisos
-     * </pre>
-     *
      * <code>string sender_username = 2;</code>
      * @return The bytes for senderUsername.
      */
@@ -5437,10 +5725,6 @@ public final class MessagesProto {
     @SuppressWarnings("serial")
     private volatile java.lang.Object senderUsername_ = "";
     /**
-     * <pre>
-     * Para verificar permisos
-     * </pre>
-     *
      * <code>string sender_username = 2;</code>
      * @return The senderUsername.
      */
@@ -5458,10 +5742,6 @@ public final class MessagesProto {
       }
     }
     /**
-     * <pre>
-     * Para verificar permisos
-     * </pre>
-     *
      * <code>string sender_username = 2;</code>
      * @return The bytes for senderUsername.
      */
@@ -5908,10 +6188,6 @@ public final class MessagesProto {
 
       private java.lang.Object senderUsername_ = "";
       /**
-       * <pre>
-       * Para verificar permisos
-       * </pre>
-       *
        * <code>string sender_username = 2;</code>
        * @return The senderUsername.
        */
@@ -5928,10 +6204,6 @@ public final class MessagesProto {
         }
       }
       /**
-       * <pre>
-       * Para verificar permisos
-       * </pre>
-       *
        * <code>string sender_username = 2;</code>
        * @return The bytes for senderUsername.
        */
@@ -5949,10 +6221,6 @@ public final class MessagesProto {
         }
       }
       /**
-       * <pre>
-       * Para verificar permisos
-       * </pre>
-       *
        * <code>string sender_username = 2;</code>
        * @param value The senderUsername to set.
        * @return This builder for chaining.
@@ -5966,10 +6234,6 @@ public final class MessagesProto {
         return this;
       }
       /**
-       * <pre>
-       * Para verificar permisos
-       * </pre>
-       *
        * <code>string sender_username = 2;</code>
        * @return This builder for chaining.
        */
@@ -5980,10 +6244,6 @@ public final class MessagesProto {
         return this;
       }
       /**
-       * <pre>
-       * Para verificar permisos
-       * </pre>
-       *
        * <code>string sender_username = 2;</code>
        * @param value The bytes for senderUsername to set.
        * @return This builder for chaining.
@@ -7550,6 +7810,639 @@ public final class MessagesProto {
 
   }
 
+  public interface ClearHistoryResponseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:com.pola.ClearHistoryResponse)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>bool success = 1;</code>
+     * @return The success.
+     */
+    boolean getSuccess();
+
+    /**
+     * <code>string message = 2;</code>
+     * @return The message.
+     */
+    java.lang.String getMessage();
+    /**
+     * <code>string message = 2;</code>
+     * @return The bytes for message.
+     */
+    com.google.protobuf.ByteString
+        getMessageBytes();
+  }
+  /**
+   * <pre>
+   * Respuesta a peticion de eliminacion de historial
+   * </pre>
+   *
+   * Protobuf type {@code com.pola.ClearHistoryResponse}
+   */
+  public static final class ClearHistoryResponse extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:com.pola.ClearHistoryResponse)
+      ClearHistoryResponseOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use ClearHistoryResponse.newBuilder() to construct.
+    private ClearHistoryResponse(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private ClearHistoryResponse() {
+      message_ = "";
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new ClearHistoryResponse();
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.pola.proto.MessagesProto.internal_static_com_pola_ClearHistoryResponse_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.pola.proto.MessagesProto.internal_static_com_pola_ClearHistoryResponse_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.pola.proto.MessagesProto.ClearHistoryResponse.class, com.pola.proto.MessagesProto.ClearHistoryResponse.Builder.class);
+    }
+
+    public static final int SUCCESS_FIELD_NUMBER = 1;
+    private boolean success_ = false;
+    /**
+     * <code>bool success = 1;</code>
+     * @return The success.
+     */
+    @java.lang.Override
+    public boolean getSuccess() {
+      return success_;
+    }
+
+    public static final int MESSAGE_FIELD_NUMBER = 2;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object message_ = "";
+    /**
+     * <code>string message = 2;</code>
+     * @return The message.
+     */
+    @java.lang.Override
+    public java.lang.String getMessage() {
+      java.lang.Object ref = message_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        message_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string message = 2;</code>
+     * @return The bytes for message.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getMessageBytes() {
+      java.lang.Object ref = message_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        message_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (success_ != false) {
+        output.writeBool(1, success_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(message_)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, message_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (success_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(1, success_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(message_)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, message_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.pola.proto.MessagesProto.ClearHistoryResponse)) {
+        return super.equals(obj);
+      }
+      com.pola.proto.MessagesProto.ClearHistoryResponse other = (com.pola.proto.MessagesProto.ClearHistoryResponse) obj;
+
+      if (getSuccess()
+          != other.getSuccess()) return false;
+      if (!getMessage()
+          .equals(other.getMessage())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + SUCCESS_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getSuccess());
+      hash = (37 * hash) + MESSAGE_FIELD_NUMBER;
+      hash = (53 * hash) + getMessage().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.pola.proto.MessagesProto.ClearHistoryResponse parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.pola.proto.MessagesProto.ClearHistoryResponse parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.pola.proto.MessagesProto.ClearHistoryResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.pola.proto.MessagesProto.ClearHistoryResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.pola.proto.MessagesProto.ClearHistoryResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.pola.proto.MessagesProto.ClearHistoryResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.pola.proto.MessagesProto.ClearHistoryResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.pola.proto.MessagesProto.ClearHistoryResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static com.pola.proto.MessagesProto.ClearHistoryResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static com.pola.proto.MessagesProto.ClearHistoryResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.pola.proto.MessagesProto.ClearHistoryResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.pola.proto.MessagesProto.ClearHistoryResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.pola.proto.MessagesProto.ClearHistoryResponse prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * Respuesta a peticion de eliminacion de historial
+     * </pre>
+     *
+     * Protobuf type {@code com.pola.ClearHistoryResponse}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:com.pola.ClearHistoryResponse)
+        com.pola.proto.MessagesProto.ClearHistoryResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.pola.proto.MessagesProto.internal_static_com_pola_ClearHistoryResponse_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.pola.proto.MessagesProto.internal_static_com_pola_ClearHistoryResponse_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.pola.proto.MessagesProto.ClearHistoryResponse.class, com.pola.proto.MessagesProto.ClearHistoryResponse.Builder.class);
+      }
+
+      // Construct using com.pola.proto.MessagesProto.ClearHistoryResponse.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        success_ = false;
+        message_ = "";
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.pola.proto.MessagesProto.internal_static_com_pola_ClearHistoryResponse_descriptor;
+      }
+
+      @java.lang.Override
+      public com.pola.proto.MessagesProto.ClearHistoryResponse getDefaultInstanceForType() {
+        return com.pola.proto.MessagesProto.ClearHistoryResponse.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public com.pola.proto.MessagesProto.ClearHistoryResponse build() {
+        com.pola.proto.MessagesProto.ClearHistoryResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public com.pola.proto.MessagesProto.ClearHistoryResponse buildPartial() {
+        com.pola.proto.MessagesProto.ClearHistoryResponse result = new com.pola.proto.MessagesProto.ClearHistoryResponse(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(com.pola.proto.MessagesProto.ClearHistoryResponse result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.success_ = success_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.message_ = message_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.pola.proto.MessagesProto.ClearHistoryResponse) {
+          return mergeFrom((com.pola.proto.MessagesProto.ClearHistoryResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.pola.proto.MessagesProto.ClearHistoryResponse other) {
+        if (other == com.pola.proto.MessagesProto.ClearHistoryResponse.getDefaultInstance()) return this;
+        if (other.getSuccess() != false) {
+          setSuccess(other.getSuccess());
+        }
+        if (!other.getMessage().isEmpty()) {
+          message_ = other.message_;
+          bitField0_ |= 0x00000002;
+          onChanged();
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 8: {
+                success_ = input.readBool();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 8
+              case 18: {
+                message_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 18
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private boolean success_ ;
+      /**
+       * <code>bool success = 1;</code>
+       * @return The success.
+       */
+      @java.lang.Override
+      public boolean getSuccess() {
+        return success_;
+      }
+      /**
+       * <code>bool success = 1;</code>
+       * @param value The success to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSuccess(boolean value) {
+
+        success_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bool success = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearSuccess() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        success_ = false;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object message_ = "";
+      /**
+       * <code>string message = 2;</code>
+       * @return The message.
+       */
+      public java.lang.String getMessage() {
+        java.lang.Object ref = message_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          message_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string message = 2;</code>
+       * @return The bytes for message.
+       */
+      public com.google.protobuf.ByteString
+          getMessageBytes() {
+        java.lang.Object ref = message_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          message_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string message = 2;</code>
+       * @param value The message to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMessage(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        message_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string message = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMessage() {
+        message_ = getDefaultInstance().getMessage();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string message = 2;</code>
+       * @param value The bytes for message to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMessageBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        message_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:com.pola.ClearHistoryResponse)
+    }
+
+    // @@protoc_insertion_point(class_scope:com.pola.ClearHistoryResponse)
+    private static final com.pola.proto.MessagesProto.ClearHistoryResponse DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.pola.proto.MessagesProto.ClearHistoryResponse();
+    }
+
+    public static com.pola.proto.MessagesProto.ClearHistoryResponse getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<ClearHistoryResponse>
+        PARSER = new com.google.protobuf.AbstractParser<ClearHistoryResponse>() {
+      @java.lang.Override
+      public ClearHistoryResponse parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<ClearHistoryResponse> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<ClearHistoryResponse> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.pola.proto.MessagesProto.ClearHistoryResponse getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   public interface MessageDeletedNotificationOrBuilder extends
       // @@protoc_insertion_point(interface_extends:com.pola.MessageDeletedNotification)
       com.google.protobuf.MessageOrBuilder {
@@ -8263,19 +9156,11 @@ public final class MessagesProto {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <pre>
-     * El usuario a bloquear
-     * </pre>
-     *
      * <code>string recipient = 1;</code>
      * @return The recipient.
      */
     java.lang.String getRecipient();
     /**
-     * <pre>
-     * El usuario a bloquear
-     * </pre>
-     *
      * <code>string recipient = 1;</code>
      * @return The bytes for recipient.
      */
@@ -8326,10 +9211,6 @@ public final class MessagesProto {
     @SuppressWarnings("serial")
     private volatile java.lang.Object recipient_ = "";
     /**
-     * <pre>
-     * El usuario a bloquear
-     * </pre>
-     *
      * <code>string recipient = 1;</code>
      * @return The recipient.
      */
@@ -8347,10 +9228,6 @@ public final class MessagesProto {
       }
     }
     /**
-     * <pre>
-     * El usuario a bloquear
-     * </pre>
-     *
      * <code>string recipient = 1;</code>
      * @return The bytes for recipient.
      */
@@ -8701,10 +9578,6 @@ public final class MessagesProto {
 
       private java.lang.Object recipient_ = "";
       /**
-       * <pre>
-       * El usuario a bloquear
-       * </pre>
-       *
        * <code>string recipient = 1;</code>
        * @return The recipient.
        */
@@ -8721,10 +9594,6 @@ public final class MessagesProto {
         }
       }
       /**
-       * <pre>
-       * El usuario a bloquear
-       * </pre>
-       *
        * <code>string recipient = 1;</code>
        * @return The bytes for recipient.
        */
@@ -8742,10 +9611,6 @@ public final class MessagesProto {
         }
       }
       /**
-       * <pre>
-       * El usuario a bloquear
-       * </pre>
-       *
        * <code>string recipient = 1;</code>
        * @param value The recipient to set.
        * @return This builder for chaining.
@@ -8759,10 +9624,6 @@ public final class MessagesProto {
         return this;
       }
       /**
-       * <pre>
-       * El usuario a bloquear
-       * </pre>
-       *
        * <code>string recipient = 1;</code>
        * @return This builder for chaining.
        */
@@ -8773,10 +9634,6 @@ public final class MessagesProto {
         return this;
       }
       /**
-       * <pre>
-       * El usuario a bloquear
-       * </pre>
-       *
        * <code>string recipient = 1;</code>
        * @param value The bytes for recipient to set.
        * @return This builder for chaining.
@@ -10677,19 +11534,11 @@ public final class MessagesProto {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <pre>
-     * ID del mensaje que falló (si existe)
-     * </pre>
-     *
      * <code>string message_id = 1;</code>
      * @return The messageId.
      */
     java.lang.String getMessageId();
     /**
-     * <pre>
-     * ID del mensaje que falló (si existe)
-     * </pre>
-     *
      * <code>string message_id = 1;</code>
      * @return The bytes for messageId.
      */
@@ -10697,19 +11546,11 @@ public final class MessagesProto {
         getMessageIdBytes();
 
     /**
-     * <pre>
-     * &lt;--- Nombre sugerido para el campo de error
-     * </pre>
-     *
      * <code>string error_message = 2;</code>
      * @return The errorMessage.
      */
     java.lang.String getErrorMessage();
     /**
-     * <pre>
-     * &lt;--- Nombre sugerido para el campo de error
-     * </pre>
-     *
      * <code>string error_message = 2;</code>
      * @return The bytes for errorMessage.
      */
@@ -10717,19 +11558,11 @@ public final class MessagesProto {
         getErrorMessageBytes();
 
     /**
-     * <pre>
-     * Destinatario original
-     * </pre>
-     *
      * <code>string recipient = 3;</code>
      * @return The recipient.
      */
     java.lang.String getRecipient();
     /**
-     * <pre>
-     * Destinatario original
-     * </pre>
-     *
      * <code>string recipient = 3;</code>
      * @return The bytes for recipient.
      */
@@ -10738,7 +11571,7 @@ public final class MessagesProto {
   }
   /**
    * <pre>
-   * Error de envío (Para notificar al remitente que no pudo enviar el mensaje)
+   * Error de envío
    * </pre>
    *
    * Protobuf type {@code com.pola.MessageError}
@@ -10782,10 +11615,6 @@ public final class MessagesProto {
     @SuppressWarnings("serial")
     private volatile java.lang.Object messageId_ = "";
     /**
-     * <pre>
-     * ID del mensaje que falló (si existe)
-     * </pre>
-     *
      * <code>string message_id = 1;</code>
      * @return The messageId.
      */
@@ -10803,10 +11632,6 @@ public final class MessagesProto {
       }
     }
     /**
-     * <pre>
-     * ID del mensaje que falló (si existe)
-     * </pre>
-     *
      * <code>string message_id = 1;</code>
      * @return The bytes for messageId.
      */
@@ -10829,10 +11654,6 @@ public final class MessagesProto {
     @SuppressWarnings("serial")
     private volatile java.lang.Object errorMessage_ = "";
     /**
-     * <pre>
-     * &lt;--- Nombre sugerido para el campo de error
-     * </pre>
-     *
      * <code>string error_message = 2;</code>
      * @return The errorMessage.
      */
@@ -10850,10 +11671,6 @@ public final class MessagesProto {
       }
     }
     /**
-     * <pre>
-     * &lt;--- Nombre sugerido para el campo de error
-     * </pre>
-     *
      * <code>string error_message = 2;</code>
      * @return The bytes for errorMessage.
      */
@@ -10876,10 +11693,6 @@ public final class MessagesProto {
     @SuppressWarnings("serial")
     private volatile java.lang.Object recipient_ = "";
     /**
-     * <pre>
-     * Destinatario original
-     * </pre>
-     *
      * <code>string recipient = 3;</code>
      * @return The recipient.
      */
@@ -10897,10 +11710,6 @@ public final class MessagesProto {
       }
     }
     /**
-     * <pre>
-     * Destinatario original
-     * </pre>
-     *
      * <code>string recipient = 3;</code>
      * @return The bytes for recipient.
      */
@@ -11097,7 +11906,7 @@ public final class MessagesProto {
     }
     /**
      * <pre>
-     * Error de envío (Para notificar al remitente que no pudo enviar el mensaje)
+     * Error de envío
      * </pre>
      *
      * Protobuf type {@code com.pola.MessageError}
@@ -11299,10 +12108,6 @@ public final class MessagesProto {
 
       private java.lang.Object messageId_ = "";
       /**
-       * <pre>
-       * ID del mensaje que falló (si existe)
-       * </pre>
-       *
        * <code>string message_id = 1;</code>
        * @return The messageId.
        */
@@ -11319,10 +12124,6 @@ public final class MessagesProto {
         }
       }
       /**
-       * <pre>
-       * ID del mensaje que falló (si existe)
-       * </pre>
-       *
        * <code>string message_id = 1;</code>
        * @return The bytes for messageId.
        */
@@ -11340,10 +12141,6 @@ public final class MessagesProto {
         }
       }
       /**
-       * <pre>
-       * ID del mensaje que falló (si existe)
-       * </pre>
-       *
        * <code>string message_id = 1;</code>
        * @param value The messageId to set.
        * @return This builder for chaining.
@@ -11357,10 +12154,6 @@ public final class MessagesProto {
         return this;
       }
       /**
-       * <pre>
-       * ID del mensaje que falló (si existe)
-       * </pre>
-       *
        * <code>string message_id = 1;</code>
        * @return This builder for chaining.
        */
@@ -11371,10 +12164,6 @@ public final class MessagesProto {
         return this;
       }
       /**
-       * <pre>
-       * ID del mensaje que falló (si existe)
-       * </pre>
-       *
        * <code>string message_id = 1;</code>
        * @param value The bytes for messageId to set.
        * @return This builder for chaining.
@@ -11391,10 +12180,6 @@ public final class MessagesProto {
 
       private java.lang.Object errorMessage_ = "";
       /**
-       * <pre>
-       * &lt;--- Nombre sugerido para el campo de error
-       * </pre>
-       *
        * <code>string error_message = 2;</code>
        * @return The errorMessage.
        */
@@ -11411,10 +12196,6 @@ public final class MessagesProto {
         }
       }
       /**
-       * <pre>
-       * &lt;--- Nombre sugerido para el campo de error
-       * </pre>
-       *
        * <code>string error_message = 2;</code>
        * @return The bytes for errorMessage.
        */
@@ -11432,10 +12213,6 @@ public final class MessagesProto {
         }
       }
       /**
-       * <pre>
-       * &lt;--- Nombre sugerido para el campo de error
-       * </pre>
-       *
        * <code>string error_message = 2;</code>
        * @param value The errorMessage to set.
        * @return This builder for chaining.
@@ -11449,10 +12226,6 @@ public final class MessagesProto {
         return this;
       }
       /**
-       * <pre>
-       * &lt;--- Nombre sugerido para el campo de error
-       * </pre>
-       *
        * <code>string error_message = 2;</code>
        * @return This builder for chaining.
        */
@@ -11463,10 +12236,6 @@ public final class MessagesProto {
         return this;
       }
       /**
-       * <pre>
-       * &lt;--- Nombre sugerido para el campo de error
-       * </pre>
-       *
        * <code>string error_message = 2;</code>
        * @param value The bytes for errorMessage to set.
        * @return This builder for chaining.
@@ -11483,10 +12252,6 @@ public final class MessagesProto {
 
       private java.lang.Object recipient_ = "";
       /**
-       * <pre>
-       * Destinatario original
-       * </pre>
-       *
        * <code>string recipient = 3;</code>
        * @return The recipient.
        */
@@ -11503,10 +12268,6 @@ public final class MessagesProto {
         }
       }
       /**
-       * <pre>
-       * Destinatario original
-       * </pre>
-       *
        * <code>string recipient = 3;</code>
        * @return The bytes for recipient.
        */
@@ -11524,10 +12285,6 @@ public final class MessagesProto {
         }
       }
       /**
-       * <pre>
-       * Destinatario original
-       * </pre>
-       *
        * <code>string recipient = 3;</code>
        * @param value The recipient to set.
        * @return This builder for chaining.
@@ -11541,10 +12298,6 @@ public final class MessagesProto {
         return this;
       }
       /**
-       * <pre>
-       * Destinatario original
-       * </pre>
-       *
        * <code>string recipient = 3;</code>
        * @return This builder for chaining.
        */
@@ -11555,10 +12308,6 @@ public final class MessagesProto {
         return this;
       }
       /**
-       * <pre>
-       * Destinatario original
-       * </pre>
-       *
        * <code>string recipient = 3;</code>
        * @param value The bytes for recipient to set.
        * @return This builder for chaining.
@@ -13911,19 +14660,11 @@ public final class MessagesProto {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <pre>
-     * Quien los leyo
-     * </pre>
-     *
      * <code>string sender = 1;</code>
      * @return The sender.
      */
     java.lang.String getSender();
     /**
-     * <pre>
-     * Quien los leyo
-     * </pre>
-     *
      * <code>string sender = 1;</code>
      * @return The bytes for sender.
      */
@@ -13931,19 +14672,11 @@ public final class MessagesProto {
         getSenderBytes();
 
     /**
-     * <pre>
-     * De quien son los mensajes
-     * </pre>
-     *
      * <code>string recipient = 2;</code>
      * @return The recipient.
      */
     java.lang.String getRecipient();
     /**
-     * <pre>
-     * De quien son los mensajes
-     * </pre>
-     *
      * <code>string recipient = 2;</code>
      * @return The bytes for recipient.
      */
@@ -13951,39 +14684,23 @@ public final class MessagesProto {
         getRecipientBytes();
 
     /**
-     * <pre>
-     * Lista de IDs leidos
-     * </pre>
-     *
      * <code>repeated string message_ids = 3;</code>
      * @return A list containing the messageIds.
      */
     java.util.List<java.lang.String>
         getMessageIdsList();
     /**
-     * <pre>
-     * Lista de IDs leidos
-     * </pre>
-     *
      * <code>repeated string message_ids = 3;</code>
      * @return The count of messageIds.
      */
     int getMessageIdsCount();
     /**
-     * <pre>
-     * Lista de IDs leidos
-     * </pre>
-     *
      * <code>repeated string message_ids = 3;</code>
      * @param index The index of the element to return.
      * @return The messageIds at the given index.
      */
     java.lang.String getMessageIds(int index);
     /**
-     * <pre>
-     * Lista de IDs leidos
-     * </pre>
-     *
      * <code>repeated string message_ids = 3;</code>
      * @param index The index of the value to return.
      * @return The bytes of the messageIds at the given index.
@@ -13993,7 +14710,7 @@ public final class MessagesProto {
   }
   /**
    * <pre>
-   * Solicitud para mercar mensajes como leidos
+   * Solicitud para marcar mensajes como leidos
    * </pre>
    *
    * Protobuf type {@code com.pola.MarkMessagesAsReadRequest}
@@ -14038,10 +14755,6 @@ public final class MessagesProto {
     @SuppressWarnings("serial")
     private volatile java.lang.Object sender_ = "";
     /**
-     * <pre>
-     * Quien los leyo
-     * </pre>
-     *
      * <code>string sender = 1;</code>
      * @return The sender.
      */
@@ -14059,10 +14772,6 @@ public final class MessagesProto {
       }
     }
     /**
-     * <pre>
-     * Quien los leyo
-     * </pre>
-     *
      * <code>string sender = 1;</code>
      * @return The bytes for sender.
      */
@@ -14085,10 +14794,6 @@ public final class MessagesProto {
     @SuppressWarnings("serial")
     private volatile java.lang.Object recipient_ = "";
     /**
-     * <pre>
-     * De quien son los mensajes
-     * </pre>
-     *
      * <code>string recipient = 2;</code>
      * @return The recipient.
      */
@@ -14106,10 +14811,6 @@ public final class MessagesProto {
       }
     }
     /**
-     * <pre>
-     * De quien son los mensajes
-     * </pre>
-     *
      * <code>string recipient = 2;</code>
      * @return The bytes for recipient.
      */
@@ -14133,10 +14834,6 @@ public final class MessagesProto {
     private com.google.protobuf.LazyStringArrayList messageIds_ =
         com.google.protobuf.LazyStringArrayList.emptyList();
     /**
-     * <pre>
-     * Lista de IDs leidos
-     * </pre>
-     *
      * <code>repeated string message_ids = 3;</code>
      * @return A list containing the messageIds.
      */
@@ -14145,10 +14842,6 @@ public final class MessagesProto {
       return messageIds_;
     }
     /**
-     * <pre>
-     * Lista de IDs leidos
-     * </pre>
-     *
      * <code>repeated string message_ids = 3;</code>
      * @return The count of messageIds.
      */
@@ -14156,10 +14849,6 @@ public final class MessagesProto {
       return messageIds_.size();
     }
     /**
-     * <pre>
-     * Lista de IDs leidos
-     * </pre>
-     *
      * <code>repeated string message_ids = 3;</code>
      * @param index The index of the element to return.
      * @return The messageIds at the given index.
@@ -14168,10 +14857,6 @@ public final class MessagesProto {
       return messageIds_.get(index);
     }
     /**
-     * <pre>
-     * Lista de IDs leidos
-     * </pre>
-     *
      * <code>repeated string message_ids = 3;</code>
      * @param index The index of the value to return.
      * @return The bytes of the messageIds at the given index.
@@ -14366,7 +15051,7 @@ public final class MessagesProto {
     }
     /**
      * <pre>
-     * Solicitud para mercar mensajes como leidos
+     * Solicitud para marcar mensajes como leidos
      * </pre>
      *
      * Protobuf type {@code com.pola.MarkMessagesAsReadRequest}
@@ -14576,10 +15261,6 @@ public final class MessagesProto {
 
       private java.lang.Object sender_ = "";
       /**
-       * <pre>
-       * Quien los leyo
-       * </pre>
-       *
        * <code>string sender = 1;</code>
        * @return The sender.
        */
@@ -14596,10 +15277,6 @@ public final class MessagesProto {
         }
       }
       /**
-       * <pre>
-       * Quien los leyo
-       * </pre>
-       *
        * <code>string sender = 1;</code>
        * @return The bytes for sender.
        */
@@ -14617,10 +15294,6 @@ public final class MessagesProto {
         }
       }
       /**
-       * <pre>
-       * Quien los leyo
-       * </pre>
-       *
        * <code>string sender = 1;</code>
        * @param value The sender to set.
        * @return This builder for chaining.
@@ -14634,10 +15307,6 @@ public final class MessagesProto {
         return this;
       }
       /**
-       * <pre>
-       * Quien los leyo
-       * </pre>
-       *
        * <code>string sender = 1;</code>
        * @return This builder for chaining.
        */
@@ -14648,10 +15317,6 @@ public final class MessagesProto {
         return this;
       }
       /**
-       * <pre>
-       * Quien los leyo
-       * </pre>
-       *
        * <code>string sender = 1;</code>
        * @param value The bytes for sender to set.
        * @return This builder for chaining.
@@ -14668,10 +15333,6 @@ public final class MessagesProto {
 
       private java.lang.Object recipient_ = "";
       /**
-       * <pre>
-       * De quien son los mensajes
-       * </pre>
-       *
        * <code>string recipient = 2;</code>
        * @return The recipient.
        */
@@ -14688,10 +15349,6 @@ public final class MessagesProto {
         }
       }
       /**
-       * <pre>
-       * De quien son los mensajes
-       * </pre>
-       *
        * <code>string recipient = 2;</code>
        * @return The bytes for recipient.
        */
@@ -14709,10 +15366,6 @@ public final class MessagesProto {
         }
       }
       /**
-       * <pre>
-       * De quien son los mensajes
-       * </pre>
-       *
        * <code>string recipient = 2;</code>
        * @param value The recipient to set.
        * @return This builder for chaining.
@@ -14726,10 +15379,6 @@ public final class MessagesProto {
         return this;
       }
       /**
-       * <pre>
-       * De quien son los mensajes
-       * </pre>
-       *
        * <code>string recipient = 2;</code>
        * @return This builder for chaining.
        */
@@ -14740,10 +15389,6 @@ public final class MessagesProto {
         return this;
       }
       /**
-       * <pre>
-       * De quien son los mensajes
-       * </pre>
-       *
        * <code>string recipient = 2;</code>
        * @param value The bytes for recipient to set.
        * @return This builder for chaining.
@@ -14767,10 +15412,6 @@ public final class MessagesProto {
         bitField0_ |= 0x00000004;
       }
       /**
-       * <pre>
-       * Lista de IDs leidos
-       * </pre>
-       *
        * <code>repeated string message_ids = 3;</code>
        * @return A list containing the messageIds.
        */
@@ -14780,10 +15421,6 @@ public final class MessagesProto {
         return messageIds_;
       }
       /**
-       * <pre>
-       * Lista de IDs leidos
-       * </pre>
-       *
        * <code>repeated string message_ids = 3;</code>
        * @return The count of messageIds.
        */
@@ -14791,10 +15428,6 @@ public final class MessagesProto {
         return messageIds_.size();
       }
       /**
-       * <pre>
-       * Lista de IDs leidos
-       * </pre>
-       *
        * <code>repeated string message_ids = 3;</code>
        * @param index The index of the element to return.
        * @return The messageIds at the given index.
@@ -14803,10 +15436,6 @@ public final class MessagesProto {
         return messageIds_.get(index);
       }
       /**
-       * <pre>
-       * Lista de IDs leidos
-       * </pre>
-       *
        * <code>repeated string message_ids = 3;</code>
        * @param index The index of the value to return.
        * @return The bytes of the messageIds at the given index.
@@ -14816,10 +15445,6 @@ public final class MessagesProto {
         return messageIds_.getByteString(index);
       }
       /**
-       * <pre>
-       * Lista de IDs leidos
-       * </pre>
-       *
        * <code>repeated string message_ids = 3;</code>
        * @param index The index to set the value at.
        * @param value The messageIds to set.
@@ -14835,10 +15460,6 @@ public final class MessagesProto {
         return this;
       }
       /**
-       * <pre>
-       * Lista de IDs leidos
-       * </pre>
-       *
        * <code>repeated string message_ids = 3;</code>
        * @param value The messageIds to add.
        * @return This builder for chaining.
@@ -14853,10 +15474,6 @@ public final class MessagesProto {
         return this;
       }
       /**
-       * <pre>
-       * Lista de IDs leidos
-       * </pre>
-       *
        * <code>repeated string message_ids = 3;</code>
        * @param values The messageIds to add.
        * @return This builder for chaining.
@@ -14871,10 +15488,6 @@ public final class MessagesProto {
         return this;
       }
       /**
-       * <pre>
-       * Lista de IDs leidos
-       * </pre>
-       *
        * <code>repeated string message_ids = 3;</code>
        * @return This builder for chaining.
        */
@@ -14886,10 +15499,6 @@ public final class MessagesProto {
         return this;
       }
       /**
-       * <pre>
-       * Lista de IDs leidos
-       * </pre>
-       *
        * <code>repeated string message_ids = 3;</code>
        * @param value The bytes of the messageIds to add.
        * @return This builder for chaining.
@@ -16698,6 +17307,1588 @@ public final class MessagesProto {
 
   }
 
+  public interface PendingClearHistoryOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:com.pola.PendingClearHistory)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * Username del usuario que solicitó la limpieza
+     * </pre>
+     *
+     * <code>string sender = 1;</code>
+     * @return The sender.
+     */
+    java.lang.String getSender();
+    /**
+     * <pre>
+     * Username del usuario que solicitó la limpieza
+     * </pre>
+     *
+     * <code>string sender = 1;</code>
+     * @return The bytes for sender.
+     */
+    com.google.protobuf.ByteString
+        getSenderBytes();
+
+    /**
+     * <pre>
+     * Username del usuario que debe aplicar la limpieza
+     * </pre>
+     *
+     * <code>string recipient = 2;</code>
+     * @return The recipient.
+     */
+    java.lang.String getRecipient();
+    /**
+     * <pre>
+     * Username del usuario que debe aplicar la limpieza
+     * </pre>
+     *
+     * <code>string recipient = 2;</code>
+     * @return The bytes for recipient.
+     */
+    com.google.protobuf.ByteString
+        getRecipientBytes();
+  }
+  /**
+   * <pre>
+   **
+   * Representa una solicitud pendiente de limpieza de historial entre dos usuarios.
+   * Contiene los usernames del remitente que solicitó la limpieza y del destinatario
+   * que debe aplicarla localmente cuando se conecte.
+   * </pre>
+   *
+   * Protobuf type {@code com.pola.PendingClearHistory}
+   */
+  public static final class PendingClearHistory extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:com.pola.PendingClearHistory)
+      PendingClearHistoryOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use PendingClearHistory.newBuilder() to construct.
+    private PendingClearHistory(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private PendingClearHistory() {
+      sender_ = "";
+      recipient_ = "";
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new PendingClearHistory();
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.pola.proto.MessagesProto.internal_static_com_pola_PendingClearHistory_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.pola.proto.MessagesProto.internal_static_com_pola_PendingClearHistory_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.pola.proto.MessagesProto.PendingClearHistory.class, com.pola.proto.MessagesProto.PendingClearHistory.Builder.class);
+    }
+
+    public static final int SENDER_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object sender_ = "";
+    /**
+     * <pre>
+     * Username del usuario que solicitó la limpieza
+     * </pre>
+     *
+     * <code>string sender = 1;</code>
+     * @return The sender.
+     */
+    @java.lang.Override
+    public java.lang.String getSender() {
+      java.lang.Object ref = sender_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        sender_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * Username del usuario que solicitó la limpieza
+     * </pre>
+     *
+     * <code>string sender = 1;</code>
+     * @return The bytes for sender.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getSenderBytes() {
+      java.lang.Object ref = sender_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        sender_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int RECIPIENT_FIELD_NUMBER = 2;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object recipient_ = "";
+    /**
+     * <pre>
+     * Username del usuario que debe aplicar la limpieza
+     * </pre>
+     *
+     * <code>string recipient = 2;</code>
+     * @return The recipient.
+     */
+    @java.lang.Override
+    public java.lang.String getRecipient() {
+      java.lang.Object ref = recipient_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        recipient_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * Username del usuario que debe aplicar la limpieza
+     * </pre>
+     *
+     * <code>string recipient = 2;</code>
+     * @return The bytes for recipient.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getRecipientBytes() {
+      java.lang.Object ref = recipient_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        recipient_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(sender_)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, sender_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(recipient_)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, recipient_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(sender_)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, sender_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(recipient_)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, recipient_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.pola.proto.MessagesProto.PendingClearHistory)) {
+        return super.equals(obj);
+      }
+      com.pola.proto.MessagesProto.PendingClearHistory other = (com.pola.proto.MessagesProto.PendingClearHistory) obj;
+
+      if (!getSender()
+          .equals(other.getSender())) return false;
+      if (!getRecipient()
+          .equals(other.getRecipient())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + SENDER_FIELD_NUMBER;
+      hash = (53 * hash) + getSender().hashCode();
+      hash = (37 * hash) + RECIPIENT_FIELD_NUMBER;
+      hash = (53 * hash) + getRecipient().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.pola.proto.MessagesProto.PendingClearHistory parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.pola.proto.MessagesProto.PendingClearHistory parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.pola.proto.MessagesProto.PendingClearHistory parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.pola.proto.MessagesProto.PendingClearHistory parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.pola.proto.MessagesProto.PendingClearHistory parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.pola.proto.MessagesProto.PendingClearHistory parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.pola.proto.MessagesProto.PendingClearHistory parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.pola.proto.MessagesProto.PendingClearHistory parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static com.pola.proto.MessagesProto.PendingClearHistory parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static com.pola.proto.MessagesProto.PendingClearHistory parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.pola.proto.MessagesProto.PendingClearHistory parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.pola.proto.MessagesProto.PendingClearHistory parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.pola.proto.MessagesProto.PendingClearHistory prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     **
+     * Representa una solicitud pendiente de limpieza de historial entre dos usuarios.
+     * Contiene los usernames del remitente que solicitó la limpieza y del destinatario
+     * que debe aplicarla localmente cuando se conecte.
+     * </pre>
+     *
+     * Protobuf type {@code com.pola.PendingClearHistory}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:com.pola.PendingClearHistory)
+        com.pola.proto.MessagesProto.PendingClearHistoryOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.pola.proto.MessagesProto.internal_static_com_pola_PendingClearHistory_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.pola.proto.MessagesProto.internal_static_com_pola_PendingClearHistory_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.pola.proto.MessagesProto.PendingClearHistory.class, com.pola.proto.MessagesProto.PendingClearHistory.Builder.class);
+      }
+
+      // Construct using com.pola.proto.MessagesProto.PendingClearHistory.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        sender_ = "";
+        recipient_ = "";
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.pola.proto.MessagesProto.internal_static_com_pola_PendingClearHistory_descriptor;
+      }
+
+      @java.lang.Override
+      public com.pola.proto.MessagesProto.PendingClearHistory getDefaultInstanceForType() {
+        return com.pola.proto.MessagesProto.PendingClearHistory.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public com.pola.proto.MessagesProto.PendingClearHistory build() {
+        com.pola.proto.MessagesProto.PendingClearHistory result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public com.pola.proto.MessagesProto.PendingClearHistory buildPartial() {
+        com.pola.proto.MessagesProto.PendingClearHistory result = new com.pola.proto.MessagesProto.PendingClearHistory(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(com.pola.proto.MessagesProto.PendingClearHistory result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.sender_ = sender_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.recipient_ = recipient_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.pola.proto.MessagesProto.PendingClearHistory) {
+          return mergeFrom((com.pola.proto.MessagesProto.PendingClearHistory)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.pola.proto.MessagesProto.PendingClearHistory other) {
+        if (other == com.pola.proto.MessagesProto.PendingClearHistory.getDefaultInstance()) return this;
+        if (!other.getSender().isEmpty()) {
+          sender_ = other.sender_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        if (!other.getRecipient().isEmpty()) {
+          recipient_ = other.recipient_;
+          bitField0_ |= 0x00000002;
+          onChanged();
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                sender_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 18: {
+                recipient_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 18
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object sender_ = "";
+      /**
+       * <pre>
+       * Username del usuario que solicitó la limpieza
+       * </pre>
+       *
+       * <code>string sender = 1;</code>
+       * @return The sender.
+       */
+      public java.lang.String getSender() {
+        java.lang.Object ref = sender_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          sender_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * Username del usuario que solicitó la limpieza
+       * </pre>
+       *
+       * <code>string sender = 1;</code>
+       * @return The bytes for sender.
+       */
+      public com.google.protobuf.ByteString
+          getSenderBytes() {
+        java.lang.Object ref = sender_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          sender_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * Username del usuario que solicitó la limpieza
+       * </pre>
+       *
+       * <code>string sender = 1;</code>
+       * @param value The sender to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSender(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        sender_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * Username del usuario que solicitó la limpieza
+       * </pre>
+       *
+       * <code>string sender = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearSender() {
+        sender_ = getDefaultInstance().getSender();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * Username del usuario que solicitó la limpieza
+       * </pre>
+       *
+       * <code>string sender = 1;</code>
+       * @param value The bytes for sender to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSenderBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        sender_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object recipient_ = "";
+      /**
+       * <pre>
+       * Username del usuario que debe aplicar la limpieza
+       * </pre>
+       *
+       * <code>string recipient = 2;</code>
+       * @return The recipient.
+       */
+      public java.lang.String getRecipient() {
+        java.lang.Object ref = recipient_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          recipient_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * Username del usuario que debe aplicar la limpieza
+       * </pre>
+       *
+       * <code>string recipient = 2;</code>
+       * @return The bytes for recipient.
+       */
+      public com.google.protobuf.ByteString
+          getRecipientBytes() {
+        java.lang.Object ref = recipient_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          recipient_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * Username del usuario que debe aplicar la limpieza
+       * </pre>
+       *
+       * <code>string recipient = 2;</code>
+       * @param value The recipient to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRecipient(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        recipient_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * Username del usuario que debe aplicar la limpieza
+       * </pre>
+       *
+       * <code>string recipient = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearRecipient() {
+        recipient_ = getDefaultInstance().getRecipient();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * Username del usuario que debe aplicar la limpieza
+       * </pre>
+       *
+       * <code>string recipient = 2;</code>
+       * @param value The bytes for recipient to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRecipientBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        recipient_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:com.pola.PendingClearHistory)
+    }
+
+    // @@protoc_insertion_point(class_scope:com.pola.PendingClearHistory)
+    private static final com.pola.proto.MessagesProto.PendingClearHistory DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.pola.proto.MessagesProto.PendingClearHistory();
+    }
+
+    public static com.pola.proto.MessagesProto.PendingClearHistory getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<PendingClearHistory>
+        PARSER = new com.google.protobuf.AbstractParser<PendingClearHistory>() {
+      @java.lang.Override
+      public PendingClearHistory parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<PendingClearHistory> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<PendingClearHistory> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.pola.proto.MessagesProto.PendingClearHistory getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface PendingClearHistoryListOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:com.pola.PendingClearHistoryList)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>repeated .com.pola.PendingClearHistory clear_histories = 1;</code>
+     */
+    java.util.List<com.pola.proto.MessagesProto.PendingClearHistory> 
+        getClearHistoriesList();
+    /**
+     * <code>repeated .com.pola.PendingClearHistory clear_histories = 1;</code>
+     */
+    com.pola.proto.MessagesProto.PendingClearHistory getClearHistories(int index);
+    /**
+     * <code>repeated .com.pola.PendingClearHistory clear_histories = 1;</code>
+     */
+    int getClearHistoriesCount();
+    /**
+     * <code>repeated .com.pola.PendingClearHistory clear_histories = 1;</code>
+     */
+    java.util.List<? extends com.pola.proto.MessagesProto.PendingClearHistoryOrBuilder> 
+        getClearHistoriesOrBuilderList();
+    /**
+     * <code>repeated .com.pola.PendingClearHistory clear_histories = 1;</code>
+     */
+    com.pola.proto.MessagesProto.PendingClearHistoryOrBuilder getClearHistoriesOrBuilder(
+        int index);
+  }
+  /**
+   * <pre>
+   **
+   * Lista de solicitudes pendientes de limpieza de historial.
+   * Se envía durante la conexión inicial para notificar al cliente que debe
+   * eliminar localmente el historial con los contactos especificados.
+   * </pre>
+   *
+   * Protobuf type {@code com.pola.PendingClearHistoryList}
+   */
+  public static final class PendingClearHistoryList extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:com.pola.PendingClearHistoryList)
+      PendingClearHistoryListOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use PendingClearHistoryList.newBuilder() to construct.
+    private PendingClearHistoryList(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private PendingClearHistoryList() {
+      clearHistories_ = java.util.Collections.emptyList();
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new PendingClearHistoryList();
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.pola.proto.MessagesProto.internal_static_com_pola_PendingClearHistoryList_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.pola.proto.MessagesProto.internal_static_com_pola_PendingClearHistoryList_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.pola.proto.MessagesProto.PendingClearHistoryList.class, com.pola.proto.MessagesProto.PendingClearHistoryList.Builder.class);
+    }
+
+    public static final int CLEAR_HISTORIES_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private java.util.List<com.pola.proto.MessagesProto.PendingClearHistory> clearHistories_;
+    /**
+     * <code>repeated .com.pola.PendingClearHistory clear_histories = 1;</code>
+     */
+    @java.lang.Override
+    public java.util.List<com.pola.proto.MessagesProto.PendingClearHistory> getClearHistoriesList() {
+      return clearHistories_;
+    }
+    /**
+     * <code>repeated .com.pola.PendingClearHistory clear_histories = 1;</code>
+     */
+    @java.lang.Override
+    public java.util.List<? extends com.pola.proto.MessagesProto.PendingClearHistoryOrBuilder> 
+        getClearHistoriesOrBuilderList() {
+      return clearHistories_;
+    }
+    /**
+     * <code>repeated .com.pola.PendingClearHistory clear_histories = 1;</code>
+     */
+    @java.lang.Override
+    public int getClearHistoriesCount() {
+      return clearHistories_.size();
+    }
+    /**
+     * <code>repeated .com.pola.PendingClearHistory clear_histories = 1;</code>
+     */
+    @java.lang.Override
+    public com.pola.proto.MessagesProto.PendingClearHistory getClearHistories(int index) {
+      return clearHistories_.get(index);
+    }
+    /**
+     * <code>repeated .com.pola.PendingClearHistory clear_histories = 1;</code>
+     */
+    @java.lang.Override
+    public com.pola.proto.MessagesProto.PendingClearHistoryOrBuilder getClearHistoriesOrBuilder(
+        int index) {
+      return clearHistories_.get(index);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      for (int i = 0; i < clearHistories_.size(); i++) {
+        output.writeMessage(1, clearHistories_.get(i));
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      for (int i = 0; i < clearHistories_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, clearHistories_.get(i));
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.pola.proto.MessagesProto.PendingClearHistoryList)) {
+        return super.equals(obj);
+      }
+      com.pola.proto.MessagesProto.PendingClearHistoryList other = (com.pola.proto.MessagesProto.PendingClearHistoryList) obj;
+
+      if (!getClearHistoriesList()
+          .equals(other.getClearHistoriesList())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (getClearHistoriesCount() > 0) {
+        hash = (37 * hash) + CLEAR_HISTORIES_FIELD_NUMBER;
+        hash = (53 * hash) + getClearHistoriesList().hashCode();
+      }
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.pola.proto.MessagesProto.PendingClearHistoryList parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.pola.proto.MessagesProto.PendingClearHistoryList parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.pola.proto.MessagesProto.PendingClearHistoryList parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.pola.proto.MessagesProto.PendingClearHistoryList parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.pola.proto.MessagesProto.PendingClearHistoryList parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.pola.proto.MessagesProto.PendingClearHistoryList parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.pola.proto.MessagesProto.PendingClearHistoryList parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.pola.proto.MessagesProto.PendingClearHistoryList parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static com.pola.proto.MessagesProto.PendingClearHistoryList parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static com.pola.proto.MessagesProto.PendingClearHistoryList parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.pola.proto.MessagesProto.PendingClearHistoryList parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.pola.proto.MessagesProto.PendingClearHistoryList parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.pola.proto.MessagesProto.PendingClearHistoryList prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     **
+     * Lista de solicitudes pendientes de limpieza de historial.
+     * Se envía durante la conexión inicial para notificar al cliente que debe
+     * eliminar localmente el historial con los contactos especificados.
+     * </pre>
+     *
+     * Protobuf type {@code com.pola.PendingClearHistoryList}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:com.pola.PendingClearHistoryList)
+        com.pola.proto.MessagesProto.PendingClearHistoryListOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.pola.proto.MessagesProto.internal_static_com_pola_PendingClearHistoryList_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.pola.proto.MessagesProto.internal_static_com_pola_PendingClearHistoryList_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.pola.proto.MessagesProto.PendingClearHistoryList.class, com.pola.proto.MessagesProto.PendingClearHistoryList.Builder.class);
+      }
+
+      // Construct using com.pola.proto.MessagesProto.PendingClearHistoryList.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        if (clearHistoriesBuilder_ == null) {
+          clearHistories_ = java.util.Collections.emptyList();
+        } else {
+          clearHistories_ = null;
+          clearHistoriesBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000001);
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.pola.proto.MessagesProto.internal_static_com_pola_PendingClearHistoryList_descriptor;
+      }
+
+      @java.lang.Override
+      public com.pola.proto.MessagesProto.PendingClearHistoryList getDefaultInstanceForType() {
+        return com.pola.proto.MessagesProto.PendingClearHistoryList.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public com.pola.proto.MessagesProto.PendingClearHistoryList build() {
+        com.pola.proto.MessagesProto.PendingClearHistoryList result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public com.pola.proto.MessagesProto.PendingClearHistoryList buildPartial() {
+        com.pola.proto.MessagesProto.PendingClearHistoryList result = new com.pola.proto.MessagesProto.PendingClearHistoryList(this);
+        buildPartialRepeatedFields(result);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartialRepeatedFields(com.pola.proto.MessagesProto.PendingClearHistoryList result) {
+        if (clearHistoriesBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) != 0)) {
+            clearHistories_ = java.util.Collections.unmodifiableList(clearHistories_);
+            bitField0_ = (bitField0_ & ~0x00000001);
+          }
+          result.clearHistories_ = clearHistories_;
+        } else {
+          result.clearHistories_ = clearHistoriesBuilder_.build();
+        }
+      }
+
+      private void buildPartial0(com.pola.proto.MessagesProto.PendingClearHistoryList result) {
+        int from_bitField0_ = bitField0_;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.pola.proto.MessagesProto.PendingClearHistoryList) {
+          return mergeFrom((com.pola.proto.MessagesProto.PendingClearHistoryList)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.pola.proto.MessagesProto.PendingClearHistoryList other) {
+        if (other == com.pola.proto.MessagesProto.PendingClearHistoryList.getDefaultInstance()) return this;
+        if (clearHistoriesBuilder_ == null) {
+          if (!other.clearHistories_.isEmpty()) {
+            if (clearHistories_.isEmpty()) {
+              clearHistories_ = other.clearHistories_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+            } else {
+              ensureClearHistoriesIsMutable();
+              clearHistories_.addAll(other.clearHistories_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.clearHistories_.isEmpty()) {
+            if (clearHistoriesBuilder_.isEmpty()) {
+              clearHistoriesBuilder_.dispose();
+              clearHistoriesBuilder_ = null;
+              clearHistories_ = other.clearHistories_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+              clearHistoriesBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getClearHistoriesFieldBuilder() : null;
+            } else {
+              clearHistoriesBuilder_.addAllMessages(other.clearHistories_);
+            }
+          }
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                com.pola.proto.MessagesProto.PendingClearHistory m =
+                    input.readMessage(
+                        com.pola.proto.MessagesProto.PendingClearHistory.parser(),
+                        extensionRegistry);
+                if (clearHistoriesBuilder_ == null) {
+                  ensureClearHistoriesIsMutable();
+                  clearHistories_.add(m);
+                } else {
+                  clearHistoriesBuilder_.addMessage(m);
+                }
+                break;
+              } // case 10
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.util.List<com.pola.proto.MessagesProto.PendingClearHistory> clearHistories_ =
+        java.util.Collections.emptyList();
+      private void ensureClearHistoriesIsMutable() {
+        if (!((bitField0_ & 0x00000001) != 0)) {
+          clearHistories_ = new java.util.ArrayList<com.pola.proto.MessagesProto.PendingClearHistory>(clearHistories_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          com.pola.proto.MessagesProto.PendingClearHistory, com.pola.proto.MessagesProto.PendingClearHistory.Builder, com.pola.proto.MessagesProto.PendingClearHistoryOrBuilder> clearHistoriesBuilder_;
+
+      /**
+       * <code>repeated .com.pola.PendingClearHistory clear_histories = 1;</code>
+       */
+      public java.util.List<com.pola.proto.MessagesProto.PendingClearHistory> getClearHistoriesList() {
+        if (clearHistoriesBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(clearHistories_);
+        } else {
+          return clearHistoriesBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <code>repeated .com.pola.PendingClearHistory clear_histories = 1;</code>
+       */
+      public int getClearHistoriesCount() {
+        if (clearHistoriesBuilder_ == null) {
+          return clearHistories_.size();
+        } else {
+          return clearHistoriesBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .com.pola.PendingClearHistory clear_histories = 1;</code>
+       */
+      public com.pola.proto.MessagesProto.PendingClearHistory getClearHistories(int index) {
+        if (clearHistoriesBuilder_ == null) {
+          return clearHistories_.get(index);
+        } else {
+          return clearHistoriesBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .com.pola.PendingClearHistory clear_histories = 1;</code>
+       */
+      public Builder setClearHistories(
+          int index, com.pola.proto.MessagesProto.PendingClearHistory value) {
+        if (clearHistoriesBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureClearHistoriesIsMutable();
+          clearHistories_.set(index, value);
+          onChanged();
+        } else {
+          clearHistoriesBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .com.pola.PendingClearHistory clear_histories = 1;</code>
+       */
+      public Builder setClearHistories(
+          int index, com.pola.proto.MessagesProto.PendingClearHistory.Builder builderForValue) {
+        if (clearHistoriesBuilder_ == null) {
+          ensureClearHistoriesIsMutable();
+          clearHistories_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          clearHistoriesBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .com.pola.PendingClearHistory clear_histories = 1;</code>
+       */
+      public Builder addClearHistories(com.pola.proto.MessagesProto.PendingClearHistory value) {
+        if (clearHistoriesBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureClearHistoriesIsMutable();
+          clearHistories_.add(value);
+          onChanged();
+        } else {
+          clearHistoriesBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .com.pola.PendingClearHistory clear_histories = 1;</code>
+       */
+      public Builder addClearHistories(
+          int index, com.pola.proto.MessagesProto.PendingClearHistory value) {
+        if (clearHistoriesBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureClearHistoriesIsMutable();
+          clearHistories_.add(index, value);
+          onChanged();
+        } else {
+          clearHistoriesBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .com.pola.PendingClearHistory clear_histories = 1;</code>
+       */
+      public Builder addClearHistories(
+          com.pola.proto.MessagesProto.PendingClearHistory.Builder builderForValue) {
+        if (clearHistoriesBuilder_ == null) {
+          ensureClearHistoriesIsMutable();
+          clearHistories_.add(builderForValue.build());
+          onChanged();
+        } else {
+          clearHistoriesBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .com.pola.PendingClearHistory clear_histories = 1;</code>
+       */
+      public Builder addClearHistories(
+          int index, com.pola.proto.MessagesProto.PendingClearHistory.Builder builderForValue) {
+        if (clearHistoriesBuilder_ == null) {
+          ensureClearHistoriesIsMutable();
+          clearHistories_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          clearHistoriesBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .com.pola.PendingClearHistory clear_histories = 1;</code>
+       */
+      public Builder addAllClearHistories(
+          java.lang.Iterable<? extends com.pola.proto.MessagesProto.PendingClearHistory> values) {
+        if (clearHistoriesBuilder_ == null) {
+          ensureClearHistoriesIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, clearHistories_);
+          onChanged();
+        } else {
+          clearHistoriesBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .com.pola.PendingClearHistory clear_histories = 1;</code>
+       */
+      public Builder clearClearHistories() {
+        if (clearHistoriesBuilder_ == null) {
+          clearHistories_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+          onChanged();
+        } else {
+          clearHistoriesBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .com.pola.PendingClearHistory clear_histories = 1;</code>
+       */
+      public Builder removeClearHistories(int index) {
+        if (clearHistoriesBuilder_ == null) {
+          ensureClearHistoriesIsMutable();
+          clearHistories_.remove(index);
+          onChanged();
+        } else {
+          clearHistoriesBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .com.pola.PendingClearHistory clear_histories = 1;</code>
+       */
+      public com.pola.proto.MessagesProto.PendingClearHistory.Builder getClearHistoriesBuilder(
+          int index) {
+        return getClearHistoriesFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .com.pola.PendingClearHistory clear_histories = 1;</code>
+       */
+      public com.pola.proto.MessagesProto.PendingClearHistoryOrBuilder getClearHistoriesOrBuilder(
+          int index) {
+        if (clearHistoriesBuilder_ == null) {
+          return clearHistories_.get(index);  } else {
+          return clearHistoriesBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <code>repeated .com.pola.PendingClearHistory clear_histories = 1;</code>
+       */
+      public java.util.List<? extends com.pola.proto.MessagesProto.PendingClearHistoryOrBuilder> 
+           getClearHistoriesOrBuilderList() {
+        if (clearHistoriesBuilder_ != null) {
+          return clearHistoriesBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(clearHistories_);
+        }
+      }
+      /**
+       * <code>repeated .com.pola.PendingClearHistory clear_histories = 1;</code>
+       */
+      public com.pola.proto.MessagesProto.PendingClearHistory.Builder addClearHistoriesBuilder() {
+        return getClearHistoriesFieldBuilder().addBuilder(
+            com.pola.proto.MessagesProto.PendingClearHistory.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .com.pola.PendingClearHistory clear_histories = 1;</code>
+       */
+      public com.pola.proto.MessagesProto.PendingClearHistory.Builder addClearHistoriesBuilder(
+          int index) {
+        return getClearHistoriesFieldBuilder().addBuilder(
+            index, com.pola.proto.MessagesProto.PendingClearHistory.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .com.pola.PendingClearHistory clear_histories = 1;</code>
+       */
+      public java.util.List<com.pola.proto.MessagesProto.PendingClearHistory.Builder> 
+           getClearHistoriesBuilderList() {
+        return getClearHistoriesFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          com.pola.proto.MessagesProto.PendingClearHistory, com.pola.proto.MessagesProto.PendingClearHistory.Builder, com.pola.proto.MessagesProto.PendingClearHistoryOrBuilder> 
+          getClearHistoriesFieldBuilder() {
+        if (clearHistoriesBuilder_ == null) {
+          clearHistoriesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              com.pola.proto.MessagesProto.PendingClearHistory, com.pola.proto.MessagesProto.PendingClearHistory.Builder, com.pola.proto.MessagesProto.PendingClearHistoryOrBuilder>(
+                  clearHistories_,
+                  ((bitField0_ & 0x00000001) != 0),
+                  getParentForChildren(),
+                  isClean());
+          clearHistories_ = null;
+        }
+        return clearHistoriesBuilder_;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:com.pola.PendingClearHistoryList)
+    }
+
+    // @@protoc_insertion_point(class_scope:com.pola.PendingClearHistoryList)
+    private static final com.pola.proto.MessagesProto.PendingClearHistoryList DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.pola.proto.MessagesProto.PendingClearHistoryList();
+    }
+
+    public static com.pola.proto.MessagesProto.PendingClearHistoryList getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<PendingClearHistoryList>
+        PARSER = new com.google.protobuf.AbstractParser<PendingClearHistoryList>() {
+      @java.lang.Override
+      public PendingClearHistoryList parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<PendingClearHistoryList> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<PendingClearHistoryList> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.pola.proto.MessagesProto.PendingClearHistoryList getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   public interface WsMessageOrBuilder extends
       // @@protoc_insertion_point(interface_extends:com.pola.WsMessage)
       com.google.protobuf.MessageOrBuilder {
@@ -17002,6 +19193,36 @@ public final class MessagesProto {
      */
     com.pola.proto.MessagesProto.ContactIdentityOrBuilder getContactIdentityOrBuilder();
 
+    /**
+     * <code>.com.pola.ClearHistoryResponse clear_history_response = 21;</code>
+     * @return Whether the clearHistoryResponse field is set.
+     */
+    boolean hasClearHistoryResponse();
+    /**
+     * <code>.com.pola.ClearHistoryResponse clear_history_response = 21;</code>
+     * @return The clearHistoryResponse.
+     */
+    com.pola.proto.MessagesProto.ClearHistoryResponse getClearHistoryResponse();
+    /**
+     * <code>.com.pola.ClearHistoryResponse clear_history_response = 21;</code>
+     */
+    com.pola.proto.MessagesProto.ClearHistoryResponseOrBuilder getClearHistoryResponseOrBuilder();
+
+    /**
+     * <code>.com.pola.PendingClearHistoryList pending_clear_history_list = 22;</code>
+     * @return Whether the pendingClearHistoryList field is set.
+     */
+    boolean hasPendingClearHistoryList();
+    /**
+     * <code>.com.pola.PendingClearHistoryList pending_clear_history_list = 22;</code>
+     * @return The pendingClearHistoryList.
+     */
+    com.pola.proto.MessagesProto.PendingClearHistoryList getPendingClearHistoryList();
+    /**
+     * <code>.com.pola.PendingClearHistoryList pending_clear_history_list = 22;</code>
+     */
+    com.pola.proto.MessagesProto.PendingClearHistoryListOrBuilder getPendingClearHistoryListOrBuilder();
+
     com.pola.proto.MessagesProto.WsMessage.PayloadCase getPayloadCase();
   }
   /**
@@ -17069,6 +19290,8 @@ public final class MessagesProto {
       MARK_MESSAGES_AS_READ_REQUEST(18),
       MESSAGES_READ_UPDATE(19),
       CONTACT_IDENTITY(20),
+      CLEAR_HISTORY_RESPONSE(21),
+      PENDING_CLEAR_HISTORY_LIST(22),
       PAYLOAD_NOT_SET(0);
       private final int value;
       private PayloadCase(int value) {
@@ -17106,6 +19329,8 @@ public final class MessagesProto {
           case 18: return MARK_MESSAGES_AS_READ_REQUEST;
           case 19: return MESSAGES_READ_UPDATE;
           case 20: return CONTACT_IDENTITY;
+          case 21: return CLEAR_HISTORY_RESPONSE;
+          case 22: return PENDING_CLEAR_HISTORY_LIST;
           case 0: return PAYLOAD_NOT_SET;
           default: return null;
         }
@@ -17741,6 +19966,68 @@ public final class MessagesProto {
       return com.pola.proto.MessagesProto.ContactIdentity.getDefaultInstance();
     }
 
+    public static final int CLEAR_HISTORY_RESPONSE_FIELD_NUMBER = 21;
+    /**
+     * <code>.com.pola.ClearHistoryResponse clear_history_response = 21;</code>
+     * @return Whether the clearHistoryResponse field is set.
+     */
+    @java.lang.Override
+    public boolean hasClearHistoryResponse() {
+      return payloadCase_ == 21;
+    }
+    /**
+     * <code>.com.pola.ClearHistoryResponse clear_history_response = 21;</code>
+     * @return The clearHistoryResponse.
+     */
+    @java.lang.Override
+    public com.pola.proto.MessagesProto.ClearHistoryResponse getClearHistoryResponse() {
+      if (payloadCase_ == 21) {
+         return (com.pola.proto.MessagesProto.ClearHistoryResponse) payload_;
+      }
+      return com.pola.proto.MessagesProto.ClearHistoryResponse.getDefaultInstance();
+    }
+    /**
+     * <code>.com.pola.ClearHistoryResponse clear_history_response = 21;</code>
+     */
+    @java.lang.Override
+    public com.pola.proto.MessagesProto.ClearHistoryResponseOrBuilder getClearHistoryResponseOrBuilder() {
+      if (payloadCase_ == 21) {
+         return (com.pola.proto.MessagesProto.ClearHistoryResponse) payload_;
+      }
+      return com.pola.proto.MessagesProto.ClearHistoryResponse.getDefaultInstance();
+    }
+
+    public static final int PENDING_CLEAR_HISTORY_LIST_FIELD_NUMBER = 22;
+    /**
+     * <code>.com.pola.PendingClearHistoryList pending_clear_history_list = 22;</code>
+     * @return Whether the pendingClearHistoryList field is set.
+     */
+    @java.lang.Override
+    public boolean hasPendingClearHistoryList() {
+      return payloadCase_ == 22;
+    }
+    /**
+     * <code>.com.pola.PendingClearHistoryList pending_clear_history_list = 22;</code>
+     * @return The pendingClearHistoryList.
+     */
+    @java.lang.Override
+    public com.pola.proto.MessagesProto.PendingClearHistoryList getPendingClearHistoryList() {
+      if (payloadCase_ == 22) {
+         return (com.pola.proto.MessagesProto.PendingClearHistoryList) payload_;
+      }
+      return com.pola.proto.MessagesProto.PendingClearHistoryList.getDefaultInstance();
+    }
+    /**
+     * <code>.com.pola.PendingClearHistoryList pending_clear_history_list = 22;</code>
+     */
+    @java.lang.Override
+    public com.pola.proto.MessagesProto.PendingClearHistoryListOrBuilder getPendingClearHistoryListOrBuilder() {
+      if (payloadCase_ == 22) {
+         return (com.pola.proto.MessagesProto.PendingClearHistoryList) payload_;
+      }
+      return com.pola.proto.MessagesProto.PendingClearHistoryList.getDefaultInstance();
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -17814,6 +20101,12 @@ public final class MessagesProto {
       }
       if (payloadCase_ == 20) {
         output.writeMessage(20, (com.pola.proto.MessagesProto.ContactIdentity) payload_);
+      }
+      if (payloadCase_ == 21) {
+        output.writeMessage(21, (com.pola.proto.MessagesProto.ClearHistoryResponse) payload_);
+      }
+      if (payloadCase_ == 22) {
+        output.writeMessage(22, (com.pola.proto.MessagesProto.PendingClearHistoryList) payload_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -17903,6 +20196,14 @@ public final class MessagesProto {
       if (payloadCase_ == 20) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(20, (com.pola.proto.MessagesProto.ContactIdentity) payload_);
+      }
+      if (payloadCase_ == 21) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(21, (com.pola.proto.MessagesProto.ClearHistoryResponse) payload_);
+      }
+      if (payloadCase_ == 22) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(22, (com.pola.proto.MessagesProto.PendingClearHistoryList) payload_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -18001,6 +20302,14 @@ public final class MessagesProto {
           if (!getContactIdentity()
               .equals(other.getContactIdentity())) return false;
           break;
+        case 21:
+          if (!getClearHistoryResponse()
+              .equals(other.getClearHistoryResponse())) return false;
+          break;
+        case 22:
+          if (!getPendingClearHistoryList()
+              .equals(other.getPendingClearHistoryList())) return false;
+          break;
         case 0:
         default:
       }
@@ -18095,6 +20404,14 @@ public final class MessagesProto {
         case 20:
           hash = (37 * hash) + CONTACT_IDENTITY_FIELD_NUMBER;
           hash = (53 * hash) + getContactIdentity().hashCode();
+          break;
+        case 21:
+          hash = (37 * hash) + CLEAR_HISTORY_RESPONSE_FIELD_NUMBER;
+          hash = (53 * hash) + getClearHistoryResponse().hashCode();
+          break;
+        case 22:
+          hash = (37 * hash) + PENDING_CLEAR_HISTORY_LIST_FIELD_NUMBER;
+          hash = (53 * hash) + getPendingClearHistoryList().hashCode();
           break;
         case 0:
         default:
@@ -18294,6 +20611,12 @@ public final class MessagesProto {
         if (contactIdentityBuilder_ != null) {
           contactIdentityBuilder_.clear();
         }
+        if (clearHistoryResponseBuilder_ != null) {
+          clearHistoryResponseBuilder_.clear();
+        }
+        if (pendingClearHistoryListBuilder_ != null) {
+          pendingClearHistoryListBuilder_.clear();
+        }
         payloadCase_ = 0;
         payload_ = null;
         return this;
@@ -18414,6 +20737,14 @@ public final class MessagesProto {
         if (payloadCase_ == 20 &&
             contactIdentityBuilder_ != null) {
           result.payload_ = contactIdentityBuilder_.build();
+        }
+        if (payloadCase_ == 21 &&
+            clearHistoryResponseBuilder_ != null) {
+          result.payload_ = clearHistoryResponseBuilder_.build();
+        }
+        if (payloadCase_ == 22 &&
+            pendingClearHistoryListBuilder_ != null) {
+          result.payload_ = pendingClearHistoryListBuilder_.build();
         }
       }
 
@@ -18540,6 +20871,14 @@ public final class MessagesProto {
           }
           case CONTACT_IDENTITY: {
             mergeContactIdentity(other.getContactIdentity());
+            break;
+          }
+          case CLEAR_HISTORY_RESPONSE: {
+            mergeClearHistoryResponse(other.getClearHistoryResponse());
+            break;
+          }
+          case PENDING_CLEAR_HISTORY_LIST: {
+            mergePendingClearHistoryList(other.getPendingClearHistoryList());
             break;
           }
           case PAYLOAD_NOT_SET: {
@@ -18712,6 +21051,20 @@ public final class MessagesProto {
                 payloadCase_ = 20;
                 break;
               } // case 162
+              case 170: {
+                input.readMessage(
+                    getClearHistoryResponseFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                payloadCase_ = 21;
+                break;
+              } // case 170
+              case 178: {
+                input.readMessage(
+                    getPendingClearHistoryListFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                payloadCase_ = 22;
+                break;
+              } // case 178
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -21583,6 +23936,290 @@ public final class MessagesProto {
         onChanged();
         return contactIdentityBuilder_;
       }
+
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.pola.proto.MessagesProto.ClearHistoryResponse, com.pola.proto.MessagesProto.ClearHistoryResponse.Builder, com.pola.proto.MessagesProto.ClearHistoryResponseOrBuilder> clearHistoryResponseBuilder_;
+      /**
+       * <code>.com.pola.ClearHistoryResponse clear_history_response = 21;</code>
+       * @return Whether the clearHistoryResponse field is set.
+       */
+      @java.lang.Override
+      public boolean hasClearHistoryResponse() {
+        return payloadCase_ == 21;
+      }
+      /**
+       * <code>.com.pola.ClearHistoryResponse clear_history_response = 21;</code>
+       * @return The clearHistoryResponse.
+       */
+      @java.lang.Override
+      public com.pola.proto.MessagesProto.ClearHistoryResponse getClearHistoryResponse() {
+        if (clearHistoryResponseBuilder_ == null) {
+          if (payloadCase_ == 21) {
+            return (com.pola.proto.MessagesProto.ClearHistoryResponse) payload_;
+          }
+          return com.pola.proto.MessagesProto.ClearHistoryResponse.getDefaultInstance();
+        } else {
+          if (payloadCase_ == 21) {
+            return clearHistoryResponseBuilder_.getMessage();
+          }
+          return com.pola.proto.MessagesProto.ClearHistoryResponse.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.com.pola.ClearHistoryResponse clear_history_response = 21;</code>
+       */
+      public Builder setClearHistoryResponse(com.pola.proto.MessagesProto.ClearHistoryResponse value) {
+        if (clearHistoryResponseBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          payload_ = value;
+          onChanged();
+        } else {
+          clearHistoryResponseBuilder_.setMessage(value);
+        }
+        payloadCase_ = 21;
+        return this;
+      }
+      /**
+       * <code>.com.pola.ClearHistoryResponse clear_history_response = 21;</code>
+       */
+      public Builder setClearHistoryResponse(
+          com.pola.proto.MessagesProto.ClearHistoryResponse.Builder builderForValue) {
+        if (clearHistoryResponseBuilder_ == null) {
+          payload_ = builderForValue.build();
+          onChanged();
+        } else {
+          clearHistoryResponseBuilder_.setMessage(builderForValue.build());
+        }
+        payloadCase_ = 21;
+        return this;
+      }
+      /**
+       * <code>.com.pola.ClearHistoryResponse clear_history_response = 21;</code>
+       */
+      public Builder mergeClearHistoryResponse(com.pola.proto.MessagesProto.ClearHistoryResponse value) {
+        if (clearHistoryResponseBuilder_ == null) {
+          if (payloadCase_ == 21 &&
+              payload_ != com.pola.proto.MessagesProto.ClearHistoryResponse.getDefaultInstance()) {
+            payload_ = com.pola.proto.MessagesProto.ClearHistoryResponse.newBuilder((com.pola.proto.MessagesProto.ClearHistoryResponse) payload_)
+                .mergeFrom(value).buildPartial();
+          } else {
+            payload_ = value;
+          }
+          onChanged();
+        } else {
+          if (payloadCase_ == 21) {
+            clearHistoryResponseBuilder_.mergeFrom(value);
+          } else {
+            clearHistoryResponseBuilder_.setMessage(value);
+          }
+        }
+        payloadCase_ = 21;
+        return this;
+      }
+      /**
+       * <code>.com.pola.ClearHistoryResponse clear_history_response = 21;</code>
+       */
+      public Builder clearClearHistoryResponse() {
+        if (clearHistoryResponseBuilder_ == null) {
+          if (payloadCase_ == 21) {
+            payloadCase_ = 0;
+            payload_ = null;
+            onChanged();
+          }
+        } else {
+          if (payloadCase_ == 21) {
+            payloadCase_ = 0;
+            payload_ = null;
+          }
+          clearHistoryResponseBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>.com.pola.ClearHistoryResponse clear_history_response = 21;</code>
+       */
+      public com.pola.proto.MessagesProto.ClearHistoryResponse.Builder getClearHistoryResponseBuilder() {
+        return getClearHistoryResponseFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.com.pola.ClearHistoryResponse clear_history_response = 21;</code>
+       */
+      @java.lang.Override
+      public com.pola.proto.MessagesProto.ClearHistoryResponseOrBuilder getClearHistoryResponseOrBuilder() {
+        if ((payloadCase_ == 21) && (clearHistoryResponseBuilder_ != null)) {
+          return clearHistoryResponseBuilder_.getMessageOrBuilder();
+        } else {
+          if (payloadCase_ == 21) {
+            return (com.pola.proto.MessagesProto.ClearHistoryResponse) payload_;
+          }
+          return com.pola.proto.MessagesProto.ClearHistoryResponse.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.com.pola.ClearHistoryResponse clear_history_response = 21;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.pola.proto.MessagesProto.ClearHistoryResponse, com.pola.proto.MessagesProto.ClearHistoryResponse.Builder, com.pola.proto.MessagesProto.ClearHistoryResponseOrBuilder> 
+          getClearHistoryResponseFieldBuilder() {
+        if (clearHistoryResponseBuilder_ == null) {
+          if (!(payloadCase_ == 21)) {
+            payload_ = com.pola.proto.MessagesProto.ClearHistoryResponse.getDefaultInstance();
+          }
+          clearHistoryResponseBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              com.pola.proto.MessagesProto.ClearHistoryResponse, com.pola.proto.MessagesProto.ClearHistoryResponse.Builder, com.pola.proto.MessagesProto.ClearHistoryResponseOrBuilder>(
+                  (com.pola.proto.MessagesProto.ClearHistoryResponse) payload_,
+                  getParentForChildren(),
+                  isClean());
+          payload_ = null;
+        }
+        payloadCase_ = 21;
+        onChanged();
+        return clearHistoryResponseBuilder_;
+      }
+
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.pola.proto.MessagesProto.PendingClearHistoryList, com.pola.proto.MessagesProto.PendingClearHistoryList.Builder, com.pola.proto.MessagesProto.PendingClearHistoryListOrBuilder> pendingClearHistoryListBuilder_;
+      /**
+       * <code>.com.pola.PendingClearHistoryList pending_clear_history_list = 22;</code>
+       * @return Whether the pendingClearHistoryList field is set.
+       */
+      @java.lang.Override
+      public boolean hasPendingClearHistoryList() {
+        return payloadCase_ == 22;
+      }
+      /**
+       * <code>.com.pola.PendingClearHistoryList pending_clear_history_list = 22;</code>
+       * @return The pendingClearHistoryList.
+       */
+      @java.lang.Override
+      public com.pola.proto.MessagesProto.PendingClearHistoryList getPendingClearHistoryList() {
+        if (pendingClearHistoryListBuilder_ == null) {
+          if (payloadCase_ == 22) {
+            return (com.pola.proto.MessagesProto.PendingClearHistoryList) payload_;
+          }
+          return com.pola.proto.MessagesProto.PendingClearHistoryList.getDefaultInstance();
+        } else {
+          if (payloadCase_ == 22) {
+            return pendingClearHistoryListBuilder_.getMessage();
+          }
+          return com.pola.proto.MessagesProto.PendingClearHistoryList.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.com.pola.PendingClearHistoryList pending_clear_history_list = 22;</code>
+       */
+      public Builder setPendingClearHistoryList(com.pola.proto.MessagesProto.PendingClearHistoryList value) {
+        if (pendingClearHistoryListBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          payload_ = value;
+          onChanged();
+        } else {
+          pendingClearHistoryListBuilder_.setMessage(value);
+        }
+        payloadCase_ = 22;
+        return this;
+      }
+      /**
+       * <code>.com.pola.PendingClearHistoryList pending_clear_history_list = 22;</code>
+       */
+      public Builder setPendingClearHistoryList(
+          com.pola.proto.MessagesProto.PendingClearHistoryList.Builder builderForValue) {
+        if (pendingClearHistoryListBuilder_ == null) {
+          payload_ = builderForValue.build();
+          onChanged();
+        } else {
+          pendingClearHistoryListBuilder_.setMessage(builderForValue.build());
+        }
+        payloadCase_ = 22;
+        return this;
+      }
+      /**
+       * <code>.com.pola.PendingClearHistoryList pending_clear_history_list = 22;</code>
+       */
+      public Builder mergePendingClearHistoryList(com.pola.proto.MessagesProto.PendingClearHistoryList value) {
+        if (pendingClearHistoryListBuilder_ == null) {
+          if (payloadCase_ == 22 &&
+              payload_ != com.pola.proto.MessagesProto.PendingClearHistoryList.getDefaultInstance()) {
+            payload_ = com.pola.proto.MessagesProto.PendingClearHistoryList.newBuilder((com.pola.proto.MessagesProto.PendingClearHistoryList) payload_)
+                .mergeFrom(value).buildPartial();
+          } else {
+            payload_ = value;
+          }
+          onChanged();
+        } else {
+          if (payloadCase_ == 22) {
+            pendingClearHistoryListBuilder_.mergeFrom(value);
+          } else {
+            pendingClearHistoryListBuilder_.setMessage(value);
+          }
+        }
+        payloadCase_ = 22;
+        return this;
+      }
+      /**
+       * <code>.com.pola.PendingClearHistoryList pending_clear_history_list = 22;</code>
+       */
+      public Builder clearPendingClearHistoryList() {
+        if (pendingClearHistoryListBuilder_ == null) {
+          if (payloadCase_ == 22) {
+            payloadCase_ = 0;
+            payload_ = null;
+            onChanged();
+          }
+        } else {
+          if (payloadCase_ == 22) {
+            payloadCase_ = 0;
+            payload_ = null;
+          }
+          pendingClearHistoryListBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>.com.pola.PendingClearHistoryList pending_clear_history_list = 22;</code>
+       */
+      public com.pola.proto.MessagesProto.PendingClearHistoryList.Builder getPendingClearHistoryListBuilder() {
+        return getPendingClearHistoryListFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.com.pola.PendingClearHistoryList pending_clear_history_list = 22;</code>
+       */
+      @java.lang.Override
+      public com.pola.proto.MessagesProto.PendingClearHistoryListOrBuilder getPendingClearHistoryListOrBuilder() {
+        if ((payloadCase_ == 22) && (pendingClearHistoryListBuilder_ != null)) {
+          return pendingClearHistoryListBuilder_.getMessageOrBuilder();
+        } else {
+          if (payloadCase_ == 22) {
+            return (com.pola.proto.MessagesProto.PendingClearHistoryList) payload_;
+          }
+          return com.pola.proto.MessagesProto.PendingClearHistoryList.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.com.pola.PendingClearHistoryList pending_clear_history_list = 22;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.pola.proto.MessagesProto.PendingClearHistoryList, com.pola.proto.MessagesProto.PendingClearHistoryList.Builder, com.pola.proto.MessagesProto.PendingClearHistoryListOrBuilder> 
+          getPendingClearHistoryListFieldBuilder() {
+        if (pendingClearHistoryListBuilder_ == null) {
+          if (!(payloadCase_ == 22)) {
+            payload_ = com.pola.proto.MessagesProto.PendingClearHistoryList.getDefaultInstance();
+          }
+          pendingClearHistoryListBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              com.pola.proto.MessagesProto.PendingClearHistoryList, com.pola.proto.MessagesProto.PendingClearHistoryList.Builder, com.pola.proto.MessagesProto.PendingClearHistoryListOrBuilder>(
+                  (com.pola.proto.MessagesProto.PendingClearHistoryList) payload_,
+                  getParentForChildren(),
+                  isClean());
+          payload_ = null;
+        }
+        payloadCase_ = 22;
+        onChanged();
+        return pendingClearHistoryListBuilder_;
+      }
       @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -21693,6 +24330,11 @@ public final class MessagesProto {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_com_pola_ClearHistoryRequest_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_pola_ClearHistoryResponse_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_com_pola_ClearHistoryResponse_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_com_pola_MessageDeletedNotification_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -21753,6 +24395,16 @@ public final class MessagesProto {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_com_pola_ContactIdentity_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_pola_PendingClearHistory_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_com_pola_PendingClearHistory_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_pola_PendingClearHistoryList_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_com_pola_PendingClearHistoryList_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_com_pola_WsMessage_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -21770,75 +24422,84 @@ public final class MessagesProto {
       "ge\022\n\n\002id\030\001 \001(\t\022#\n\004type\030\002 \001(\0162\025.com.pola." +
       "MessageType\022\016\n\006sender\030\003 \001(\t\022\021\n\trecipient" +
       "\030\004 \001(\t\022\017\n\007content\030\005 \001(\t\022\021\n\ttimestamp\030\006 \001" +
-      "(\003\"\034\n\013AuthMessage\022\r\n\005token\030\001 \001(\t\"R\n\014Auth" +
-      "Response\022\017\n\007success\030\001 \001(\010\022\017\n\007message\030\002 \001" +
-      "(\t\022\016\n\006userId\030\003 \001(\t\022\020\n\010username\030\004 \001(\t\")\n\010" +
-      "UserList\022\035\n\005users\030\001 \003(\0132\016.com.pola.User\"" +
-      "=\n\022UnreadMessagesList\022\'\n\010messages\030\001 \003(\0132" +
-      "\025.com.pola.ChatMessage\"4\n\004User\022\n\n\002id\030\001 \001" +
-      "(\t\022\020\n\010username\030\002 \001(\t\022\016\n\006online\030\003 \001(\010\"C\n\024" +
-      "DeleteMessageRequest\022\022\n\nmessage_id\030\001 \001(\t" +
-      "\022\027\n\017sender_username\030\002 \001(\t\"M\n\025DeleteMessa" +
-      "geResponse\022\017\n\007success\030\001 \001(\010\022\017\n\007message\030\002" +
-      " \001(\t\022\022\n\nmessage_id\030\003 \001(\t\"8\n\023ClearHistory" +
-      "Request\022\016\n\006sender\030\001 \001(\t\022\021\n\trecipient\030\002 \001" +
-      "(\t\"D\n\032MessageDeletedNotification\022\022\n\nmess" +
-      "age_id\030\001 \001(\t\022\022\n\ndeleted_by\030\002 \001(\t\"(\n\023Bloc" +
-      "kContactRequest\022\021\n\trecipient\030\001 \001(\t\"8\n\024Bl" +
-      "ockContactResponse\022\017\n\007success\030\001 \001(\010\022\017\n\007m" +
-      "essage\030\002 \001(\t\"*\n\025UnblockContactRequest\022\021\n" +
-      "\trecipient\030\001 \001(\t\":\n\026UnblockContactRespon" +
-      "se\022\017\n\007success\030\001 \001(\010\022\017\n\007message\030\002 \001(\t\"L\n\014" +
-      "MessageError\022\022\n\nmessage_id\030\001 \001(\t\022\025\n\rerro" +
-      "r_message\030\002 \001(\t\022\021\n\trecipient\030\003 \001(\t\"\213\001\n\023C" +
-      "hatMessageResponse\022\022\n\nmessage_id\030\001 \001(\t\022\017" +
-      "\n\007success\030\002 \001(\010\022%\n\005cause\030\003 \001(\0162\026.com.pol" +
-      "a.FailureCause\022\025\n\rerror_message\030\004 \001(\t\022\021\n" +
-      "\trecipient\030\005 \001(\t\"#\n\022UnblockedUsersList\022\r" +
-      "\n\005users\030\001 \003(\t\"!\n\020BlockedUsersList\022\r\n\005use" +
-      "rs\030\001 \003(\t\"S\n\031MarkMessagesAsReadRequest\022\016\n" +
-      "\006sender\030\001 \001(\t\022\021\n\trecipient\030\002 \001(\t\022\023\n\013mess" +
-      "age_ids\030\003 \003(\t\"B\n\022MessagesReadUpdate\022\023\n\013m" +
-      "essage_ids\030\001 \003(\t\022\027\n\017reader_username\030\002 \001(" +
-      "\t\"W\n\017ContactIdentity\022\021\n\tsender_id\030\001 \001(\t\022" +
-      "\027\n\017sender_username\030\002 \001(\t\022\030\n\020contact_user" +
-      "name\030\003 \001(\t\"\327\t\n\tWsMessage\022-\n\014chat_message" +
-      "\030\001 \001(\0132\025.com.pola.ChatMessageH\000\022\'\n\tuser_" +
-      "list\030\002 \001(\0132\022.com.pola.UserListH\000\022-\n\014auth" +
-      "_message\030\003 \001(\0132\025.com.pola.AuthMessageH\000\022" +
-      "/\n\rauth_response\030\004 \001(\0132\026.com.pola.AuthRe" +
-      "sponseH\000\022@\n\026delete_message_request\030\005 \001(\013" +
-      "2\036.com.pola.DeleteMessageRequestH\000\022B\n\027de" +
-      "lete_message_response\030\006 \001(\0132\037.com.pola.D" +
-      "eleteMessageResponseH\000\022K\n\033message_delete" +
-      "_notification\030\007 \001(\0132$.com.pola.MessageDe" +
-      "letedNotificationH\000\022<\n\024unread_messages_l" +
-      "ist\030\010 \001(\0132\034.com.pola.UnreadMessagesListH" +
-      "\000\022>\n\025clear_history_request\030\t \001(\0132\035.com.p" +
-      "ola.ClearHistoryRequestH\000\022>\n\025block_conta" +
-      "ct_request\030\n \001(\0132\035.com.pola.BlockContact" +
-      "RequestH\000\022@\n\026block_contact_response\030\013 \001(" +
-      "\0132\036.com.pola.BlockContactResponseH\000\022/\n\rm" +
-      "essage_error\030\014 \001(\0132\026.com.pola.MessageErr" +
-      "orH\000\022B\n\027unblock_contact_request\030\r \001(\0132\037." +
-      "com.pola.UnblockContactRequestH\000\022D\n\030unbl" +
-      "ock_contact_response\030\016 \001(\0132 .com.pola.Un" +
-      "blockContactResponseH\000\022>\n\025chat_message_r" +
-      "esponse\030\017 \001(\0132\035.com.pola.ChatMessageResp" +
-      "onseH\000\022<\n\024unblocked_users_list\030\020 \001(\0132\034.c" +
-      "om.pola.UnblockedUsersListH\000\0228\n\022blocked_" +
-      "users_list\030\021 \001(\0132\032.com.pola.BlockedUsers" +
-      "ListH\000\022L\n\035mark_messages_as_read_request\030" +
-      "\022 \001(\0132#.com.pola.MarkMessagesAsReadReque" +
-      "stH\000\022<\n\024messages_read_update\030\023 \001(\0132\034.com" +
-      ".pola.MessagesReadUpdateH\000\0225\n\020contact_id" +
-      "entity\030\024 \001(\0132\031.com.pola.ContactIdentityH" +
-      "\000B\t\n\007payload*t\n\013MessageType\022\010\n\004TEXT\020\000\022\t\n" +
-      "\005LOGIN\020\001\022\n\n\006LOGOUT\020\002\022\r\n\tUSER_LIST\020\003\022\n\n\006T" +
-      "YPING\020\004\022\024\n\020DELIVERY_RECEIPT\020\005\022\t\n\005ALERT\020\006" +
-      "\022\010\n\004CHAT\020\007*.\n\014FailureCause\022\021\n\rUNKNOWN_CA" +
-      "USE\020\000\022\013\n\007BLOCKED\020\001B\037\n\016com.pola.protoB\rMe" +
-      "ssagesProtob\006proto3"
+      "(\003\"?\n\013AuthMessage\022\r\n\005token\030\001 \001(\t\022\017\n\007user" +
+      "_id\030\002 \001(\t\022\020\n\010username\030\003 \001(\t\"R\n\014AuthRespo" +
+      "nse\022\017\n\007success\030\001 \001(\010\022\017\n\007message\030\002 \001(\t\022\016\n" +
+      "\006userId\030\003 \001(\t\022\020\n\010username\030\004 \001(\t\")\n\010UserL" +
+      "ist\022\035\n\005users\030\001 \003(\0132\016.com.pola.User\"=\n\022Un" +
+      "readMessagesList\022\'\n\010messages\030\001 \003(\0132\025.com" +
+      ".pola.ChatMessage\"4\n\004User\022\n\n\002id\030\001 \001(\t\022\020\n" +
+      "\010username\030\002 \001(\t\022\016\n\006online\030\003 \001(\010\"C\n\024Delet" +
+      "eMessageRequest\022\022\n\nmessage_id\030\001 \001(\t\022\027\n\017s" +
+      "ender_username\030\002 \001(\t\"M\n\025DeleteMessageRes" +
+      "ponse\022\017\n\007success\030\001 \001(\010\022\017\n\007message\030\002 \001(\t\022" +
+      "\022\n\nmessage_id\030\003 \001(\t\"8\n\023ClearHistoryReque" +
+      "st\022\016\n\006sender\030\001 \001(\t\022\021\n\trecipient\030\002 \001(\t\"8\n" +
+      "\024ClearHistoryResponse\022\017\n\007success\030\001 \001(\010\022\017" +
+      "\n\007message\030\002 \001(\t\"D\n\032MessageDeletedNotific" +
+      "ation\022\022\n\nmessage_id\030\001 \001(\t\022\022\n\ndeleted_by\030" +
+      "\002 \001(\t\"(\n\023BlockContactRequest\022\021\n\trecipien" +
+      "t\030\001 \001(\t\"8\n\024BlockContactResponse\022\017\n\007succe" +
+      "ss\030\001 \001(\010\022\017\n\007message\030\002 \001(\t\"*\n\025UnblockCont" +
+      "actRequest\022\021\n\trecipient\030\001 \001(\t\":\n\026Unblock" +
+      "ContactResponse\022\017\n\007success\030\001 \001(\010\022\017\n\007mess" +
+      "age\030\002 \001(\t\"L\n\014MessageError\022\022\n\nmessage_id\030" +
+      "\001 \001(\t\022\025\n\rerror_message\030\002 \001(\t\022\021\n\trecipien" +
+      "t\030\003 \001(\t\"\213\001\n\023ChatMessageResponse\022\022\n\nmessa" +
+      "ge_id\030\001 \001(\t\022\017\n\007success\030\002 \001(\010\022%\n\005cause\030\003 " +
+      "\001(\0162\026.com.pola.FailureCause\022\025\n\rerror_mes" +
+      "sage\030\004 \001(\t\022\021\n\trecipient\030\005 \001(\t\"#\n\022Unblock" +
+      "edUsersList\022\r\n\005users\030\001 \003(\t\"!\n\020BlockedUse" +
+      "rsList\022\r\n\005users\030\001 \003(\t\"S\n\031MarkMessagesAsR" +
+      "eadRequest\022\016\n\006sender\030\001 \001(\t\022\021\n\trecipient\030" +
+      "\002 \001(\t\022\023\n\013message_ids\030\003 \003(\t\"B\n\022MessagesRe" +
+      "adUpdate\022\023\n\013message_ids\030\001 \003(\t\022\027\n\017reader_" +
+      "username\030\002 \001(\t\"W\n\017ContactIdentity\022\021\n\tsen" +
+      "der_id\030\001 \001(\t\022\027\n\017sender_username\030\002 \001(\t\022\030\n" +
+      "\020contact_username\030\003 \001(\t\"8\n\023PendingClearH" +
+      "istory\022\016\n\006sender\030\001 \001(\t\022\021\n\trecipient\030\002 \001(" +
+      "\t\"Q\n\027PendingClearHistoryList\0226\n\017clear_hi" +
+      "stories\030\001 \003(\0132\035.com.pola.PendingClearHis" +
+      "tory\"\342\n\n\tWsMessage\022-\n\014chat_message\030\001 \001(\013" +
+      "2\025.com.pola.ChatMessageH\000\022\'\n\tuser_list\030\002" +
+      " \001(\0132\022.com.pola.UserListH\000\022-\n\014auth_messa" +
+      "ge\030\003 \001(\0132\025.com.pola.AuthMessageH\000\022/\n\raut" +
+      "h_response\030\004 \001(\0132\026.com.pola.AuthResponse" +
+      "H\000\022@\n\026delete_message_request\030\005 \001(\0132\036.com" +
+      ".pola.DeleteMessageRequestH\000\022B\n\027delete_m" +
+      "essage_response\030\006 \001(\0132\037.com.pola.DeleteM" +
+      "essageResponseH\000\022K\n\033message_delete_notif" +
+      "ication\030\007 \001(\0132$.com.pola.MessageDeletedN" +
+      "otificationH\000\022<\n\024unread_messages_list\030\010 " +
+      "\001(\0132\034.com.pola.UnreadMessagesListH\000\022>\n\025c" +
+      "lear_history_request\030\t \001(\0132\035.com.pola.Cl" +
+      "earHistoryRequestH\000\022>\n\025block_contact_req" +
+      "uest\030\n \001(\0132\035.com.pola.BlockContactReques" +
+      "tH\000\022@\n\026block_contact_response\030\013 \001(\0132\036.co" +
+      "m.pola.BlockContactResponseH\000\022/\n\rmessage" +
+      "_error\030\014 \001(\0132\026.com.pola.MessageErrorH\000\022B" +
+      "\n\027unblock_contact_request\030\r \001(\0132\037.com.po" +
+      "la.UnblockContactRequestH\000\022D\n\030unblock_co" +
+      "ntact_response\030\016 \001(\0132 .com.pola.UnblockC" +
+      "ontactResponseH\000\022>\n\025chat_message_respons" +
+      "e\030\017 \001(\0132\035.com.pola.ChatMessageResponseH\000" +
+      "\022<\n\024unblocked_users_list\030\020 \001(\0132\034.com.pol" +
+      "a.UnblockedUsersListH\000\0228\n\022blocked_users_" +
+      "list\030\021 \001(\0132\032.com.pola.BlockedUsersListH\000" +
+      "\022L\n\035mark_messages_as_read_request\030\022 \001(\0132" +
+      "#.com.pola.MarkMessagesAsReadRequestH\000\022<" +
+      "\n\024messages_read_update\030\023 \001(\0132\034.com.pola." +
+      "MessagesReadUpdateH\000\0225\n\020contact_identity" +
+      "\030\024 \001(\0132\031.com.pola.ContactIdentityH\000\022@\n\026c" +
+      "lear_history_response\030\025 \001(\0132\036.com.pola.C" +
+      "learHistoryResponseH\000\022G\n\032pending_clear_h" +
+      "istory_list\030\026 \001(\0132!.com.pola.PendingClea" +
+      "rHistoryListH\000B\t\n\007payload*t\n\013MessageType" +
+      "\022\010\n\004TEXT\020\000\022\t\n\005LOGIN\020\001\022\n\n\006LOGOUT\020\002\022\r\n\tUSE" +
+      "R_LIST\020\003\022\n\n\006TYPING\020\004\022\024\n\020DELIVERY_RECEIPT" +
+      "\020\005\022\t\n\005ALERT\020\006\022\010\n\004CHAT\020\007*.\n\014FailureCause\022" +
+      "\021\n\rUNKNOWN_CAUSE\020\000\022\013\n\007BLOCKED\020\001B\037\n\016com.p" +
+      "ola.protoB\rMessagesProtob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -21855,7 +24516,7 @@ public final class MessagesProto {
     internal_static_com_pola_AuthMessage_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_pola_AuthMessage_descriptor,
-        new java.lang.String[] { "Token", });
+        new java.lang.String[] { "Token", "UserId", "Username", });
     internal_static_com_pola_AuthResponse_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_com_pola_AuthResponse_fieldAccessorTable = new
@@ -21898,84 +24559,102 @@ public final class MessagesProto {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_pola_ClearHistoryRequest_descriptor,
         new java.lang.String[] { "Sender", "Recipient", });
-    internal_static_com_pola_MessageDeletedNotification_descriptor =
+    internal_static_com_pola_ClearHistoryResponse_descriptor =
       getDescriptor().getMessageTypes().get(9);
+    internal_static_com_pola_ClearHistoryResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_com_pola_ClearHistoryResponse_descriptor,
+        new java.lang.String[] { "Success", "Message", });
+    internal_static_com_pola_MessageDeletedNotification_descriptor =
+      getDescriptor().getMessageTypes().get(10);
     internal_static_com_pola_MessageDeletedNotification_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_pola_MessageDeletedNotification_descriptor,
         new java.lang.String[] { "MessageId", "DeletedBy", });
     internal_static_com_pola_BlockContactRequest_descriptor =
-      getDescriptor().getMessageTypes().get(10);
+      getDescriptor().getMessageTypes().get(11);
     internal_static_com_pola_BlockContactRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_pola_BlockContactRequest_descriptor,
         new java.lang.String[] { "Recipient", });
     internal_static_com_pola_BlockContactResponse_descriptor =
-      getDescriptor().getMessageTypes().get(11);
+      getDescriptor().getMessageTypes().get(12);
     internal_static_com_pola_BlockContactResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_pola_BlockContactResponse_descriptor,
         new java.lang.String[] { "Success", "Message", });
     internal_static_com_pola_UnblockContactRequest_descriptor =
-      getDescriptor().getMessageTypes().get(12);
+      getDescriptor().getMessageTypes().get(13);
     internal_static_com_pola_UnblockContactRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_pola_UnblockContactRequest_descriptor,
         new java.lang.String[] { "Recipient", });
     internal_static_com_pola_UnblockContactResponse_descriptor =
-      getDescriptor().getMessageTypes().get(13);
+      getDescriptor().getMessageTypes().get(14);
     internal_static_com_pola_UnblockContactResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_pola_UnblockContactResponse_descriptor,
         new java.lang.String[] { "Success", "Message", });
     internal_static_com_pola_MessageError_descriptor =
-      getDescriptor().getMessageTypes().get(14);
+      getDescriptor().getMessageTypes().get(15);
     internal_static_com_pola_MessageError_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_pola_MessageError_descriptor,
         new java.lang.String[] { "MessageId", "ErrorMessage", "Recipient", });
     internal_static_com_pola_ChatMessageResponse_descriptor =
-      getDescriptor().getMessageTypes().get(15);
+      getDescriptor().getMessageTypes().get(16);
     internal_static_com_pola_ChatMessageResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_pola_ChatMessageResponse_descriptor,
         new java.lang.String[] { "MessageId", "Success", "Cause", "ErrorMessage", "Recipient", });
     internal_static_com_pola_UnblockedUsersList_descriptor =
-      getDescriptor().getMessageTypes().get(16);
+      getDescriptor().getMessageTypes().get(17);
     internal_static_com_pola_UnblockedUsersList_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_pola_UnblockedUsersList_descriptor,
         new java.lang.String[] { "Users", });
     internal_static_com_pola_BlockedUsersList_descriptor =
-      getDescriptor().getMessageTypes().get(17);
+      getDescriptor().getMessageTypes().get(18);
     internal_static_com_pola_BlockedUsersList_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_pola_BlockedUsersList_descriptor,
         new java.lang.String[] { "Users", });
     internal_static_com_pola_MarkMessagesAsReadRequest_descriptor =
-      getDescriptor().getMessageTypes().get(18);
+      getDescriptor().getMessageTypes().get(19);
     internal_static_com_pola_MarkMessagesAsReadRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_pola_MarkMessagesAsReadRequest_descriptor,
         new java.lang.String[] { "Sender", "Recipient", "MessageIds", });
     internal_static_com_pola_MessagesReadUpdate_descriptor =
-      getDescriptor().getMessageTypes().get(19);
+      getDescriptor().getMessageTypes().get(20);
     internal_static_com_pola_MessagesReadUpdate_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_pola_MessagesReadUpdate_descriptor,
         new java.lang.String[] { "MessageIds", "ReaderUsername", });
     internal_static_com_pola_ContactIdentity_descriptor =
-      getDescriptor().getMessageTypes().get(20);
+      getDescriptor().getMessageTypes().get(21);
     internal_static_com_pola_ContactIdentity_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_pola_ContactIdentity_descriptor,
         new java.lang.String[] { "SenderId", "SenderUsername", "ContactUsername", });
+    internal_static_com_pola_PendingClearHistory_descriptor =
+      getDescriptor().getMessageTypes().get(22);
+    internal_static_com_pola_PendingClearHistory_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_com_pola_PendingClearHistory_descriptor,
+        new java.lang.String[] { "Sender", "Recipient", });
+    internal_static_com_pola_PendingClearHistoryList_descriptor =
+      getDescriptor().getMessageTypes().get(23);
+    internal_static_com_pola_PendingClearHistoryList_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_com_pola_PendingClearHistoryList_descriptor,
+        new java.lang.String[] { "ClearHistories", });
     internal_static_com_pola_WsMessage_descriptor =
-      getDescriptor().getMessageTypes().get(21);
+      getDescriptor().getMessageTypes().get(24);
     internal_static_com_pola_WsMessage_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_pola_WsMessage_descriptor,
-        new java.lang.String[] { "ChatMessage", "UserList", "AuthMessage", "AuthResponse", "DeleteMessageRequest", "DeleteMessageResponse", "MessageDeleteNotification", "UnreadMessagesList", "ClearHistoryRequest", "BlockContactRequest", "BlockContactResponse", "MessageError", "UnblockContactRequest", "UnblockContactResponse", "ChatMessageResponse", "UnblockedUsersList", "BlockedUsersList", "MarkMessagesAsReadRequest", "MessagesReadUpdate", "ContactIdentity", "Payload", });
+        new java.lang.String[] { "ChatMessage", "UserList", "AuthMessage", "AuthResponse", "DeleteMessageRequest", "DeleteMessageResponse", "MessageDeleteNotification", "UnreadMessagesList", "ClearHistoryRequest", "BlockContactRequest", "BlockContactResponse", "MessageError", "UnblockContactRequest", "UnblockContactResponse", "ChatMessageResponse", "UnblockedUsersList", "BlockedUsersList", "MarkMessagesAsReadRequest", "MessagesReadUpdate", "ContactIdentity", "ClearHistoryResponse", "PendingClearHistoryList", "Payload", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

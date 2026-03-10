@@ -106,13 +106,11 @@ public class NotificationService {
             logger.info("Iniciando proceso de adición de contacto. Usuario origen: {}, Nuevo contacto: {}", 
                 fromId, contactId);
             
-            // Validar que el usuario origen existe en el sistema
             User user = userRepository.findById(fromId)
                     .orElseThrow(() -> new EntityNotFoundException(
-                        "El usuario: " + fromId + " no se halla en el sistema"));
+                        "El usuario: " + fromId + " no sehalla en el sistema"));
             logger.info("Usuario origen validado correctamente: {}", fromId);
             
-            // Buscar al usuario que será agregado como contacto
             Optional<User> contactOpt = userRepository.findById(contactId);
             
             if (contactOpt.isPresent()) {
@@ -120,11 +118,11 @@ public class NotificationService {
                     User contactUser = contactOpt.get();
                 logger.info("Usuario contacto encontrado: {}. Iniciando proceso de vinculación.", contactId);
                 
-                // 1. Crear relación fromId -> contactId
-                createConnectionIfNotExists(user, contactUser);
-
-                // 2. Crear relación inversa contactId -> fromId
-                createConnectionIfNotExists(contactUser, user);
+                saveContactRelation(user, contactUser);
+                saveContactRelation(contactUser, user);
+                
+                subscribeUserSessionsToContactAsync(fromId, contactId);
+                subscribeUserSessionsToContactAsync(contactId, fromId);
                 
                 logger.info("Proceso de adición de contacto completado exitosamente. {} y {} ahora son contactos mutuos", 
                     fromId, contactId);
@@ -146,24 +144,31 @@ public class NotificationService {
         }
     }
 
-    private void createConnectionIfNotExists(User source, User target) {      
-            if(source == null || target == null){
-                logger.warn("Parametros invalidos source: {}, target: {} operacion cancelada.", source, target);
-                return;
-            }
-            boolean exists = userContactRepository.findByUser(source).stream()
-                .anyMatch(c -> c.getContact().getId().equals(target.getId()));
+    @Transactional
+    private void saveContactRelation(User source, User target) {
+        if(source == null || target == null){
+            logger.warn("Parametros invalidos source: {}, target: {} operacion cancelada.", source, target);
+            return;
+        }
+        boolean exists = userContactRepository.findByUser(source).stream()
+            .anyMatch(c -> c.getContact().getId().equals(target.getId()));
 
         if (!exists) {
             UserContact userContact = new UserContact(source, target);
             userContactRepository.save(userContact);
             logger.debug("Relación guardada: {} ahora tiene a {} como contacto", source.getId(), target.getId());
-            
-            subscribeUserSessionsToContact(source.getId(), target.getId());
         } else {
             logger.info("El contacto {} ya existe para el usuario {}. Se omite la creación.", target.getId(), source.getId());
         }
-        
+    }
+
+    private void subscribeUserSessionsToContactAsync(String userId, String contactId) {
+        try {
+            subscribeUserSessionsToContact(userId, contactId);
+        } catch (Exception e) {
+            logger.error("Error al suscribir sesiones a contacto (no crítico). userId: {}, contactId: {}", 
+                userId, contactId, e);
+        }
     }
 
     private void subscribeUserSessionsToContact(String userId, String contactId) {
@@ -187,8 +192,7 @@ public class NotificationService {
             logger.debug("Usuario {} no tiene sesiones activas en este momento", userId);
         }
         }catch(Exception ex){
-            logger.error("Error crítico al suscribir sesiones a contacto. userId: {}, contactId: {}", userId, contactId, ex);
-            throw new RuntimeException("No se pudieron suscribir las sesiones del usuario al contacto", ex);
+            logger.error("Error al suscribir sesiones a contacto (no crítico). userId: {}, contactId: {}", userId, contactId, ex);
         }
         
     }

@@ -1,72 +1,89 @@
 package com.basic_chat.chat_service.service;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * Servicio para consultar sesiones WebSocket almacenadas en Redis.
  * 
  * Redis es la fuente de verdad para saber si un usuario está online.
- * El API Gateway es responsable de mantener y limpiar estas claves.
+ * El notification-service es responsable de mantener y limpiar estas claves.
  * 
  * Formato de claves Redis:
- * - ws:sessionid:{userId} → sessionId (mapeo usuario a su sesión WebSocket)
- * - ws:session:{userId} → "active" (indicador de sesión activa)
+ * - user:{userId}:sessions → lista de sessionIds activas para el usuario
+ * - session:{sessionId}:user → userId del propietario de la sesión
+ * - user:name:{username} → userId (mapeo para verificar online por username)
  */
 @Service
-@Slf4j
 public class RedisSessionService {
     
-    private final RedisTemplate<String, String> redisTemplate;
+    private static final Logger log = LoggerFactory.getLogger(RedisSessionService.class);
     
-    private static final String SESSION_ID_KEY_PREFIX = "ws:sessionid:";
-    private static final String SESSION_STATUS_KEY_PREFIX = "ws:session:";
+    private final StringRedisTemplate redisTemplate;
+    
+    private static final String USER_SESSIONS_KEY_PREFIX = "user:";
+    private static final String USER_SESSIONS_KEY_SUFFIX = ":sessions";
+    private static final String SESSION_USER_KEY_PREFIX = "session:";
+    private static final String SESSION_USER_KEY_SUFFIX = ":user";
 
-    public RedisSessionService(RedisTemplate<String, String> redisTemplate) {
+    public RedisSessionService(StringRedisTemplate redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
 
     /**
-     * Obtiene el sessionId de un usuario desde Redis.
+     * Obtiene una sessionId de un usuario desde Redis.
+     * Si el usuario tiene múltiples sesiones activas, se devuelve una cualquiera.
      * 
      * @param userId ID del usuario
      * @return sessionId si existe, null en caso contrario
      */
     public String getSessionId(String userId) {
-        String key = SESSION_ID_KEY_PREFIX + userId;
-        String sessionId = redisTemplate.opsForValue().get(key);
-        log.debug("Obteniendo sessionId para userId: {} - Resultado: {}", userId, sessionId != null ? "encontrado" : "no encontrado");
-        return sessionId;
+        String key = USER_SESSIONS_KEY_PREFIX + userId + USER_SESSIONS_KEY_SUFFIX;
+        // Obtiene un miembro arbitrario de la lista de sesiones
+        List<String> sessions = redisTemplate.opsForList().range(key, 0, -1);
+        if (sessions != null && !sessions.isEmpty()) {
+            String sessionId = sessions.get(0);
+            log.debug("Obteniendo sessionId para userId: {} - Resultado: {}", userId, sessionId != null ? "encontrado" : "no encontrado");
+            return sessionId;
+        }
+        log.debug("Obteniendo sessionId para userId: {} - Resultado: no encontrado", userId);
+        return null;
     }
 
     /**
      * Verifica si un usuario está online consultando Redis.
+     * Un usuario está online si tiene al menos una sesión activa en su lista.
      * 
      * @param userId ID del usuario
      * @return true si el usuario tiene una sesión activa en Redis
      */
     public boolean isUserOnline(String userId) {
-        String key = SESSION_STATUS_KEY_PREFIX + userId;
-        Boolean exists = redisTemplate.hasKey(key);
-        log.debug("Verificando si {} está online en Redis: {}", userId, exists);
-        return exists != null && exists;
+        String key = USER_SESSIONS_KEY_PREFIX + userId + USER_SESSIONS_KEY_SUFFIX;
+        Long size = redisTemplate.opsForList().size(key);
+        boolean isOnline = size != null && size > 0;
+        log.debug("Verificando si {} está online en Redis: {}", userId, isOnline);
+        return isOnline;
     }
 
     /**
-     * Obtiene el sessionId de un usuario por su username.
+     * Obtiene el sessionId de un usuario a través del mapeo username -> userId.
      * 
-     * IMPORTANTE: Esta es una operación que requiere un mapeo username -> userId en Redis.
-     * El API Gateway es responsable de mantener este mapeo.
+     * Este método primero busca el userId en Redis usando la clave user:name:{username}
+     * y luego obtiene una sesión activa de ese usuario.
      * 
-     * Formato: ws:username:{username} → {userId}
+     * El mapeo username -> userId es creado por el notification-service cuando
+     * el usuario se conecta via WebSocket STOMP.
      * 
      * @param username Username del usuario
      * @return sessionId si existe, null en caso contrario
      */
     public String getSessionIdByUsername(String username) {
-        String userIdKey = "ws:username:" + username;
-        String userId =  redisTemplate.opsForValue().get(userIdKey);
+        String userIdKey = "user:name:" + username;
+        String userId = redisTemplate.opsForValue().get(userIdKey);
         
         if (userId == null) {
             log.debug("No se encontró userId para username: {}", username);
@@ -77,45 +94,66 @@ public class RedisSessionService {
     }
 
     /**
-     * Verifica si un usuario está online por su username.
+     * Verifica si un usuario está online usando su username.
+     * 
+     * Este método primero busca el userId en Redis usando la clave user:name:{username}
+     * y luego verifica si ese usuario tiene sesiones activas.
+     * 
+     * El mapeo username -> userId es creado por el notification-service cuando
+     * el usuario se conecta via WebSocket STOMP.
      * 
      * @param username Username del usuario
      * @return true si el usuario tiene una sesión activa en Redis
      */
     public boolean isUserOnlineByUsername(String username) {
-        String userIdKey = "ws:username:" + username;
+        String userIdKey = "user:name:" + username;
         String userId = redisTemplate.opsForValue().get(userIdKey);
-        
         if (userId == null) {
-            log.debug("No se encontró userId para username: {}", username);
+            log.warn("No se encontró userId para username: {}", username);
             return false;
+        }else{
+            return true;
         }
         
-        return isUserOnline(userId);
+        //return isUserOnline(userId);
     }
 
     /**
-     * Guarda el sessionId de un usuario en Redis.
-     * Normalmente lo hace el API Gateway, pero este método está disponible para consistencia.
+     * Agrega una sessionId al conjunto de sesiones de un usuario en Redis.
+     * También crea la relación inversa de sesión a usuario.
      * 
      * @param userId ID del usuario
      * @param sessionId ID de la sesión WebSocket
      */
-    public void saveSessionId(String userId, String sessionId) {
-        String key = SESSION_ID_KEY_PREFIX + userId;
-        redisTemplate.opsForValue().set(key, sessionId);
-        log.debug("SessionId guardado en Redis - userId: {}, sessionId: {}", userId, sessionId);
+    public void addSessionId(String userId, String sessionId) {
+        // Agregar sessionId a la lista del usuario
+        String userSessionsKey = USER_SESSIONS_KEY_PREFIX + userId + USER_SESSIONS_KEY_SUFFIX;
+        redisTemplate.opsForList().rightPush(userSessionsKey, sessionId);
+        
+        // Crear la relación inversa de sesión a usuario
+        String sessionUserKey = SESSION_USER_KEY_PREFIX + sessionId + SESSION_USER_KEY_SUFFIX;
+        redisTemplate.opsForValue().set(sessionUserKey, userId);
+        
+        log.debug("SessionId agregada en Redis - userId: {}, sessionId: {}", userId, sessionId);
     }
 
     /**
-     * Elimina el sessionId de un usuario de Redis.
+     * Elimina todas las sessionIds de un usuario de Redis.
      * 
      * @param userId ID del usuario
      */
-    public void removeSessionId(String userId) {
-        String key = SESSION_ID_KEY_PREFIX + userId;
-        redisTemplate.delete(key);
-        log.debug("SessionId removido de Redis - userId: {}", userId);
+    public void removeAllSessionsForUser(String userId) {
+        String userSessionsKey = USER_SESSIONS_KEY_PREFIX + userId + USER_SESSIONS_KEY_SUFFIX;
+        // Primero obtenemos todas las sesiones para eliminar las referencias inversas
+        List<String> sessionIds = redisTemplate.opsForList().range(userSessionsKey, 0, -1);
+        if (sessionIds != null) {
+            for (String sessionId : sessionIds) {
+                String sessionUserKey = SESSION_USER_KEY_PREFIX + sessionId + SESSION_USER_KEY_SUFFIX;
+                redisTemplate.delete(sessionUserKey);
+            }
+        }
+        // Luego eliminamos la lista del usuario
+        redisTemplate.delete(userSessionsKey);
+        log.debug("Todas las sessionIds removidas de Redis para userId: {}", userId);
     }
-
 }

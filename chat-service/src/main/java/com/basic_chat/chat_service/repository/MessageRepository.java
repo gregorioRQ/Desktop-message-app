@@ -31,4 +31,15 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
 
     // Obtiene todos los mensajes para un receptor específico
     List<Message> findByToUserId(String toUserId);
+
+    /**
+     * Elimina mensajes de la base de datos por lista de IDs.
+     * Este método se utiliza para eliminar mensajes que ya fueron entregados al cliente.
+     * 
+     * @param ids Lista de IDs de mensajes a eliminar
+     */
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM Message m WHERE m.id IN :ids")
+    void deleteAllByIdIn(@Param("ids") List<Long> ids);
 }

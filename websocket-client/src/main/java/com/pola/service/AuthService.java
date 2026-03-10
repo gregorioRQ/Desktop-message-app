@@ -84,9 +84,6 @@ public class AuthService {
         return httpService.logout(request, accessToken, LogoutResponse.class);
     }
 
-    public CompletableFuture<Boolean> sendHeartbeat(String accessToken) {
-        return httpService.sendHeartbeat(accessToken);
-    }
 
     private CompletableFuture<Session> refreshSession(Session currentSession) {
         RefreshRequest request = RefreshRequest.newBuilder()

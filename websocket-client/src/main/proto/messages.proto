@@ -30,6 +30,8 @@ message ChatMessage {
 // Mensaje de autenticación WebSocket
 message AuthMessage {
     string token = 1;
+    string user_id = 2;
+    string username = 3;
 }
 
 // Respuesta de autenticación
@@ -59,7 +61,7 @@ message User {
 // Solicitud de eliminación de mensaje
 message DeleteMessageRequest {
     string message_id = 1;
-    string sender_username = 2;  // Para verificar permisos
+    string sender_username = 2;
 }
 
 // Respuesta de eliminación
@@ -75,6 +77,12 @@ message ClearHistoryRequest {
   string recipient = 2;
 }
 
+// Respuesta a peticion de eliminacion de historial
+message ClearHistoryResponse {
+  bool success = 1;
+  string message = 2;
+}
+
 // Notificación de mensaje eliminado
 message MessageDeletedNotification {
     string message_id = 1;
@@ -83,7 +91,7 @@ message MessageDeletedNotification {
 
 // Solicitud para bloquear contacto
 message BlockContactRequest {
-    string recipient = 1; // El usuario a bloquear
+    string recipient = 1;
 }
 
 // Respuesta de la operación de bloqueo
@@ -102,11 +110,11 @@ message UnblockContactResponse {
     string message = 2;
 }
 
-// Error de envío (Para notificar al remitente que no pudo enviar el mensaje)
+// Error de envío
 message MessageError {
-    string message_id = 1;    // ID del mensaje que falló (si existe)
-    string error_message = 2; // <--- Nombre sugerido para el campo de error
-    string recipient = 3;     // Destinatario original
+    string message_id = 1;
+    string error_message = 2;
+    string recipient = 3;
 }
 
 // Causa del fallo en el envío de un mensaje
@@ -132,11 +140,11 @@ message BlockedUsersList {
   repeated string users = 1;
 }
 
-// Solicitud para mercar mensajes como leidos
+// Solicitud para marcar mensajes como leidos
 message MarkMessagesAsReadRequest {
-  string sender = 1; // Quien los leyo
-  string recipient = 2; // De quien son los mensajes
-  repeated string message_ids= 3; // Lista de IDs leidos
+  string sender = 1;
+  string recipient = 2;
+  repeated string message_ids = 3;
 }
 
 // Actualización enviada al remitente original cuando sus mensajes son leídos
@@ -149,6 +157,25 @@ message ContactIdentity {
   string sender_id = 1;      // El ID real (UUID) del remitente
   string sender_username = 2; // El username del remitente
   string contact_username = 3; // El username del contacto parcial
+}
+
+/**
+ * Representa una solicitud pendiente de limpieza de historial entre dos usuarios.
+ * Contiene los usernames del remitente que solicitó la limpieza y del destinatario
+ * que debe aplicarla localmente cuando se conecte.
+ */
+message PendingClearHistory {
+  string sender = 1;       // Username del usuario que solicitó la limpieza
+  string recipient = 2;    // Username del usuario que debe aplicar la limpieza
+}
+
+/**
+ * Lista de solicitudes pendientes de limpieza de historial.
+ * Se envía durante la conexión inicial para notificar al cliente que debe
+ * eliminar localmente el historial con los contactos especificados.
+ */
+message PendingClearHistoryList {
+  repeated PendingClearHistory clear_histories = 1;
 }
 
 // Wrapper para todos los mensajes
@@ -174,5 +201,9 @@ message WsMessage {
     MarkMessagesAsReadRequest mark_messages_as_read_request = 18;
     MessagesReadUpdate messages_read_update = 19;
     ContactIdentity contact_identity = 20;
+    ClearHistoryResponse clear_history_response = 21;
+    PendingClearHistoryList pending_clear_history_list = 22;
   }
 }
+
+

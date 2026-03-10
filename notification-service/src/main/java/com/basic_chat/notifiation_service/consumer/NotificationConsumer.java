@@ -1,35 +1,32 @@
 package com.basic_chat.notifiation_service.consumer;
 
+import com.basic_chat.notifiation_service.model.ContactAddEvent;
+import com.basic_chat.notifiation_service.model.DeliveryEvent;
 import com.basic_chat.notifiation_service.model.Notification;
+import com.basic_chat.notifiation_service.service.NotificationService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
-
-import com.basic_chat.notifiation_service.model.ContactAddEvent;
-import com.basic_chat.notifiation_service.model.MessageSeenEvent;
-import com.basic_chat.notifiation_service.model.MessageSentEvent;
-import com.basic_chat.notifiation_service.model.UserOnlineEvent;
-import com.basic_chat.notifiation_service.service.NotificationService;
-import com.basic_chat.notifiation_service.service.UserPresenceService;
 
 @Component
 public class NotificationConsumer {
 
-    private final NotificationService notificationService;
-    private final UserPresenceService userPresenceService;
+    private static final Logger logger = LoggerFactory.getLogger(NotificationConsumer.class);
 
-    public NotificationConsumer(NotificationService notificationService, UserPresenceService userPresenceService) {
+    private final NotificationService notificationService;
+
+    public NotificationConsumer(NotificationService notificationService) {
         this.notificationService = notificationService;
-        this.userPresenceService = userPresenceService;
     }
-    /**
-     * Listener que se ejecuta cuando un usuario añade como contacto a otro.
-     * @param event El evento con los datos para procesar la notificacion.
-     */
+
     @RabbitListener(queues = "contact.events")
     public void handleContactAdded(ContactAddEvent event) {
+        logger.info("Received contact add event: {} added {}", event.getFrom(), event.getTo());
         notificationService.addContact(event.getFrom(), event.getTo());
     }
 
+<<<<<<< Updated upstream
     /**
      * Listener para eventos de mensajes enviados.
      * 
@@ -59,5 +56,20 @@ public class NotificationConsumer {
     @RabbitListener(queues = "user.online")
     public void handleUserOnlineEvent(UserOnlineEvent event) {
         userPresenceService.notifyUserOnline(event.getUserId());
+=======
+    @RabbitListener(queues = "message.delivery")
+    public void handleDeliveryEvent(DeliveryEvent event) {
+        logger.info("Received delivery event: type={}, messageId={}, recipient={}",
+                event.getType(), event.getMessageId(), event.getRecipient());
+
+        if ("DELIVERED".equals(event.getType())) {
+            Notification notification = new Notification();
+            notification.setReceiver(event.getRecipient());
+            notification.setMessage("Nuevo mensaje recibido");
+            notification.setType("MESSAGE_SENT");
+            notification.setSeen(false);
+            notificationService.notifyUser(notification);
+        }
+>>>>>>> Stashed changes
     }
 }

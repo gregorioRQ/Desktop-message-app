@@ -18,6 +18,7 @@ import javafx.beans.property.StringProperty;
 public class ChatMessage {
     private final LongProperty id;
     private final StringProperty contactUsername;
+    private final StringProperty senderUsername;
     private final StringProperty content;
     private final StringProperty senderId;
     private final ObjectProperty<LocalDateTime> timestamp;
@@ -26,10 +27,11 @@ public class ChatMessage {
     private static final DateTimeFormatter TIME_FORMATTER = 
             DateTimeFormatter.ofPattern("HH:mm");
     
-    public ChatMessage(Long id, String contactUsername, String content, String senderId,
+    public ChatMessage(Long id, String contactUsername, String senderUsername, String content, String senderId,
                       LocalDateTime timestamp, boolean read) {
         this.id = new SimpleLongProperty(id);
         this.contactUsername = new SimpleStringProperty(contactUsername);
+        this.senderUsername = new SimpleStringProperty(senderUsername);
         this.content = new SimpleStringProperty(content);
         this.senderId = new SimpleStringProperty(senderId);
         this.timestamp = new SimpleObjectProperty<>(timestamp);
@@ -37,8 +39,8 @@ public class ChatMessage {
     }
     
     // Constructor simplificado para nuevos mensajes
-    public ChatMessage(String contactUsername, String content, String senderId) {
-        this(0L, contactUsername, content, senderId, LocalDateTime.now(), false);
+    public ChatMessage(String contactUsername, String senderUsername, String content, String senderId) {
+        this(0L, contactUsername, senderUsername, content, senderId, LocalDateTime.now(), false);
     }
     
     // Getters y setters
@@ -60,6 +62,18 @@ public class ChatMessage {
     
     public StringProperty contactUsernameProperty() {
         return contactUsername;
+    }
+    
+    public String getSenderUsername() {
+        return senderUsername.get();
+    }
+    
+    public StringProperty senderUsernameProperty() {
+        return senderUsername;
+    }
+    
+    public void setSenderUsername(String senderUsername) {
+        this.senderUsername.set(senderUsername);
     }
     
     public String getContent() {

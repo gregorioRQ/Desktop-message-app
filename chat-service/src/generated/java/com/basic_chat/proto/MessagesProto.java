@@ -17627,6 +17627,1496 @@ public final class MessagesProto {
 
   }
 
+  public interface PendingClearHistoryOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:com.basic_chat.PendingClearHistory)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string sender = 1;</code>
+     * @return The sender.
+     */
+    java.lang.String getSender();
+    /**
+     * <code>string sender = 1;</code>
+     * @return The bytes for sender.
+     */
+    com.google.protobuf.ByteString
+        getSenderBytes();
+
+    /**
+     * <code>string recipient = 2;</code>
+     * @return The recipient.
+     */
+    java.lang.String getRecipient();
+    /**
+     * <code>string recipient = 2;</code>
+     * @return The bytes for recipient.
+     */
+    com.google.protobuf.ByteString
+        getRecipientBytes();
+  }
+  /**
+   * Protobuf type {@code com.basic_chat.PendingClearHistory}
+   */
+  public static final class PendingClearHistory extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:com.basic_chat.PendingClearHistory)
+      PendingClearHistoryOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use PendingClearHistory.newBuilder() to construct.
+    private PendingClearHistory(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private PendingClearHistory() {
+      sender_ = "";
+      recipient_ = "";
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new PendingClearHistory();
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_PendingClearHistory_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_PendingClearHistory_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.basic_chat.proto.MessagesProto.PendingClearHistory.class, com.basic_chat.proto.MessagesProto.PendingClearHistory.Builder.class);
+    }
+
+    public static final int SENDER_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object sender_ = "";
+    /**
+     * <code>string sender = 1;</code>
+     * @return The sender.
+     */
+    @java.lang.Override
+    public java.lang.String getSender() {
+      java.lang.Object ref = sender_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        sender_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string sender = 1;</code>
+     * @return The bytes for sender.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getSenderBytes() {
+      java.lang.Object ref = sender_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        sender_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int RECIPIENT_FIELD_NUMBER = 2;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object recipient_ = "";
+    /**
+     * <code>string recipient = 2;</code>
+     * @return The recipient.
+     */
+    @java.lang.Override
+    public java.lang.String getRecipient() {
+      java.lang.Object ref = recipient_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        recipient_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string recipient = 2;</code>
+     * @return The bytes for recipient.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getRecipientBytes() {
+      java.lang.Object ref = recipient_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        recipient_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(sender_)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, sender_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(recipient_)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, recipient_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(sender_)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, sender_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(recipient_)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, recipient_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.basic_chat.proto.MessagesProto.PendingClearHistory)) {
+        return super.equals(obj);
+      }
+      com.basic_chat.proto.MessagesProto.PendingClearHistory other = (com.basic_chat.proto.MessagesProto.PendingClearHistory) obj;
+
+      if (!getSender()
+          .equals(other.getSender())) return false;
+      if (!getRecipient()
+          .equals(other.getRecipient())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + SENDER_FIELD_NUMBER;
+      hash = (53 * hash) + getSender().hashCode();
+      hash = (37 * hash) + RECIPIENT_FIELD_NUMBER;
+      hash = (53 * hash) + getRecipient().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.basic_chat.proto.MessagesProto.PendingClearHistory parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.basic_chat.proto.MessagesProto.PendingClearHistory parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.basic_chat.proto.MessagesProto.PendingClearHistory parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.basic_chat.proto.MessagesProto.PendingClearHistory parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.basic_chat.proto.MessagesProto.PendingClearHistory parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.basic_chat.proto.MessagesProto.PendingClearHistory parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.basic_chat.proto.MessagesProto.PendingClearHistory parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.basic_chat.proto.MessagesProto.PendingClearHistory parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static com.basic_chat.proto.MessagesProto.PendingClearHistory parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static com.basic_chat.proto.MessagesProto.PendingClearHistory parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.basic_chat.proto.MessagesProto.PendingClearHistory parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.basic_chat.proto.MessagesProto.PendingClearHistory parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.basic_chat.proto.MessagesProto.PendingClearHistory prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code com.basic_chat.PendingClearHistory}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:com.basic_chat.PendingClearHistory)
+        com.basic_chat.proto.MessagesProto.PendingClearHistoryOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_PendingClearHistory_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_PendingClearHistory_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.basic_chat.proto.MessagesProto.PendingClearHistory.class, com.basic_chat.proto.MessagesProto.PendingClearHistory.Builder.class);
+      }
+
+      // Construct using com.basic_chat.proto.MessagesProto.PendingClearHistory.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        sender_ = "";
+        recipient_ = "";
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_PendingClearHistory_descriptor;
+      }
+
+      @java.lang.Override
+      public com.basic_chat.proto.MessagesProto.PendingClearHistory getDefaultInstanceForType() {
+        return com.basic_chat.proto.MessagesProto.PendingClearHistory.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public com.basic_chat.proto.MessagesProto.PendingClearHistory build() {
+        com.basic_chat.proto.MessagesProto.PendingClearHistory result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public com.basic_chat.proto.MessagesProto.PendingClearHistory buildPartial() {
+        com.basic_chat.proto.MessagesProto.PendingClearHistory result = new com.basic_chat.proto.MessagesProto.PendingClearHistory(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(com.basic_chat.proto.MessagesProto.PendingClearHistory result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.sender_ = sender_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.recipient_ = recipient_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.basic_chat.proto.MessagesProto.PendingClearHistory) {
+          return mergeFrom((com.basic_chat.proto.MessagesProto.PendingClearHistory)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.basic_chat.proto.MessagesProto.PendingClearHistory other) {
+        if (other == com.basic_chat.proto.MessagesProto.PendingClearHistory.getDefaultInstance()) return this;
+        if (!other.getSender().isEmpty()) {
+          sender_ = other.sender_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        if (!other.getRecipient().isEmpty()) {
+          recipient_ = other.recipient_;
+          bitField0_ |= 0x00000002;
+          onChanged();
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                sender_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 18: {
+                recipient_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 18
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object sender_ = "";
+      /**
+       * <code>string sender = 1;</code>
+       * @return The sender.
+       */
+      public java.lang.String getSender() {
+        java.lang.Object ref = sender_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          sender_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string sender = 1;</code>
+       * @return The bytes for sender.
+       */
+      public com.google.protobuf.ByteString
+          getSenderBytes() {
+        java.lang.Object ref = sender_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          sender_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string sender = 1;</code>
+       * @param value The sender to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSender(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        sender_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string sender = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearSender() {
+        sender_ = getDefaultInstance().getSender();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string sender = 1;</code>
+       * @param value The bytes for sender to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSenderBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        sender_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object recipient_ = "";
+      /**
+       * <code>string recipient = 2;</code>
+       * @return The recipient.
+       */
+      public java.lang.String getRecipient() {
+        java.lang.Object ref = recipient_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          recipient_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string recipient = 2;</code>
+       * @return The bytes for recipient.
+       */
+      public com.google.protobuf.ByteString
+          getRecipientBytes() {
+        java.lang.Object ref = recipient_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          recipient_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string recipient = 2;</code>
+       * @param value The recipient to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRecipient(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        recipient_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string recipient = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearRecipient() {
+        recipient_ = getDefaultInstance().getRecipient();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string recipient = 2;</code>
+       * @param value The bytes for recipient to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRecipientBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        recipient_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:com.basic_chat.PendingClearHistory)
+    }
+
+    // @@protoc_insertion_point(class_scope:com.basic_chat.PendingClearHistory)
+    private static final com.basic_chat.proto.MessagesProto.PendingClearHistory DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.basic_chat.proto.MessagesProto.PendingClearHistory();
+    }
+
+    public static com.basic_chat.proto.MessagesProto.PendingClearHistory getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<PendingClearHistory>
+        PARSER = new com.google.protobuf.AbstractParser<PendingClearHistory>() {
+      @java.lang.Override
+      public PendingClearHistory parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<PendingClearHistory> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<PendingClearHistory> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.basic_chat.proto.MessagesProto.PendingClearHistory getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface PendingClearHistoryListOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:com.basic_chat.PendingClearHistoryList)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>repeated .com.basic_chat.PendingClearHistory pendingClearHistory = 1;</code>
+     */
+    java.util.List<com.basic_chat.proto.MessagesProto.PendingClearHistory> 
+        getPendingClearHistoryList();
+    /**
+     * <code>repeated .com.basic_chat.PendingClearHistory pendingClearHistory = 1;</code>
+     */
+    com.basic_chat.proto.MessagesProto.PendingClearHistory getPendingClearHistory(int index);
+    /**
+     * <code>repeated .com.basic_chat.PendingClearHistory pendingClearHistory = 1;</code>
+     */
+    int getPendingClearHistoryCount();
+    /**
+     * <code>repeated .com.basic_chat.PendingClearHistory pendingClearHistory = 1;</code>
+     */
+    java.util.List<? extends com.basic_chat.proto.MessagesProto.PendingClearHistoryOrBuilder> 
+        getPendingClearHistoryOrBuilderList();
+    /**
+     * <code>repeated .com.basic_chat.PendingClearHistory pendingClearHistory = 1;</code>
+     */
+    com.basic_chat.proto.MessagesProto.PendingClearHistoryOrBuilder getPendingClearHistoryOrBuilder(
+        int index);
+  }
+  /**
+   * <pre>
+   * Lista de usernames cuyo historial fue eliminado (pendiente para entregar al conectarse)
+   * </pre>
+   *
+   * Protobuf type {@code com.basic_chat.PendingClearHistoryList}
+   */
+  public static final class PendingClearHistoryList extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:com.basic_chat.PendingClearHistoryList)
+      PendingClearHistoryListOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use PendingClearHistoryList.newBuilder() to construct.
+    private PendingClearHistoryList(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private PendingClearHistoryList() {
+      pendingClearHistory_ = java.util.Collections.emptyList();
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new PendingClearHistoryList();
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_PendingClearHistoryList_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_PendingClearHistoryList_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.basic_chat.proto.MessagesProto.PendingClearHistoryList.class, com.basic_chat.proto.MessagesProto.PendingClearHistoryList.Builder.class);
+    }
+
+    public static final int PENDINGCLEARHISTORY_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private java.util.List<com.basic_chat.proto.MessagesProto.PendingClearHistory> pendingClearHistory_;
+    /**
+     * <code>repeated .com.basic_chat.PendingClearHistory pendingClearHistory = 1;</code>
+     */
+    @java.lang.Override
+    public java.util.List<com.basic_chat.proto.MessagesProto.PendingClearHistory> getPendingClearHistoryList() {
+      return pendingClearHistory_;
+    }
+    /**
+     * <code>repeated .com.basic_chat.PendingClearHistory pendingClearHistory = 1;</code>
+     */
+    @java.lang.Override
+    public java.util.List<? extends com.basic_chat.proto.MessagesProto.PendingClearHistoryOrBuilder> 
+        getPendingClearHistoryOrBuilderList() {
+      return pendingClearHistory_;
+    }
+    /**
+     * <code>repeated .com.basic_chat.PendingClearHistory pendingClearHistory = 1;</code>
+     */
+    @java.lang.Override
+    public int getPendingClearHistoryCount() {
+      return pendingClearHistory_.size();
+    }
+    /**
+     * <code>repeated .com.basic_chat.PendingClearHistory pendingClearHistory = 1;</code>
+     */
+    @java.lang.Override
+    public com.basic_chat.proto.MessagesProto.PendingClearHistory getPendingClearHistory(int index) {
+      return pendingClearHistory_.get(index);
+    }
+    /**
+     * <code>repeated .com.basic_chat.PendingClearHistory pendingClearHistory = 1;</code>
+     */
+    @java.lang.Override
+    public com.basic_chat.proto.MessagesProto.PendingClearHistoryOrBuilder getPendingClearHistoryOrBuilder(
+        int index) {
+      return pendingClearHistory_.get(index);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      for (int i = 0; i < pendingClearHistory_.size(); i++) {
+        output.writeMessage(1, pendingClearHistory_.get(i));
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      for (int i = 0; i < pendingClearHistory_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, pendingClearHistory_.get(i));
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.basic_chat.proto.MessagesProto.PendingClearHistoryList)) {
+        return super.equals(obj);
+      }
+      com.basic_chat.proto.MessagesProto.PendingClearHistoryList other = (com.basic_chat.proto.MessagesProto.PendingClearHistoryList) obj;
+
+      if (!getPendingClearHistoryList()
+          .equals(other.getPendingClearHistoryList())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (getPendingClearHistoryCount() > 0) {
+        hash = (37 * hash) + PENDINGCLEARHISTORY_FIELD_NUMBER;
+        hash = (53 * hash) + getPendingClearHistoryList().hashCode();
+      }
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.basic_chat.proto.MessagesProto.PendingClearHistoryList parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.basic_chat.proto.MessagesProto.PendingClearHistoryList parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.basic_chat.proto.MessagesProto.PendingClearHistoryList parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.basic_chat.proto.MessagesProto.PendingClearHistoryList parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.basic_chat.proto.MessagesProto.PendingClearHistoryList parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.basic_chat.proto.MessagesProto.PendingClearHistoryList parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.basic_chat.proto.MessagesProto.PendingClearHistoryList parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.basic_chat.proto.MessagesProto.PendingClearHistoryList parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static com.basic_chat.proto.MessagesProto.PendingClearHistoryList parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static com.basic_chat.proto.MessagesProto.PendingClearHistoryList parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static com.basic_chat.proto.MessagesProto.PendingClearHistoryList parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static com.basic_chat.proto.MessagesProto.PendingClearHistoryList parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.basic_chat.proto.MessagesProto.PendingClearHistoryList prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * Lista de usernames cuyo historial fue eliminado (pendiente para entregar al conectarse)
+     * </pre>
+     *
+     * Protobuf type {@code com.basic_chat.PendingClearHistoryList}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:com.basic_chat.PendingClearHistoryList)
+        com.basic_chat.proto.MessagesProto.PendingClearHistoryListOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_PendingClearHistoryList_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_PendingClearHistoryList_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.basic_chat.proto.MessagesProto.PendingClearHistoryList.class, com.basic_chat.proto.MessagesProto.PendingClearHistoryList.Builder.class);
+      }
+
+      // Construct using com.basic_chat.proto.MessagesProto.PendingClearHistoryList.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        if (pendingClearHistoryBuilder_ == null) {
+          pendingClearHistory_ = java.util.Collections.emptyList();
+        } else {
+          pendingClearHistory_ = null;
+          pendingClearHistoryBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000001);
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.basic_chat.proto.MessagesProto.internal_static_com_basic_chat_PendingClearHistoryList_descriptor;
+      }
+
+      @java.lang.Override
+      public com.basic_chat.proto.MessagesProto.PendingClearHistoryList getDefaultInstanceForType() {
+        return com.basic_chat.proto.MessagesProto.PendingClearHistoryList.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public com.basic_chat.proto.MessagesProto.PendingClearHistoryList build() {
+        com.basic_chat.proto.MessagesProto.PendingClearHistoryList result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public com.basic_chat.proto.MessagesProto.PendingClearHistoryList buildPartial() {
+        com.basic_chat.proto.MessagesProto.PendingClearHistoryList result = new com.basic_chat.proto.MessagesProto.PendingClearHistoryList(this);
+        buildPartialRepeatedFields(result);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartialRepeatedFields(com.basic_chat.proto.MessagesProto.PendingClearHistoryList result) {
+        if (pendingClearHistoryBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) != 0)) {
+            pendingClearHistory_ = java.util.Collections.unmodifiableList(pendingClearHistory_);
+            bitField0_ = (bitField0_ & ~0x00000001);
+          }
+          result.pendingClearHistory_ = pendingClearHistory_;
+        } else {
+          result.pendingClearHistory_ = pendingClearHistoryBuilder_.build();
+        }
+      }
+
+      private void buildPartial0(com.basic_chat.proto.MessagesProto.PendingClearHistoryList result) {
+        int from_bitField0_ = bitField0_;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.basic_chat.proto.MessagesProto.PendingClearHistoryList) {
+          return mergeFrom((com.basic_chat.proto.MessagesProto.PendingClearHistoryList)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.basic_chat.proto.MessagesProto.PendingClearHistoryList other) {
+        if (other == com.basic_chat.proto.MessagesProto.PendingClearHistoryList.getDefaultInstance()) return this;
+        if (pendingClearHistoryBuilder_ == null) {
+          if (!other.pendingClearHistory_.isEmpty()) {
+            if (pendingClearHistory_.isEmpty()) {
+              pendingClearHistory_ = other.pendingClearHistory_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+            } else {
+              ensurePendingClearHistoryIsMutable();
+              pendingClearHistory_.addAll(other.pendingClearHistory_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.pendingClearHistory_.isEmpty()) {
+            if (pendingClearHistoryBuilder_.isEmpty()) {
+              pendingClearHistoryBuilder_.dispose();
+              pendingClearHistoryBuilder_ = null;
+              pendingClearHistory_ = other.pendingClearHistory_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+              pendingClearHistoryBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getPendingClearHistoryFieldBuilder() : null;
+            } else {
+              pendingClearHistoryBuilder_.addAllMessages(other.pendingClearHistory_);
+            }
+          }
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                com.basic_chat.proto.MessagesProto.PendingClearHistory m =
+                    input.readMessage(
+                        com.basic_chat.proto.MessagesProto.PendingClearHistory.parser(),
+                        extensionRegistry);
+                if (pendingClearHistoryBuilder_ == null) {
+                  ensurePendingClearHistoryIsMutable();
+                  pendingClearHistory_.add(m);
+                } else {
+                  pendingClearHistoryBuilder_.addMessage(m);
+                }
+                break;
+              } // case 10
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.util.List<com.basic_chat.proto.MessagesProto.PendingClearHistory> pendingClearHistory_ =
+        java.util.Collections.emptyList();
+      private void ensurePendingClearHistoryIsMutable() {
+        if (!((bitField0_ & 0x00000001) != 0)) {
+          pendingClearHistory_ = new java.util.ArrayList<com.basic_chat.proto.MessagesProto.PendingClearHistory>(pendingClearHistory_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          com.basic_chat.proto.MessagesProto.PendingClearHistory, com.basic_chat.proto.MessagesProto.PendingClearHistory.Builder, com.basic_chat.proto.MessagesProto.PendingClearHistoryOrBuilder> pendingClearHistoryBuilder_;
+
+      /**
+       * <code>repeated .com.basic_chat.PendingClearHistory pendingClearHistory = 1;</code>
+       */
+      public java.util.List<com.basic_chat.proto.MessagesProto.PendingClearHistory> getPendingClearHistoryList() {
+        if (pendingClearHistoryBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(pendingClearHistory_);
+        } else {
+          return pendingClearHistoryBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <code>repeated .com.basic_chat.PendingClearHistory pendingClearHistory = 1;</code>
+       */
+      public int getPendingClearHistoryCount() {
+        if (pendingClearHistoryBuilder_ == null) {
+          return pendingClearHistory_.size();
+        } else {
+          return pendingClearHistoryBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .com.basic_chat.PendingClearHistory pendingClearHistory = 1;</code>
+       */
+      public com.basic_chat.proto.MessagesProto.PendingClearHistory getPendingClearHistory(int index) {
+        if (pendingClearHistoryBuilder_ == null) {
+          return pendingClearHistory_.get(index);
+        } else {
+          return pendingClearHistoryBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .com.basic_chat.PendingClearHistory pendingClearHistory = 1;</code>
+       */
+      public Builder setPendingClearHistory(
+          int index, com.basic_chat.proto.MessagesProto.PendingClearHistory value) {
+        if (pendingClearHistoryBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensurePendingClearHistoryIsMutable();
+          pendingClearHistory_.set(index, value);
+          onChanged();
+        } else {
+          pendingClearHistoryBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .com.basic_chat.PendingClearHistory pendingClearHistory = 1;</code>
+       */
+      public Builder setPendingClearHistory(
+          int index, com.basic_chat.proto.MessagesProto.PendingClearHistory.Builder builderForValue) {
+        if (pendingClearHistoryBuilder_ == null) {
+          ensurePendingClearHistoryIsMutable();
+          pendingClearHistory_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          pendingClearHistoryBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .com.basic_chat.PendingClearHistory pendingClearHistory = 1;</code>
+       */
+      public Builder addPendingClearHistory(com.basic_chat.proto.MessagesProto.PendingClearHistory value) {
+        if (pendingClearHistoryBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensurePendingClearHistoryIsMutable();
+          pendingClearHistory_.add(value);
+          onChanged();
+        } else {
+          pendingClearHistoryBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .com.basic_chat.PendingClearHistory pendingClearHistory = 1;</code>
+       */
+      public Builder addPendingClearHistory(
+          int index, com.basic_chat.proto.MessagesProto.PendingClearHistory value) {
+        if (pendingClearHistoryBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensurePendingClearHistoryIsMutable();
+          pendingClearHistory_.add(index, value);
+          onChanged();
+        } else {
+          pendingClearHistoryBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .com.basic_chat.PendingClearHistory pendingClearHistory = 1;</code>
+       */
+      public Builder addPendingClearHistory(
+          com.basic_chat.proto.MessagesProto.PendingClearHistory.Builder builderForValue) {
+        if (pendingClearHistoryBuilder_ == null) {
+          ensurePendingClearHistoryIsMutable();
+          pendingClearHistory_.add(builderForValue.build());
+          onChanged();
+        } else {
+          pendingClearHistoryBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .com.basic_chat.PendingClearHistory pendingClearHistory = 1;</code>
+       */
+      public Builder addPendingClearHistory(
+          int index, com.basic_chat.proto.MessagesProto.PendingClearHistory.Builder builderForValue) {
+        if (pendingClearHistoryBuilder_ == null) {
+          ensurePendingClearHistoryIsMutable();
+          pendingClearHistory_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          pendingClearHistoryBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .com.basic_chat.PendingClearHistory pendingClearHistory = 1;</code>
+       */
+      public Builder addAllPendingClearHistory(
+          java.lang.Iterable<? extends com.basic_chat.proto.MessagesProto.PendingClearHistory> values) {
+        if (pendingClearHistoryBuilder_ == null) {
+          ensurePendingClearHistoryIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, pendingClearHistory_);
+          onChanged();
+        } else {
+          pendingClearHistoryBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .com.basic_chat.PendingClearHistory pendingClearHistory = 1;</code>
+       */
+      public Builder clearPendingClearHistory() {
+        if (pendingClearHistoryBuilder_ == null) {
+          pendingClearHistory_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+          onChanged();
+        } else {
+          pendingClearHistoryBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .com.basic_chat.PendingClearHistory pendingClearHistory = 1;</code>
+       */
+      public Builder removePendingClearHistory(int index) {
+        if (pendingClearHistoryBuilder_ == null) {
+          ensurePendingClearHistoryIsMutable();
+          pendingClearHistory_.remove(index);
+          onChanged();
+        } else {
+          pendingClearHistoryBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .com.basic_chat.PendingClearHistory pendingClearHistory = 1;</code>
+       */
+      public com.basic_chat.proto.MessagesProto.PendingClearHistory.Builder getPendingClearHistoryBuilder(
+          int index) {
+        return getPendingClearHistoryFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .com.basic_chat.PendingClearHistory pendingClearHistory = 1;</code>
+       */
+      public com.basic_chat.proto.MessagesProto.PendingClearHistoryOrBuilder getPendingClearHistoryOrBuilder(
+          int index) {
+        if (pendingClearHistoryBuilder_ == null) {
+          return pendingClearHistory_.get(index);  } else {
+          return pendingClearHistoryBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <code>repeated .com.basic_chat.PendingClearHistory pendingClearHistory = 1;</code>
+       */
+      public java.util.List<? extends com.basic_chat.proto.MessagesProto.PendingClearHistoryOrBuilder> 
+           getPendingClearHistoryOrBuilderList() {
+        if (pendingClearHistoryBuilder_ != null) {
+          return pendingClearHistoryBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(pendingClearHistory_);
+        }
+      }
+      /**
+       * <code>repeated .com.basic_chat.PendingClearHistory pendingClearHistory = 1;</code>
+       */
+      public com.basic_chat.proto.MessagesProto.PendingClearHistory.Builder addPendingClearHistoryBuilder() {
+        return getPendingClearHistoryFieldBuilder().addBuilder(
+            com.basic_chat.proto.MessagesProto.PendingClearHistory.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .com.basic_chat.PendingClearHistory pendingClearHistory = 1;</code>
+       */
+      public com.basic_chat.proto.MessagesProto.PendingClearHistory.Builder addPendingClearHistoryBuilder(
+          int index) {
+        return getPendingClearHistoryFieldBuilder().addBuilder(
+            index, com.basic_chat.proto.MessagesProto.PendingClearHistory.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .com.basic_chat.PendingClearHistory pendingClearHistory = 1;</code>
+       */
+      public java.util.List<com.basic_chat.proto.MessagesProto.PendingClearHistory.Builder> 
+           getPendingClearHistoryBuilderList() {
+        return getPendingClearHistoryFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          com.basic_chat.proto.MessagesProto.PendingClearHistory, com.basic_chat.proto.MessagesProto.PendingClearHistory.Builder, com.basic_chat.proto.MessagesProto.PendingClearHistoryOrBuilder> 
+          getPendingClearHistoryFieldBuilder() {
+        if (pendingClearHistoryBuilder_ == null) {
+          pendingClearHistoryBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              com.basic_chat.proto.MessagesProto.PendingClearHistory, com.basic_chat.proto.MessagesProto.PendingClearHistory.Builder, com.basic_chat.proto.MessagesProto.PendingClearHistoryOrBuilder>(
+                  pendingClearHistory_,
+                  ((bitField0_ & 0x00000001) != 0),
+                  getParentForChildren(),
+                  isClean());
+          pendingClearHistory_ = null;
+        }
+        return pendingClearHistoryBuilder_;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:com.basic_chat.PendingClearHistoryList)
+    }
+
+    // @@protoc_insertion_point(class_scope:com.basic_chat.PendingClearHistoryList)
+    private static final com.basic_chat.proto.MessagesProto.PendingClearHistoryList DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.basic_chat.proto.MessagesProto.PendingClearHistoryList();
+    }
+
+    public static com.basic_chat.proto.MessagesProto.PendingClearHistoryList getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<PendingClearHistoryList>
+        PARSER = new com.google.protobuf.AbstractParser<PendingClearHistoryList>() {
+      @java.lang.Override
+      public PendingClearHistoryList parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<PendingClearHistoryList> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<PendingClearHistoryList> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.basic_chat.proto.MessagesProto.PendingClearHistoryList getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   public interface WsMessageOrBuilder extends
       // @@protoc_insertion_point(interface_extends:com.basic_chat.WsMessage)
       com.google.protobuf.MessageOrBuilder {
@@ -17946,6 +19436,36 @@ public final class MessagesProto {
      */
     com.basic_chat.proto.MessagesProto.ClearHistoryResponseOrBuilder getClearHistoryResponseOrBuilder();
 
+    /**
+     * <code>.com.basic_chat.PendingClearHistoryList pending_clear_history_list = 22;</code>
+     * @return Whether the pendingClearHistoryList field is set.
+     */
+    boolean hasPendingClearHistoryList();
+    /**
+     * <code>.com.basic_chat.PendingClearHistoryList pending_clear_history_list = 22;</code>
+     * @return The pendingClearHistoryList.
+     */
+    com.basic_chat.proto.MessagesProto.PendingClearHistoryList getPendingClearHistoryList();
+    /**
+     * <code>.com.basic_chat.PendingClearHistoryList pending_clear_history_list = 22;</code>
+     */
+    com.basic_chat.proto.MessagesProto.PendingClearHistoryListOrBuilder getPendingClearHistoryListOrBuilder();
+
+    /**
+     * <code>.com.basic_chat.PendingClearHistory pending_clear_history = 23;</code>
+     * @return Whether the pendingClearHistory field is set.
+     */
+    boolean hasPendingClearHistory();
+    /**
+     * <code>.com.basic_chat.PendingClearHistory pending_clear_history = 23;</code>
+     * @return The pendingClearHistory.
+     */
+    com.basic_chat.proto.MessagesProto.PendingClearHistory getPendingClearHistory();
+    /**
+     * <code>.com.basic_chat.PendingClearHistory pending_clear_history = 23;</code>
+     */
+    com.basic_chat.proto.MessagesProto.PendingClearHistoryOrBuilder getPendingClearHistoryOrBuilder();
+
     com.basic_chat.proto.MessagesProto.WsMessage.PayloadCase getPayloadCase();
   }
   /**
@@ -18014,6 +19534,8 @@ public final class MessagesProto {
       MESSAGES_READ_UPDATE(19),
       CONTACT_IDENTITY(20),
       CLEAR_HISTORY_RESPONSE(21),
+      PENDING_CLEAR_HISTORY_LIST(22),
+      PENDING_CLEAR_HISTORY(23),
       PAYLOAD_NOT_SET(0);
       private final int value;
       private PayloadCase(int value) {
@@ -18052,6 +19574,8 @@ public final class MessagesProto {
           case 19: return MESSAGES_READ_UPDATE;
           case 20: return CONTACT_IDENTITY;
           case 21: return CLEAR_HISTORY_RESPONSE;
+          case 22: return PENDING_CLEAR_HISTORY_LIST;
+          case 23: return PENDING_CLEAR_HISTORY;
           case 0: return PAYLOAD_NOT_SET;
           default: return null;
         }
@@ -18718,6 +20242,68 @@ public final class MessagesProto {
       return com.basic_chat.proto.MessagesProto.ClearHistoryResponse.getDefaultInstance();
     }
 
+    public static final int PENDING_CLEAR_HISTORY_LIST_FIELD_NUMBER = 22;
+    /**
+     * <code>.com.basic_chat.PendingClearHistoryList pending_clear_history_list = 22;</code>
+     * @return Whether the pendingClearHistoryList field is set.
+     */
+    @java.lang.Override
+    public boolean hasPendingClearHistoryList() {
+      return payloadCase_ == 22;
+    }
+    /**
+     * <code>.com.basic_chat.PendingClearHistoryList pending_clear_history_list = 22;</code>
+     * @return The pendingClearHistoryList.
+     */
+    @java.lang.Override
+    public com.basic_chat.proto.MessagesProto.PendingClearHistoryList getPendingClearHistoryList() {
+      if (payloadCase_ == 22) {
+         return (com.basic_chat.proto.MessagesProto.PendingClearHistoryList) payload_;
+      }
+      return com.basic_chat.proto.MessagesProto.PendingClearHistoryList.getDefaultInstance();
+    }
+    /**
+     * <code>.com.basic_chat.PendingClearHistoryList pending_clear_history_list = 22;</code>
+     */
+    @java.lang.Override
+    public com.basic_chat.proto.MessagesProto.PendingClearHistoryListOrBuilder getPendingClearHistoryListOrBuilder() {
+      if (payloadCase_ == 22) {
+         return (com.basic_chat.proto.MessagesProto.PendingClearHistoryList) payload_;
+      }
+      return com.basic_chat.proto.MessagesProto.PendingClearHistoryList.getDefaultInstance();
+    }
+
+    public static final int PENDING_CLEAR_HISTORY_FIELD_NUMBER = 23;
+    /**
+     * <code>.com.basic_chat.PendingClearHistory pending_clear_history = 23;</code>
+     * @return Whether the pendingClearHistory field is set.
+     */
+    @java.lang.Override
+    public boolean hasPendingClearHistory() {
+      return payloadCase_ == 23;
+    }
+    /**
+     * <code>.com.basic_chat.PendingClearHistory pending_clear_history = 23;</code>
+     * @return The pendingClearHistory.
+     */
+    @java.lang.Override
+    public com.basic_chat.proto.MessagesProto.PendingClearHistory getPendingClearHistory() {
+      if (payloadCase_ == 23) {
+         return (com.basic_chat.proto.MessagesProto.PendingClearHistory) payload_;
+      }
+      return com.basic_chat.proto.MessagesProto.PendingClearHistory.getDefaultInstance();
+    }
+    /**
+     * <code>.com.basic_chat.PendingClearHistory pending_clear_history = 23;</code>
+     */
+    @java.lang.Override
+    public com.basic_chat.proto.MessagesProto.PendingClearHistoryOrBuilder getPendingClearHistoryOrBuilder() {
+      if (payloadCase_ == 23) {
+         return (com.basic_chat.proto.MessagesProto.PendingClearHistory) payload_;
+      }
+      return com.basic_chat.proto.MessagesProto.PendingClearHistory.getDefaultInstance();
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -18794,6 +20380,12 @@ public final class MessagesProto {
       }
       if (payloadCase_ == 21) {
         output.writeMessage(21, (com.basic_chat.proto.MessagesProto.ClearHistoryResponse) payload_);
+      }
+      if (payloadCase_ == 22) {
+        output.writeMessage(22, (com.basic_chat.proto.MessagesProto.PendingClearHistoryList) payload_);
+      }
+      if (payloadCase_ == 23) {
+        output.writeMessage(23, (com.basic_chat.proto.MessagesProto.PendingClearHistory) payload_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -18887,6 +20479,14 @@ public final class MessagesProto {
       if (payloadCase_ == 21) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(21, (com.basic_chat.proto.MessagesProto.ClearHistoryResponse) payload_);
+      }
+      if (payloadCase_ == 22) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(22, (com.basic_chat.proto.MessagesProto.PendingClearHistoryList) payload_);
+      }
+      if (payloadCase_ == 23) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(23, (com.basic_chat.proto.MessagesProto.PendingClearHistory) payload_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -18989,6 +20589,14 @@ public final class MessagesProto {
           if (!getClearHistoryResponse()
               .equals(other.getClearHistoryResponse())) return false;
           break;
+        case 22:
+          if (!getPendingClearHistoryList()
+              .equals(other.getPendingClearHistoryList())) return false;
+          break;
+        case 23:
+          if (!getPendingClearHistory()
+              .equals(other.getPendingClearHistory())) return false;
+          break;
         case 0:
         default:
       }
@@ -19087,6 +20695,14 @@ public final class MessagesProto {
         case 21:
           hash = (37 * hash) + CLEAR_HISTORY_RESPONSE_FIELD_NUMBER;
           hash = (53 * hash) + getClearHistoryResponse().hashCode();
+          break;
+        case 22:
+          hash = (37 * hash) + PENDING_CLEAR_HISTORY_LIST_FIELD_NUMBER;
+          hash = (53 * hash) + getPendingClearHistoryList().hashCode();
+          break;
+        case 23:
+          hash = (37 * hash) + PENDING_CLEAR_HISTORY_FIELD_NUMBER;
+          hash = (53 * hash) + getPendingClearHistory().hashCode();
           break;
         case 0:
         default:
@@ -19289,6 +20905,12 @@ public final class MessagesProto {
         if (clearHistoryResponseBuilder_ != null) {
           clearHistoryResponseBuilder_.clear();
         }
+        if (pendingClearHistoryListBuilder_ != null) {
+          pendingClearHistoryListBuilder_.clear();
+        }
+        if (pendingClearHistoryBuilder_ != null) {
+          pendingClearHistoryBuilder_.clear();
+        }
         payloadCase_ = 0;
         payload_ = null;
         return this;
@@ -19413,6 +21035,14 @@ public final class MessagesProto {
         if (payloadCase_ == 21 &&
             clearHistoryResponseBuilder_ != null) {
           result.payload_ = clearHistoryResponseBuilder_.build();
+        }
+        if (payloadCase_ == 22 &&
+            pendingClearHistoryListBuilder_ != null) {
+          result.payload_ = pendingClearHistoryListBuilder_.build();
+        }
+        if (payloadCase_ == 23 &&
+            pendingClearHistoryBuilder_ != null) {
+          result.payload_ = pendingClearHistoryBuilder_.build();
         }
       }
 
@@ -19543,6 +21173,14 @@ public final class MessagesProto {
           }
           case CLEAR_HISTORY_RESPONSE: {
             mergeClearHistoryResponse(other.getClearHistoryResponse());
+            break;
+          }
+          case PENDING_CLEAR_HISTORY_LIST: {
+            mergePendingClearHistoryList(other.getPendingClearHistoryList());
+            break;
+          }
+          case PENDING_CLEAR_HISTORY: {
+            mergePendingClearHistory(other.getPendingClearHistory());
             break;
           }
           case PAYLOAD_NOT_SET: {
@@ -19722,6 +21360,20 @@ public final class MessagesProto {
                 payloadCase_ = 21;
                 break;
               } // case 170
+              case 178: {
+                input.readMessage(
+                    getPendingClearHistoryListFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                payloadCase_ = 22;
+                break;
+              } // case 178
+              case 186: {
+                input.readMessage(
+                    getPendingClearHistoryFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                payloadCase_ = 23;
+                break;
+              } // case 186
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -22735,6 +24387,290 @@ public final class MessagesProto {
         onChanged();
         return clearHistoryResponseBuilder_;
       }
+
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.basic_chat.proto.MessagesProto.PendingClearHistoryList, com.basic_chat.proto.MessagesProto.PendingClearHistoryList.Builder, com.basic_chat.proto.MessagesProto.PendingClearHistoryListOrBuilder> pendingClearHistoryListBuilder_;
+      /**
+       * <code>.com.basic_chat.PendingClearHistoryList pending_clear_history_list = 22;</code>
+       * @return Whether the pendingClearHistoryList field is set.
+       */
+      @java.lang.Override
+      public boolean hasPendingClearHistoryList() {
+        return payloadCase_ == 22;
+      }
+      /**
+       * <code>.com.basic_chat.PendingClearHistoryList pending_clear_history_list = 22;</code>
+       * @return The pendingClearHistoryList.
+       */
+      @java.lang.Override
+      public com.basic_chat.proto.MessagesProto.PendingClearHistoryList getPendingClearHistoryList() {
+        if (pendingClearHistoryListBuilder_ == null) {
+          if (payloadCase_ == 22) {
+            return (com.basic_chat.proto.MessagesProto.PendingClearHistoryList) payload_;
+          }
+          return com.basic_chat.proto.MessagesProto.PendingClearHistoryList.getDefaultInstance();
+        } else {
+          if (payloadCase_ == 22) {
+            return pendingClearHistoryListBuilder_.getMessage();
+          }
+          return com.basic_chat.proto.MessagesProto.PendingClearHistoryList.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.com.basic_chat.PendingClearHistoryList pending_clear_history_list = 22;</code>
+       */
+      public Builder setPendingClearHistoryList(com.basic_chat.proto.MessagesProto.PendingClearHistoryList value) {
+        if (pendingClearHistoryListBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          payload_ = value;
+          onChanged();
+        } else {
+          pendingClearHistoryListBuilder_.setMessage(value);
+        }
+        payloadCase_ = 22;
+        return this;
+      }
+      /**
+       * <code>.com.basic_chat.PendingClearHistoryList pending_clear_history_list = 22;</code>
+       */
+      public Builder setPendingClearHistoryList(
+          com.basic_chat.proto.MessagesProto.PendingClearHistoryList.Builder builderForValue) {
+        if (pendingClearHistoryListBuilder_ == null) {
+          payload_ = builderForValue.build();
+          onChanged();
+        } else {
+          pendingClearHistoryListBuilder_.setMessage(builderForValue.build());
+        }
+        payloadCase_ = 22;
+        return this;
+      }
+      /**
+       * <code>.com.basic_chat.PendingClearHistoryList pending_clear_history_list = 22;</code>
+       */
+      public Builder mergePendingClearHistoryList(com.basic_chat.proto.MessagesProto.PendingClearHistoryList value) {
+        if (pendingClearHistoryListBuilder_ == null) {
+          if (payloadCase_ == 22 &&
+              payload_ != com.basic_chat.proto.MessagesProto.PendingClearHistoryList.getDefaultInstance()) {
+            payload_ = com.basic_chat.proto.MessagesProto.PendingClearHistoryList.newBuilder((com.basic_chat.proto.MessagesProto.PendingClearHistoryList) payload_)
+                .mergeFrom(value).buildPartial();
+          } else {
+            payload_ = value;
+          }
+          onChanged();
+        } else {
+          if (payloadCase_ == 22) {
+            pendingClearHistoryListBuilder_.mergeFrom(value);
+          } else {
+            pendingClearHistoryListBuilder_.setMessage(value);
+          }
+        }
+        payloadCase_ = 22;
+        return this;
+      }
+      /**
+       * <code>.com.basic_chat.PendingClearHistoryList pending_clear_history_list = 22;</code>
+       */
+      public Builder clearPendingClearHistoryList() {
+        if (pendingClearHistoryListBuilder_ == null) {
+          if (payloadCase_ == 22) {
+            payloadCase_ = 0;
+            payload_ = null;
+            onChanged();
+          }
+        } else {
+          if (payloadCase_ == 22) {
+            payloadCase_ = 0;
+            payload_ = null;
+          }
+          pendingClearHistoryListBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>.com.basic_chat.PendingClearHistoryList pending_clear_history_list = 22;</code>
+       */
+      public com.basic_chat.proto.MessagesProto.PendingClearHistoryList.Builder getPendingClearHistoryListBuilder() {
+        return getPendingClearHistoryListFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.com.basic_chat.PendingClearHistoryList pending_clear_history_list = 22;</code>
+       */
+      @java.lang.Override
+      public com.basic_chat.proto.MessagesProto.PendingClearHistoryListOrBuilder getPendingClearHistoryListOrBuilder() {
+        if ((payloadCase_ == 22) && (pendingClearHistoryListBuilder_ != null)) {
+          return pendingClearHistoryListBuilder_.getMessageOrBuilder();
+        } else {
+          if (payloadCase_ == 22) {
+            return (com.basic_chat.proto.MessagesProto.PendingClearHistoryList) payload_;
+          }
+          return com.basic_chat.proto.MessagesProto.PendingClearHistoryList.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.com.basic_chat.PendingClearHistoryList pending_clear_history_list = 22;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.basic_chat.proto.MessagesProto.PendingClearHistoryList, com.basic_chat.proto.MessagesProto.PendingClearHistoryList.Builder, com.basic_chat.proto.MessagesProto.PendingClearHistoryListOrBuilder> 
+          getPendingClearHistoryListFieldBuilder() {
+        if (pendingClearHistoryListBuilder_ == null) {
+          if (!(payloadCase_ == 22)) {
+            payload_ = com.basic_chat.proto.MessagesProto.PendingClearHistoryList.getDefaultInstance();
+          }
+          pendingClearHistoryListBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              com.basic_chat.proto.MessagesProto.PendingClearHistoryList, com.basic_chat.proto.MessagesProto.PendingClearHistoryList.Builder, com.basic_chat.proto.MessagesProto.PendingClearHistoryListOrBuilder>(
+                  (com.basic_chat.proto.MessagesProto.PendingClearHistoryList) payload_,
+                  getParentForChildren(),
+                  isClean());
+          payload_ = null;
+        }
+        payloadCase_ = 22;
+        onChanged();
+        return pendingClearHistoryListBuilder_;
+      }
+
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.basic_chat.proto.MessagesProto.PendingClearHistory, com.basic_chat.proto.MessagesProto.PendingClearHistory.Builder, com.basic_chat.proto.MessagesProto.PendingClearHistoryOrBuilder> pendingClearHistoryBuilder_;
+      /**
+       * <code>.com.basic_chat.PendingClearHistory pending_clear_history = 23;</code>
+       * @return Whether the pendingClearHistory field is set.
+       */
+      @java.lang.Override
+      public boolean hasPendingClearHistory() {
+        return payloadCase_ == 23;
+      }
+      /**
+       * <code>.com.basic_chat.PendingClearHistory pending_clear_history = 23;</code>
+       * @return The pendingClearHistory.
+       */
+      @java.lang.Override
+      public com.basic_chat.proto.MessagesProto.PendingClearHistory getPendingClearHistory() {
+        if (pendingClearHistoryBuilder_ == null) {
+          if (payloadCase_ == 23) {
+            return (com.basic_chat.proto.MessagesProto.PendingClearHistory) payload_;
+          }
+          return com.basic_chat.proto.MessagesProto.PendingClearHistory.getDefaultInstance();
+        } else {
+          if (payloadCase_ == 23) {
+            return pendingClearHistoryBuilder_.getMessage();
+          }
+          return com.basic_chat.proto.MessagesProto.PendingClearHistory.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.com.basic_chat.PendingClearHistory pending_clear_history = 23;</code>
+       */
+      public Builder setPendingClearHistory(com.basic_chat.proto.MessagesProto.PendingClearHistory value) {
+        if (pendingClearHistoryBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          payload_ = value;
+          onChanged();
+        } else {
+          pendingClearHistoryBuilder_.setMessage(value);
+        }
+        payloadCase_ = 23;
+        return this;
+      }
+      /**
+       * <code>.com.basic_chat.PendingClearHistory pending_clear_history = 23;</code>
+       */
+      public Builder setPendingClearHistory(
+          com.basic_chat.proto.MessagesProto.PendingClearHistory.Builder builderForValue) {
+        if (pendingClearHistoryBuilder_ == null) {
+          payload_ = builderForValue.build();
+          onChanged();
+        } else {
+          pendingClearHistoryBuilder_.setMessage(builderForValue.build());
+        }
+        payloadCase_ = 23;
+        return this;
+      }
+      /**
+       * <code>.com.basic_chat.PendingClearHistory pending_clear_history = 23;</code>
+       */
+      public Builder mergePendingClearHistory(com.basic_chat.proto.MessagesProto.PendingClearHistory value) {
+        if (pendingClearHistoryBuilder_ == null) {
+          if (payloadCase_ == 23 &&
+              payload_ != com.basic_chat.proto.MessagesProto.PendingClearHistory.getDefaultInstance()) {
+            payload_ = com.basic_chat.proto.MessagesProto.PendingClearHistory.newBuilder((com.basic_chat.proto.MessagesProto.PendingClearHistory) payload_)
+                .mergeFrom(value).buildPartial();
+          } else {
+            payload_ = value;
+          }
+          onChanged();
+        } else {
+          if (payloadCase_ == 23) {
+            pendingClearHistoryBuilder_.mergeFrom(value);
+          } else {
+            pendingClearHistoryBuilder_.setMessage(value);
+          }
+        }
+        payloadCase_ = 23;
+        return this;
+      }
+      /**
+       * <code>.com.basic_chat.PendingClearHistory pending_clear_history = 23;</code>
+       */
+      public Builder clearPendingClearHistory() {
+        if (pendingClearHistoryBuilder_ == null) {
+          if (payloadCase_ == 23) {
+            payloadCase_ = 0;
+            payload_ = null;
+            onChanged();
+          }
+        } else {
+          if (payloadCase_ == 23) {
+            payloadCase_ = 0;
+            payload_ = null;
+          }
+          pendingClearHistoryBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>.com.basic_chat.PendingClearHistory pending_clear_history = 23;</code>
+       */
+      public com.basic_chat.proto.MessagesProto.PendingClearHistory.Builder getPendingClearHistoryBuilder() {
+        return getPendingClearHistoryFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.com.basic_chat.PendingClearHistory pending_clear_history = 23;</code>
+       */
+      @java.lang.Override
+      public com.basic_chat.proto.MessagesProto.PendingClearHistoryOrBuilder getPendingClearHistoryOrBuilder() {
+        if ((payloadCase_ == 23) && (pendingClearHistoryBuilder_ != null)) {
+          return pendingClearHistoryBuilder_.getMessageOrBuilder();
+        } else {
+          if (payloadCase_ == 23) {
+            return (com.basic_chat.proto.MessagesProto.PendingClearHistory) payload_;
+          }
+          return com.basic_chat.proto.MessagesProto.PendingClearHistory.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>.com.basic_chat.PendingClearHistory pending_clear_history = 23;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          com.basic_chat.proto.MessagesProto.PendingClearHistory, com.basic_chat.proto.MessagesProto.PendingClearHistory.Builder, com.basic_chat.proto.MessagesProto.PendingClearHistoryOrBuilder> 
+          getPendingClearHistoryFieldBuilder() {
+        if (pendingClearHistoryBuilder_ == null) {
+          if (!(payloadCase_ == 23)) {
+            payload_ = com.basic_chat.proto.MessagesProto.PendingClearHistory.getDefaultInstance();
+          }
+          pendingClearHistoryBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              com.basic_chat.proto.MessagesProto.PendingClearHistory, com.basic_chat.proto.MessagesProto.PendingClearHistory.Builder, com.basic_chat.proto.MessagesProto.PendingClearHistoryOrBuilder>(
+                  (com.basic_chat.proto.MessagesProto.PendingClearHistory) payload_,
+                  getParentForChildren(),
+                  isClean());
+          payload_ = null;
+        }
+        payloadCase_ = 23;
+        onChanged();
+        return pendingClearHistoryBuilder_;
+      }
       @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -22910,6 +24846,16 @@ public final class MessagesProto {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_com_basic_chat_ContactIdentity_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_basic_chat_PendingClearHistory_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_com_basic_chat_PendingClearHistory_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_com_basic_chat_PendingClearHistoryList_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_com_basic_chat_PendingClearHistoryList_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_com_basic_chat_WsMessage_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -22962,48 +24908,55 @@ public final class MessagesProto {
       "\n\013message_ids\030\001 \003(\t\022\027\n\017reader_username\030\002" +
       " \001(\t\"W\n\017ContactIdentity\022\021\n\tsender_id\030\001 \001" +
       "(\t\022\027\n\017sender_username\030\002 \001(\t\022\030\n\020contact_u" +
-      "sername\030\003 \001(\t\"\227\013\n\tWsMessage\0223\n\014chat_mess" +
-      "age\030\001 \001(\0132\033.com.basic_chat.ChatMessageH\000" +
-      "\022-\n\tuser_list\030\002 \001(\0132\030.com.basic_chat.Use" +
-      "rListH\000\0223\n\014auth_message\030\003 \001(\0132\033.com.basi" +
-      "c_chat.AuthMessageH\000\0225\n\rauth_response\030\004 " +
-      "\001(\0132\034.com.basic_chat.AuthResponseH\000\022F\n\026d" +
-      "elete_message_request\030\005 \001(\0132$.com.basic_" +
-      "chat.DeleteMessageRequestH\000\022H\n\027delete_me" +
-      "ssage_response\030\006 \001(\0132%.com.basic_chat.De" +
-      "leteMessageResponseH\000\022Q\n\033message_delete_" +
-      "notification\030\007 \001(\0132*.com.basic_chat.Mess" +
-      "ageDeletedNotificationH\000\022B\n\024unread_messa" +
-      "ges_list\030\010 \001(\0132\".com.basic_chat.UnreadMe" +
-      "ssagesListH\000\022D\n\025clear_history_request\030\t " +
-      "\001(\0132#.com.basic_chat.ClearHistoryRequest" +
-      "H\000\022D\n\025block_contact_request\030\n \001(\0132#.com." +
-      "basic_chat.BlockContactRequestH\000\022F\n\026bloc" +
-      "k_contact_response\030\013 \001(\0132$.com.basic_cha" +
-      "t.BlockContactResponseH\000\0225\n\rmessage_erro" +
-      "r\030\014 \001(\0132\034.com.basic_chat.MessageErrorH\000\022" +
-      "H\n\027unblock_contact_request\030\r \001(\0132%.com.b" +
-      "asic_chat.UnblockContactRequestH\000\022J\n\030unb" +
-      "lock_contact_response\030\016 \001(\0132&.com.basic_" +
-      "chat.UnblockContactResponseH\000\022D\n\025chat_me" +
-      "ssage_response\030\017 \001(\0132#.com.basic_chat.Ch" +
-      "atMessageResponseH\000\022B\n\024unblocked_users_l" +
-      "ist\030\020 \001(\0132\".com.basic_chat.UnblockedUser" +
-      "sListH\000\022>\n\022blocked_users_list\030\021 \001(\0132 .co" +
-      "m.basic_chat.BlockedUsersListH\000\022R\n\035mark_" +
-      "messages_as_read_request\030\022 \001(\0132).com.bas" +
-      "ic_chat.MarkMessagesAsReadRequestH\000\022B\n\024m" +
-      "essages_read_update\030\023 \001(\0132\".com.basic_ch" +
-      "at.MessagesReadUpdateH\000\022;\n\020contact_ident" +
-      "ity\030\024 \001(\0132\037.com.basic_chat.ContactIdenti" +
-      "tyH\000\022F\n\026clear_history_response\030\025 \001(\0132$.c" +
-      "om.basic_chat.ClearHistoryResponseH\000B\t\n\007" +
-      "payload*t\n\013MessageType\022\010\n\004TEXT\020\000\022\t\n\005LOGI" +
-      "N\020\001\022\n\n\006LOGOUT\020\002\022\r\n\tUSER_LIST\020\003\022\n\n\006TYPING" +
-      "\020\004\022\024\n\020DELIVERY_RECEIPT\020\005\022\t\n\005ALERT\020\006\022\010\n\004C" +
-      "HAT\020\007*.\n\014FailureCause\022\021\n\rUNKNOWN_CAUSE\020\000" +
-      "\022\013\n\007BLOCKED\020\001B%\n\024com.basic_chat.protoB\rM" +
-      "essagesProtob\006proto3"
+      "sername\030\003 \001(\t\"8\n\023PendingClearHistory\022\016\n\006" +
+      "sender\030\001 \001(\t\022\021\n\trecipient\030\002 \001(\t\"[\n\027Pendi" +
+      "ngClearHistoryList\022@\n\023pendingClearHistor" +
+      "y\030\001 \003(\0132#.com.basic_chat.PendingClearHis" +
+      "tory\"\254\014\n\tWsMessage\0223\n\014chat_message\030\001 \001(\013" +
+      "2\033.com.basic_chat.ChatMessageH\000\022-\n\tuser_" +
+      "list\030\002 \001(\0132\030.com.basic_chat.UserListH\000\0223" +
+      "\n\014auth_message\030\003 \001(\0132\033.com.basic_chat.Au" +
+      "thMessageH\000\0225\n\rauth_response\030\004 \001(\0132\034.com" +
+      ".basic_chat.AuthResponseH\000\022F\n\026delete_mes" +
+      "sage_request\030\005 \001(\0132$.com.basic_chat.Dele" +
+      "teMessageRequestH\000\022H\n\027delete_message_res" +
+      "ponse\030\006 \001(\0132%.com.basic_chat.DeleteMessa" +
+      "geResponseH\000\022Q\n\033message_delete_notificat" +
+      "ion\030\007 \001(\0132*.com.basic_chat.MessageDelete" +
+      "dNotificationH\000\022B\n\024unread_messages_list\030" +
+      "\010 \001(\0132\".com.basic_chat.UnreadMessagesLis" +
+      "tH\000\022D\n\025clear_history_request\030\t \001(\0132#.com" +
+      ".basic_chat.ClearHistoryRequestH\000\022D\n\025blo" +
+      "ck_contact_request\030\n \001(\0132#.com.basic_cha" +
+      "t.BlockContactRequestH\000\022F\n\026block_contact" +
+      "_response\030\013 \001(\0132$.com.basic_chat.BlockCo" +
+      "ntactResponseH\000\0225\n\rmessage_error\030\014 \001(\0132\034" +
+      ".com.basic_chat.MessageErrorH\000\022H\n\027unbloc" +
+      "k_contact_request\030\r \001(\0132%.com.basic_chat" +
+      ".UnblockContactRequestH\000\022J\n\030unblock_cont" +
+      "act_response\030\016 \001(\0132&.com.basic_chat.Unbl" +
+      "ockContactResponseH\000\022D\n\025chat_message_res" +
+      "ponse\030\017 \001(\0132#.com.basic_chat.ChatMessage" +
+      "ResponseH\000\022B\n\024unblocked_users_list\030\020 \001(\013" +
+      "2\".com.basic_chat.UnblockedUsersListH\000\022>" +
+      "\n\022blocked_users_list\030\021 \001(\0132 .com.basic_c" +
+      "hat.BlockedUsersListH\000\022R\n\035mark_messages_" +
+      "as_read_request\030\022 \001(\0132).com.basic_chat.M" +
+      "arkMessagesAsReadRequestH\000\022B\n\024messages_r" +
+      "ead_update\030\023 \001(\0132\".com.basic_chat.Messag" +
+      "esReadUpdateH\000\022;\n\020contact_identity\030\024 \001(\013" +
+      "2\037.com.basic_chat.ContactIdentityH\000\022F\n\026c" +
+      "lear_history_response\030\025 \001(\0132$.com.basic_" +
+      "chat.ClearHistoryResponseH\000\022M\n\032pending_c" +
+      "lear_history_list\030\026 \001(\0132\'.com.basic_chat" +
+      ".PendingClearHistoryListH\000\022D\n\025pending_cl" +
+      "ear_history\030\027 \001(\0132#.com.basic_chat.Pendi" +
+      "ngClearHistoryH\000B\t\n\007payload*t\n\013MessageTy" +
+      "pe\022\010\n\004TEXT\020\000\022\t\n\005LOGIN\020\001\022\n\n\006LOGOUT\020\002\022\r\n\tU" +
+      "SER_LIST\020\003\022\n\n\006TYPING\020\004\022\024\n\020DELIVERY_RECEI" +
+      "PT\020\005\022\t\n\005ALERT\020\006\022\010\n\004CHAT\020\007*.\n\014FailureCaus" +
+      "e\022\021\n\rUNKNOWN_CAUSE\020\000\022\013\n\007BLOCKED\020\001B%\n\024com" +
+      ".basic_chat.protoB\rMessagesProtob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -23141,12 +25094,24 @@ public final class MessagesProto {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_basic_chat_ContactIdentity_descriptor,
         new java.lang.String[] { "SenderId", "SenderUsername", "ContactUsername", });
-    internal_static_com_basic_chat_WsMessage_descriptor =
+    internal_static_com_basic_chat_PendingClearHistory_descriptor =
       getDescriptor().getMessageTypes().get(22);
+    internal_static_com_basic_chat_PendingClearHistory_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_com_basic_chat_PendingClearHistory_descriptor,
+        new java.lang.String[] { "Sender", "Recipient", });
+    internal_static_com_basic_chat_PendingClearHistoryList_descriptor =
+      getDescriptor().getMessageTypes().get(23);
+    internal_static_com_basic_chat_PendingClearHistoryList_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_com_basic_chat_PendingClearHistoryList_descriptor,
+        new java.lang.String[] { "PendingClearHistory", });
+    internal_static_com_basic_chat_WsMessage_descriptor =
+      getDescriptor().getMessageTypes().get(24);
     internal_static_com_basic_chat_WsMessage_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_basic_chat_WsMessage_descriptor,
-        new java.lang.String[] { "ChatMessage", "UserList", "AuthMessage", "AuthResponse", "DeleteMessageRequest", "DeleteMessageResponse", "MessageDeleteNotification", "UnreadMessagesList", "ClearHistoryRequest", "BlockContactRequest", "BlockContactResponse", "MessageError", "UnblockContactRequest", "UnblockContactResponse", "ChatMessageResponse", "UnblockedUsersList", "BlockedUsersList", "MarkMessagesAsReadRequest", "MessagesReadUpdate", "ContactIdentity", "ClearHistoryResponse", "Payload", });
+        new java.lang.String[] { "ChatMessage", "UserList", "AuthMessage", "AuthResponse", "DeleteMessageRequest", "DeleteMessageResponse", "MessageDeleteNotification", "UnreadMessagesList", "ClearHistoryRequest", "BlockContactRequest", "BlockContactResponse", "MessageError", "UnblockContactRequest", "UnblockContactResponse", "ChatMessageResponse", "UnblockedUsersList", "BlockedUsersList", "MarkMessagesAsReadRequest", "MessagesReadUpdate", "ContactIdentity", "ClearHistoryResponse", "PendingClearHistoryList", "PendingClearHistory", "Payload", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

@@ -40,23 +40,25 @@ class MessageServiceSavePendingDeletionTest {
         // Arrange
         String recipient = "user1";
         String messageId = "msg123";
+        String deletedBy = "user2";
         
         when(pendingDeletionRepository.save(any(PendingDeletion.class))).thenAnswer(i -> i.getArguments()[0]);
 
         // Act
-        messageService.savePendingDeletion(recipient, messageId);
+        messageService.savePendingDeletion(recipient, messageId, deletedBy);
 
         // Assert
         verify(pendingDeletionRepository).save(argThat(pd -> 
             pd.getRecipient().equals(recipient) && 
-            pd.getMessageId().equals(messageId)
+            pd.getMessageId().equals(messageId) &&
+            pd.getDeletedBy().equals(deletedBy)
         ));
     }
 
     @Test
     void testSavePendingDeletion_NullRecipient() {
         // Act
-        messageService.savePendingDeletion(null, "msg123");
+        messageService.savePendingDeletion(null, "msg123", "user2");
 
         // Assert
         verifyNoInteractions(pendingDeletionRepository);
@@ -65,7 +67,7 @@ class MessageServiceSavePendingDeletionTest {
     @Test
     void testSavePendingDeletion_NullMessageId() {
         // Act
-        messageService.savePendingDeletion("user1", null);
+        messageService.savePendingDeletion("user1", null, "user2");
 
         // Assert
         verifyNoInteractions(pendingDeletionRepository);
@@ -74,7 +76,7 @@ class MessageServiceSavePendingDeletionTest {
     @Test
     void testSavePendingDeletion_BothNull() {
         // Act
-        messageService.savePendingDeletion(null, null);
+        messageService.savePendingDeletion(null, null, "user2");
 
         // Assert
         verifyNoInteractions(pendingDeletionRepository);
@@ -85,11 +87,12 @@ class MessageServiceSavePendingDeletionTest {
         // Arrange
         String recipient = "user1";
         String messageId = "msg123";
+        String deletedBy = "user2";
         when(pendingDeletionRepository.save(any(PendingDeletion.class))).thenThrow(new RuntimeException("DB Error"));
 
         // Act & Assert
         RuntimeException exception = assertThrows(RuntimeException.class, () -> {
-            messageService.savePendingDeletion(recipient, messageId);
+            messageService.savePendingDeletion(recipient, messageId, deletedBy);
         });
 
         assertEquals("Error al guardar la solicitud de eliminacion pendiente", exception.getMessage());
