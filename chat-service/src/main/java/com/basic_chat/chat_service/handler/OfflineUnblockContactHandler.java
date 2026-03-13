@@ -1,6 +1,7 @@
 package com.basic_chat.chat_service.handler;
 
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.basic_chat.chat_service.models.PendingUnblock;
 import com.basic_chat.chat_service.repository.PendingUnblockRepository;
@@ -36,6 +37,7 @@ public class OfflineUnblockContactHandler implements OfflineMessageHandler {
     }
 
     @Override
+    @Transactional
     public void handleOffline(MessagesProto.WsMessage message, String recipient) throws Exception {
         MessagesProto.UnblockContactRequest request = message.getUnblockContactRequest();
         
