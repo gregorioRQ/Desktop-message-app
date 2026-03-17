@@ -208,9 +208,9 @@ public class ChatController {
     }
 
     private void connectToServices() {
-        // Conectar Chat WebSocket
+        // Conectar Chat WebSocket enviando token, userId y username en las cabeceras del handshake
         if (webSocketService != null && !webSocketService.isConnected()) {
-            webSocketService.connect(authToken);
+            webSocketService.connect(authToken, currentUserId, currentUsername);
         }
 
         // Conectar Notification WebSocket

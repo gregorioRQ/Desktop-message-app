@@ -47,22 +47,25 @@ public class IncomingMessageProcessor {
      * es enviado por el cliente al servidor, no del servidor al cliente.
      * El servidor envía MessageDeletedNotification cuando otro usuario elimina un mensaje.
      */
-     private void initializeHandlers() {
-         handlers.put(WsMessage.PayloadCase.CHAT_MESSAGE_RESPONSE, this::handleMessageError);
-         handlers.put(WsMessage.PayloadCase.UNREAD_MESSAGES_LIST, msg -> processUnreadMessages(msg.getUnreadMessagesList()));
-         // MessageDeletedNotification: recibida cuando otro usuario elimina un mensaje "para todos"
-         handlers.put(WsMessage.PayloadCase.MESSAGE_DELETE_NOTIFICATION, msg -> processMessageDeletedNotification(msg.getMessageDeleteNotification()));
-         handlers.put(WsMessage.PayloadCase.CLEAR_HISTORY_REQUEST, msg -> processClearHistoryRequest(msg.getClearHistoryRequest()));
-         
-         // PendingClearHistoryList: lista de solicitudes pendientes de limpieza de historial
-         handlers.put(WsMessage.PayloadCase.PENDING_CLEAR_HISTORY_LIST, msg -> processPendingClearHistoryList(msg.getPendingClearHistoryList()));
-         
-         handlers.put(WsMessage.PayloadCase.CHAT_MESSAGE, this::handleChatMessage);
-         handlers.put(WsMessage.PayloadCase.UNBLOCKED_USERS_LIST, msg -> processUnblockedUsersList(msg.getUnblockedUsersList()));
-         handlers.put(WsMessage.PayloadCase.BLOCKED_USERS_LIST, msg -> processBlockedUsersList(msg.getBlockedUsersList()));
-         handlers.put(WsMessage.PayloadCase.MESSAGES_READ_UPDATE, msg -> processMessagesReadUpdate(msg.getMessagesReadUpdate()));
-         handlers.put(WsMessage.PayloadCase.CONTACT_IDENTITY, msg -> processContactIdentity(msg.getContactIdentity()));
-     }
+      private void initializeHandlers() {
+          handlers.put(WsMessage.PayloadCase.CHAT_MESSAGE_RESPONSE, this::handleMessageError);
+          handlers.put(WsMessage.PayloadCase.UNREAD_MESSAGES_LIST, msg -> processUnreadMessages(msg.getUnreadMessagesList()));
+          // MessageDeletedNotification: recibida cuando otro usuario elimina un mensaje "para todos"
+          handlers.put(WsMessage.PayloadCase.MESSAGE_DELETE_NOTIFICATION, msg -> processMessageDeletedNotification(msg.getMessageDeleteNotification()));
+          handlers.put(WsMessage.PayloadCase.CLEAR_HISTORY_REQUEST, msg -> processClearHistoryRequest(msg.getClearHistoryRequest()));
+          
+          // PendingClearHistoryList: lista de solicitudes pendientes de limpieza de historial
+          handlers.put(WsMessage.PayloadCase.PENDING_CLEAR_HISTORY_LIST, msg -> processPendingClearHistoryList(msg.getPendingClearHistoryList()));
+          
+          handlers.put(WsMessage.PayloadCase.CHAT_MESSAGE, this::handleChatMessage);
+          handlers.put(WsMessage.PayloadCase.UNBLOCKED_USERS_LIST, msg -> processUnblockedUsersList(msg.getUnblockedUsersList()));
+          handlers.put(WsMessage.PayloadCase.BLOCKED_USERS_LIST, msg -> processBlockedUsersList(msg.getBlockedUsersList()));
+          handlers.put(WsMessage.PayloadCase.MESSAGES_READ_UPDATE, msg -> processMessagesReadUpdate(msg.getMessagesReadUpdate()));
+          handlers.put(WsMessage.PayloadCase.CONTACT_IDENTITY, msg -> processContactIdentity(msg.getContactIdentity()));
+          // Handlers para solicitudes de bloqueo y desbloqueo de contactos
+          handlers.put(WsMessage.PayloadCase.BLOCK_CONTACT_REQUEST, this::processBlockContactRequest);
+          handlers.put(WsMessage.PayloadCase.UNBLOCK_CONTACT_REQUEST, this::processUnblockContactRequest);
+      }
 
     public void process(WsMessage message) {
         Consumer<WsMessage> handler = handlers.get(message.getPayloadCase());
@@ -432,6 +435,57 @@ public class IncomingMessageProcessor {
             System.out.println("=== Finalizado procesamiento de PendingClearHistoryList ===");
             System.out.println("Total procesados: " + historialesEliminados + " historiales eliminados, " + contactosNoEncontrados + " contactos no encontrados");
         });
+    }
+
+    /**
+     * Procesa una solicitud de bloqueo de contacto recibida del servidor.
+     * Cuando un usuario (sender) envía una solicitud para bloquear a otro usuario (recipient),
+     * y el recipient está online, el servidor reenvía la solicitud para que el recipient
+     * actualice su estado local.
+     * 
+     * NOTA: Esta solicitud NO significa que el receptor esté bloqueando al remitente.
+     * Significa que el remitente quiere bloquear al receptor.
+     * El receptor debe marcar al remitente como alguien que lo está bloqueando.
+     * 
+     * @param message Mensaje WsMessage que contiene BlockContactRequest
+     */
+    private void processBlockContactRequest(WsMessage message) {
+        MessagesProto.BlockContactRequest request = message.getBlockContactRequest();
+        String blockerUsername = request.getBlocker(); // El usuario que envía el bloqueo
+        
+        // LOG para debugging
+        System.out.println("[BLOCK_REQUEST_RECEIVED] Usuario " + blockerUsername + " te ha bloqueado");
+        
+        // Marcar al blocker como alguien que nos está bloqueando
+        context.getContactService().markUserAsBlockingMe(blockerUsername);
+        
+        // Actualizar notificaciones si es necesario
+        updateNotification(blockerUsername);
+    }
+
+    /**
+     * Procesa una solicitud de desbloqueo de contacto recibida del servidor.
+     * Cuando un usuario (sender) envía una solicitud para desbloquear a otro usuario (recipient),
+     * y el recipient está online, el servidor reenvía la solicitud para que el recipient
+     * actualice su estado local.
+     * 
+     * NOTA: Esta solicitud significa que el remitente ya NO quiere bloquear al receptor.
+     * El receptor debe marcar al remitente como alguien que ya no lo está bloqueando.
+     * 
+     * @param message Mensaje WsMessage que contiene UnblockContactRequest
+     */
+    private void processUnblockContactRequest(WsMessage message) {
+        MessagesProto.UnblockContactRequest request = message.getUnblockContactRequest();
+        String unblockerUsername = request.getBlocker(); // El usuario que envía el desbloqueo
+        
+        // LOG para debugging
+        System.out.println("[UNBLOCK_REQUEST_RECEIVED] Usuario " + unblockerUsername + " te ha desbloqueado");
+        
+        // Marcar al unblocker como alguien que ya NO nos está bloqueando
+        context.getContactService().markUserAsUnblockingMe(unblockerUsername);
+        
+        // Actualizar notificaciones si es necesario
+        updateNotification(unblockerUsername);
     }
 
     private void updateNotification(String senderUsername) {

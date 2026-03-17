@@ -26,37 +26,6 @@ public class NotificationConsumer {
         notificationService.addContact(event.getFrom(), event.getTo());
     }
 
-<<<<<<< Updated upstream
-    /**
-     * Listener para eventos de mensajes enviados.
-     * 
-     * @param event
-     */
-    @RabbitListener(queues = "message.sent")
-    public void handleMessageSentEvent(MessageSentEvent event) {
-        Notification notification = new Notification();
-        notification.setSender(event.getSender());
-        notification.setReceiver(event.getReceiver());
-        notification.setMessage("Tienes un nuevo mensaje de: " + event.getSender());
-        notification.setType("MESSAGE_SENT");
-        notification.setSeen(false);
-        notificationService.notifyUser(notification);
-    }
-
-    @RabbitListener(queues = "message.read")
-    public void handleMessageReadEvent(MessageSeenEvent event) {
-        Notification notification = new Notification();
-        notification.setReceiver(event.getReceiver());
-        notification.setMessage(event.getReceiver() + " ha leído tus mensajes.");
-        notification.setType("MESSAGES READ");
-        notification.setSeen(true); 
-        notificationService.notifyMessageSeen(notification);
-    }
-
-    @RabbitListener(queues = "user.online")
-    public void handleUserOnlineEvent(UserOnlineEvent event) {
-        userPresenceService.notifyUserOnline(event.getUserId());
-=======
     @RabbitListener(queues = "message.delivery")
     public void handleDeliveryEvent(DeliveryEvent event) {
         logger.info("Received delivery event: type={}, messageId={}, recipient={}",
@@ -70,6 +39,5 @@ public class NotificationConsumer {
             notification.setSeen(false);
             notificationService.notifyUser(notification);
         }
->>>>>>> Stashed changes
     }
 }

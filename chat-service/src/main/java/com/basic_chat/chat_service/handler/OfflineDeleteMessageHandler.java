@@ -1,6 +1,7 @@
 package com.basic_chat.chat_service.handler;
 
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.basic_chat.chat_service.models.PendingDeletion;
 import com.basic_chat.chat_service.repository.MessageRepository;
@@ -35,6 +36,7 @@ public class OfflineDeleteMessageHandler implements OfflineMessageHandler {
     }
 
     @Override
+    @Transactional
     public void handleOffline(MessagesProto.WsMessage message, String recipient) throws Exception {
         MessagesProto.DeleteMessageRequest request = message.getDeleteMessageRequest();
         String messageIdStr = request.getMessageId();

@@ -25,7 +25,12 @@ public class ConnectionActionHelper {
         
         new Thread(() -> {
             try {
-                webSocketService.connect(chatController.getAuthToken());
+                // Conectar al servicio WebSocket enviando token, userId y username en las cabeceras del handshake
+                webSocketService.connect(
+                    chatController.getAuthToken(), 
+                    chatController.getCurrentUserId(), 
+                    chatController.getCurrentUsername()
+                );
                 
                 // Conectar servicio de notificaciones
                 if (chatController.getNotificationService() == null) {

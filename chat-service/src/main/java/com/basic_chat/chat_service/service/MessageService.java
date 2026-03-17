@@ -504,7 +504,8 @@ public class MessageService {
             if (!pendingBlocks.isEmpty()) {
                 MessagesProto.BlockedUsersList.Builder blockedListBuilder = MessagesProto.BlockedUsersList.newBuilder();
                 for (PendingBlock pb : pendingBlocks) {
-                    blockedListBuilder.addUsers(pb.getBlockedUser());
+                    // getBlocker() es el usuario que realizó el bloqueo
+                    blockedListBuilder.addUsers(pb.getBlocker());
                 }
                 wsBuilder.setBlockedUsersList(blockedListBuilder.build());
                 log.info("Agregados {} bloqueos pendientes para usuario: {}", pendingBlocks.size(), username);
@@ -516,7 +517,8 @@ public class MessageService {
             if (!pendingUnblocks.isEmpty()) {
                 MessagesProto.UnblockedUsersList.Builder unblockedListBuilder = MessagesProto.UnblockedUsersList.newBuilder();
                 for (PendingUnblock pu : pendingUnblocks) {
-                    unblockedListBuilder.addUsers(pu.getUnblockedUser());
+                    // getBlocker() es el usuario que realizó el desbloqueo
+                    unblockedListBuilder.addUsers(pu.getBlocker());
                 }
                 wsBuilder.setUnblockedUsersList(unblockedListBuilder.build());
                 log.info("Agregados {} desbloqueos pendientes para usuario: {}", pendingUnblocks.size(), username);
