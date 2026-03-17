@@ -13,11 +13,11 @@ spring.rabbitmq.password=${RABBITMQ_PASSWORD:guest}
 # Database
 spring.datasource.url=${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/chat_db}
 spring.datasource.username=${SPRING_DATASOURCE_USERNAME:root}
-spring.datasource.password=${SPRING_DATASOURCE_PASSWORD:405454}
+spring.datasource.password=${SPRING_DATASOURCE_PASSWORD:YOUR_PASSWORD_HERE}
 spring.jpa.hibernate.ddl-auto=update
 spring.jpa.show-sql=false
 
-# Logging - Desactivar logs de Hibernate SQL
+# Logging
 logging.level.org.hibernate.SQL=OFF
 logging.level.org.hibernate.type.descriptor.sql.BasicBinder=OFF
 
@@ -26,11 +26,7 @@ spring.redis.host=${REDIS_HOST:localhost}
 spring.redis.port=${REDIS_PORT:6379}
 spring.redis.password=${REDIS_PASSWORD:}
 
-# Habilitar el manejo de multipart
+# Multipart configuration
 spring.servlet.multipart.enabled=true
-
-# Tamaño máximo por archivo
 spring.servlet.multipart.max-file-size=10MB
-
-# Tamaño máximo total de la solicitud
 spring.servlet.multipart.max-request-size=10MB

@@ -2,6 +2,9 @@
 target/
 **/target/
 
+# Properties
+src/main/resources/application.properties
+
 # Protobuf
 protoc-dependencies/
 protoc-plugins/

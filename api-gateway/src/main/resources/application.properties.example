@@ -7,9 +7,8 @@ server.port=8080
 # ==============================================================
 # CONFIGURACIÓN DE REDIS (DOCKER)
 # ==============================================================
-# Nombre del servicio en tu docker-compose o red de docker
-#spring.data.redis.host=${REDIS_HOST:localhost}
-#spring.data.redis.port=${REDIS_PORT:6379}
+spring.data.redis.host=${REDIS_HOST:localhost}
+spring.data.redis.port=${REDIS_PORT:6379}
 # Descomentar si tu Redis tiene contraseña
 # spring.data.redis.password=tu_password_seguro
 
@@ -19,7 +18,6 @@ server.port=8080
 
 # --- 1. PROFILE SERVICE (Autenticación y Perfiles) ---
 spring.cloud.gateway.server.webflux.routes[0].id=profile-service
-# URL del contenedor Docker. Si usas Eureka, sería lb://profile-service
 spring.cloud.gateway.server.webflux.routes[0].uri=${PROFILE_SERVICE_URL:http://localhost:8088}
 spring.cloud.gateway.server.webflux.routes[0].predicates[0]=Path=/api/v1/auth/**
 spring.cloud.gateway.server.webflux.routes[0].filters[0]=AuthenticationFilter
@@ -36,25 +34,13 @@ spring.cloud.gateway.server.webflux.routes[2].uri=${NOTIFICATION_SERVICE_URL:ws:
 spring.cloud.gateway.server.webflux.routes[2].predicates[0]=Path=/ws-notifications/**
 spring.cloud.gateway.server.webflux.routes[2].filters[0]=AuthenticationFilter
 
-# --- 4. CHAT SERVICE (WEBSOCKET BINARIO - LEGACY, para compatibilidad) ---
+# --- 4. CHAT SERVICE (WEBSOCKET BINARIO - LEGACY) ---
 spring.cloud.gateway.server.webflux.routes[3].id=chat-service
 spring.cloud.gateway.server.webflux.routes[3].uri=${CHAT_SERVICE_URL:ws://localhost:8085}
 spring.cloud.gateway.server.webflux.routes[3].predicates[0]=Path=/ws-binary/**
 spring.cloud.gateway.server.webflux.routes[3].filters[0]=AuthenticationFilter
 
-# --- 5. MEDIA SERVICE (REST HTTP) ---
-#spring.cloud.gateway.server.webflux.routes[3].id=media-service
-#spring.cloud.gateway.server.webflux.routes[3].uri=${MEDIA_SERVICE_URL:http://localhost:8086}
-#spring.cloud.gateway.server.webflux.routes[3].predicates[0]=Path=/api/v1/media/**
-#spring.cloud.gateway.server.webflux.routes[3].filters[0]=AuthenticationFilter
-
-# --- 6. MEDIA SERVICE (WEBSOCKET) - COMENTADO POR EL MOMENTO ---
-#spring.cloud.gateway.server.webflux.routes[5].id=media-service
-#spring.cloud.gateway.server.webflux.routes[5].uri=${MEDIA_SERVICE_WS_URL:ws://localhost:8089}
-#spring.cloud.gateway.server.webflux.routes[5].predicates[0]=Path=/ws-media/**
-#spring.cloud.gateway.server.webflux.routes[5].filters[0]=AuthenticationFilter
-
-# --- 7. CHAT SERVICE (REST - mensajes) ---
+# --- 5. CHAT SERVICE (REST - mensajes) ---
 spring.cloud.gateway.server.webflux.routes[4].id=chat-service-rest
 spring.cloud.gateway.server.webflux.routes[4].uri=${CHAT_SERVICE_REST_URL:http://localhost:8085}
 spring.cloud.gateway.server.webflux.routes[4].predicates[0]=Path=/api/v1/messages/**

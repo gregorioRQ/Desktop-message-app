@@ -4,15 +4,15 @@ server.port=8088
 # Database
 spring.datasource.url=${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/profile_db}
 spring.datasource.username=${SPRING_DATASOURCE_USERNAME:root}
-spring.datasource.password=${SPRING_DATASOURCE_PASSWORD:405454}
+spring.datasource.password=${SPRING_DATASOURCE_PASSWORD:YOUR_PASSWORD_HERE}
 spring.jpa.hibernate.ddl-auto=update
 spring.jpa.show-sql=false
 
-# Logging - Desactivar logs de Hibernate SQL
+# Logging
 logging.level.org.hibernate.SQL=OFF
 logging.level.org.hibernate.type.descriptor.sql.BasicBinder=OFF
 
-# RabbitMQ
+# RabbitMQ (optional)
 #spring.rabbitmq.host=localhost
 #spring.rabbitmq.port=5672
 #spring.rabbitmq.username=guest
