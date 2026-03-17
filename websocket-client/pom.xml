@@ -45,6 +45,18 @@
             <version>2.1.5</version>
         </dependency>
 
+        <!-- Soporte para STOMP -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-websocket</artifactId>
+            <version>6.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-messaging</artifactId>
+            <version>6.1.0</version>
+        </dependency>
+
         <!-- Protobuf Java -->
         <dependency>
             <groupId>com.google.protobuf</groupId>

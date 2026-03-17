@@ -11,6 +11,7 @@ import com.pola.service.ContactService;
 import com.pola.service.HttpService;
 import com.pola.service.HttpServiceImpl;
 import com.pola.service.MessageService;
+import com.pola.service.NotificationService;
 import com.pola.service.WebSocketService;
 import com.pola.service.WebSocketServiceImpl;
 
@@ -29,11 +30,13 @@ public class ViewManager {
     private final HttpService httpService;
     private AuthService authService;
     private ContactService contactService;
+    private NotificationService notificationService;
+    // TODO: MEDIA - Reactivar cuando se implemente funcionalidad de envío de imágenes
+    // private WebSocketService mediaWebSocketService;
     
     public ViewManager(Stage stage) {
         this.stage = stage;
         this.httpService = new HttpServiceImpl();
-        // Los demás servicios se crearán cuando se necesiten (lazy initialization)
         configureStage();
     }
     
@@ -42,9 +45,55 @@ public class ViewManager {
         stage.setWidth(800);
         stage.setHeight(600);
         stage.setOnCloseRequest(event -> {
-            webSocketService.disconnect();
+            disconnectAllServices();
         });
     }
+
+    /**
+     * Desconecta todos los servicios WebSocket cuando la aplicación se cierra.
+     * Esto asegura que el servidor de notificaciones sea notificado cuando el cliente se cierre.
+     */
+    private void disconnectAllServices() {
+        System.out.println("[ViewManager] Cerrando aplicación - desconectando todos los servicios...");
+        
+        // Desconectar servicio de chat (WebSocket binario)
+        if (webSocketService != null) {
+            System.out.println("[ViewManager] Desconectando servicio de chat...");
+            webSocketService.disconnect();
+        }
+        
+        // Desconectar servicio de notificaciones (STOMP)
+        if (notificationService != null) {
+            System.out.println("[ViewManager] Desconectando servicio de notificaciones...");
+            notificationService.disconnect();
+        }
+
+        // TODO: MEDIA - Reactivar cuando se implemente funcionalidad de envío de imágenes
+        // // Desconectar servicio de media (WebSocket binario)
+        // if (mediaWebSocketService != null) {
+        //     System.out.println("[ViewManager] Desconectando servicio de media...");
+        //     mediaWebSocketService.disconnect();
+        // }
+        
+        System.out.println("[ViewManager] Todos los servicios desconectados");
+    }
+    
+    /**
+     * Registra el servicio de notificaciones para desconexión automática al cerrar.
+     * @param notificationService Servicio de notificaciones STOMP
+     */
+    public void setNotificationService(NotificationService notificationService) {
+        this.notificationService = notificationService;
+    }
+
+    // TODO: MEDIA - Reactivar cuando se implemente funcionalidad de envío de imágenes
+    // /**
+    //  * Registra el servicio de media WebSocket para desconexión automática al cerrar.
+    //  * @param mediaWebSocketService Servicio de media WebSocket
+    //  */
+    // public void setMediaWebSocketService(WebSocketService mediaWebSocketService) {
+    //     this.mediaWebSocketService = mediaWebSocketService;
+    // }
 
     public void showLoginView() {
         try {

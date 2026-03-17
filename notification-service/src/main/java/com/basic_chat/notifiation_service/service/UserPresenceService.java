@@ -39,21 +39,36 @@ public class UserPresenceService {
     }
 
     /**
+     * Constantes para claves de Redis.
+     * Formato de claves:
+     * - user:{userId}:sessions → lista de sessionIds activas
+     * - session:{sessionId}:user → userId del propietario
+     * - user:name:{username} → userId (mapeo para chat-service)
+     */
+    private static final String USER_SESSIONS_PREFIX = "user:";
+    private static final String USER_SESSIONS_SUFFIX = ":sessions";
+    private static final String SESSION_USER_PREFIX = "session:";
+    private static final String SESSION_USER_SUFFIX = ":user";
+    private static final String USER_NAME_PREFIX = "user:name:";
+
+    /**
      * Registra una nueva sesión de usuario en Redis y configura las suscripciones a sus contactos.
      * Este método es invocado cuando un cliente establece una conexión WebSocket.
      * 
      * Proceso:
      * 1. Verifica si la sesión ya existe en Redis (evita duplicados)
-     * 2. Registra la nueva sesión en Redis
-     * 3. Obtiene los contactos del usuario desde la base de datos
-     * 4. Suscribe la sesión a los cambios de presencia de todos los contactos
+     * 2. Registra la nueva sesión en Redis (user -> session)
+     * 3. Crea el mapeo username -> userId en Redis (para chat-service)
+     * 4. Obtiene los contactos del usuario desde la base de datos
+     * 5. Suscribe la sesión a los cambios de presencia de todos los contactos
      * 
      * @param userId ID del usuario que se conecta
+     * @param username Username del usuario (para mapeo en Redis - puede ser null)
      * @param sessionId ID único de la sesión WebSocket
      * @throws IllegalArgumentException si userId o sessionId están vacíos
      * @throws RuntimeException si ocurre un error inesperado
      */
-    public void handleSessionConnected(String userId, String sessionId) {
+    public void handleSessionConnected(String userId, String username, String sessionId) {
         try {
             // Validar que los parámetros requeridos no sean nulos
             if (userId == null || userId.trim().isEmpty() || sessionId == null || sessionId.trim().isEmpty()) {
@@ -61,22 +76,36 @@ public class UserPresenceService {
                 return;
             }
             
-            logger.info("Nueva conexión WebSocket. Usuario: {}, Sesión: {}", userId, sessionId);
+            logger.info("Nueva conexión WebSocket. Usuario: {} ({}), Sesión: {}", userId, username, sessionId);
             
             // Verificar si la sesión ya existe en Redis (evita registros duplicados)
             logger.debug("Verificando si el usuario {} ya tiene la sesión {} registrada", userId, sessionId);
             List<String> existingSessions = redisTemplate.opsForList()
-                    .range("user:" + userId + ":sessions", 0, -1);
+                    .range(USER_SESSIONS_PREFIX + userId + USER_SESSIONS_SUFFIX, 0, -1);
             
             if (existingSessions != null && existingSessions.contains(sessionId)) {
                 logger.info("Sesión {} ya registrada para el usuario {}. No se creará duplicado", sessionId, userId);
                 return;
             }
             
-            // Registrar la nueva sesión en Redis
+            // Registrar la nueva sesión en Redis: user -> session
             logger.debug("Registrando nueva sesión {} para el usuario {}", sessionId, userId);
-            redisTemplate.opsForList().rightPush("user:" + userId + ":sessions", sessionId);
-            redisTemplate.opsForValue().set("session:" + sessionId + ":user", userId);
+            redisTemplate.opsForList().rightPush(USER_SESSIONS_PREFIX + userId + USER_SESSIONS_SUFFIX, sessionId);
+            redisTemplate.opsForValue().set(SESSION_USER_PREFIX + sessionId + SESSION_USER_SUFFIX, userId);
+            
+            // Guardar username con la sesión para poder eliminar user:name:{username} al desconectar
+            if (username != null && !username.trim().isEmpty()) {
+                redisTemplate.opsForValue().set("session:" + sessionId + ":username", username);
+                logger.debug("Username {} guardado con la sesión {}", username, sessionId);
+            }
+            
+            // Crear mapeo username -> userId en Redis (para chat-service)
+            // Esto permite al chat-service verificar si un usuario está online usando su username
+            if (username != null && !username.trim().isEmpty()) {
+                redisTemplate.opsForValue().set(USER_NAME_PREFIX + username, userId);
+                logger.debug("Mapeo username->userId creado: {} -> {}", username, userId);
+            }
+            
             logger.debug("Sesión {} registrada correctamente en Redis", sessionId);
 
             // Obtener el usuario desde la base de datos para acceder a sus contactos
@@ -132,6 +161,10 @@ public class UserPresenceService {
      * 4. Limpia las suscripciones de la sesión
      * 5. Elimina los datos de la sesión en Redis
      * 
+     * Este método se llama tanto por:
+     * - Desconexión explícita (cliente envía DISCONNECT)
+     * - Desconexión por falla de heartbeat (servidor cierra conexión)
+     * 
      * @param sessionId ID único de la sesión WebSocket a desconectar
      */
     public void handleSessionDisconnect(String sessionId) {
@@ -142,39 +175,7 @@ public class UserPresenceService {
             }
             
             logger.info("Iniciando proceso de desconexión para sesión: {}", sessionId);
-            
-            // Obtener el userId asociado a esta sesión desde Redis
-            String userId = redisTemplate.opsForValue().get("session:" + sessionId + ":user");
-            
-            if (userId != null) {
-                logger.debug("Removiendo sesión {} de la lista activa del usuario: {}", sessionId, userId);
-                redisTemplate.opsForList().remove("user:" + userId + ":sessions", 0, sessionId);
-                logger.info("Sesión {} eliminada de la lista activa del usuario: {}", sessionId, userId);
-
-                // Verificar si al usuario le quedan sesiones activas; si no, notificar desconexión
-                List<String> remainingSessions = redisTemplate.opsForList().range("user:" + userId + ":sessions", 0, -1);
-                if (remainingSessions == null || remainingSessions.isEmpty()) {
-                    logger.debug("Usuario {} no tiene más sesiones activas. Notificando desconexión", userId);
-                    notifyUserOffline(userId);
-                }
-            } else {
-                logger.warn("No se encontró userId asociado a la sesión: {}", sessionId);
-            }
-
-            // Obtener y eliminar todas las suscripciones de esta sesión
-            List<String> subscriptions = redisTemplate.opsForList().range("session:" + sessionId + ":subscriptions", 0, -1);
-            if (subscriptions != null && !subscriptions.isEmpty()) {
-                logger.debug("Removiendo suscripciones para la sesión {}. Total: {}", sessionId, subscriptions.size());
-                for (String contactId : subscriptions) {
-                    redisTemplate.opsForList().remove("user:" + contactId + ":subscribers", 0, sessionId);
-                }
-                logger.info("Suscripciones eliminadas. La sesión dejó de escuchar a {} contactos", subscriptions.size());
-            }
-            
-            // Limpiar datos de la sesión en Redis
-            redisTemplate.delete("session:" + sessionId + ":subscriptions");
-            redisTemplate.delete("session:" + sessionId + ":user");
-            logger.info("Limpieza de Redis completada para la sesión: {}", sessionId);
+            processSessionDisconnect(sessionId, "desconexión explícita");
             
         } catch (Exception e) {
             logger.error("Error inesperado al procesar desconexión para sesión: {}. Error: {}", 
@@ -184,8 +185,110 @@ public class UserPresenceService {
         }
     }
 
+    
+<<<<<<< HEAD
+     * Notifica a todos los suscriptores de un usuario que este se ha conectado.*
+=======
+<<<<<<< Updated upstream
+     * Notifica a todos los suscriptores de un usuario que este ha conectado.
+=======
+    /* 
+     * Maneja la expiración de una sesión debido a falla de heartbeat.
+     * 
+     * Este método es similar a handleSessionDisconnect pero se llama cuando
+     * el servidor detecta que el cliente dejó de enviar heartbeats y cierra
+     * la conexión automáticamente.
+     * 
+     * La diferencia principal es el logging para distinguir el tipo de desconexión.
+     * 
+     * @param sessionId ID de la sesión que expiró por falta de heartbeat
+     */
+    public void handleSessionExpired(String sessionId) {
+        try {
+            if (sessionId == null || sessionId.trim().isEmpty()) {
+                logger.warn("sessionId inválido en handleSessionExpired: {}", sessionId);
+                return;
+            }
+            
+            logger.warn("Sesión {} detectada como expirada (sin heartbeat). Limpiando recursos...", sessionId);
+            processSessionDisconnect(sessionId, "expiración por heartbeat");
+            
+        } catch (Exception e) {
+            logger.error("Error al procesar expiración de sesión: {}. Error: {}", 
+                sessionId, e.getMessage(), e);
+            throw new RuntimeException(
+                "Error al procesar expiración de sesión " + sessionId + ": " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Método interno que procesa la desconexión real de una sesión.
+     * Extraído para ser reutilizado por handleSessionDisconnect y handleSessionExpired.
+     * 
+     * Proceso:
+     * 1. Obtiene el userId de la sesión en Redis
+     * 2. Elimina la sesión de la lista de sesiones del usuario
+     * 3. Si no hay más sesiones del usuario, elimina el mapeo username->userId
+     * 4. Notifica offline si es la última sesión
+     * 5. Limpia suscripciones y datos de la sesión
+     * 
+     * @param sessionId ID de la sesión a desconectar
+     * @param reason Razón de la desconexión (para logging)
+     */
+    private void processSessionDisconnect(String sessionId, String reason) {
+        // Obtener el userId asociado a esta sesión desde Redis
+        String userId = redisTemplate.opsForValue().get(SESSION_USER_PREFIX + sessionId + SESSION_USER_SUFFIX);
+        
+        if (userId != null) {
+            logger.debug("Removiendo sesión {} de la lista activa del usuario: {} (razón: {})", 
+                sessionId, userId, reason);
+            redisTemplate.opsForList().remove(USER_SESSIONS_PREFIX + userId + USER_SESSIONS_SUFFIX, 0, sessionId);
+            logger.info("Sesión {} eliminada de la lista activa del usuario: {} (razón: {})", 
+                sessionId, userId, reason);
+
+            // Verificar si al usuario le quedan sesiones activas
+            List<String> remainingSessions = redisTemplate.opsForList()
+                    .range(USER_SESSIONS_PREFIX + userId + USER_SESSIONS_SUFFIX, 0, -1);
+            
+            if (remainingSessions == null || remainingSessions.isEmpty()) {
+                // No hay más sesiones - eliminar mapeo username->userId
+                // Obtenemos el username directamente desde la sesión en Redis (no de la DB)
+                String username = redisTemplate.opsForValue().get("session:" + sessionId + ":username");
+                if (username != null && !username.trim().isEmpty()) {
+                    redisTemplate.delete(USER_NAME_PREFIX + username);
+                    logger.debug("Mapeo username->userId eliminado: {} -> {}", username, userId);
+                }
+                
+                // Notificar offline
+                logger.debug("Usuario {} no tiene más sesiones activas. Notificando desconexión", userId);
+                notifyUserOffline(userId);
+            }
+        } else {
+            logger.warn("No se encontró userId asociado a la sesión: {} (ya podía estar limpia)", sessionId);
+        }
+
+        // Obtener y eliminar todas las suscripciones de esta sesión
+        List<String> subscriptions = redisTemplate.opsForList().range("session:" + sessionId + ":subscriptions", 0, -1);
+        if (subscriptions != null && !subscriptions.isEmpty()) {
+            logger.debug("Removiendo suscripciones para la sesión {}. Total: {}", sessionId, subscriptions.size());
+            for (String contactId : subscriptions) {
+                redisTemplate.opsForList().remove("user:" + contactId + ":subscribers", 0, sessionId);
+            }
+            logger.info("Suscripciones eliminadas. La sesión dejó de escuchar a {} contactos (razón: {})", 
+                subscriptions.size(), reason);
+        }
+        
+        // Limpiar datos de la sesión en Redis
+        redisTemplate.delete("session:" + sessionId + ":subscriptions");
+        redisTemplate.delete("session:" + sessionId + ":user");
+        redisTemplate.delete("session:" + sessionId + ":username");
+        logger.info("Limpieza de Redis completada para la sesión: {} (razón: {})", sessionId, reason);
+    }
+
     /**
      * Notifica a todos los suscriptores de un usuario que este se ha conectado.
+>>>>>>> Stashed changes
+>>>>>>> desarrollo
      * 
      * Envía un mensaje de presencia online a través de WebSocket a cada usuario que está
      * suscrito a los cambios de presencia del usuario especificado.

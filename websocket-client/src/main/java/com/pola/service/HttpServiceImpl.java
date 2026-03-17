@@ -81,22 +81,6 @@ public class HttpServiceImpl implements HttpService{
         }
     }
 
-    @Override
-    public CompletableFuture<Boolean> sendHeartbeat(String accessToken) {
-        try {
-            HttpRequest httpRequest = HttpRequest.newBuilder()
-                    .uri(URI.create(baseUrl + "auth/heartbeat"))
-                    .header("Authorization", "Bearer " + accessToken)
-                    .GET()
-                    .timeout(Duration.ofSeconds(10))
-                    .build();
-            
-            return httpClient.sendAsync(httpRequest, HttpResponse.BodyHandlers.discarding())
-                    .thenApply(response -> response.statusCode() == 200);
-        } catch (Exception e) {
-            return CompletableFuture.failedFuture(e);
-        }
-    }
 
     /**
      * Envía una petición POST con Protobuf
@@ -220,27 +204,10 @@ public class HttpServiceImpl implements HttpService{
         return responseClass.cast(parseFromMethod.invoke(null, (Object) data));
     }
 
-    @Override
-    public CompletableFuture<UploadImageResponse> uploadMedia(UploadImageRequest request, String accessToken) {
-        try {
-            byte[] requestBody = serializeProtobuf(request);
-
-            HttpRequest httpRequest = HttpRequest.newBuilder()
-                    .uri(URI.create(baseUrl + "media/upload"))
-                    .header("Authorization", "Bearer " + accessToken)
-                    .header("Content-Type", "application/x-protobuf")
-                    .header("Accept", "application/x-protobuf")
-                    .POST(HttpRequest.BodyPublishers.ofByteArray(requestBody))
-                    .timeout(Duration.ofSeconds(60)) // Mayor timeout para subidas
-                    .build();
-            
-            return httpClient.sendAsync(httpRequest, HttpResponse.BodyHandlers.ofByteArray())
-                    .thenApply(response -> {
-                        return handleResponse(response, UploadImageResponse.class);
-                    });
-        } catch (Exception e) {
-            return CompletableFuture.failedFuture(e);
-        }
-    }
-    
+    // TODO: MEDIA - Reactivar cuando se implemente funcionalidad de envío de imágenes
+    // @Override
+    // public CompletableFuture<UploadImageResponse> uploadMedia(UploadImageRequest request, String accessToken) {
+    //     // TODO Auto-generated method stub
+    //     throw new UnsupportedOperationException("Unimplemented method 'uploadMedia'");
+    // }
 }

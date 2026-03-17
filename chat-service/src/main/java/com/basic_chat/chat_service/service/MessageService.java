@@ -10,11 +10,19 @@ import java.util.concurrent.ExecutionException;
 import org.springframework.stereotype.Service;
 
 import com.basic_chat.chat_service.models.Message;
+import com.basic_chat.chat_service.models.PendingBlock;
+import com.basic_chat.chat_service.models.PendingClearHistory;
+import com.basic_chat.chat_service.models.PendingContactIdentity;
 import com.basic_chat.chat_service.models.PendingDeletion;
 import com.basic_chat.chat_service.models.PendingReadReceipt;
+import com.basic_chat.chat_service.models.PendingUnblock;
 import com.basic_chat.chat_service.repository.MessageRepository;
+import com.basic_chat.chat_service.repository.PendingBlockRepository;
+import com.basic_chat.chat_service.repository.PendingClearHistoryRepository;
+import com.basic_chat.chat_service.repository.PendingContactIdentityRepository;
 import com.basic_chat.chat_service.repository.PendingDeletionRepository;
 import com.basic_chat.chat_service.repository.PendingReadReceiptRepository;
+import com.basic_chat.chat_service.repository.PendingUnblockRepository;
 import com.basic_chat.chat_service.validator.MessageValidator;
 import com.basic_chat.proto.MessagesProto;
 import com.basic_chat.proto.MessagesProto.ChatMessage;
@@ -29,12 +37,28 @@ public class MessageService {
     private final MessageRepository messageRepository;
     private final PendingDeletionRepository pendingDeletionRepository;
     private final PendingReadReceiptRepository pendingReadReceiptRepository;
+    private final PendingBlockRepository pendingBlockRepository;
+    private final PendingUnblockRepository pendingUnblockRepository;
+    private final PendingClearHistoryRepository pendingClearHistoryRepository;
+    private final PendingContactIdentityRepository pendingContactIdentityRepository;
     private final MessageValidator messageValidator;
 
-    public MessageService(MessageRepository messageRepository, PendingDeletionRepository pendingDeletionRepository, PendingReadReceiptRepository pendingReadReceiptRepository, MessageValidator messageValidator) {
+    public MessageService(
+            MessageRepository messageRepository,
+            PendingDeletionRepository pendingDeletionRepository,
+            PendingReadReceiptRepository pendingReadReceiptRepository,
+            PendingBlockRepository pendingBlockRepository,
+            PendingUnblockRepository pendingUnblockRepository,
+            PendingClearHistoryRepository pendingClearHistoryRepository,
+            PendingContactIdentityRepository pendingContactIdentityRepository,
+            MessageValidator messageValidator) {
         this.messageRepository = messageRepository;
         this.pendingDeletionRepository = pendingDeletionRepository;
         this.pendingReadReceiptRepository = pendingReadReceiptRepository;
+        this.pendingBlockRepository = pendingBlockRepository;
+        this.pendingUnblockRepository = pendingUnblockRepository;
+        this.pendingClearHistoryRepository = pendingClearHistoryRepository;
+        this.pendingContactIdentityRepository = pendingContactIdentityRepository;
         this.messageValidator = messageValidator;
     }
 
@@ -210,7 +234,7 @@ public class MessageService {
         }
     }
 
-
+    /* 
     @Transactional
     public void savePendingDeletion(String recipient, String messageId) {
         if(recipient == null || messageId == null){
@@ -228,7 +252,7 @@ public class MessageService {
             }
         }
         
-    }
+    }*/
 
     @Transactional
     public List<String> getAndClearPendingDeletions(String recipient) {
@@ -310,5 +334,259 @@ public class MessageService {
         
         
         
+    }
+
+    /**
+     * Obtiene y elimina las limpiezas de historial pendientes para un usuario.
+     *
+     * @param recipientUsername Nombre del usuario que recibe las limpiezas
+     * @return Lista de entidades PendingClearHistory
+     */
+    @Transactional
+    public List<PendingClearHistory> getAndClearPendingClearHistories(String recipientUsername) {
+        if (recipientUsername == null) {
+            log.warn("Parámetro inválido: recipientUsername es nulo");
+            return new ArrayList<>();
+        }
+
+        try {
+            log.debug("Obteniendo limpiezas de historial pendientes para usuario: {}", recipientUsername);
+            List<PendingClearHistory> pending = pendingClearHistoryRepository.findByRecipient(recipientUsername);
+
+            if (!pending.isEmpty()) {
+                log.info("Encontradas {} limpiezas de historial pendientes para usuario: {}", 
+                        pending.size(), recipientUsername);
+                pendingClearHistoryRepository.deleteAll(pending);
+                log.info("Limpiezas de historial eliminadas después de entrega para usuario: {}", recipientUsername);
+            } else {
+                log.debug("No hay limpiezas de historial pendientes para usuario: {}", recipientUsername);
+            }
+
+            return pending;
+        } catch (Exception ex) {
+            log.error("Error al obtener/limpiar limpiezas de historial pendientes para usuario {}: {}", 
+                    recipientUsername, ex.getMessage(), ex);
+            throw new RuntimeException("Error al procesar limpiezas de historial pendientes", ex);
+        }
+    }
+
+    /**
+     * Obtiene y elimina los bloqueos pendientes para un usuario.
+     *
+     * @param recipientUsername Nombre del usuario que recibe los bloqueos
+     * @return Lista de entidades PendingBlock
+     */
+    @Transactional
+    public List<PendingBlock> getAndClearPendingBlocks(String recipientUsername) {
+        if (recipientUsername == null) {
+            log.warn("Parámetro inválido: recipientUsername es nulo");
+            return new ArrayList<>();
+        }
+
+        try {
+            log.debug("Obteniendo bloqueos pendientes para usuario: {}", recipientUsername);
+            List<PendingBlock> pending = pendingBlockRepository.findByBlockedUser(recipientUsername);
+
+            if (!pending.isEmpty()) {
+                log.info("Encontrados {} bloqueos pendientes para usuario: {}", 
+                        pending.size(), recipientUsername);
+                pendingBlockRepository.deleteAll(pending);
+                log.info("Bloqueos eliminados después de entrega para usuario: {}", recipientUsername);
+            } else {
+                log.debug("No hay bloqueos pendientes para usuario: {}", recipientUsername);
+            }
+
+            return pending;
+        } catch (Exception ex) {
+            log.error("Error al obtener/limpiar bloqueos pendientes para usuario {}: {}", 
+                    recipientUsername, ex.getMessage(), ex);
+            throw new RuntimeException("Error al procesar bloqueos pendientes", ex);
+        }
+    }
+
+    /**
+     * Obtiene y elimina los desbloqueos pendientes para un usuario.
+     *
+     * @param recipientUsername Nombre del usuario que recibe los desbloqueos
+     * @return Lista de entidades PendingUnblock
+     */
+    @Transactional
+    public List<PendingUnblock> getAndClearPendingUnblocks(String recipientUsername) {
+        if (recipientUsername == null) {
+            log.warn("Parámetro inválido: recipientUsername es nulo");
+            return new ArrayList<>();
+        }
+
+        try {
+            log.debug("Obteniendo desbloqueos pendientes para usuario: {}", recipientUsername);
+            List<PendingUnblock> pending = pendingUnblockRepository.findByUnblockedUser(recipientUsername);
+
+            if (!pending.isEmpty()) {
+                log.info("Encontrados {} desbloqueos pendientes para usuario: {}", 
+                        pending.size(), recipientUsername);
+                pendingUnblockRepository.deleteAll(pending);
+                log.info("Desbloqueos eliminados después de entrega para usuario: {}", recipientUsername);
+            } else {
+                log.debug("No hay desbloqueos pendientes para usuario: {}", recipientUsername);
+            }
+
+            return pending;
+        } catch (Exception ex) {
+            log.error("Error al obtener/limpiar desbloqueos pendientes para usuario {}: {}", 
+                    recipientUsername, ex.getMessage(), ex);
+            throw new RuntimeException("Error al procesar desbloqueos pendientes", ex);
+        }
+    }
+
+    /**
+     * Obtiene y elimina las identidades de contacto pendientes para un usuario.
+     *
+     * @param recipientUsername Nombre del usuario que recibe las actualizaciones de identidad
+     * @return Lista de entidades PendingContactIdentity
+     */
+    @Transactional
+    public List<PendingContactIdentity> getAndClearPendingContactIdentities(String recipientUsername) {
+        if (recipientUsername == null) {
+            log.warn("Parámetro inválido: recipientUsername es nulo");
+            return new ArrayList<>();
+        }
+
+        try {
+            log.debug("Obteniendo identidades de contacto pendientes para usuario: {}", recipientUsername);
+            List<PendingContactIdentity> pending = pendingContactIdentityRepository.findByRecipient(recipientUsername);
+
+            if (!pending.isEmpty()) {
+                log.info("Encontradas {} identidades de contacto pendientes para usuario: {}", 
+                        pending.size(), recipientUsername);
+                pendingContactIdentityRepository.deleteAll(pending);
+                log.info("Identidades de contacto eliminadas después de entrega para usuario: {}", recipientUsername);
+            } else {
+                log.debug("No hay identidades de contacto pendientes para usuario: {}", recipientUsername);
+            }
+
+            return pending;
+        } catch (Exception ex) {
+            log.error("Error al obtener/limpiar identidades de contacto pendientes para usuario {}: {}", 
+                    recipientUsername, ex.getMessage(), ex);
+            throw new RuntimeException("Error al procesar identidades de contacto pendientes", ex);
+        }
+    }
+
+    /**
+     * Obtiene TODOS los mensajes pendientes para un usuario.
+     * Este método es llamado por MessageController cuando un usuario se conecta.
+     * Recopila todos los tipos de pendientes (mensajes no leídos, eliminaciones, bloqueos,
+     * desbloqueos, limpiezas de historial, confirmaciones de lectura, identidades) en un solo WsMessage.
+     *
+     * @param username Nombre del usuario que solicita sus pendientes
+     * @return WsMessage conteniendo todos los pendientes, o null si no hay ninguno
+     */
+    public MessagesProto.WsMessage getAllPendingMessages(String username) {
+        log.info("Obteniendo todos los mensajes pendientes para usuario: {}", username);
+
+        try {
+            MessagesProto.WsMessage.Builder wsBuilder = MessagesProto.WsMessage.newBuilder();
+            boolean hasAnyPending = false;
+
+            // 1. Obtener mensajes de chat no leídos
+            List<ChatMessage> unreadMessages = getUnreadMessages(username);
+            if (!unreadMessages.isEmpty()) {
+                MessagesProto.UnreadMessagesList unreadList = MessagesProto.UnreadMessagesList.newBuilder()
+                        .addAllMessages(unreadMessages)
+                        .build();
+                wsBuilder.setUnreadMessagesList(unreadList);
+                log.info("Agregados {} mensajes no leídos para usuario: {}", unreadMessages.size(), username);
+                hasAnyPending = true;
+            }
+
+            // 2. Obtener bloqueos pendientes
+            List<PendingBlock> pendingBlocks = getAndClearPendingBlocks(username);
+            if (!pendingBlocks.isEmpty()) {
+                MessagesProto.BlockedUsersList.Builder blockedListBuilder = MessagesProto.BlockedUsersList.newBuilder();
+                for (PendingBlock pb : pendingBlocks) {
+                    // getBlocker() es el usuario que realizó el bloqueo
+                    blockedListBuilder.addUsers(pb.getBlocker());
+                }
+                wsBuilder.setBlockedUsersList(blockedListBuilder.build());
+                log.info("Agregados {} bloqueos pendientes para usuario: {}", pendingBlocks.size(), username);
+                hasAnyPending = true;
+            }
+
+            // 3. Obtener desbloqueos pendientes
+            List<PendingUnblock> pendingUnblocks = getAndClearPendingUnblocks(username);
+            if (!pendingUnblocks.isEmpty()) {
+                MessagesProto.UnblockedUsersList.Builder unblockedListBuilder = MessagesProto.UnblockedUsersList.newBuilder();
+                for (PendingUnblock pu : pendingUnblocks) {
+                    // getBlocker() es el usuario que realizó el desbloqueo
+                    unblockedListBuilder.addUsers(pu.getBlocker());
+                }
+                wsBuilder.setUnblockedUsersList(unblockedListBuilder.build());
+                log.info("Agregados {} desbloqueos pendientes para usuario: {}", pendingUnblocks.size(), username);
+                hasAnyPending = true;
+            }
+
+            // 4. Obtener limpiezas de historial pendientes
+            List<PendingClearHistory> pendingClearHistories = getAndClearPendingClearHistories(username);
+            if (!pendingClearHistories.isEmpty()) {
+                MessagesProto.PendingClearHistoryList.Builder clearHistoryListBuilder = 
+                    MessagesProto.PendingClearHistoryList.newBuilder();
+                for (PendingClearHistory pch : pendingClearHistories) {
+                    log.debug("Agregando solicitud de limpieza de: {} para: {}", 
+                              pch.getSender(), pch.getRecipient());
+                    MessagesProto.PendingClearHistory clearHistoryProto = 
+                        MessagesProto.PendingClearHistory.newBuilder()
+                            .setSender(pch.getSender())
+                            .setRecipient(pch.getRecipient())
+                            .build();
+                    clearHistoryListBuilder.addPendingClearHistory(clearHistoryProto);
+                }
+                wsBuilder.setPendingClearHistoryList(clearHistoryListBuilder.build());
+                log.info("Agregadas {} limpiezas de historial pendientes para usuario: {}", 
+                         pendingClearHistories.size(), username);
+                hasAnyPending = true;
+            }
+
+            // 5. Obtener confirmaciones de lectura pendientes
+            List<PendingReadReceipt> pendingReadReceipts = getAndClearPendingReadReceipts(username);
+            if (!pendingReadReceipts.isEmpty()) {
+                MessagesProto.MessagesReadUpdate.Builder readUpdateBuilder = MessagesProto.MessagesReadUpdate.newBuilder();
+                for (PendingReadReceipt prr : pendingReadReceipts) {
+                    readUpdateBuilder.addMessageIds(prr.getMessageId())
+                            .setReaderUsername(prr.getReader());
+                }
+                wsBuilder.setMessagesReadUpdate(readUpdateBuilder.build());
+                log.info("Agregadas {} confirmaciones de lectura pendientes para usuario: {}", 
+                         pendingReadReceipts.size(), username);
+                hasAnyPending = true;
+            }
+
+            // 6. Obtener identidades de contacto pendientes
+            List<PendingContactIdentity> pendingIdentities = getAndClearPendingContactIdentities(username);
+            if (!pendingIdentities.isEmpty()) {
+                for (PendingContactIdentity pci : pendingIdentities) {
+                    MessagesProto.ContactIdentity identity = MessagesProto.ContactIdentity.newBuilder()
+                            .setSenderId(pci.getSenderId())
+                            .setSenderUsername(pci.getSenderUsername())
+                            .build();
+                    wsBuilder.setContactIdentity(identity);
+                }
+                log.info("Agregadas {} identidades de contacto pendientes para usuario: {}", 
+                         pendingIdentities.size(), username);
+                hasAnyPending = true;
+            }
+
+            if (hasAnyPending) {
+                log.info("Se encontraron mensajes pendientes para usuario: {}", username);
+                return wsBuilder.build();
+            } else {
+                log.info("No se encontraron mensajes pendientes para usuario: {}", username);
+                return null;
+            }
+
+        } catch (Exception e) {
+            log.error("Error al obtener todos los mensajes pendientes para usuario {}: {}", 
+                    username, e.getMessage(), e);
+            throw new RuntimeException("Error al obtener mensajes pendientes", e);
+        }
     }
 }

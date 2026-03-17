@@ -10,9 +10,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMQconfig {
     private static final String CONTACT_EVENTS_QUEUE = "contact.events";
-    private static final String MESSAGE_SENT_QUEUE = "message.sent";
-    private static final String MESSAGE_READ_QUEUE = "message.read";
-    private static final String USER_ONLINE_QUEUE = "user.online";
+    private static final String MESSAGE_DELIVERY_QUEUE = "message.delivery";
 
     @Bean
     public Queue contactAddQueue() {
@@ -20,18 +18,8 @@ public class RabbitMQconfig {
     }
 
     @Bean
-    public Queue userOnlineQueue() {
-        return new Queue(USER_ONLINE_QUEUE, false);
-    }
-
-    @Bean
-    Queue messageSentQueue() {
-        return new Queue(MESSAGE_SENT_QUEUE, false);
-    }
-
-    @Bean
-    public Queue messageReadQueue() {
-        return new Queue(MESSAGE_READ_QUEUE, false);
+    public Queue messageDeliveryQueue() {
+        return new Queue(MESSAGE_DELIVERY_QUEUE, true);
     }
 
     @Bean

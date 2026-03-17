@@ -90,8 +90,11 @@ message MessageDeletedNotification {
 }
 
 // Solicitud para bloquear contacto
+// El blocker es el usuario que envía la solicitud de bloqueo
+// El recipient es el usuario que será bloqueado
 message BlockContactRequest {
-    string recipient = 1; // El usuario a bloquear
+    string blocker = 1;    // Usuario que envía la solicitud (quien bloquea)
+    string recipient = 2; // El usuario a bloquear
 }
 
 // Respuesta de la operación de bloqueo
@@ -101,8 +104,11 @@ message BlockContactResponse {
 }
 
 // Solicitud para desbloquear contacto
+// El blocker es el usuario que envía la solicitud de desbloqueo
+// El recipient es el usuario que será desbloqueado
 message UnblockContactRequest {
-    string recipient = 1;
+    string blocker = 1;    // Usuario que envía la solicitud (quien desbloquea)
+    string recipient = 2;
 }
 
 message UnblockContactResponse {
@@ -159,6 +165,16 @@ message ContactIdentity {
   string contact_username = 3; // El username del contacto parcial
 }
 
+message PendingClearHistory {
+  string sender = 1;
+  string recipient = 2;
+}
+
+// Lista de usernames cuyo historial fue eliminado (pendiente para entregar al conectarse)
+message PendingClearHistoryList {
+  repeated PendingClearHistory pendingClearHistory = 1;
+}
+
 // Wrapper para todos los mensajes
 message WsMessage {
   oneof payload {
@@ -183,5 +199,7 @@ message WsMessage {
     MessagesReadUpdate messages_read_update = 19;
     ContactIdentity contact_identity = 20;
     ClearHistoryResponse clear_history_response = 21;
-  }
+    PendingClearHistoryList pending_clear_history_list = 22;
+    PendingClearHistory pending_clear_history = 23;
+      }
 }

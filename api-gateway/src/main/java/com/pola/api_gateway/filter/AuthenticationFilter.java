@@ -8,17 +8,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
-import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
-import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import reactor.core.publisher.Mono;
 
-import java.time.Duration;
-import java.util.UUID;
+
 
 @Component
 public class AuthenticationFilter extends AbstractGatewayFilterFactory<AuthenticationFilter.Config>{
@@ -30,13 +27,6 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
 
     @Autowired
     private JwtUtil jwtUtil;
-
-    // Inyectamos Redis Reactivo para guardar la sesión sin bloquear
-    @Autowired
-    private ReactiveRedisTemplate<String, String> redisTemplate;
-
-    // Tiempo de vida corto para detectar desconexiones (ej. 2 minutos)
-    private static final Duration SESSION_TTL = Duration.ofMinutes(2);
 
     public AuthenticationFilter() {
         super(Config.class);
@@ -62,27 +52,13 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
 
             try {
                 String token = extractToken(request);
-                jwtUtil.validateToken(token);
                 String userId = jwtUtil.extractUserId(token);
 
                 logger.info("Token válido. Usuario: {}", userId);
 
-                ServerHttpRequest modifiedRequest = updateRequest(request, userId);
-                ServerWebExchange modifiedExchange = exchange.mutate().request(modifiedRequest).build();
-
-                // Enrutamiento de lógica específica
-                if (isWebSocketEndpoint(request)) {
-                    return handleWebSocketSession(modifiedExchange, chain, userId);
-                }
-
-                if (isLogoutEndpoint(request)) {
-                    return handleLogout(modifiedExchange, chain, userId);
-                }
-
-                return chain.filter(modifiedExchange);
+                return chain.filter(exchange);
 
             } catch (ExpiredJwtException e) {
-                cleanupSession(e.getClaims().getSubject());
                 return onError(exchange, "Acceso denegado: Token expirado", HttpStatus.UNAUTHORIZED);
             } catch (Exception e) {
                 logger.error("Error de autenticación: {}", e.getMessage());
@@ -92,70 +68,11 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
     }
 
     private String extractToken(ServerHttpRequest request) {
-        String authHeader = request.getHeaders().getOrEmpty(HttpHeaders.AUTHORIZATION).get(0);
+        String authHeader = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             return authHeader.substring(7);
         }
         throw new IllegalArgumentException("Formato de token inválido");
-    }
-
-    private ServerHttpRequest updateRequest(ServerHttpRequest request, String userId) {
-        return request.mutate()
-                .header("X-User-Id", userId)
-                .build();
-    }
-
-    private boolean isWebSocketEndpoint(ServerHttpRequest request) {
-        return request.getURI().getPath().contains("/ws-binary") || request.getURI().getPath().contains("/ws-media");
-    }
-
-    private boolean isLogoutEndpoint(ServerHttpRequest request) {
-        return request.getHeaders().containsKey("LOGOUT") || 
-               request.getPath().value().contains("/auth/logout");
-    }
-    /**
-     * Guarda en redis la sesion websocket para que otros servicios tengan acceso.
-     * @param exchange
-     * @param chain
-     * @param userId
-     * @return
-     */
-    private Mono<Void> handleWebSocketSession(ServerWebExchange exchange, GatewayFilterChain chain, String userId) {
-        String sessionId = UUID.randomUUID().toString();
-        String redisKey = "ws:sessionid:" + userId;
-
-        logger.info("Guardando sesión WebSocket en Redis - Usuario: {}, SessionId: {}", userId, sessionId);
-
-        return redisTemplate.opsForValue()
-                .set(redisKey, sessionId, SESSION_TTL)
-                .doOnError(error -> logger.error("Error al guardar en Redis: {}", error.getMessage()))
-                .flatMap(success -> chain.filter(exchange));
-    }
-
-    /**
-     * Remueve de redis la sesion cuando el usuario se desconecta o hace logout.
-     * @param exchange
-     * @param chain
-     * @param userId
-     * @return
-     */
-    private Mono<Void> handleLogout(ServerWebExchange exchange, GatewayFilterChain chain, String userId) {
-        String redisKey = "ws:sessionid:" + userId;
-        logger.info("Logout detectado. Eliminando sesión Redis para usuario: {}", userId);
-        return redisTemplate.delete(redisKey)
-                .doOnNext(count -> logger.info("Sesión eliminada. Keys eliminadas: {}", count))
-                .onErrorResume(e -> {
-                    logger.error("Error al eliminar sesión de Redis durante logout: {}", e.getMessage());
-                    return Mono.just(0L); // Retornamos 0 para que el flujo continúe y no rompa la request
-                })
-                .flatMap(count -> chain.filter(exchange));
-    }
-
-    private void cleanupSession(String userId) {
-        if (userId != null) {
-            logger.warn("Limpiando sesión Redis por expiración para usuario: {}", userId);
-            redisTemplate.delete("ws:sessionid:" + userId).subscribe();
-        }
     }
 
     private Mono<Void> onError(ServerWebExchange exchange, String err, HttpStatus httpStatus) {

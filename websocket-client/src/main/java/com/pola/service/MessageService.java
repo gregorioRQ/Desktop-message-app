@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.pola.model.ChatMessage;
 import com.pola.model.ImageChatMessage;
 import com.pola.model.ImageProcessingResult;
@@ -24,6 +27,8 @@ import javafx.collections.ObservableList;
  * Principio SOLID: Single Responsibility - Solo maneja la lógica de mensajes
  */
 public class MessageService {
+    private static final Logger log = LoggerFactory.getLogger(MessageService.class);
+    
     private final ObservableList<ChatMessage> currentChatMessages;
     private final ObservableList<Notification> notifications;
     private final MessageRepository messageRepository;
@@ -134,8 +139,13 @@ public class MessageService {
         }
 
         try {
-            // guardar en la db local
-            ChatMessage localMessage = new ChatMessage(currentContact.getContactUsername(), content, username);
+            // El senderUsername es el username actual (quién envía el mensaje)
+            ChatMessage localMessage = new ChatMessage(
+                currentContact.getContactUsername(), 
+                username,  // senderUsername - quién envía
+                content, 
+                username   // senderId
+            );
             // generar un id aleatorio para el mensaje local y del servidor
             long id = Math.abs(UUID.randomUUID().getLeastSignificantBits());
             localMessage.setId(id);
@@ -232,13 +242,23 @@ public class MessageService {
 
     /**
      * Vacía el historial de mensajes con un contacto.
-     * @param contact El contacto del chat.
-     * @param deleteForEveryone Si es true, envía petición al servidor para borrar mensajes.
+     * Este método elimina todos los mensajes (enviados y recibidos) entre el usuario actual
+     * y el contacto especificado de la base de datos local.
+     * 
+     * Si deleteForEveryone es true, también se envía una petición al servidor para eliminar
+     * los mensajes del otro usuario (historial "para todos").
+     * 
+     * @param contact El contacto del chat cuyo historial se eliminará
+     * @param deleteForEveryone Si es true, envía petición al servidor para borrar mensajes en ambos lados
      */
     public void clearChatHistory(Contact contact, boolean deleteForEveryone) {
+        log.info("Iniciando limpieza de historial - Contacto: {}, deleteForEveryone: {}", 
+            contact.getContactUsername(), deleteForEveryone);
+        
         try {
             // Si es "para todos", enviar peticiones al servidor
             if (deleteForEveryone && webSocketService.isConnected()) {
+                log.debug("Enviando petición de historial global al servidor");
                 messageSender.sendClearHistory(currentUsername, contact.getContactUsername());
             }
 
@@ -247,13 +267,16 @@ public class MessageService {
             
             // Limpiar la UI si estamos viendo ese chat actualmente
             if (currentContact != null && currentContact.getId() == contact.getId()) {
+                log.debug("Limpiando mensajes de la UI para contacto actual");
                 Platform.runLater(() -> currentChatMessages.clear());
             }
             
-            System.out.println("Historial eliminado (" + (deleteForEveryone ? "global" : "local") + ") para: " + contact.getContactUsername());
+            log.info("Historial eliminado ({}) para contacto: {}", 
+                deleteForEveryone ? "global" : "local", contact.getContactUsername());
             
         } catch (SQLException e) {
-            System.err.println("Error al vaciar historial: " + e.getMessage());
+            log.error("Error al vaciar historial para contacto: {} - Error: {}", 
+                contact.getContactUsername(), e.getMessage());
             e.printStackTrace();
         }
     }

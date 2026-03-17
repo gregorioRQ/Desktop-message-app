@@ -1,4 +1,10 @@
 .vscode
 chat_client.db
 target/
+src/generated/
+
+AGENTS.md
+
 .settings
+
+MEDIA_TODO.md

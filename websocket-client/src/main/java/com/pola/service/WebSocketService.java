@@ -13,7 +13,12 @@ import com.pola.proto.MessagesProto.WsMessage;
  */
 public interface WebSocketService {
     /**
-     * Conecta al servidor WebSocket
+     * Conecta al servidor WebSocket enviando token de autenticación y datos de usuario
+     * en las cabeceras del handshake WebSocket para validación en el servidor
+     * 
+     * @param token JWT access token para autenticación
+     * @param userId ID único del usuario actual
+     * @param username Nombre de usuario actual
      */
     void connect(String token, String userId, String username);
     

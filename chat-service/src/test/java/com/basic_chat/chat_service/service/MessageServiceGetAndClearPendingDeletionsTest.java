@@ -41,8 +41,8 @@ class MessageServiceGetAndClearPendingDeletionsTest {
     void testGetAndClearPendingDeletions_HappyPath() {
         // Arrange
         String recipient = "user1";
-        PendingDeletion pd1 = new PendingDeletion(1L, recipient, "msg1");
-        PendingDeletion pd2 = new PendingDeletion(2L, recipient, "msg2");
+        PendingDeletion pd1 = new PendingDeletion(1L, recipient, "msg1", "user2");
+        PendingDeletion pd2 = new PendingDeletion(2L, recipient, "msg2", "user2");
         List<PendingDeletion> pendingList = List.of(pd1, pd2);
 
         when(pendingDeletionRepository.findByRecipient(recipient)).thenReturn(pendingList);

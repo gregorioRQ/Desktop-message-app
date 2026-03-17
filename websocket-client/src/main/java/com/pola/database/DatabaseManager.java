@@ -108,12 +108,18 @@ public class DatabaseManager {
                 CREATE TABLE IF NOT EXISTS messages (
                     id INTEGER PRIMARY KEY,
                     contact_username TEXT NOT NULL,
+                    sender_username TEXT NOT NULL,
                     content TEXT NOT NULL,
                     sender_id TEXT NOT NULL,
                     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     is_read INTEGER DEFAULT 0,
                     FOREIGN KEY (contact_username) REFERENCES contacts(id) ON DELETE CASCADE
                 )
+                """;
+            
+            // Migración: agregar columna sender_username si no existe (para DBs existentes)
+            String migrateSenderUsername = """
+                ALTER TABLE messages ADD COLUMN sender_username TEXT NOT NULL DEFAULT ''
                 """;
             
             // Índices para mejorar rendimiento
@@ -127,10 +133,33 @@ public class DatabaseManager {
                 ON messages(contact_username, timestamp DESC)
                 """;
             
+            String createMessagesSenderIndex = """
+                CREATE INDEX IF NOT EXISTS idx_messages_sender_contact
+                ON messages(sender_username, contact_username)
+                """;
+            
+            // Tabla de usuarios que me han bloqueado
+            String createBlockedByUsersTable = """
+                CREATE TABLE IF NOT EXISTS blocked_by_users (
+                    username TEXT PRIMARY KEY
+                )
+                """;
+            
             stmt.execute(createContactsTable);
             stmt.execute(createMessagesTable);
+            stmt.execute(createBlockedByUsersTable);
             stmt.execute(createContactsIndex);
             stmt.execute(createMessagesIndex);
+            stmt.execute(createMessagesSenderIndex);
+            
+            // Ejecutar migración si es necesario
+            try {
+                stmt.execute(migrateSenderUsername);
+                System.out.println("Migración sender_username aplicada");
+            } catch (SQLException e) {
+                // La columna ya existe, ignoramos
+                System.out.println("Columna sender_username ya existe o índice ya creado");
+            }
             
             System.out.println("Base de datos inicializada correctamente");
             

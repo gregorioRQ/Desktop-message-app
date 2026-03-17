@@ -113,6 +113,16 @@ public class ChatController {
     @FXML
     private Button clearNotificationsButton;
 
+    // Delay constants for service connections (in milliseconds)
+    private static final int SERVICE_CONNECTION_DELAY_MS = 3000; // 3 seconds
+    
+    // Scheduler for delayed connections
+    private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+    
+    // NOTE: This scheduler should be properly shut down when the controller is destroyed
+    // to prevent resource leaks. In a proper implementation, we would hook into the 
+    // controller's lifecycle events to call scheduler.shutdown()
+
     private WebSocketService webSocketService;
     private WebSocketService mediaWebSocketService;
     private MessageService messageService;
@@ -155,6 +165,10 @@ public class ChatController {
         if (this.notificationService == null) {
             this.notificationService = new NotificationService(userId, username);
         }
+        // Registrar servicio de notificaciones con ViewManager para desconexión automática
+        if (viewManager != null) {
+            viewManager.setNotificationService(this.notificationService);
+        }
         // Vincular servicio de notificaciones al servicio de contactos
         contactService.setNotificationService(this.notificationService);
         
@@ -190,9 +204,7 @@ public class ChatController {
             
         // Conexión automática a los servicios
         connectToServices();
-        
-        // Iniciar latidos para mantener la sesión viva (Dead Man's Switch)
-        startHeartbeat();
+
     }
     
     public void setWebSocketService(WebSocketService webSocketService) {
@@ -212,22 +224,44 @@ public class ChatController {
     }
 
     private void connectToServices() {
-        // Conectar Chat WebSocket
+        // Conectar Chat WebSocket enviando token, userId y username en las cabeceras del handshake
         if (webSocketService != null && !webSocketService.isConnected()) {
             webSocketService.connect(authToken, currentUserId, currentUsername);
         }
 
-        // Conectar Media WebSocket
-        if (mediaWebSocketService != null && !mediaWebSocketService.isConnected()) {
-            mediaWebSocketService.connect(authToken, currentUserId, currentUsername);
-        }
-        
         // Conectar Notification WebSocket
         if (notificationService != null) {
             notificationService.connect(authToken, currentUserId);
         }
     }
-    
+
+    // TODO: MEDIA - Reactivar cuando se implemente funcionalidad de envío de imágenes
+    // /**
+    //  * Conecta los servicios de chat y media después de un retraso,
+    //  * una vez que el servicio de notificaciones está completamente conectado.
+    //  */
+    // private void connectChatAndMediaServicesWithDelay() {
+    //     // Programar la conexión del servicio de chat con retraso
+    //     scheduler.schedule(() -> {
+    //         Platform.runLater(() -> {
+    //             if (webSocketService != null && !webSocketService.isConnected()) {
+    //                 System.out.println("Conectando servicio de chat después del retraso...");
+    //                 webSocketService.connect(authToken, currentUserId, currentUsername);
+    //             }
+    //         });
+    //     }, SERVICE_CONNECTION_DELAY_MS, TimeUnit.MILLISECONDS);
+    //
+    //     // Programar la conexión del servicio de media con retraso
+    //     scheduler.schedule(() -> {
+    //         Platform.runLater(() -> {
+    //             if (mediaWebSocketService != null && !mediaWebSocketService.isConnected()) {
+    //                 System.out.println("Conectando servicio de media después del retraso...");
+    //                 mediaWebSocketService.connect(authToken, currentUserId, currentUsername);
+    //             }
+    //         });
+    //     }, SERVICE_CONNECTION_DELAY_MS, TimeUnit.MILLISECONDS);
+    // }
+
     private void setupUI() {
         usernameLabel.setText("Usuario: " + currentUsername);
         updateConnectionStatus(false);
@@ -252,14 +286,12 @@ public class ChatController {
         }
         
         disconnectButton.setOnAction(event -> {
-            stopHeartbeat();
             connectionActionHelper.handleDisconnect();
         });
         addContactButton.setOnAction(e -> contactActionHelper.handleAddContact());
         if (clearChatButton != null) clearChatButton.setOnAction(e -> messageActionHelper.handleClearChat());
         if (blockButton != null) blockButton.setOnAction(e -> contactActionHelper.confirmBlockContact(selectedContact));
         if (logoutButton != null) logoutButton.setOnAction(e -> {
-            stopHeartbeat();
             logoutHandler.handleLogout();
         });
 
@@ -566,27 +598,6 @@ public class ChatController {
             if (contactService != null) {
                 contactService.clearOnlineUsers();
             }
-        }
-    }
-
-    private void startHeartbeat() {
-        stopHeartbeat(); // Asegurar que no haya uno previo corriendo
-        heartbeatExecutor = Executors.newSingleThreadScheduledExecutor();
-        // Ejecutar cada 60 segundos
-        heartbeatExecutor.scheduleAtFixedRate(() -> {
-            if (authToken != null && !authToken.isEmpty()) {
-                authService.sendHeartbeat(authToken)
-                    .exceptionally(e -> {
-                        System.err.println("[Heartbeat] Error enviando latido: " + e.getMessage());
-                        return false;
-                    });
-            }
-        }, 0, 60, TimeUnit.SECONDS);
-    }
-
-    private void stopHeartbeat() {
-        if (heartbeatExecutor != null && !heartbeatExecutor.isShutdown()) {
-            heartbeatExecutor.shutdownNow();
         }
     }
 
