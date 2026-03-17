@@ -2,3 +2,5 @@
 .vscode/*
 .vscode
 websocket-client/session.db
+arranque.bat
+nul
