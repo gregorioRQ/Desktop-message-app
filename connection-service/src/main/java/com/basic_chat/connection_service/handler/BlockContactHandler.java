@@ -9,14 +9,20 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * Handler para solicitudes de bloqueo de contacto (BlockContactRequest).
- *
- * Flujo ONLINE:
- * Cliente A → connection-service (este handler) → MessageRouterService
- *   ├── Destinatario online en esta instancia → WebSocket directo
- *   └── Destinatario online en otra instancia → RabbitMQ
- *
- * El destinatario no requiere notificación en tiempo real,
- * el mensaje se procesa para logging y validación.
+ * 
+ * Este handler procesa las solicitudes de bloqueo enviadas por un cliente.
+ * 
+ * Flujo de ejecución (dos acciones en paralelo):
+ * 1. Envía la solicitud a chat-service para procesar la lógica de ContactBlock:
+ *    - Registra el bloqueo en la tabla contact_blocks (permanente)
+ *    - Si receptor offline: guarda también en pending_blocks
+ * 2. Envía notificación directa al destinatario si está online:
+ *    - Online en esta instancia: WebSocket directo
+ *    - Online en otra instancia: RabbitMQ a esa instancia
+ *    - Offline: no se envía notificación directa (se entrega al conectarse)
+ * 
+ * El destinatario recibe la notificación para actualizar su DB local,
+ * mientras chat-service procesa el registro permanente en contact_blocks.
  */
 @Component
 @Slf4j
@@ -28,11 +34,28 @@ public class BlockContactHandler implements ConnectionWsMessageHandler {
         this.messageRouterService = messageRouterService;
     }
 
+    /**
+     * Determina si este handler puede procesar el mensaje recibido.
+     * 
+     * @param message Mensaje Protobuf recibido del cliente
+     * @return true si el mensaje contiene BlockContactRequest
+     */
     @Override
     public boolean supports(MessagesProto.WsMessage message) {
         return message.hasBlockContactRequest();
     }
 
+    /**
+     * Procesa la solicitud de bloqueo de contacto.
+     * 
+     * Este método:
+     * 1. Extrae el destinatario del bloqueo del mensaje
+     * 2. Envía la solicitud a chat-service para registro permanente (ContactBlock)
+     * 3. Envía notificación directa al destinatario si está online
+     * 
+     * @param sender Username del cliente que envía la solicitud de bloqueo
+     * @param message Mensaje Protobuf que contiene BlockContactRequest
+     */
     @Override
     public void handle(String sender, MessagesProto.WsMessage message) {
         MessagesProto.BlockContactRequest request = message.getBlockContactRequest();
@@ -44,10 +67,13 @@ public class BlockContactHandler implements ConnectionWsMessageHandler {
         // Serializar el mensaje completo
         byte[] messageData = message.toByteArray();
 
-        // Enrutar según estado del destinatario (online/offline)
-        messageRouterService.routeMessage(sender, recipient, messageData);
+        // Enrutar a chat-service para procesamiento y enviar al destinatario
+        // Este método hace ambas cosas: 
+        // 1) Envía a chat-service para registrar en ContactBlock
+        // 2) Envía notificación directa al destinatario si está online
+        messageRouterService.routeBlockUnblockToChatService(sender, recipient, messageData);
 
         // LOG CRÍTICO: Bloqueo enrutado exitosamente
-        log.info("[BLOCK_ROUTED] Solicitud de bloqueo de {} hacia {} enrutada", sender, recipient);
+        log.info("[BLOCK_ROUTED] Solicitud de bloqueo de {} hacia {} completada", sender, recipient);
     }
 }

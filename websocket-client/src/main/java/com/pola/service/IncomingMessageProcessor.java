@@ -451,10 +451,10 @@ public class IncomingMessageProcessor {
      */
     private void processBlockContactRequest(WsMessage message) {
         MessagesProto.BlockContactRequest request = message.getBlockContactRequest();
-        String blockerUsername = request.getRecipient(); // El usuario que quiere bloquear
+        String blockerUsername = request.getBlocker(); // El usuario que envía el bloqueo
         
         // LOG para debugging
-        System.out.println("[BLOCK_REQUEST_RECEIVED] Usuario " + blockerUsername + " quiere bloquearte");
+        System.out.println("[BLOCK_REQUEST_RECEIVED] Usuario " + blockerUsername + " te ha bloqueado");
         
         // Marcar al blocker como alguien que nos está bloqueando
         context.getContactService().markUserAsBlockingMe(blockerUsername);
@@ -476,10 +476,10 @@ public class IncomingMessageProcessor {
      */
     private void processUnblockContactRequest(WsMessage message) {
         MessagesProto.UnblockContactRequest request = message.getUnblockContactRequest();
-        String unblockerUsername = request.getRecipient(); // El usuario que quiere desbloquear
+        String unblockerUsername = request.getBlocker(); // El usuario que envía el desbloqueo
         
         // LOG para debugging
-        System.out.println("[UNBLOCK_REQUEST_RECEIVED] Usuario " + unblockerUsername + " ya no te bloquea");
+        System.out.println("[UNBLOCK_REQUEST_RECEIVED] Usuario " + unblockerUsername + " te ha desbloqueado");
         
         // Marcar al unblocker como alguien que ya NO nos está bloqueando
         context.getContactService().markUserAsUnblockingMe(unblockerUsername);

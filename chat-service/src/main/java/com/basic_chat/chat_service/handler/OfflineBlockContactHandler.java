@@ -9,6 +9,7 @@ import com.basic_chat.chat_service.models.PendingBlock;
 import com.basic_chat.chat_service.models.PendingUnblock;
 import com.basic_chat.chat_service.repository.PendingBlockRepository;
 import com.basic_chat.chat_service.repository.PendingUnblockRepository;
+import com.basic_chat.chat_service.service.BlockService;
 import com.basic_chat.proto.MessagesProto;
 
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +17,9 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * Handler offline para solicitudes de bloqueo de contacto.
  * 
- * Cuando el destinatario está offline, guarda la solicitud como pendiente.
+ * Cuando el destinatario está offline, este handler:
+ * 1. Registra el bloqueo en la tabla contact_blocks (permanente)
+ * 2. Guarda la solicitud como pendiente en pending_blocks (para notificar cuando se conecte)
  * 
  * Lógica de arrepentimiento:
  * - Si el usuario envía BlockContactRequest pero ya existe un PendingUnblock pendiente
@@ -30,12 +33,15 @@ public class OfflineBlockContactHandler implements OfflineMessageHandler {
 
     private final PendingBlockRepository pendingBlockRepository;
     private final PendingUnblockRepository pendingUnblockRepository;
+    private final BlockService blockService;
 
     public OfflineBlockContactHandler(
             PendingBlockRepository pendingBlockRepository,
-            PendingUnblockRepository pendingUnblockRepository) {
+            PendingUnblockRepository pendingUnblockRepository,
+            BlockService blockService) {
         this.pendingBlockRepository = pendingBlockRepository;
         this.pendingUnblockRepository = pendingUnblockRepository;
+        this.blockService = blockService;
     }
 
     @Override
@@ -47,9 +53,10 @@ public class OfflineBlockContactHandler implements OfflineMessageHandler {
      * Procesa una solicitud de bloqueo de contacto para un destinatario offline.
      * 
      * Este método:
-     * 1. Verifica si existe un PendingUnblock previo (el usuario se arrepintió de desbloquear)
-     * 2. Si existe, lo elimina (lógica de arrepentimiento)
-     * 3. Guarda el nuevo PendingBlock
+     * 1. Registra el bloqueo en contact_blocks (tabla permanente)
+     * 2. Verifica si existe un PendingUnblock previo (el usuario se arrepintió de desbloquear)
+     * 3. Si existe, lo elimina (lógica de arrepentimiento)
+     * 4. Guarda el nuevo PendingBlock (para notificar cuando se conecte)
      * 
      * @param message Mensaje protobuf que contiene BlockContactRequest
      * @param recipient Username del destinatario (está offline)
@@ -59,32 +66,53 @@ public class OfflineBlockContactHandler implements OfflineMessageHandler {
     @Transactional
     public void handleOffline(MessagesProto.WsMessage message, String recipient) throws Exception {
         MessagesProto.BlockContactRequest request = message.getBlockContactRequest();
-        String sender = request.getRecipient(); // Usuario que quiere bloquear
+        
+        // El campo 'blocker' contiene el usuario que envía la solicitud de bloqueo
+        // El campo 'recipient' contiene el usuario que será bloqueado
+        String blocker = request.getBlocker();
         
         // LOG CRÍTICO: Inicio de procesamiento de bloqueo offline
-        log.info("[OFFLINE_BLOCK] Remitente: {} → Bloquear a: {}", sender, recipient);
+        log.info("[OFFLINE_BLOCK] Bloqueador: {} → Bloquear a: {}", blocker, recipient);
         
-        // Verificar si existe un PendingUnblock previo (arrepentimiento de desbloecko)
+        // Paso 1: Registrar el bloqueo en contact_blocks (tabla permanente)
+        // Esto asegura que el bloqueo persista incluso si el destinatario está offline
+        // El método blockUser es idempotente - si ya existe, retorna true sin duplicar
+        boolean blockRegistered = blockService.blockUser(blocker, recipient);
+        if (blockRegistered) {
+            log.info("[OFFLINE_BLOCK_CONTACT] Registro de bloqueo creado en contact_blocks - blocker: {}, blocked: {}", blocker, recipient);
+        } else {
+            log.warn("[OFFLINE_BLOCK_CONTACT] No se pudo registrar bloqueo en contact_blocks - blocker: {}, blocked: {}", blocker, recipient);
+        }
+        
+        // Paso 2: Verificar si existe un PendingUnblock previo (arrepentimiento de desbloqueo)
         // Si el usuario había enviado una solicitud de desbloqueo pero ahora se arrepiente
         // y envía bloqueo, eliminamos el desbloqueo pendiente para que no llegue al receptor
-        List<PendingUnblock> pendingUnblocks = pendingUnblockRepository.findByBlockerAndUnblockedUser(sender, recipient);
+        List<PendingUnblock> pendingUnblocks = pendingUnblockRepository.findByBlockerAndUnblockedUser(blocker, recipient);
         
         if (!pendingUnblocks.isEmpty()) {
             // LOG CRÍTICO: Se encontró desbloqueo pendiente - se elimina por arrepentimiento
             log.info("[OFFLINE_BLOCK_REPENT] Eliminando {} desbloqueo(s) pendiente(s) - usuario {} se arrepintió de desbloquear a {}", 
-                    pendingUnblocks.size(), sender, recipient);
+                    pendingUnblocks.size(), blocker, recipient);
             pendingUnblockRepository.deleteAll(pendingUnblocks);
         }
         
-        // Guardar el nuevo bloqueo pendiente
+        // Paso 3: Verificar si ya existe un PendingBlock del mismo par (evitar duplicación)
+        List<PendingBlock> existingPendingBlocks = pendingBlockRepository.findByBlockerAndBlockedUser(blocker, recipient);
+        if (!existingPendingBlocks.isEmpty()) {
+            log.info("[OFFLINE_BLOCK_SKIP] Ya existe un PendingBlock para blocker: {} y blocked: {}, no se duplica", 
+                    blocker, recipient);
+            return;
+        }
+        
+        // Paso 4: Guardar el nuevo bloqueo pendiente (para notificar cuando se conecte)
         PendingBlock pendingBlock = new PendingBlock();
-        pendingBlock.setBlocker(sender);
+        pendingBlock.setBlocker(blocker);
         pendingBlock.setBlockedUser(recipient);
         pendingBlock.setTimestamp(System.currentTimeMillis());
         
         pendingBlockRepository.save(pendingBlock);
         
         // LOG CRÍTICO: Bloqueo pendiente guardado exitosamente
-        log.info("[OFFLINE_BLOCK_SAVED] Bloqueo pendiente guardado - bloqueador: {}, bloqueado: {}", sender, recipient);
+        log.info("[OFFLINE_BLOCK_SAVED] Bloqueo pendiente guardado - bloqueador: {}, bloqueado: {}", blocker, recipient);
     }
 }

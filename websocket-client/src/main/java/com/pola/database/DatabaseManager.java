@@ -138,8 +138,16 @@ public class DatabaseManager {
                 ON messages(sender_username, contact_username)
                 """;
             
+            // Tabla de usuarios que me han bloqueado
+            String createBlockedByUsersTable = """
+                CREATE TABLE IF NOT EXISTS blocked_by_users (
+                    username TEXT PRIMARY KEY
+                )
+                """;
+            
             stmt.execute(createContactsTable);
             stmt.execute(createMessagesTable);
+            stmt.execute(createBlockedByUsersTable);
             stmt.execute(createContactsIndex);
             stmt.execute(createMessagesIndex);
             stmt.execute(createMessagesSenderIndex);

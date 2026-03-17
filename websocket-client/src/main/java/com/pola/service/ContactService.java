@@ -181,7 +181,8 @@ public class ContactService {
             // Enviar petición de bloqueo al servidor
             if (webSocketService != null && webSocketService.isConnected()) {
                 MessagesProto.BlockContactRequest request = MessagesProto.BlockContactRequest.newBuilder()
-                    .setRecipient(contact.getContactUsername())
+                    .setBlocker(currentUsername)      // Usuario que envía el bloqueo
+                    .setRecipient(contact.getContactUsername()) // Usuario que será bloqueado
                     .build();
                 
                 WsMessage msg = WsMessage.newBuilder().setBlockContactRequest(request).build();
@@ -208,7 +209,8 @@ public class ContactService {
             // Enviar petición de desbloqueo al servidor
             if (webSocketService != null && webSocketService.isConnected()) {
                 MessagesProto.UnblockContactRequest request = MessagesProto.UnblockContactRequest.newBuilder()
-                    .setRecipient(contact.getContactUsername())
+                    .setBlocker(currentUsername)      // Usuario que envía el desbloqueo
+                    .setRecipient(contact.getContactUsername()) // Usuario que será desbloqueado
                     .build();
                 
                 WsMessage msg = WsMessage.newBuilder().setUnblockContactRequest(request).build();
