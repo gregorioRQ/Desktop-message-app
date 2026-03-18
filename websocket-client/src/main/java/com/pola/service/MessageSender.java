@@ -31,10 +31,11 @@ public class MessageSender {
         sendMessage(WsMessage.newBuilder().setChatMessage(chatMessage).build());
     }
 
-    public void sendDeleteMessage(String messageId, String senderUsername) {
+    public void sendDeleteMessage(String messageId, String senderUsername, String recipient) {
         MessagesProto.DeleteMessageRequest request = MessagesProto.DeleteMessageRequest.newBuilder()
             .setMessageId(messageId)
             .setSenderUsername(senderUsername)
+            .setRecipient(recipient)
             .build();
         sendMessage(WsMessage.newBuilder().setDeleteMessageRequest(request).build());
     }
