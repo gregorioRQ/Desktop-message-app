@@ -1,7 +1,5 @@
 HELP.md
 target/
-src/main/resources/application.properties
-src/test/resources/application.properties
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
@@ -35,3 +33,4 @@ build/
 .vscode/
 
 AGENTS.md
+.env
