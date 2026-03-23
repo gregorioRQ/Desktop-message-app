@@ -50,4 +50,21 @@ public class RabbitMQProducerService {
                 message
         );
     }
+
+    /**
+     * Envía un evento de notificación a la cola de notificaciones.
+     * 
+     * Este método se usa cuando el destinatario está offline, para notificarle
+     * que tiene un nuevo mensaje vía SSE (notification-service).
+     * 
+     * @param notificationEvent Evento de notificación con información del mensaje
+     */
+    public void sendToNotificationQueue(Object notificationEvent) {
+        log.info("Encolando notificación para notification-service");
+        rabbitTemplate.convertAndSend(
+                RabbitMQConfig.MESSAGE_EXCHANGE,
+                RabbitMQConfig.NOTIFICATION_ROUTING_KEY,
+                notificationEvent
+        );
+    }
 }

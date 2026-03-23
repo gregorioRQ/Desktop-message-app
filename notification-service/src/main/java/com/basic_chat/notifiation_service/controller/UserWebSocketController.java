@@ -1,42 +1,54 @@
 package com.basic_chat.notifiation_service.controller;
 
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.stereotype.Controller;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.basic_chat.notifiation_service.model.UserCreateEvent;
-import com.basic_chat.notifiation_service.model.UserOnlineEvent;
-import com.basic_chat.notifiation_service.service.NotificationService;
-import com.basic_chat.notifiation_service.service.UserPresenceService;
-import com.basic_chat.notifiation_service.service.UserService;
-
-@Controller
+/**
+ * Controlador WebSocket para operaciones de usuario (LEGACY - COMENTADO).
+ * 
+ * Este controlador manejaba mensajes STOMP para registrar usuarios y notificar
+ * presencia online. Fue comentado porque:
+ * 1. La funcionalidad de presencia se implementará después
+ * 2. No es necesaria para el flujo actual de notificaciones SSE
+ * 
+ * Mantenido por si se necesita en el futuro para referencia o reutilización.
+ * 
+ * @deprecated Controlador legacy - no utilizado.
+ */
+// @Controller
 public class UserWebSocketController {
-    private final UserService userService;
-    private final NotificationService notificationService;
-    private final UserPresenceService userPresenceService;
 
-    public UserWebSocketController(UserService userService, NotificationService notificationService, UserPresenceService userPresenceService){
-        this.userService = userService;
-        this.notificationService = notificationService;
-        this.userPresenceService = userPresenceService;
-    }
+    private static final Logger logger = LoggerFactory.getLogger(UserWebSocketController.class);
 
     /**
-     * Recibe el mensaje del cliente en el destino: /app/user.add
-     * Payload esperado: JSON compatible con UserCreateEvent {"user_id": "contact_id"}
+     * Constructor vacío para evitar errores de compilación.
+     * El controlador ya no se usa activamente.
      */
-    @MessageMapping("/user.add")
-    public void createUser(@Payload UserCreateEvent event){
-        userService.create(event);
+    public UserWebSocketController() {
+        logger.info("UserWebSocketController comentarios - no se ejecutará");
     }
 
-    /**
-     * Permite al cliente notificar explícitamente que está online.
-     * Destino final: /app/user.online
-     */
-    @MessageMapping("/user.online")
-    public void notifyUserOnline(@Payload UserOnlineEvent event){
-        userPresenceService.notifyUserOnline(event.getUserId());
-    }
+    // private final UserService userService;
+    // private final NotificationService notificationService;
+    // private final UserPresenceService userPresenceService;
+
+    // public UserWebSocketController(UserService userService, NotificationService notificationService, UserPresenceService userPresenceService){
+    //     this.userService = userService;
+    //     this.notificationService = notificationService;
+    //     this.userPresenceService = userPresenceService;
+    // }
+
+    // /**
+    //  * Recibe el mensaje del cliente en el destino: /app/user.add
+    //  * @deprecated Metodo legacy - no utilizado
+    //  */
+    // @MessageMapping("/user.add")
+    // public void createUser(@Payload UserCreateEvent event) { ... }
+
+    // /**
+    //  * Permite al cliente notificar explícitamente que está online.
+    //  * @deprecated Metodo legacy - no utilizado
+    //  */
+    // @MessageMapping("/user.online")
+    // public void notifyUserOnline(@Payload UserOnlineEvent event) { ... }
 }

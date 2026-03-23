@@ -11,7 +11,7 @@ import com.pola.service.ContactService;
 import com.pola.service.HttpService;
 import com.pola.service.HttpServiceImpl;
 import com.pola.service.MessageService;
-import com.pola.service.NotificationService;
+// import com.pola.service.NotificationService;
 import com.pola.service.WebSocketService;
 import com.pola.service.WebSocketServiceImpl;
 
@@ -30,7 +30,7 @@ public class ViewManager {
     private final HttpService httpService;
     private AuthService authService;
     private ContactService contactService;
-    private NotificationService notificationService;
+    // private NotificationService notificationService;
     // TODO: MEDIA - Reactivar cuando se implemente funcionalidad de envío de imágenes
     // private WebSocketService mediaWebSocketService;
     
@@ -63,10 +63,11 @@ public class ViewManager {
         }
         
         // Desconectar servicio de notificaciones (STOMP)
-        if (notificationService != null) {
-            System.out.println("[ViewManager] Desconectando servicio de notificaciones...");
-            notificationService.disconnect();
-        }
+        // El servicio STOMP fue comentado. Ahora las notificaciones son vía SSE.
+        // if (notificationService != null) {
+        //     System.out.println("[ViewManager] Desconectando servicio de notificaciones...");
+        //     notificationService.disconnect();
+        // }
 
         // TODO: MEDIA - Reactivar cuando se implemente funcionalidad de envío de imágenes
         // // Desconectar servicio de media (WebSocket binario)
@@ -81,10 +82,11 @@ public class ViewManager {
     /**
      * Registra el servicio de notificaciones para desconexión automática al cerrar.
      * @param notificationService Servicio de notificaciones STOMP
+     * @deprecated El servicio STOMP fue comentado. Ahora las notificaciones son vía SSE.
      */
-    public void setNotificationService(NotificationService notificationService) {
-        this.notificationService = notificationService;
-    }
+    // public void setNotificationService(NotificationService notificationService) {
+    //     this.notificationService = notificationService;
+    // }
 
     // TODO: MEDIA - Reactivar cuando se implemente funcionalidad de envío de imágenes
     // /**

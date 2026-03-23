@@ -112,21 +112,25 @@ public class RegisterController {
                 .thenAccept(response -> {
                     Platform.runLater(() -> {
                         if (response.getSuccess()) {
+                            // El servicio de notificaciones STOMP fue comentado.
+                            // Ahora las notificaciones son vía SSE.
+                            // El código relacionado con NotificationService fue comentado.
+                            
                             // Enviar notificación de usuario creado al servicio de notificaciones
-                            new Thread(() -> {
-                                try {
-                                    String newUserId = response.getUserId();
-                                    NotificationService ns = new NotificationService(newUserId, username);
-                                    ns.setOnStompConnected(() -> {
-                                        ns.sendUserCreateNotification(newUserId);
-                                        try { Thread.sleep(500); } catch (InterruptedException e) {}
-                                        ns.disconnect();
-                                    });
-                                    ns.connect(null, newUserId); // No hay token disponible en registro aun
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            }).start();
+                            // new Thread(() -> {
+                            //     try {
+                            //         String newUserId = response.getUserId();
+                            //         NotificationService ns = new NotificationService(newUserId, username);
+                            //         ns.setOnStompConnected(() -> {
+                            //             ns.sendUserCreateNotification(newUserId);
+                            //             try { Thread.sleep(500); } catch (InterruptedException e) {}
+                            //             ns.disconnect();
+                            //         });
+                            //         ns.connect(null, newUserId);
+                            //     } catch (Exception e) {
+                            //         e.printStackTrace();
+                            //     }
+                            // }).start();
 
                             showSuccess("¡Cuenta creada exitosamente!");
                             // Esperar 1.5 segundos y volver al login

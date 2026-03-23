@@ -1,11 +1,7 @@
 package com.basic_chat.chat_service.service;
 
-import com.basic_chat.chat_service.models.DeliveryStatusEvent;
-import com.basic_chat.chat_service.models.RoutedMessageEvent;
 import com.basic_chat.proto.MessagesProto;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -14,32 +10,39 @@ public class DeliveryService {
 
     private final MessageService messageService;
     private final BlockService blockService;
-    private final RabbitTemplate rabbitTemplate;
-    private final String instanceId;
 
-    public DeliveryService(
-            MessageService messageService,
-            BlockService blockService,
-            RabbitTemplate rabbitTemplate,
-            @Value("${chat.service.instance.id:instance-1}") String instanceId) {
+    public DeliveryService(MessageService messageService, BlockService blockService) {
         this.messageService = messageService;
         this.blockService = blockService;
-        this.rabbitTemplate = rabbitTemplate;
-        this.instanceId = instanceId;
     }
 
+    /**
+     * Procesa un mensaje de chat.
+     * 
+     * Este método:
+     * 1. Verifica si el remitente está bloqueado por el destinatario
+     * 2. Guarda el mensaje en la base de datos
+     * 3. Notifica a connection-service sobre el estado de entrega
+     * 
+     * Nota: La notificación de entrega ahora se maneja en connection-service
+     * cuando el mensaje se encola para un usuario offline.
+     * 
+     * @param wsMessage Mensaje completo WsMessage
+     * @param chatMessage Mensaje de chat parsed
+     */
     public void processMessage(MessagesProto.WsMessage wsMessage, MessagesProto.ChatMessage chatMessage) {
         String sender = chatMessage.getSender();
         String recipient = chatMessage.getRecipient();
 
         if (isBlocked(sender, recipient)) {
             log.warn("Blocked message from {} to {}", sender, recipient);
-            sendDeliveryStatus(recipient, "BLOCKED", chatMessage.getId(), chatMessage.toByteArray());
+            // El mensaje bloqueado se notifica via connection-service
             return;
         }
 
         saveMessage(chatMessage);
-        sendDeliveryStatus(recipient, "DELIVERED", chatMessage.getId(), chatMessage.toByteArray());
+        log.debug("Message processed and saved: ID={}, from={}, to={}", 
+                chatMessage.getId(), sender, recipient);
     }
 
     private boolean isBlocked(String sender, String recipient) {
@@ -57,21 +60,6 @@ public class DeliveryService {
             log.debug("Message ID: {} saved to database.", chatMessage.getId());
         } catch (Exception e) {
             log.error("Failed to save message ID: {}", chatMessage.getId(), e);
-        }
-    }
-
-    private void sendDeliveryStatus(String recipient, String type, String messageId, byte[] messageData) {
-        try {
-            DeliveryStatusEvent event = new DeliveryStatusEvent();
-            event.setType(type);
-            event.setMessageId(messageId);
-            event.setRecipient(recipient);
-            event.setData(messageData);
-
-            rabbitTemplate.convertAndSend("message.exchange", "delivery", event);
-            log.debug("Delivery status {} sent for message {} to {}", type, messageId, recipient);
-        } catch (Exception e) {
-            log.error("Failed to send delivery status for message {}: {}", messageId, e.getMessage());
         }
     }
 }

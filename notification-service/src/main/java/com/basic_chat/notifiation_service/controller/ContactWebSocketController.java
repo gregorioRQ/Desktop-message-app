@@ -1,38 +1,50 @@
 package com.basic_chat.notifiation_service.controller;
 
-import com.basic_chat.notifiation_service.model.ContactAddEvent;
-import com.basic_chat.notifiation_service.model.ContactDropEvent;
-import com.basic_chat.notifiation_service.service.NotificationService;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.stereotype.Controller;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-@Controller
+/**
+ * Controlador WebSocket para operaciones de contactos (LEGACY - COMENTADO).
+ * 
+ * Este controlador manejaba mensajes STOMP para agregar y eliminar contactos.
+ * Fue comentado porque:
+ * 1. Usa lógica de presencia que fue comentada
+ * 2. Las operaciones de contactos se manejan de otra forma en el sistema
+ * 
+ * Mantenido por si se necesita en el futuro para referencia o reutilización.
+ * 
+ * @deprecated Controlador legacy - no utilizado.
+ */
+// @Controller
 public class ContactWebSocketController {
 
-    private final NotificationService notificationService;
-
-    public ContactWebSocketController(NotificationService notificationService) {
-        this.notificationService = notificationService;
-    }
+    private static final Logger logger = LoggerFactory.getLogger(ContactWebSocketController.class);
 
     /**
-     * Recibe mensajes del cliente en el destino: /app/contact.add
-     * Payload esperado: JSON compatible con ContactAddEvent { "from": "user", "to": "contact" }
+     * Constructor vacío para evitar errores de compilación.
+     * El controlador ya no se usa activamente.
      */
-    @MessageMapping("/contact.add")
-    public void addContact(@Payload ContactAddEvent event) {
-        // Llama al servicio para guardar la relación en la base de datos
-        notificationService.addContact(event.getFrom(), event.getTo());
+    public ContactWebSocketController() {
+        logger.info("ContactWebSocketController comentarios - no se ejecutará");
     }
 
-    /**
-     * Recibe mensajes del cliente en el destino: /app/contact.drop
-     * Payload esperado: JSON compatible con ContactDropEvent { "userId": "...", "contactIds": ["...", "..."] }
-     */
-    @MessageMapping("/contact.drop")
-    public void dropContacts(@Payload ContactDropEvent event) {
-        // Llama al servicio para eliminar los contactos y limpiar suscripciones
-        notificationService.removeContacts(event.getUserId(), event.getContactIds());
-    }
+    // private final NotificationService notificationService;
+
+    // public ContactWebSocketController(NotificationService notificationService) {
+    //     this.notificationService = notificationService;
+    // }
+
+    // /**
+    //  * Recibe mensajes del cliente en el destino: /app/contact.add
+    //  * @deprecated Metodo legacy - no utilizado
+    //  */
+    // @MessageMapping("/contact.add")
+    // public void addContact(@Payload ContactAddEvent event) { ... }
+
+    // /**
+    //  * Recibe mensajes del cliente en el destino: /app/contact.drop
+    //  * @deprecated Metodo legacy - no utilizado
+    //  */
+    // @MessageMapping("/contact.drop")
+    // public void dropContacts(@Payload ContactDropEvent event) { ... }
 }
