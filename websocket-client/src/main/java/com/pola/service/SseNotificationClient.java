@@ -82,7 +82,7 @@ public class SseNotificationClient {
             connection.setRequestMethod("GET");
             connection.setRequestProperty("Accept", "text/event-stream");
             connection.setRequestProperty("Cache-Control", "no-cache");
-            connection.setConnectTimeout(10000);
+            connection.setConnectTimeout(3000);
             connection.setReadTimeout(60000);
 
             if (token != null && !token.isEmpty()) {

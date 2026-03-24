@@ -85,6 +85,13 @@
             <version>3.44.1.0</version>
         </dependency>
 
+        <!-- FXTrayIcon para System Tray -->
+        <dependency>
+            <groupId>com.dustinredmond.fxtrayicon</groupId>
+            <artifactId>FXTrayIcon</artifactId>
+            <version>3.2.0</version>
+        </dependency>
+
         <!-- Testing Dependencies -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>

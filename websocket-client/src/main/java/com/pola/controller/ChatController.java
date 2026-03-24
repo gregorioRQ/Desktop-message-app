@@ -213,16 +213,13 @@ public class ChatController {
     }
 
     private void connectToServices() {
-        // Conectar Chat WebSocket enviando token, userId y username en las cabeceras del handshake
+        // Conectar WebSocket a connection-service
         if (webSocketService != null && !webSocketService.isConnected()) {
             webSocketService.connect(authToken, currentUserId, currentUsername);
         }
 
-        // El servicio de notificaciones STOMP fue comentado.
-        // Ahora las notificaciones se reciben vía SSE cuando el usuario presiona "Conectar SSE"
-        // if (notificationService != null) {
-        //     notificationService.connect(authToken, currentUserId);
-        // }
+        // Conectar SSE a notification-service automáticamente desde el inicio
+        connectSse();
     }
 
     // TODO: MEDIA - Reactivar cuando se implemente funcionalidad de envío de imágenes
@@ -754,11 +751,24 @@ public class ChatController {
     }
 
     /**
-     * Disconnects from the WebSocket service.
+     * Desconecta el servicio WebSocket.
+     * Usado cuando la ventana se oculta en el system tray.
      */
     public void disconnectWebSocket() {
         if (webSocketService != null && webSocketService.isConnected()) {
+            System.out.println("[ChatController] Desconectando WebSocket por ocultamiento de ventana");
             webSocketService.disconnect();
+        }
+    }
+
+    /**
+     * Reconecta el servicio WebSocket.
+     * Usado cuando la ventana se muestra desde el system tray.
+     */
+    public void reconnectWebSocket() {
+        if (webSocketService != null && !webSocketService.isConnected()) {
+            System.out.println("[ChatController] Reconectando WebSocket desde system tray");
+            webSocketService.connect(authToken, currentUserId, currentUsername);
         }
     }
 
