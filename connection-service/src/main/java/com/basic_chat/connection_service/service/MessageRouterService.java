@@ -1,5 +1,6 @@
 package com.basic_chat.connection_service.service;
 
+import com.basic_chat.connection_service.models.NotificationEvent;
 import com.basic_chat.connection_service.models.RoutedMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,7 +29,7 @@ public class MessageRouterService {
      * Este método determina la ruta del mensaje en tres escenarios:
      * 1. Usuario conectado en esta instancia → Envío directo por WebSocket
      * 2. Usuario conectado en otra instancia → Encolar en RabbitMQ (message.sent.{instanceId})
-     * 3. Usuario offline → Encolar en cola offline (message.offline)
+     * 3. Usuario offline → Encolar en cola offline (message.offline) + Notificar a notification-service
      * 
      * IMPORTANTE: Este método recibe el nombre de usuario (username), pero Redis almacena
      * la información de conexión usando el userId. Por eso se convierte username -> userId
@@ -48,6 +49,7 @@ public class MessageRouterService {
             // El usuario no existe o no está registrado en el sistema
             log.info("Usuario {} no encontrado en el sistema, enviando a cola offline", recipient);
             rabbitMQProducerService.sendToOfflineQueue(new RoutedMessage(sender, recipient, messageData, null));
+            // No hay userId disponible, no se puede notificar
             return;
         }
 
@@ -58,6 +60,8 @@ public class MessageRouterService {
             // Usuario offline - no hay instancia registrada en Redis
             log.info("Destinatario {} no está conectado, encolando mensaje en cola offline", recipient);
             rabbitMQProducerService.sendToOfflineQueue(new RoutedMessage(sender, recipient, messageData, null));
+            // Publicar evento de notificación para notification-service (con userId)
+            publishNotificationEvent(sender, recipient, recipientUserId, null, messageData);
             return;
         }
 
@@ -69,6 +73,34 @@ public class MessageRouterService {
             // Usuario conectado en otra instancia - enviar a esa instancia via RabbitMQ
             log.info("Destinatario {} está en instancia {}, encolando mensaje", recipient, recipientInstance);
             rabbitMQProducerService.sendToQueue(recipientInstance, new RoutedMessage(sender, recipient, messageData, recipientInstance));
+        }
+    }
+
+    /**
+     * Publica un evento de notificación para notification-service.
+     * 
+     * Este método se llama cuando:
+     * - El usuario destinatario está offline
+     * - El usuario destinatario no existe en el sistema
+     * 
+     * El evento se publica en la cola message.notification para que
+     * notification-service pueda enviar una notificación SSE al cliente.
+     * 
+     * @param sender Username del remitente
+     * @param recipient Username del destinatario
+     * @param recipientUserId UserId del destinatario
+     * @param messageId ID del mensaje (puede ser null)
+     * @param messageData Datos binarios del mensaje
+     */
+    private void publishNotificationEvent(String sender, String recipient, String recipientUserId, String messageId, byte[] messageData) {
+        try {
+            NotificationEvent notificationEvent = NotificationEvent.createNewMessageEvent(
+                    sender, recipient, recipientUserId, messageId, messageData);
+            rabbitMQProducerService.sendToNotificationQueue(notificationEvent);
+            log.info("Evento de notificación publicado para {} (userId: {}, remitente: {})", 
+                    recipient, recipientUserId, sender);
+        } catch (Exception e) {
+            log.error("Error al publicar evento de notificación para {}: {}", recipient, e.getMessage());
         }
     }
 

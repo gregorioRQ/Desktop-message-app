@@ -27,9 +27,3 @@ logs/
 # Environment files
 .env
 .env.local
-
-# Spring Boot environment-specific configs
-src/main/resources/application.properties
-src/main/resources/application-dev.properties
-src/main/resources/application-local.properties
-src/main/resources/application-test.properties

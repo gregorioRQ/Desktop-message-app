@@ -55,8 +55,12 @@ public class LogoutHandler {
 
     private void performLocalLogout() {
         if (logoutContext.getWebSocketService() != null) logoutContext.getWebSocketService().disconnect();
-        if (chatController.getNotificationService() != null) chatController.getNotificationService().disconnect();
-        
+
+        // Desconectar SSE a notification-service
+        if (chatController != null) {
+            chatController.disconnectSse();
+        }
+
         if (logoutContext.getMessageService() != null) {
             logoutContext.getMessageService().clearMessages();
             logoutContext.getMessageService().clearAllNotifications();

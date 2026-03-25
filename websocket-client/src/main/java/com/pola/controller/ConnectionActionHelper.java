@@ -3,12 +3,17 @@ package com.pola.controller;
 import com.pola.proto.MessagesProto.AuthMessage;
 import com.pola.proto.MessagesProto.WsMessage;
 import com.pola.service.ContactService;
-import com.pola.service.NotificationService;
 import com.pola.service.WebSocketService;
 
 import javafx.application.Platform;
 import javafx.scene.paint.Color;
 
+/**
+ * Helper para manejar acciones de conexión/desconexión.
+ * 
+ * El servicio de notificaciones STOMP fue comentado.
+ * Ahora las notificaciones se manejan vía SseNotificationClient.
+ */
 public class ConnectionActionHelper {
     private final WebSocketService webSocketService;
     private final ContactService contactService;
@@ -32,34 +37,9 @@ public class ConnectionActionHelper {
                     chatController.getCurrentUsername()
                 );
                 
-                // Conectar servicio de notificaciones
-                if (chatController.getNotificationService() == null) {
-                    NotificationService ns = new NotificationService(
-                        chatController.getCurrentUserId(), 
-                        chatController.getCurrentUsername()
-                    );
-                    
-                    ns.addNotificationListener(mensaje -> {
-                        Platform.runLater(() -> {
-                            System.out.println("Notificación recibida: " + mensaje);
-                            chatController.showStatus(mensaje, Color.BLUE);
-                        });
-                    });
-
-                    ns.setPresenceListener((userId, isOnline) -> {
-                        Platform.runLater(() -> {
-                            contactService.setContactOnline(userId, isOnline);
-                            if (isOnline) {
-                                contactService.notifyContactWeAreOnline(userId);
-                            }
-                        });
-                    });
-
-                chatController.setNotificationService(ns);
-                contactService.setNotificationService(ns);
-            }
-
-                chatController.getNotificationService().connect(chatController.getAuthToken(), chatController.getCurrentUserId());
+                // El servicio de notificaciones STOMP fue comentado.
+                // Ahora las notificaciones se reciben vía SSE cuando el usuario presiona "Conectar SSE"
+                // El código relacionado con NotificationService fue comentado.
 
                 Thread.sleep(200);
 
@@ -72,9 +52,10 @@ public class ConnectionActionHelper {
 
     public void handleDisconnect() {
         webSocketService.disconnect();
-        if (chatController.getNotificationService() != null) {
-            chatController.getNotificationService().disconnect();
-        }
+        // El servicio de notificaciones STOMP fue comentado
+        // if (chatController.getNotificationService() != null) {
+        //     chatController.getNotificationService().disconnect();
+        // }
         chatController.updateConnectionStatus(false);
     }
 

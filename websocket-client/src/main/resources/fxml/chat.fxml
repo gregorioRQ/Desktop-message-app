@@ -21,13 +21,13 @@
          <children>
             <Label fx:id="usernameLabel" style="-fx-font-weight: bold;" text="Usuario: " />
             <Label fx:id="statusLabel" text="Desconectado" textFill="RED" />
-            <HBox alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS" spacing="10.0">
-               <children>
-                  <Button fx:id="logoutButton" text="Cerrar Sesión" styleClass="logout-button" />
-                  <Button fx:id="connectButton" mnemonicParsing="false" text="Conectar" />
-                  <Button fx:id="disconnectButton" disable="true" mnemonicParsing="false" text="Desconectar" />
-               </children>
-            </HBox>
+              <HBox alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS" spacing="10.0">
+                <children>
+                    <Button fx:id="logoutButton" text="Cerrar Sesión" styleClass="logout-button" />
+                    <Button fx:id="connectButton" mnemonicParsing="false" text="Conectar" />
+                    <Button fx:id="disconnectButton" disable="true" mnemonicParsing="false" text="Desconectar" />
+                </children>
+              </HBox>
          </children>
       </HBox>
    </top>

@@ -1,43 +1,61 @@
 package com.basic_chat.notifiation_service.consumer;
 
-import com.basic_chat.notifiation_service.model.ContactAddEvent;
-import com.basic_chat.notifiation_service.model.DeliveryEvent;
-import com.basic_chat.notifiation_service.model.Notification;
-import com.basic_chat.notifiation_service.service.NotificationService;
+import com.basic_chat.notifiation_service.model.NotificationEvent;
+import com.basic_chat.notifiation_service.service.SseNotificationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
+/**
+ * Consumidor de eventos de notificación desde RabbitMQ.
+ * 
+ * Este componente escucha la cola "message.notification" donde connection-service
+ * publica eventos cuando un usuario recibe un mensaje mientras está offline.
+ * 
+ * La responsabilidad es enviar una notificación SSE al cliente destinatario.
+ */
 @Component
 public class NotificationConsumer {
 
     private static final Logger logger = LoggerFactory.getLogger(NotificationConsumer.class);
 
-    private final NotificationService notificationService;
+    private static final String NEW_MESSAGE_NOTIFICATION = "nuevo mensaje";
 
-    public NotificationConsumer(NotificationService notificationService) {
-        this.notificationService = notificationService;
+    private final SseNotificationService sseNotificationService;
+
+    public NotificationConsumer(SseNotificationService sseNotificationService) {
+        this.sseNotificationService = sseNotificationService;
     }
 
-    @RabbitListener(queues = "contact.events")
-    public void handleContactAdded(ContactAddEvent event) {
-        logger.info("Received contact add event: {} added {}", event.getFrom(), event.getTo());
-        notificationService.addContact(event.getFrom(), event.getTo());
-    }
-
-    @RabbitListener(queues = "message.delivery")
-    public void handleDeliveryEvent(DeliveryEvent event) {
-        logger.info("Received delivery event: type={}, messageId={}, recipient={}",
-                event.getType(), event.getMessageId(), event.getRecipient());
-
-        if ("DELIVERED".equals(event.getType())) {
-            Notification notification = new Notification();
-            notification.setReceiver(event.getRecipient());
-            notification.setMessage("Nuevo mensaje recibido");
-            notification.setType("MESSAGE_SENT");
-            notification.setSeen(false);
-            notificationService.notifyUser(notification);
+    /**
+     * Procesa un evento de nuevo mensaje recibido desde connection-service.
+     * 
+     * Este método se ejecuta cuando connection-service publica un evento en la cola
+     * message.notification (cuando el destinatario está offline).
+     * 
+     * El evento contiene el recipientUserId que se usa directamente para enviar
+     * la notificación SSE al cliente.
+     * 
+     * @param event Evento de notificación contendo recipientUserId
+     */
+    @RabbitListener(queues = "message.notification")
+    public void handleNotificationEvent(NotificationEvent event) {
+        logger.info("Received notification event: type={}, sender={}, recipient={}, recipientUserId={}",
+                event.getType(), event.getSender(), event.getRecipient(), event.getRecipientUserId());
+        
+        String recipientUserId = event.getRecipientUserId();
+        
+        if (recipientUserId != null && !recipientUserId.isEmpty()) {
+            boolean sentViaSse = sseNotificationService.sendNotification(recipientUserId, NEW_MESSAGE_NOTIFICATION);
+            
+            if (sentViaSse) {
+                logger.debug("Notification sent via SSE to userId: {}", recipientUserId);
+            } else {
+                logger.warn("No active SSE connection for userId: {}. Notification not sent.", recipientUserId);
+            }
+        } else {
+            logger.warn("Notification event missing recipientUserId. Cannot send notification.");
         }
     }
 }

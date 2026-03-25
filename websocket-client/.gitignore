@@ -8,3 +8,7 @@ AGENTS.md
 .settings
 
 MEDIA_TODO.md
+.project
+device.id
+dependency-reduced-pom.xml
+.classpath

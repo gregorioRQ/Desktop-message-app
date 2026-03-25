@@ -234,7 +234,7 @@ public class MessageService {
 
             //Notificar al servidor para eliminar
             if(webSocketService.isConnected()){
-                messageSender.sendDeleteMessage(String.valueOf(message.getId()), currentUserId);
+                messageSender.sendDeleteMessage(String.valueOf(message.getId()), currentUserId, message.getContactUsername());
             }
         } catch (SQLException ex) {
             System.err.println("Error eliminando el mensaje");

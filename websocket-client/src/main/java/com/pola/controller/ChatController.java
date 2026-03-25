@@ -11,7 +11,8 @@ import com.pola.service.ContactService;
 import com.pola.service.AuthService;
 import com.pola.service.HttpServiceImpl;
 import com.pola.service.MessageService;
-import com.pola.service.NotificationService;
+// import com.pola.service.NotificationService;
+import com.pola.service.SseNotificationClient;
 import com.pola.service.WebSocketService;
 import com.pola.util.LogoutContext;
 import com.pola.util.LogoutHandler;
@@ -19,6 +20,7 @@ import com.pola.repository.TokenRepository;
 import com.pola.view.MessageListCell;
 import com.pola.view.ContactListCell;
 import com.pola.view.ChatDialogs;
+import com.pola.view.SystemTrayManager;
 import com.pola.view.ViewManager;
 
 import java.util.concurrent.Executors;
@@ -119,8 +121,10 @@ public class ChatController {
     private WebSocketService webSocketService;
     private MessageService messageService;
     private ContactService contactService;
-    private NotificationService notificationService;
+    // private NotificationService notificationService;
+    private SseNotificationClient sseClient;
     private ViewManager viewManager;
+    private SystemTrayManager systemTrayManager;
     private String currentUsername;
     private String currentUserId;
     private String authToken;
@@ -146,16 +150,16 @@ public class ChatController {
         contactService.setCurrentUsername(username);
         contactService.setWebSocketService(webSocketService);
         
-        // Asegurar que el servicio de notificaciones esté instanciado
-        if (this.notificationService == null) {
-            this.notificationService = new NotificationService(userId, username);
-        }
-        // Registrar servicio de notificaciones con ViewManager para desconexión automática
-        if (viewManager != null) {
-            viewManager.setNotificationService(this.notificationService);
-        }
-        // Vincular servicio de notificaciones al servicio de contactos
-        contactService.setNotificationService(this.notificationService);
+        // Nota: El servicio de notificaciones STOMP fue comentado.
+        // Ahora se usa SseNotificationClient para notificaciones vía SSE.
+        // Las líneas relacionadas con NotificationService fueron comentadas.
+        // if (this.notificationService == null) {
+        //     this.notificationService = new NotificationService(userId, username);
+        // }
+        // if (viewManager != null) {
+        //     viewManager.setNotificationService(this.notificationService);
+        // }
+        // contactService.setNotificationService(this.notificationService);
         
         this.contactActionHelper = new ContactActionHelper(contactService, this);
         this.messageActionHelper = new MessageActionHelper(messageService, webSocketService, contactService, this);
@@ -207,16 +211,18 @@ public class ChatController {
         this.viewManager = viewManager;
     }
 
+    public void setSystemTrayManager(SystemTrayManager systemTrayManager) {
+        this.systemTrayManager = systemTrayManager;
+    }
+
     private void connectToServices() {
-        // Conectar Chat WebSocket enviando token, userId y username en las cabeceras del handshake
+        // Conectar WebSocket a connection-service
         if (webSocketService != null && !webSocketService.isConnected()) {
             webSocketService.connect(authToken, currentUserId, currentUsername);
         }
 
-        // Conectar Notification WebSocket
-        if (notificationService != null) {
-            notificationService.connect(authToken, currentUserId);
-        }
+        // Conectar SSE a notification-service automáticamente desde el inicio
+        connectSse();
     }
 
     // TODO: MEDIA - Reactivar cuando se implemente funcionalidad de envío de imágenes
@@ -480,20 +486,21 @@ public class ChatController {
         });
 
         // Listener de errores para notificaciones
-        if (notificationService != null) {
-            notificationService.setErrorListener(error -> {
-                System.err.println("[Notification Service Error] Detalle: " + error);
-                error.printStackTrace();
-                // Opcional: Mostrar advertencia en UI si es crítico, o solo loguear
-                // Platform.runLater(() -> showStatus("Sin notificaciones", Color.ORANGE));
-            });
-        }
+        // El servicio de notificaciones STOMP fue comentado.
+        // Las notificaciones ahora se manejan vía SseNotificationClient
+        // if (notificationService != null) {
+        //     notificationService.setErrorListener(error -> {
+        //         System.err.println("[Notification Service Error] Detalle: " + error);
+        //         error.printStackTrace();
+        //     });
+        // }
 
         // Listener de autenticación exitosa
         webSocketService.setAuthSuccessListener(userId -> {
-            if (notificationService != null) {
-                notificationService.sendUserOnlineNotification(userId);
-            }
+            // El servicio de notificaciones STOMP fue comentado
+            // if (notificationService != null) {
+            //     notificationService.sendUserOnlineNotification(userId);
+            // }
         });
     }
 
@@ -620,13 +627,15 @@ public class ChatController {
         return authToken;
     }
 
-    public NotificationService getNotificationService() {
-        return notificationService;
-    }
+    // El servicio de notificaciones STOMP fue comentado.
+    // Ahora se usa SseNotificationClient para notificaciones vía SSE
+    // public NotificationService getNotificationService() {
+    //     return notificationService;
+    // }
 
-    public void setNotificationService(NotificationService notificationService) {
-        this.notificationService = notificationService;
-    }
+    // public void setNotificationService(NotificationService notificationService) {
+    //     this.notificationService = notificationService;
+    // }
 
     public void showStatus(String message, Color color) {
         statusLabel.setText(message);
@@ -635,5 +644,112 @@ public class ChatController {
             String colorString = "#" + color.toString().substring(2, 8);
             statusLabel.setStyle("-fx-text-fill: " + colorString + ";");
         }
+    }
+
+    /**
+     * Connects to the SSE notification service.
+     * 
+     * This establishes a lightweight SSE connection for receiving
+     * push notifications when the WebSocket is not active.
+     */
+    public void connectSse() {
+        if (sseClient == null) {
+            sseClient = new SseNotificationClient(
+                currentUserId,
+                authToken,
+                () -> {
+                    Platform.runLater(() -> {
+                        System.out.println("[ChatController] SSE connected");
+                    });
+                },
+                () -> {
+                    Platform.runLater(() -> {
+                        System.out.println("[ChatController] SSE disconnected");
+                    });
+                }
+            );
+
+            sseClient.addMessageListener(message -> {
+                System.out.println("[ChatController] SSE notification received: " + message);
+
+                // Filtrar heartbeat
+                if (":ok".equals(message) || message.contains("heartbeat")) {
+                    System.out.println("[ChatController] Heartbeat recibido - ignorando");
+                    return;
+                }
+
+                Platform.runLater(() -> {
+                    if (viewManager.isWindowVisible()) {
+                        System.out.println("[ChatController] Ventana visible - actualizando lista de notificaciones");
+                    } else {
+                        System.out.println("[ChatController] Ventana oculta - intentando mostrar notificación");
+                        if (systemTrayManager != null) {
+                            System.out.println("[ChatController] systemTrayManager no es null - llamando showNotification()");
+                            systemTrayManager.showNotification("MSG Desktop", message);
+                        } else {
+                            System.err.println("[ChatController] ERROR - systemTrayManager es null!");
+                        }
+                    }
+                });
+            });
+            
+            sseClient.addErrorListener(error -> {
+                System.err.println("[ChatController] SSE error: " + error.getMessage());
+                error.printStackTrace();
+            });
+        }
+
+        sseClient.connect();
+    }
+
+    /**
+     * Disconnects from the SSE notification service.
+     */
+    public void disconnectSse() {
+        if (sseClient != null) {
+            sseClient.disconnect();
+            sseClient = null;
+        }
+    }
+
+    /**
+     * Connects to the WebSocket service.
+     * This is the primary connection for real-time messaging.
+     */
+    public void connectWebSocket() {
+        if (webSocketService != null && !webSocketService.isConnected()) {
+            webSocketService.connect(authToken, currentUserId, currentUsername);
+        }
+    }
+
+    /**
+     * Desconecta el servicio WebSocket.
+     * Usado cuando la ventana se oculta en el system tray.
+     */
+    public void disconnectWebSocket() {
+        if (webSocketService != null && webSocketService.isConnected()) {
+            System.out.println("[ChatController] Desconectando WebSocket por ocultamiento de ventana");
+            webSocketService.disconnect();
+        }
+    }
+
+    /**
+     * Reconecta el servicio WebSocket.
+     * Usado cuando la ventana se muestra desde el system tray.
+     */
+    public void reconnectWebSocket() {
+        if (webSocketService != null && !webSocketService.isConnected()) {
+            System.out.println("[ChatController] Reconectando WebSocket desde system tray");
+            webSocketService.connect(authToken, currentUserId, currentUsername);
+        }
+    }
+
+    /**
+     * Checks if SSE client is currently connected.
+     * 
+     * @return true if SSE is connected, false otherwise
+     */
+    public boolean isSseConnected() {
+        return sseClient != null && sseClient.isConnected();
     }
 }
