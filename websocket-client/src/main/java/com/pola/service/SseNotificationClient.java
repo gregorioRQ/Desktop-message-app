@@ -12,6 +12,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
+import javafx.application.Platform;
+
 public class SseNotificationClient {
 
     private static final String SSE_ENDPOINT = "http://localhost:8084/api/notifications/subscribe/";
@@ -135,7 +137,11 @@ public class SseNotificationClient {
                 }
 
                 if (line.startsWith("data: ")) {
+                    // Formato con espacio: "data: mensaje"
                     eventData.append(line.substring(6)).append("\n");
+                } else if (line.startsWith("data:") && !line.startsWith("data: ")) {
+                    // Formato sin espacio: "data:mensaje"
+                    eventData.append(line.substring(5)).append("\n");
                 } else if (line.isEmpty() && eventData.length() > 0) {
                     String message = eventData.toString().trim();
                     eventData.setLength(0);
@@ -164,7 +170,10 @@ public class SseNotificationClient {
 
         for (Consumer<String> listener : messageListeners) {
             try {
-                listener.accept(message);
+                final String finalMessage = message;
+                Platform.runLater(() -> {
+                    listener.accept(finalMessage);
+                });
             } catch (Exception e) {
                 System.err.println("[SseNotificationClient] Error in message listener: " + e.getMessage());
             }

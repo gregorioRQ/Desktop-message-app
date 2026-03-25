@@ -112,6 +112,14 @@ public class ViewManager {
     }
 
     /**
+     * Verifica si la ventana principal está visible.
+     * @return true si la ventana está mostrando, false si está oculta
+     */
+    public boolean isWindowVisible() {
+        return stage.isShowing();
+    }
+
+    /**
      * Desconecta todos los servicios y cierra la aplicación completamente.
      * Usado cuando el usuario cierra sesión o presiona "Salir" desde el tray.
      */
@@ -234,6 +242,8 @@ public class ViewManager {
                     }
                 });
             }
+
+            chatController.setSystemTrayManager(systemTrayManager);
         } catch (IOException e) {
             e.printStackTrace();
         }

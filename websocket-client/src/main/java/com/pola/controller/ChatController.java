@@ -20,6 +20,7 @@ import com.pola.repository.TokenRepository;
 import com.pola.view.MessageListCell;
 import com.pola.view.ContactListCell;
 import com.pola.view.ChatDialogs;
+import com.pola.view.SystemTrayManager;
 import com.pola.view.ViewManager;
 
 import java.util.concurrent.Executors;
@@ -107,9 +108,6 @@ public class ChatController {
     @FXML
     private Button clearNotificationsButton;
 
-    @FXML
-    private Button sseButton;
-
     // Delay constants for service connections (in milliseconds)
     private static final int SERVICE_CONNECTION_DELAY_MS = 3000; // 3 seconds
     
@@ -126,6 +124,7 @@ public class ChatController {
     // private NotificationService notificationService;
     private SseNotificationClient sseClient;
     private ViewManager viewManager;
+    private SystemTrayManager systemTrayManager;
     private String currentUsername;
     private String currentUserId;
     private String authToken;
@@ -212,6 +211,10 @@ public class ChatController {
         this.viewManager = viewManager;
     }
 
+    public void setSystemTrayManager(SystemTrayManager systemTrayManager) {
+        this.systemTrayManager = systemTrayManager;
+    }
+
     private void connectToServices() {
         // Conectar WebSocket a connection-service
         if (webSocketService != null && !webSocketService.isConnected()) {
@@ -271,9 +274,6 @@ public class ChatController {
         if (logoutButton != null) logoutButton.setOnAction(e -> {
             logoutHandler.handleLogout();
         });
-        if (sseButton != null) {
-            setupSseButton(sseButton);
-        }
 
         setupMessageListView();
         
@@ -647,41 +647,6 @@ public class ChatController {
     }
 
     /**
-     * Sets up the SSE toggle button for testing purposes.
-     * This button switches between WebSocket and SSE connections.
-     * 
-     * When clicked:
-     * - If SSE is connected: disconnect SSE and reconnect WebSocket
-     * - If SSE is not connected: disconnect WebSocket and connect SSE
-     * 
-     * @param button The button to use for SSE toggle
-     */
-    public void setupSseButton(Button button) {
-        if (button != null) {
-            button.setOnAction(event -> handleSseToggle());
-        }
-    }
-
-    /**
-     * Handles the SSE toggle action.
-     * 
-     * This method switches between SSE and WebSocket connections:
-     * - Disconnects SSE and reconnects WebSocket if SSE was active
-     * - Disconnects WebSocket and connects SSE if WebSocket was active
-     */
-    private void handleSseToggle() {
-        if (sseClient != null && sseClient.isConnected()) {
-            System.out.println("[ChatController] Switching from SSE to WebSocket...");
-            sseClient.disconnect();
-            connectWebSocket();
-        } else {
-            System.out.println("[ChatController] Switching from WebSocket to SSE...");
-            disconnectWebSocket();
-            connectSse();
-        }
-    }
-
-    /**
      * Connects to the SSE notification service.
      * 
      * This establishes a lightweight SSE connection for receiving
@@ -695,26 +660,36 @@ public class ChatController {
                 () -> {
                     Platform.runLater(() -> {
                         System.out.println("[ChatController] SSE connected");
-                        if (sseButton != null) {
-                            sseButton.setText("Desconectar SSE");
-                        }
                     });
                 },
                 () -> {
                     Platform.runLater(() -> {
                         System.out.println("[ChatController] SSE disconnected");
-                        if (sseButton != null) {
-                            sseButton.setText("Conectar SSE");
-                        }
                     });
                 }
             );
 
             sseClient.addMessageListener(message -> {
                 System.out.println("[ChatController] SSE notification received: " + message);
+
+                // Filtrar heartbeat
+                if (":ok".equals(message) || message.contains("heartbeat")) {
+                    System.out.println("[ChatController] Heartbeat recibido - ignorando");
+                    return;
+                }
+
                 Platform.runLater(() -> {
-                    // Show notification or update UI
-                    ChatDialogs.showInfo("Nueva notificación", message);
+                    if (viewManager.isWindowVisible()) {
+                        System.out.println("[ChatController] Ventana visible - actualizando lista de notificaciones");
+                    } else {
+                        System.out.println("[ChatController] Ventana oculta - intentando mostrar notificación");
+                        if (systemTrayManager != null) {
+                            System.out.println("[ChatController] systemTrayManager no es null - llamando showNotification()");
+                            systemTrayManager.showNotification("MSG Desktop", message);
+                        } else {
+                            System.err.println("[ChatController] ERROR - systemTrayManager es null!");
+                        }
+                    }
                 });
             });
             
@@ -744,9 +719,6 @@ public class ChatController {
     public void connectWebSocket() {
         if (webSocketService != null && !webSocketService.isConnected()) {
             webSocketService.connect(authToken, currentUserId, currentUsername);
-            if (sseButton != null) {
-                sseButton.setText("Conectar SSE");
-            }
         }
     }
 

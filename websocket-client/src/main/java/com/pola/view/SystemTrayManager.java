@@ -171,9 +171,17 @@ public class SystemTrayManager {
      * @param message Mensaje de la notificación
      */
     public void showNotification(String title, String message) {
+        System.out.println("[SystemTrayManager] showNotification() llamado - title: " + title + ", message: " + message);
+
         Platform.runLater(() -> {
+            System.out.println("[SystemTrayManager] Dentro de Platform.runLater - trayIcon: " + (trayIcon != null ? "OK" : "NULL"));
+
             if (trayIcon != null) {
+                System.out.println("[SystemTrayManager] Ejecutando trayIcon.showMessage()");
                 trayIcon.showMessage(title, message);
+                System.out.println("[SystemTrayManager] showMessage() ejecutado");
+            } else {
+                System.err.println("[SystemTrayManager] ERROR - trayIcon es null!");
             }
         });
     }
