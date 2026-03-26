@@ -50,5 +50,6 @@ protoc-plugins/
 .vscode/
 *.iml
 
-.continue
+./continue
 .env
+./settings
