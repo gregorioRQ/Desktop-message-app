@@ -51,3 +51,4 @@ protoc-plugins/
 *.iml
 
 .continue
+.env
