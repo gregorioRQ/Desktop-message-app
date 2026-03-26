@@ -9,4 +9,6 @@ AGENTS.md
 
 MEDIA_TODO.md
 .project
-devide.id
+device.id
+dependency-reduced-pom.xml
+.classpath

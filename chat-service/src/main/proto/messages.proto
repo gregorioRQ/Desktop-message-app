@@ -61,7 +61,8 @@ message User {
 // Solicitud de eliminación de mensaje
 message DeleteMessageRequest {
     string message_id = 1;
-    string sender_username = 2;  // Para verificar permisos
+    string sender_username = 2;
+    string recipient = 3;
 }
 
 // Respuesta de eliminación

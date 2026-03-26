@@ -10,16 +10,21 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMQconfig {
     private static final String CONTACT_EVENTS_QUEUE = "contact.events";
-    private static final String MESSAGE_DELIVERY_QUEUE = "message.delivery";
+    private static final String MESSAGE_NOTIFICATION_QUEUE = "message.notification";
 
     @Bean
     public Queue contactAddQueue() {
         return new Queue(CONTACT_EVENTS_QUEUE, false);
     }
 
+    /**
+     * Cola para notificaciones de nuevos mensajes.
+     * connection-service publica eventos aquí cuando un usuario recibe un mensaje
+     * mientras está offline.
+     */
     @Bean
-    public Queue messageDeliveryQueue() {
-        return new Queue(MESSAGE_DELIVERY_QUEUE, true);
+    public Queue messageNotificationQueue() {
+        return new Queue(MESSAGE_NOTIFICATION_QUEUE, true);
     }
 
     @Bean

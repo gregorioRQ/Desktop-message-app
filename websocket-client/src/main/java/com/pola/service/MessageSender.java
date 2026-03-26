@@ -39,33 +39,11 @@ public class MessageSender {
         sendMessage(WsMessage.newBuilder().setChatMessage(chatMessage).build());
     }
 
-    public void sendImageMessage(String mediaId, byte[] thumbnailData, String fullImageUrl, 
-                               String sender, String recipient, int width, int height, long fileSize) {
-        
-        ThumbnailMessage thumbnailMsg = ThumbnailMessage.newBuilder()
-            .setMediaId(mediaId)
-            .setSenderId(sender)
-            .setReceiverId(recipient)
-            .setThumbnailData(com.google.protobuf.ByteString.copyFrom(thumbnailData))
-            .setFullImageUrl(fullImageUrl)
-            .setOriginalWidth(width)
-            .setOriginalHeight(height)
-            .setFileSize(fileSize)
-            .setTimestamp(Instant.now().toEpochMilli())
-            .setStatus(MessageStatus.SENT)
-            .build();
-
-        if (mediaWebSocketService != null && mediaWebSocketService.isConnected()) {
-            mediaWebSocketService.sendMessage(thumbnailMsg);
-        } else {
-            System.err.println("Error: Servicio de media no conectado. No se pudo enviar el thumbnail.");
-        }
-    }
-
-    public void sendDeleteMessage(String messageId, String senderUsername) {
+    public void sendDeleteMessage(String messageId, String senderUsername, String recipient) {
         MessagesProto.DeleteMessageRequest request = MessagesProto.DeleteMessageRequest.newBuilder()
             .setMessageId(messageId)
             .setSenderUsername(senderUsername)
+            .setRecipient(recipient)
             .build();
         sendMessage(WsMessage.newBuilder().setDeleteMessageRequest(request).build());
     }

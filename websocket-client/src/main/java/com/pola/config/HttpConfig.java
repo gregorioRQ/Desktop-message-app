@@ -12,7 +12,11 @@ public class HttpConfig {
     // Headers comunes
     public static final String CONTENT_TYPE_PROTOBUF = "application/x-protobuf";
     public static final String ACCEPT_PROTOBUF = "application/x-protobuf";
-    
+
+    // System Tray - Tiempo de espera antes de cerrar conexión WebSocket (en milisegundos)
+    // Cuando el usuario cierra la ventana, se espera este tiempo antes de desconectar el WebSocket
+    public static final long TRAY_WS_CLOSE_DELAY_MS = 60_000; // 1 minuto
+
     private HttpConfig() {
         // Clase de utilidad, no instanciable
     }

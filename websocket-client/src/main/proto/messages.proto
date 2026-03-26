@@ -62,6 +62,7 @@ message User {
 message DeleteMessageRequest {
     string message_id = 1;
     string sender_username = 2;
+    string recipient = 3;  // Destinatario del mensaje original
 }
 
 // Respuesta de eliminación

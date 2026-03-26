@@ -19,6 +19,16 @@ public class ChatDialogs {
         });
     }
 
+    public static void showInfo(String title, String content) {
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle(title);
+            alert.setHeaderText(null);
+            alert.setContentText(content);
+            alert.showAndWait();
+        });
+    }
+
     public static void showConfirmation(String title, String header, String content, Runnable onConfirm) {
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);

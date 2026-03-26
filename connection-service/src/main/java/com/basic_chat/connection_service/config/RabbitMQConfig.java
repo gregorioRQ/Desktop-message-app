@@ -21,7 +21,9 @@ public class RabbitMQConfig {
     public static final String MESSAGE_EXCHANGE = "message.exchange";
     public static final String MESSAGE_SENT_QUEUE = "message.sent.";
     public static final String MESSAGE_OFFLINE_QUEUE = "message.offline";
+    public static final String MESSAGE_NOTIFICATION_QUEUE = "message.notification";
     public static final String OFFLINE_ROUTING_KEY = "offline";
+    public static final String NOTIFICATION_ROUTING_KEY = "notification";
 
     @Bean
     public DirectExchange messageExchange() {
@@ -39,6 +41,16 @@ public class RabbitMQConfig {
         return new Queue(MESSAGE_OFFLINE_QUEUE, true);
     }
 
+    /**
+     * Cola para notificaciones SSE.
+     * Cuando un usuario recibe un mensaje mientras está offline,
+     * connection-service publica el evento aquí para que notification-service lo consuma.
+     */
+    @Bean
+    public Queue messageNotificationQueue() {
+        return new Queue(MESSAGE_NOTIFICATION_QUEUE, true);
+    }
+
     @Bean
     public Binding messageSentBinding(Queue messageSentQueue, DirectExchange messageExchange) {
         return BindingBuilder.bind(messageSentQueue).to(messageExchange).with(instanceId);
@@ -47,6 +59,15 @@ public class RabbitMQConfig {
     @Bean
     public Binding messageOfflineBinding(Queue messageOfflineQueue, DirectExchange messageExchange) {
         return BindingBuilder.bind(messageOfflineQueue).to(messageExchange).with(OFFLINE_ROUTING_KEY);
+    }
+
+    /**
+     * Binding para la cola de notificaciones.
+     * routing key: "notification"
+     */
+    @Bean
+    public Binding messageNotificationBinding(Queue messageNotificationQueue, DirectExchange messageExchange) {
+        return BindingBuilder.bind(messageNotificationQueue).to(messageExchange).with(NOTIFICATION_ROUTING_KEY);
     }
 
     @Bean

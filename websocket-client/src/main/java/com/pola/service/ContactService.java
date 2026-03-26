@@ -27,7 +27,7 @@ public class ContactService {
     private final ObservableList<Contact> contacts;
     private final ObservableList<Contact> blockedContacts;
     private WebSocketService webSocketService;
-    private NotificationService notificationService;
+    // private NotificationService notificationService;
     private MessageSender messageSender;
     private String currentUserId;
     private String currentUsername;
@@ -54,9 +54,13 @@ public class ContactService {
         this.messageSender = new MessageSender(webSocketService);
     }
 
-    public void setNotificationService(NotificationService notificationService) {
-        this.notificationService = notificationService;
-    }
+    /**
+     * Establece el servicio de notificaciones STOMP.
+     * @deprecated El servicio STOMP fue comentado. Ahora las notificaciones son vía SSE.
+     */
+    // public void setNotificationService(NotificationService notificationService) {
+    //     this.notificationService = notificationService;
+    // }
 
     public void setCurrentUserId(String currentUserId) {
         this.currentUserId = currentUserId;
@@ -157,9 +161,10 @@ public class ContactService {
             });
 
             // 3. Enviar solicitud de eliminación al servidor de notificaciones
-            if (notificationService != null && contact.getContactUserId() != null) {
-                notificationService.sendDropContactNotification(currentUserId, java.util.Collections.singletonList(contact.getContactUserId()));
-            }
+            // El servicio STOMP fue comentado. Ahora las notificaciones son vía SSE.
+            // if (notificationService != null && contact.getContactUserId() != null) {
+            //     notificationService.sendDropContactNotification(currentUserId, java.util.Collections.singletonList(contact.getContactUserId()));
+            // }
 
             System.out.println(logPrefix + "Contacto eliminado exitosamente: " + contact.getContactUsername());
         } catch (SQLException e) {
@@ -265,9 +270,10 @@ public class ContactService {
                 }
 
                 // Enviar notificación STOMP de contacto agregado cuando acepatamos al remitente.
-                if (notificationService != null) {
-                    notificationService.sendAddContactNotification(currentUserId, contactUserId);
-                }
+                // El servicio STOMP fue comentado. Ahora las notificaciones son vía SSE.
+                // if (notificationService != null) {
+                //     notificationService.sendAddContactNotification(currentUserId, contactUserId);
+                // }
             
                 System.out.println("ID de contacto actualizado para: " + contactUsername);
             } catch (SQLException e) {
