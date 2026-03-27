@@ -53,3 +53,5 @@ protoc-plugins/
 .continue
 .env
 ./settings
+AGENTS.md
+src/generated

@@ -1,0 +1,32 @@
+spring:
+  application:
+    name: media-service
+  
+  datasource:
+    url: jdbc:mysql://localhost:3306/media_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: root
+    password: tu_password
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
+
+server:
+  port: 8082
+
+# Configuración personalizada
+media:
+  storage:
+    base-path: /storage/media
+    max-size-mb: 28
+    thumbnail-size: 100
+    max-image-width: 1920
+    max-image-height: 1920
+    webp-quality: 0.85
+    thumbnail-quality: 0.70
