@@ -53,33 +53,22 @@ public class FileStorageService {
     }
     
      /**
-     * Almacena un media completo (thumbnail + imagen completa) en disco.
+     * Almacena la imagen completa en disco.
      * 
      * @param mediaId ID único del media
      * @param userId ID del usuario (para organizar en carpetas)
-     * @param thumbnailData Datos del thumbnail
      * @param fullImageData Datos de la imagen completa
      * @return StorageResult con las rutas de los archivos guardados
      * @throws StorageException si falla el almacenamiento
      */
-    public StorageResult storeMedia(String mediaId, String userId, 
-                                     byte[] thumbnailData, byte[] fullImageData) {
-        log.info("Storing media: mediaId={}, userId={}, thumbnailSize={}KB, fullSize={}KB",
+    public StorageResult storeMedia(String mediaId, String userId, byte[] fullImageData) {
+        log.info("Storing media: mediaId={}, userId={}, fullSize={}KB",
             mediaId, userId, 
-            thumbnailData.length / BYTES_IN_KB,
             fullImageData.length / BYTES_IN_KB);
         
         try {
-            // Crear directorio del usuario si no existe
             Path userDirectory = createUserDirectory(userId);
             
-            // Guardar thumbnail
-            String thumbnailFilename = mediaId + SUFFIX_THUMBNAIL + EXTENSION_WEBP;
-            Path thumbnailPath = userDirectory.resolve(thumbnailFilename);
-            Files.write(thumbnailPath, thumbnailData, StandardOpenOption.CREATE);
-            log.debug("Thumbnail stored: path={}", thumbnailPath);
-            
-            // Guardar imagen completa
             String fullImageFilename = mediaId + SUFFIX_FULL + EXTENSION_WEBP;
             Path fullImagePath = userDirectory.resolve(fullImageFilename);
             Files.write(fullImagePath, fullImageData, StandardOpenOption.CREATE);
@@ -87,10 +76,7 @@ public class FileStorageService {
             
             log.info("Media stored successfully: mediaId={}", mediaId);
             
-            return new StorageResult(
-                thumbnailPath.toString(),
-                fullImagePath.toString()
-            );
+            return new StorageResult(fullImagePath.toString());
             
         } catch (IOException e) {
             log.error("Failed to store media: mediaId={}", mediaId, e);
@@ -147,24 +133,20 @@ public class FileStorageService {
     }
 
     /**
-     * Elimina un media completo del disco (thumbnail + imagen completa).
+     * Elimina un media del disco.
      * 
-     * @param thumbnailPath Ruta del thumbnail
      * @param fullImagePath Ruta de la imagen completa
      * @throws StorageException si falla la eliminación
      */
-    public void deleteMedia(String thumbnailPath, String fullImagePath) {
-        log.info("Deleting media: thumbnailPath={}, fullImagePath={}", 
-            thumbnailPath, fullImagePath);
+    public void deleteMedia(String fullImagePath) {
+        log.info("Deleting media: fullImagePath={}", fullImagePath);
         
-        boolean thumbnailDeleted = deleteFile(thumbnailPath);
         boolean fullImageDeleted = deleteFile(fullImagePath);
         
-        if (thumbnailDeleted && fullImageDeleted) {
+        if (fullImageDeleted) {
             log.info("Media deleted successfully");
         } else {
-            log.warn("Media deletion incomplete: thumbnail={}, fullImage={}", 
-                thumbnailDeleted, fullImageDeleted);
+            log.warn("Media deletion incomplete: fullImage={}", fullImageDeleted);
         }
     }
 
@@ -222,6 +204,6 @@ public class FileStorageService {
     /**
      * Clase interna para resultado de almacenamiento.
      */
-    public record StorageResult(String thumbnailPath, String fullImagePath) {}
+    public record StorageResult(String fullImagePath) {}
 
 }

@@ -18,56 +18,32 @@ import java.io.*;
 public class ImageProcessingService {
     
     // Configuración
-    private static final int THUMBNAIL_SIZE = 100; // 100x100px
     private static final int MAX_IMAGE_WIDTH = 1920; // Full HD
     private static final int MAX_IMAGE_HEIGHT = 1920;
     private static final float JPEG_QUALITY = 0.85f; // 85%
     private static final float WEBP_QUALITY = 0.85f;
     
     /**
-     * Procesa una imagen: crea thumbnail y versión comprimida
+     * Procesa una imagen: comprime y redimensiona
      * @param inputFile Archivo original
-     * @return ImageProcessingResult con ambas versiones
+     * @return ImageProcessingResult con la imagen comprimida
      */
     public ImageProcessingResult processImage(File inputFile) throws IOException {
-        // Leer imagen original
         BufferedImage originalImage = ImageIO.read(inputFile);
         
         if (originalImage == null) {
             throw new IOException("No se pudo leer la imagen");
         }
         
-        // Generar thumbnail
-        byte[] thumbnailBytes = generateThumbnail(originalImage);
-        
-        // Generar imagen completa comprimida
         byte[] compressedImageBytes = compressImage(originalImage);
         
-        // Metadata
         ImageMetadata metadata = new ImageMetadata(
             originalImage.getWidth(),
             originalImage.getHeight(),
-            thumbnailBytes.length,
             compressedImageBytes.length
         );
         
-        return new ImageProcessingResult(thumbnailBytes, compressedImageBytes, metadata);
-    }
-    
-    /**
-     * Genera thumbnail pequeño (100x100px) en JPEG
-     */
-    private byte[] generateThumbnail(BufferedImage originalImage) throws IOException {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        
-        // Usar Thumbnailator para redimensionar manteniendo aspecto
-        Thumbnails.of(originalImage)
-            .size(THUMBNAIL_SIZE, THUMBNAIL_SIZE)
-            .outputFormat("jpg")
-            .outputQuality(0.7) // 70% para thumbnail (más compresión)
-            .toOutputStream(outputStream);
-        
-        return outputStream.toByteArray();
+        return new ImageProcessingResult(compressedImageBytes, metadata);
     }
     
     /**
@@ -76,14 +52,13 @@ public class ImageProcessingService {
     private byte[] compressImage(BufferedImage originalImage) throws IOException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         
-        // Redimensionar si es muy grande
         Thumbnails.Builder<BufferedImage> builder = Thumbnails.of(originalImage);
         
         if (originalImage.getWidth() > MAX_IMAGE_WIDTH || 
             originalImage.getHeight() > MAX_IMAGE_HEIGHT) {
             builder.size(MAX_IMAGE_WIDTH, MAX_IMAGE_HEIGHT);
         } else {
-            builder.scale(1.0); // Mantener tamaño original
+            builder.scale(1.0);
         }
         
         builder.outputFormat("jpg")

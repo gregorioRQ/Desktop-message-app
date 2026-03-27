@@ -1,30 +1,23 @@
 package com.pola.model;
 
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 public class ImageChatMessage extends ChatMessage {
-    private final ObjectProperty<byte[]> thumbnailData;
     private final StringProperty fullImageUrl;
     private final StringProperty mediaId;
     private final int originalWidth;
     private final int originalHeight;
 
-    public ImageChatMessage(String contactUsername, String senderId, byte[] thumbnailData, 
+    public ImageChatMessage(String contactUsername, String senderId, 
                           String fullImageUrl, String mediaId, int width, int height) {
-        super(contactUsername, "[Imagen]", senderId); // Texto fallback para notificaciones simples
-        this.thumbnailData = new SimpleObjectProperty<>(thumbnailData);
+        super(contactUsername, senderId, "[Imagen]", senderId);
         this.fullImageUrl = new SimpleStringProperty(fullImageUrl);
         this.mediaId = new SimpleStringProperty(mediaId);
         this.originalWidth = width;
         this.originalHeight = height;
     }
 
-    public byte[] getThumbnailData() { return thumbnailData.get(); }
-    public ObjectProperty<byte[]> thumbnailDataProperty() { return thumbnailData; }
-    
     public String getFullImageUrl() { return fullImageUrl.get(); }
     public StringProperty fullImageUrlProperty() { return fullImageUrl; }
     

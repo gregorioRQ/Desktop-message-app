@@ -25,8 +25,6 @@ media:
   storage:
     base-path: /storage/media
     max-size-mb: 28
-    thumbnail-size: 100
     max-image-width: 1920
     max-image-height: 1920
     webp-quality: 0.85
-    thumbnail-quality: 0.70

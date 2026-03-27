@@ -18,7 +18,6 @@ private static final long serialVersionUID = 0L;
   }
   private UploadImageResponse() {
     mediaId_ = "";
-    thumbnailUrl_ = "";
     fullImageUrl_ = "";
     errorMessage_ = "";
   }
@@ -101,54 +100,7 @@ private static final long serialVersionUID = 0L;
     }
   }
 
-  public static final int THUMBNAIL_URL_FIELD_NUMBER = 3;
-  @SuppressWarnings("serial")
-  private volatile java.lang.Object thumbnailUrl_ = "";
-  /**
-   * <pre>
-   * URL para descargar thumbnail
-   * </pre>
-   *
-   * <code>string thumbnail_url = 3;</code>
-   * @return The thumbnailUrl.
-   */
-  @java.lang.Override
-  public java.lang.String getThumbnailUrl() {
-    java.lang.Object ref = thumbnailUrl_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      thumbnailUrl_ = s;
-      return s;
-    }
-  }
-  /**
-   * <pre>
-   * URL para descargar thumbnail
-   * </pre>
-   *
-   * <code>string thumbnail_url = 3;</code>
-   * @return The bytes for thumbnailUrl.
-   */
-  @java.lang.Override
-  public com.google.protobuf.ByteString
-      getThumbnailUrlBytes() {
-    java.lang.Object ref = thumbnailUrl_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      thumbnailUrl_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
-  }
-
-  public static final int FULL_IMAGE_URL_FIELD_NUMBER = 4;
+  public static final int FULL_IMAGE_URL_FIELD_NUMBER = 3;
   @SuppressWarnings("serial")
   private volatile java.lang.Object fullImageUrl_ = "";
   /**
@@ -156,7 +108,7 @@ private static final long serialVersionUID = 0L;
    * URL para descargar imagen completa
    * </pre>
    *
-   * <code>string full_image_url = 4;</code>
+   * <code>string full_image_url = 3;</code>
    * @return The fullImageUrl.
    */
   @java.lang.Override
@@ -177,7 +129,7 @@ private static final long serialVersionUID = 0L;
    * URL para descargar imagen completa
    * </pre>
    *
-   * <code>string full_image_url = 4;</code>
+   * <code>string full_image_url = 3;</code>
    * @return The bytes for fullImageUrl.
    */
   @java.lang.Override
@@ -195,29 +147,14 @@ private static final long serialVersionUID = 0L;
     }
   }
 
-  public static final int THUMBNAIL_SIZE_FIELD_NUMBER = 5;
-  private long thumbnailSize_ = 0L;
-  /**
-   * <pre>
-   * Tamaño en bytes
-   * </pre>
-   *
-   * <code>int64 thumbnail_size = 5;</code>
-   * @return The thumbnailSize.
-   */
-  @java.lang.Override
-  public long getThumbnailSize() {
-    return thumbnailSize_;
-  }
-
-  public static final int FULL_IMAGE_SIZE_FIELD_NUMBER = 6;
+  public static final int FULL_IMAGE_SIZE_FIELD_NUMBER = 4;
   private long fullImageSize_ = 0L;
   /**
    * <pre>
    * Tamaño en bytes
    * </pre>
    *
-   * <code>int64 full_image_size = 6;</code>
+   * <code>int64 full_image_size = 4;</code>
    * @return The fullImageSize.
    */
   @java.lang.Override
@@ -225,7 +162,7 @@ private static final long serialVersionUID = 0L;
     return fullImageSize_;
   }
 
-  public static final int ERROR_MESSAGE_FIELD_NUMBER = 7;
+  public static final int ERROR_MESSAGE_FIELD_NUMBER = 5;
   @SuppressWarnings("serial")
   private volatile java.lang.Object errorMessage_ = "";
   /**
@@ -233,7 +170,7 @@ private static final long serialVersionUID = 0L;
    * Si success=false
    * </pre>
    *
-   * <code>string error_message = 7;</code>
+   * <code>string error_message = 5;</code>
    * @return The errorMessage.
    */
   @java.lang.Override
@@ -254,7 +191,7 @@ private static final long serialVersionUID = 0L;
    * Si success=false
    * </pre>
    *
-   * <code>string error_message = 7;</code>
+   * <code>string error_message = 5;</code>
    * @return The bytes for errorMessage.
    */
   @java.lang.Override
@@ -292,20 +229,14 @@ private static final long serialVersionUID = 0L;
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(mediaId_)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 2, mediaId_);
     }
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(thumbnailUrl_)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 3, thumbnailUrl_);
-    }
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(fullImageUrl_)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 4, fullImageUrl_);
-    }
-    if (thumbnailSize_ != 0L) {
-      output.writeInt64(5, thumbnailSize_);
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 3, fullImageUrl_);
     }
     if (fullImageSize_ != 0L) {
-      output.writeInt64(6, fullImageSize_);
+      output.writeInt64(4, fullImageSize_);
     }
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(errorMessage_)) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 7, errorMessage_);
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 5, errorMessage_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -323,22 +254,15 @@ private static final long serialVersionUID = 0L;
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(mediaId_)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, mediaId_);
     }
-    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(thumbnailUrl_)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, thumbnailUrl_);
-    }
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(fullImageUrl_)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, fullImageUrl_);
-    }
-    if (thumbnailSize_ != 0L) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeInt64Size(5, thumbnailSize_);
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, fullImageUrl_);
     }
     if (fullImageSize_ != 0L) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt64Size(6, fullImageSize_);
+        .computeInt64Size(4, fullImageSize_);
     }
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(errorMessage_)) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(7, errorMessage_);
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, errorMessage_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -359,12 +283,8 @@ private static final long serialVersionUID = 0L;
         != other.getSuccess()) return false;
     if (!getMediaId()
         .equals(other.getMediaId())) return false;
-    if (!getThumbnailUrl()
-        .equals(other.getThumbnailUrl())) return false;
     if (!getFullImageUrl()
         .equals(other.getFullImageUrl())) return false;
-    if (getThumbnailSize()
-        != other.getThumbnailSize()) return false;
     if (getFullImageSize()
         != other.getFullImageSize()) return false;
     if (!getErrorMessage()
@@ -385,13 +305,8 @@ private static final long serialVersionUID = 0L;
         getSuccess());
     hash = (37 * hash) + MEDIA_ID_FIELD_NUMBER;
     hash = (53 * hash) + getMediaId().hashCode();
-    hash = (37 * hash) + THUMBNAIL_URL_FIELD_NUMBER;
-    hash = (53 * hash) + getThumbnailUrl().hashCode();
     hash = (37 * hash) + FULL_IMAGE_URL_FIELD_NUMBER;
     hash = (53 * hash) + getFullImageUrl().hashCode();
-    hash = (37 * hash) + THUMBNAIL_SIZE_FIELD_NUMBER;
-    hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-        getThumbnailSize());
     hash = (37 * hash) + FULL_IMAGE_SIZE_FIELD_NUMBER;
     hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
         getFullImageSize());
@@ -530,9 +445,7 @@ private static final long serialVersionUID = 0L;
       bitField0_ = 0;
       success_ = false;
       mediaId_ = "";
-      thumbnailUrl_ = "";
       fullImageUrl_ = "";
-      thumbnailSize_ = 0L;
       fullImageSize_ = 0L;
       errorMessage_ = "";
       return this;
@@ -575,18 +488,12 @@ private static final long serialVersionUID = 0L;
         result.mediaId_ = mediaId_;
       }
       if (((from_bitField0_ & 0x00000004) != 0)) {
-        result.thumbnailUrl_ = thumbnailUrl_;
-      }
-      if (((from_bitField0_ & 0x00000008) != 0)) {
         result.fullImageUrl_ = fullImageUrl_;
       }
-      if (((from_bitField0_ & 0x00000010) != 0)) {
-        result.thumbnailSize_ = thumbnailSize_;
-      }
-      if (((from_bitField0_ & 0x00000020) != 0)) {
+      if (((from_bitField0_ & 0x00000008) != 0)) {
         result.fullImageSize_ = fullImageSize_;
       }
-      if (((from_bitField0_ & 0x00000040) != 0)) {
+      if (((from_bitField0_ & 0x00000010) != 0)) {
         result.errorMessage_ = errorMessage_;
       }
     }
@@ -643,25 +550,17 @@ private static final long serialVersionUID = 0L;
         bitField0_ |= 0x00000002;
         onChanged();
       }
-      if (!other.getThumbnailUrl().isEmpty()) {
-        thumbnailUrl_ = other.thumbnailUrl_;
-        bitField0_ |= 0x00000004;
-        onChanged();
-      }
       if (!other.getFullImageUrl().isEmpty()) {
         fullImageUrl_ = other.fullImageUrl_;
-        bitField0_ |= 0x00000008;
+        bitField0_ |= 0x00000004;
         onChanged();
-      }
-      if (other.getThumbnailSize() != 0L) {
-        setThumbnailSize(other.getThumbnailSize());
       }
       if (other.getFullImageSize() != 0L) {
         setFullImageSize(other.getFullImageSize());
       }
       if (!other.getErrorMessage().isEmpty()) {
         errorMessage_ = other.errorMessage_;
-        bitField0_ |= 0x00000040;
+        bitField0_ |= 0x00000010;
         onChanged();
       }
       this.mergeUnknownFields(other.getUnknownFields());
@@ -701,30 +600,20 @@ private static final long serialVersionUID = 0L;
               break;
             } // case 18
             case 26: {
-              thumbnailUrl_ = input.readStringRequireUtf8();
+              fullImageUrl_ = input.readStringRequireUtf8();
               bitField0_ |= 0x00000004;
               break;
             } // case 26
-            case 34: {
-              fullImageUrl_ = input.readStringRequireUtf8();
+            case 32: {
+              fullImageSize_ = input.readInt64();
               bitField0_ |= 0x00000008;
               break;
-            } // case 34
-            case 40: {
-              thumbnailSize_ = input.readInt64();
+            } // case 32
+            case 42: {
+              errorMessage_ = input.readStringRequireUtf8();
               bitField0_ |= 0x00000010;
               break;
-            } // case 40
-            case 48: {
-              fullImageSize_ = input.readInt64();
-              bitField0_ |= 0x00000020;
-              break;
-            } // case 48
-            case 58: {
-              errorMessage_ = input.readStringRequireUtf8();
-              bitField0_ |= 0x00000040;
-              break;
-            } // case 58
+            } // case 42
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -866,105 +755,13 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private java.lang.Object thumbnailUrl_ = "";
-    /**
-     * <pre>
-     * URL para descargar thumbnail
-     * </pre>
-     *
-     * <code>string thumbnail_url = 3;</code>
-     * @return The thumbnailUrl.
-     */
-    public java.lang.String getThumbnailUrl() {
-      java.lang.Object ref = thumbnailUrl_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        thumbnailUrl_ = s;
-        return s;
-      } else {
-        return (java.lang.String) ref;
-      }
-    }
-    /**
-     * <pre>
-     * URL para descargar thumbnail
-     * </pre>
-     *
-     * <code>string thumbnail_url = 3;</code>
-     * @return The bytes for thumbnailUrl.
-     */
-    public com.google.protobuf.ByteString
-        getThumbnailUrlBytes() {
-      java.lang.Object ref = thumbnailUrl_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        thumbnailUrl_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-    /**
-     * <pre>
-     * URL para descargar thumbnail
-     * </pre>
-     *
-     * <code>string thumbnail_url = 3;</code>
-     * @param value The thumbnailUrl to set.
-     * @return This builder for chaining.
-     */
-    public Builder setThumbnailUrl(
-        java.lang.String value) {
-      if (value == null) { throw new NullPointerException(); }
-      thumbnailUrl_ = value;
-      bitField0_ |= 0x00000004;
-      onChanged();
-      return this;
-    }
-    /**
-     * <pre>
-     * URL para descargar thumbnail
-     * </pre>
-     *
-     * <code>string thumbnail_url = 3;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearThumbnailUrl() {
-      thumbnailUrl_ = getDefaultInstance().getThumbnailUrl();
-      bitField0_ = (bitField0_ & ~0x00000004);
-      onChanged();
-      return this;
-    }
-    /**
-     * <pre>
-     * URL para descargar thumbnail
-     * </pre>
-     *
-     * <code>string thumbnail_url = 3;</code>
-     * @param value The bytes for thumbnailUrl to set.
-     * @return This builder for chaining.
-     */
-    public Builder setThumbnailUrlBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) { throw new NullPointerException(); }
-      checkByteStringIsUtf8(value);
-      thumbnailUrl_ = value;
-      bitField0_ |= 0x00000004;
-      onChanged();
-      return this;
-    }
-
     private java.lang.Object fullImageUrl_ = "";
     /**
      * <pre>
      * URL para descargar imagen completa
      * </pre>
      *
-     * <code>string full_image_url = 4;</code>
+     * <code>string full_image_url = 3;</code>
      * @return The fullImageUrl.
      */
     public java.lang.String getFullImageUrl() {
@@ -984,7 +781,7 @@ private static final long serialVersionUID = 0L;
      * URL para descargar imagen completa
      * </pre>
      *
-     * <code>string full_image_url = 4;</code>
+     * <code>string full_image_url = 3;</code>
      * @return The bytes for fullImageUrl.
      */
     public com.google.protobuf.ByteString
@@ -1005,7 +802,7 @@ private static final long serialVersionUID = 0L;
      * URL para descargar imagen completa
      * </pre>
      *
-     * <code>string full_image_url = 4;</code>
+     * <code>string full_image_url = 3;</code>
      * @param value The fullImageUrl to set.
      * @return This builder for chaining.
      */
@@ -1013,7 +810,7 @@ private static final long serialVersionUID = 0L;
         java.lang.String value) {
       if (value == null) { throw new NullPointerException(); }
       fullImageUrl_ = value;
-      bitField0_ |= 0x00000008;
+      bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
@@ -1022,12 +819,12 @@ private static final long serialVersionUID = 0L;
      * URL para descargar imagen completa
      * </pre>
      *
-     * <code>string full_image_url = 4;</code>
+     * <code>string full_image_url = 3;</code>
      * @return This builder for chaining.
      */
     public Builder clearFullImageUrl() {
       fullImageUrl_ = getDefaultInstance().getFullImageUrl();
-      bitField0_ = (bitField0_ & ~0x00000008);
+      bitField0_ = (bitField0_ & ~0x00000004);
       onChanged();
       return this;
     }
@@ -1036,7 +833,7 @@ private static final long serialVersionUID = 0L;
      * URL para descargar imagen completa
      * </pre>
      *
-     * <code>string full_image_url = 4;</code>
+     * <code>string full_image_url = 3;</code>
      * @param value The bytes for fullImageUrl to set.
      * @return This builder for chaining.
      */
@@ -1045,51 +842,7 @@ private static final long serialVersionUID = 0L;
       if (value == null) { throw new NullPointerException(); }
       checkByteStringIsUtf8(value);
       fullImageUrl_ = value;
-      bitField0_ |= 0x00000008;
-      onChanged();
-      return this;
-    }
-
-    private long thumbnailSize_ ;
-    /**
-     * <pre>
-     * Tamaño en bytes
-     * </pre>
-     *
-     * <code>int64 thumbnail_size = 5;</code>
-     * @return The thumbnailSize.
-     */
-    @java.lang.Override
-    public long getThumbnailSize() {
-      return thumbnailSize_;
-    }
-    /**
-     * <pre>
-     * Tamaño en bytes
-     * </pre>
-     *
-     * <code>int64 thumbnail_size = 5;</code>
-     * @param value The thumbnailSize to set.
-     * @return This builder for chaining.
-     */
-    public Builder setThumbnailSize(long value) {
-
-      thumbnailSize_ = value;
-      bitField0_ |= 0x00000010;
-      onChanged();
-      return this;
-    }
-    /**
-     * <pre>
-     * Tamaño en bytes
-     * </pre>
-     *
-     * <code>int64 thumbnail_size = 5;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearThumbnailSize() {
-      bitField0_ = (bitField0_ & ~0x00000010);
-      thumbnailSize_ = 0L;
+      bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
@@ -1100,7 +853,7 @@ private static final long serialVersionUID = 0L;
      * Tamaño en bytes
      * </pre>
      *
-     * <code>int64 full_image_size = 6;</code>
+     * <code>int64 full_image_size = 4;</code>
      * @return The fullImageSize.
      */
     @java.lang.Override
@@ -1112,14 +865,14 @@ private static final long serialVersionUID = 0L;
      * Tamaño en bytes
      * </pre>
      *
-     * <code>int64 full_image_size = 6;</code>
+     * <code>int64 full_image_size = 4;</code>
      * @param value The fullImageSize to set.
      * @return This builder for chaining.
      */
     public Builder setFullImageSize(long value) {
 
       fullImageSize_ = value;
-      bitField0_ |= 0x00000020;
+      bitField0_ |= 0x00000008;
       onChanged();
       return this;
     }
@@ -1128,11 +881,11 @@ private static final long serialVersionUID = 0L;
      * Tamaño en bytes
      * </pre>
      *
-     * <code>int64 full_image_size = 6;</code>
+     * <code>int64 full_image_size = 4;</code>
      * @return This builder for chaining.
      */
     public Builder clearFullImageSize() {
-      bitField0_ = (bitField0_ & ~0x00000020);
+      bitField0_ = (bitField0_ & ~0x00000008);
       fullImageSize_ = 0L;
       onChanged();
       return this;
@@ -1144,7 +897,7 @@ private static final long serialVersionUID = 0L;
      * Si success=false
      * </pre>
      *
-     * <code>string error_message = 7;</code>
+     * <code>string error_message = 5;</code>
      * @return The errorMessage.
      */
     public java.lang.String getErrorMessage() {
@@ -1164,7 +917,7 @@ private static final long serialVersionUID = 0L;
      * Si success=false
      * </pre>
      *
-     * <code>string error_message = 7;</code>
+     * <code>string error_message = 5;</code>
      * @return The bytes for errorMessage.
      */
     public com.google.protobuf.ByteString
@@ -1185,7 +938,7 @@ private static final long serialVersionUID = 0L;
      * Si success=false
      * </pre>
      *
-     * <code>string error_message = 7;</code>
+     * <code>string error_message = 5;</code>
      * @param value The errorMessage to set.
      * @return This builder for chaining.
      */
@@ -1193,7 +946,7 @@ private static final long serialVersionUID = 0L;
         java.lang.String value) {
       if (value == null) { throw new NullPointerException(); }
       errorMessage_ = value;
-      bitField0_ |= 0x00000040;
+      bitField0_ |= 0x00000010;
       onChanged();
       return this;
     }
@@ -1202,12 +955,12 @@ private static final long serialVersionUID = 0L;
      * Si success=false
      * </pre>
      *
-     * <code>string error_message = 7;</code>
+     * <code>string error_message = 5;</code>
      * @return This builder for chaining.
      */
     public Builder clearErrorMessage() {
       errorMessage_ = getDefaultInstance().getErrorMessage();
-      bitField0_ = (bitField0_ & ~0x00000040);
+      bitField0_ = (bitField0_ & ~0x00000010);
       onChanged();
       return this;
     }
@@ -1216,7 +969,7 @@ private static final long serialVersionUID = 0L;
      * Si success=false
      * </pre>
      *
-     * <code>string error_message = 7;</code>
+     * <code>string error_message = 5;</code>
      * @param value The bytes for errorMessage to set.
      * @return This builder for chaining.
      */
@@ -1225,7 +978,7 @@ private static final long serialVersionUID = 0L;
       if (value == null) { throw new NullPointerException(); }
       checkByteStringIsUtf8(value);
       errorMessage_ = value;
-      bitField0_ |= 0x00000040;
+      bitField0_ |= 0x00000010;
       onChanged();
       return this;
     }

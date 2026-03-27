@@ -167,7 +167,7 @@ public class MessageService {
 
     /**
      * Envía un mensaje de imagen
-     * NOTA: mostrar el thumbnail en la preview y mostrar la original cuando el usuario presione sobre ella.
+     * Envía una notificación por WebSocket para que el receptor pueda descargar la imagen
      */
     public void sendImageMessage(ImageProcessingResult localResult, UploadImageResponse serverResponse, String username) {
         if(currentContact == null){
@@ -181,30 +181,30 @@ public class MessageService {
         }
 
         try {
-            // guardar en la db local
-            // Usamos la nueva clase ImageChatMessage
             ImageChatMessage localMessage = new ImageChatMessage(
                 currentContact.getContactUsername(), 
                 username,
-                localResult.getThumbnail(),
                 serverResponse.getFullImageUrl(),
                 serverResponse.getMediaId(),
                 localResult.getMetadata().getOriginalWidth(),
                 localResult.getMetadata().getOriginalHeight()
             );
             
-            // Nota: Aquí deberías actualizar tu repositorio para soportar guardar los campos extra de imagen
-            // Por ahora guardamos lo básico compatible con ChatMessage
             localMessage.setId(Math.abs(UUID.randomUUID().getLeastSignificantBits()));
             
             ChatMessage saved = messageRepository.create(localMessage);
 
-            // mostrar en la UI
-            // Añadimos la instancia de ImageChatMessage (que extiende ChatMessage)
             currentChatMessages.add(localMessage);
 
-            // enviar por websocket el ThumbnailMessage
-            messageSender.sendImageMessage(serverResponse.getMediaId(), localResult.getThumbnail(), serverResponse.getFullImageUrl(), username, currentContact.getContactUsername(), localResult.getMetadata().getOriginalWidth(), localResult.getMetadata().getOriginalHeight(), serverResponse.getFullImageSize());
+            messageSender.sendImageMessage(
+                serverResponse.getMediaId(), 
+                serverResponse.getFullImageUrl(), 
+                username, 
+                currentContact.getContactUsername(), 
+                localResult.getMetadata().getOriginalWidth(), 
+                localResult.getMetadata().getOriginalHeight(), 
+                serverResponse.getFullImageSize()
+            );
 
             System.out.println("Imagen enviada a: " + currentContact.getContactUsername() + " mediaId: " + serverResponse.getMediaId());
 

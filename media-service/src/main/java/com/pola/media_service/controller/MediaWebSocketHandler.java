@@ -13,8 +13,8 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.BinaryWebSocketHandler;
 
 import com.google.protobuf.InvalidProtocolBufferException;
-import com.pola.media_service.proto.ThumbnailAck;
-import com.pola.media_service.proto.ThumbnailMessage;
+import com.pola.media_service.proto.ImageAck;
+import com.pola.media_service.proto.ImageMessage;
 import com.pola.media_service.service.RedisSessionService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -54,36 +54,21 @@ public class MediaWebSocketHandler extends BinaryWebSocketHandler{
         try {
             byte[] payload = message.getPayload().array();
             
-            // Parsear mensaje Protobuf
-            ThumbnailMessage thumbnailMessage = ThumbnailMessage.parseFrom(payload);
+            ImageMessage imageMessage = ImageMessage.parseFrom(payload);
             
-            log.info("Received thumbnail: mediaId={}, from={}, to={}", 
-                thumbnailMessage.getMediaId(),
-                thumbnailMessage.getSenderId(),
-                thumbnailMessage.getReceiverId());
+            log.info("Received image notification: mediaId={}, from={}, to={}", 
+                imageMessage.getMediaId(),
+                imageMessage.getSenderId(),
+                imageMessage.getReceiverId());
             
-            // Buscar sesión del receptor
-            String receiverId = thumbnailMessage.getReceiverId();
+            String receiverId = imageMessage.getReceiverId();
             WebSocketSession receiverSession = activeSessions.get(receiverId);
             
             if (receiverSession != null && receiverSession.isOpen()) {
-                // Receptor está ONLINE → enviar thumbnail directamente
-                //receiverSession.sendMessage(new BinaryMessage(payload));
-                
-                // Enviar ACK al emisor
-                //sendAck(session, thumbnailMessage.getMediaId(), true);
-                
-                // TODO: Marcar como delivered en BD
-                //mediaService.markAsDelivered(thumbnailMessage.getMediaId());
-                
+                receiverSession.sendMessage(new BinaryMessage(payload));
+                log.info("Image notification forwarded to receiver: {}", receiverId);
             } else {
-                // Receptor está OFFLINE → guardar para enviar después
-                log.info("Receiver {} is offline, thumbnail will be queued", receiverId);
-                
-                // TODO: Guardar en BD como pendiente (ya está guardado del upload HTTP)
-                
-                // Enviar ACK al emisor (guardado para envío posterior)
-                //sendAck(session, thumbnailMessage.getMediaId(), false);
+                log.info("Receiver {} is offline, image notification will be queued", receiverId);
             }
             
         } catch (InvalidProtocolBufferException e) {

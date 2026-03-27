@@ -36,30 +36,10 @@ public interface UploadImageResponseOrBuilder extends
 
   /**
    * <pre>
-   * URL para descargar thumbnail
-   * </pre>
-   *
-   * <code>string thumbnail_url = 3;</code>
-   * @return The thumbnailUrl.
-   */
-  java.lang.String getThumbnailUrl();
-  /**
-   * <pre>
-   * URL para descargar thumbnail
-   * </pre>
-   *
-   * <code>string thumbnail_url = 3;</code>
-   * @return The bytes for thumbnailUrl.
-   */
-  com.google.protobuf.ByteString
-      getThumbnailUrlBytes();
-
-  /**
-   * <pre>
    * URL para descargar imagen completa
    * </pre>
    *
-   * <code>string full_image_url = 4;</code>
+   * <code>string full_image_url = 3;</code>
    * @return The fullImageUrl.
    */
   java.lang.String getFullImageUrl();
@@ -68,7 +48,7 @@ public interface UploadImageResponseOrBuilder extends
    * URL para descargar imagen completa
    * </pre>
    *
-   * <code>string full_image_url = 4;</code>
+   * <code>string full_image_url = 3;</code>
    * @return The bytes for fullImageUrl.
    */
   com.google.protobuf.ByteString
@@ -79,17 +59,7 @@ public interface UploadImageResponseOrBuilder extends
    * Tamaño en bytes
    * </pre>
    *
-   * <code>int64 thumbnail_size = 5;</code>
-   * @return The thumbnailSize.
-   */
-  long getThumbnailSize();
-
-  /**
-   * <pre>
-   * Tamaño en bytes
-   * </pre>
-   *
-   * <code>int64 full_image_size = 6;</code>
+   * <code>int64 full_image_size = 4;</code>
    * @return The fullImageSize.
    */
   long getFullImageSize();
@@ -99,7 +69,7 @@ public interface UploadImageResponseOrBuilder extends
    * Si success=false
    * </pre>
    *
-   * <code>string error_message = 7;</code>
+   * <code>string error_message = 5;</code>
    * @return The errorMessage.
    */
   java.lang.String getErrorMessage();
@@ -108,7 +78,7 @@ public interface UploadImageResponseOrBuilder extends
    * Si success=false
    * </pre>
    *
-   * <code>string error_message = 7;</code>
+   * <code>string error_message = 5;</code>
    * @return The bytes for errorMessage.
    */
   com.google.protobuf.ByteString

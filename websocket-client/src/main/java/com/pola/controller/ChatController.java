@@ -646,6 +646,10 @@ public class ChatController {
         return messageInput;
     }
 
+    public MessageActionHelper getMessageActionHelper() {
+        return messageActionHelper;
+    }
+
     public String getCurrentUsername() {
         return currentUsername;
     }

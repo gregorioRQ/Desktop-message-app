@@ -72,7 +72,7 @@ public class MediaService {
                 request.getReceiverId()
             );
             
-            // PASO 2: Procesar imagen (recomprimir, WebP, thumbnail)
+            // PASO 2: Procesar imagen (recomprimir, convertir a WebP)
             ImageProcessingResult processingResult = imageProcessingService.processImage(
                 imageData,
                 request.getOriginalFilename()
@@ -86,7 +86,6 @@ public class MediaService {
             FileStorageService.StorageResult storageResult = fileStorageService.storeMedia(
                 mediaId,
                 request.getReceiverId(),
-                processingResult.getThumbnailData(),
                 processingResult.getFullImageData()
             );
             
@@ -199,27 +198,6 @@ public class MediaService {
     }
 
     /**
-     * Obtiene el thumbnail de un media.
-     * Útil para enviar por WebSocket (archivo pequeño).
-     * 
-     * @param mediaId ID del media
-     * @return Bytes del thumbnail
-     * @throws MediaNotFoundException si no existe
-     */
-    @Transactional(readOnly = true)
-    public byte[] getThumbnail(String mediaId) {
-        log.debug("Getting thumbnail: mediaId={}", mediaId);
-        
-        MediaEntity mediaEntity = metadataService.findByMediaId(mediaId);
-        byte[] thumbnailData = fileStorageService.readFile(mediaEntity.getThumbnailPath());
-        
-        log.debug("Thumbnail retrieved: mediaId={}, size={}KB", 
-            mediaId, thumbnailData.length / BYTES_IN_KB);
-        
-        return thumbnailData;
-    }
-    
-    /**
      * Marca un media como entregado.
      * Llamado desde el WebSocket handler cuando se envía exitosamente.
      * 
@@ -262,10 +240,7 @@ public class MediaService {
             );
             
             // Eliminar archivos del disco
-            fileStorageService.deleteMedia(
-                mediaEntity.getThumbnailPath(),
-                mediaEntity.getFullImagePath()
-            );
+            fileStorageService.deleteMedia(mediaEntity.getFullImagePath());
             
             // Eliminar metadata de BD
             metadataService.delete(mediaEntity);
@@ -318,10 +293,7 @@ public class MediaService {
             for (MediaEntity media : oldMedia) {
                 try {
                     // Eliminar archivos
-                    fileStorageService.deleteMedia(
-                        media.getThumbnailPath(),
-                        media.getFullImagePath()
-                    );
+                    fileStorageService.deleteMedia(media.getFullImagePath());
                     
                     // Eliminar metadata
                     metadataService.delete(media);
@@ -373,9 +345,7 @@ public class MediaService {
             .senderId(request.getUserId())
             .receiverId(request.getReceiverId())
             .originalFilename(request.getOriginalFilename())
-            .thumbnailPath(storageResult.thumbnailPath())
             .fullImagePath(storageResult.fullImagePath())
-            .thumbnailSize(processingResult.getThumbnailSize())
             .fullImageSize(processingResult.getFullImageSize())
             .originalWidth(processingResult.getOriginalWidth())
             .originalHeight(processingResult.getOriginalHeight())
@@ -402,9 +372,7 @@ public class MediaService {
         
         if (success && mediaId != null && processingResult != null) {
             builder.setMediaId(mediaId)
-                   .setThumbnailUrl(String.format("/api/media/download/%s/thumbnail", mediaId))
                    .setFullImageUrl(String.format("/api/media/download/%s", mediaId))
-                   .setThumbnailSize(processingResult.getThumbnailSize())
                    .setFullImageSize(processingResult.getFullImageSize());
         } else if (errorMessage != null) {
             builder.setErrorMessage(errorMessage);
@@ -437,22 +405,19 @@ public class MediaService {
         log.warn("Cleaning up failed upload: mediaId={}", mediaId);
         
         try {
-            // Intentar eliminar archivos si existen
             String basePath = fileStorageService.getClass()
                 .getDeclaredMethod("createUserDirectory", Long.class)
                 .invoke(fileStorageService, receiverId)
                 .toString();
             
-            String thumbnailPath = basePath + "/" + mediaId + SUFFIX_THUMBNAIL + EXTENSION_WEBP;
             String fullImagePath = basePath + "/" + mediaId + SUFFIX_FULL + EXTENSION_WEBP;
             
-            fileStorageService.deleteMedia(thumbnailPath, fullImagePath);
+            fileStorageService.deleteMedia(fullImagePath);
             
             log.debug("Failed upload cleaned up: mediaId={}", mediaId);
             
         } catch (Exception e) {
             log.error("Failed to cleanup failed upload: mediaId={}", mediaId, e);
-            // No lanzar excepción - es solo cleanup
         }
     }
     
@@ -467,9 +432,7 @@ public class MediaService {
             .mediaId(entity.getMediaId())
             .senderId(entity.getSenderId())
             .receiverId(entity.getReceiverId())
-            .thumbnailUrl(String.format("/api/media/download/%s/thumbnail", entity.getMediaId()))
             .fullImageUrl(String.format("/api/media/download/%s", entity.getMediaId()))
-            .thumbnailSize(entity.getThumbnailSize())
             .fullImageSize(entity.getFullImageSize())
             .width(entity.getOriginalWidth())
             .height(entity.getOriginalHeight())

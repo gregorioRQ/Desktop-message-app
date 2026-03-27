@@ -20,11 +20,9 @@ message UploadImageRequest {
 message UploadImageResponse {
     bool success = 1;
     string media_id = 2;           // UUID del media
-    string thumbnail_url = 3;      // URL para descargar thumbnail
-    string full_image_url = 4;     // URL para descargar imagen completa
-    int64 thumbnail_size = 5;      // Tamaño en bytes
-    int64 full_image_size = 6;     // Tamaño en bytes
-    string error_message = 7;      // Si success=false
+    string full_image_url = 3;     // URL para descargar imagen completa
+    int64 full_image_size = 4;     // Tamaño en bytes
+    string error_message = 5;      // Si success=false
 }
 
 message DownloadImageRequest {
@@ -41,19 +39,18 @@ message DownloadImageResponse {
     string error_message = 6;
 }
 
-// ===== MENSAJES PARA WEBSOCKET (Thumbnail) =====
+// ===== MENSAJES PARA WEBSOCKET (Notificación de imagen) =====
 
-message ThumbnailMessage {
+message ImageMessage {
     string media_id = 1;           // Referencia al media
     string sender_id = 2;
     string receiver_id = 3;
-    bytes thumbnail_data = 4;      // Thumbnail pequeño (8-15 KB)
-    string full_image_url = 5;     // URL para descargar completa
-    int32 original_width = 6;
-    int32 original_height = 7;
-    int64 file_size = 8;           // Tamaño de la imagen completa
-    int64 timestamp = 9;
-    MessageStatus status = 10;
+    string full_image_url = 4;     // URL para descargar completa
+    int32 original_width = 5;
+    int32 original_height = 6;
+    int64 file_size = 7;           // Tamaño de la imagen completa
+    int64 timestamp = 8;
+    MessageStatus status = 9;
 }
 
 enum MessageStatus {
@@ -65,7 +62,7 @@ enum MessageStatus {
 
 // ===== MENSAJES DE CONTROL WEBSOCKET =====
 
-message ThumbnailAck {
+message ImageAck {
     string media_id = 1;
     bool received = 2;
     int64 timestamp = 3;

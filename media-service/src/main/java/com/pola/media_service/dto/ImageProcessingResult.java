@@ -7,18 +7,13 @@ import lombok.NoArgsConstructor;
 
 /**
  * Resultado del procesamiento de una imagen.
- * Contiene tanto el thumbnail como la imagen completa procesada.
+ * Contiene la imagen completa procesada.
  */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class ImageProcessingResult {
-    
-    /**
-     * Datos del thumbnail en formato WebP
-     */
-    private byte[] thumbnailData;
     
     /**
      * Datos de la imagen completa en formato WebP
@@ -34,11 +29,6 @@ public class ImageProcessingResult {
      * Alto de la imagen original
      */
     private int originalHeight;
-    
-    /**
-     * Tamaño del thumbnail en bytes
-     */
-    private long thumbnailSize;
     
     /**
      * Tamaño de la imagen completa en bytes

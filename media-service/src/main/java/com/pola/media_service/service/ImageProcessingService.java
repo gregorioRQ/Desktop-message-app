@@ -36,11 +36,11 @@ public class ImageProcessingService {
     private final MediaServiceProperties properties;
     
     /**
-     * Procesa una imagen: la recomprime, convierte a WebP y genera thumbnail.
+     * Procesa una imagen: la recomprime y convierte a WebP.
      * 
      * @param imageData Datos de la imagen original (ya comprimida desde cliente)
      * @param originalFilename Nombre del archivo original
-     * @return ImageProcessingResult con thumbnail y imagen completa procesada
+     * @return ImageProcessingResult con la imagen completa procesada
      * @throws ImageProcessingException si falla el procesamiento
      */
     public ImageProcessingResult processImage(byte[] imageData, String originalFilename) {
@@ -50,10 +50,8 @@ public class ImageProcessingService {
         long startTime = System.currentTimeMillis();
         
         try {
-            // Leer imagen original
             BufferedImage originalImage = readImage(imageData);
             
-            // Obtener dimensiones originales
             int originalWidth = originalImage.getWidth();
             int originalHeight = originalImage.getHeight();
             String originalFormat = detectFormat(originalFilename);
@@ -61,11 +59,6 @@ public class ImageProcessingService {
             log.debug("Original image dimensions: {}x{}, format={}", 
                 originalWidth, originalHeight, originalFormat);
             
-            // Generar thumbnail
-            byte[] thumbnailData = generateThumbnail(originalImage);
-            log.debug("Thumbnail generated: size={}KB", thumbnailData.length / BYTES_IN_KB);
-            
-            // Procesar imagen completa (redimensionar si es necesario y convertir a WebP)
             ImageProcessingResult.ImageProcessingResultBuilder resultBuilder = 
                 ImageProcessingResult.builder();
             
@@ -86,24 +79,20 @@ public class ImageProcessingService {
                 fullImageData = convertToWebP(originalImage, properties.getProcessing().getWebpQuality());
             }
             
-            // Calcular ratio de compresión
             float compressionRatio = (float) fullImageData.length / imageData.length;
             
             long processingTime = System.currentTimeMillis() - startTime;
             log.info("Image processing completed: originalSize={}KB, finalSize={}KB, " +
-                    "compressionRatio={}, thumbnailSize={}KB, time={}ms",
+                    "compressionRatio={}, time={}ms",
                 imageData.length / BYTES_IN_KB,
                 fullImageData.length / BYTES_IN_KB,
                 String.format("%.2f", compressionRatio),
-                thumbnailData.length / BYTES_IN_KB,
                 processingTime);
             
             return resultBuilder
-                .thumbnailData(thumbnailData)
                 .fullImageData(fullImageData)
                 .originalWidth(originalWidth)
                 .originalHeight(originalHeight)
-                .thumbnailSize(thumbnailData.length)
                 .fullImageSize(fullImageData.length)
                 .compressionRatio(compressionRatio)
                 .wasResized(wasResized)
@@ -158,28 +147,6 @@ public class ImageProcessingService {
     private boolean needsResize(int width, int height) {
         return width > properties.getProcessing().getMaxImageWidth() || 
                height > properties.getProcessing().getMaxImageHeight();
-    }
-
-    /**
-     * Genera un thumbnail pequeño de la imagen.
-     * 
-     * @param originalImage Imagen original
-     * @return Datos del thumbnail en formato WebP
-     * @throws IOException si falla la generación
-     */
-    private byte[] generateThumbnail(BufferedImage originalImage) throws IOException {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        
-        int thumbnailSize = properties.getProcessing().getThumbnailSize();
-        
-        // Usar Thumbnailator para generar thumbnail manteniendo aspecto
-        Thumbnails.of(originalImage)
-            .size(thumbnailSize, thumbnailSize)
-            .outputFormat(FORMAT_JPEG) // Usar JPEG para thumbnail (más pequeño)
-            .outputQuality(properties.getProcessing().getThumbnailQuality())
-            .toOutputStream(outputStream);
-        
-        return outputStream.toByteArray();
     }
 
     /**

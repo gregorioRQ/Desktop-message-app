@@ -42,14 +42,8 @@ public class MediaEntity {
     @Column(name = "original_filename", length = 255)
     private String originalFilename;
     
-    @Column(name = "thumbnail_path", nullable = false, length = 500)
-    private String thumbnailPath;  // /storage/media/user_123/media_abc_thumb.webp
-    
     @Column(name = "full_image_path", nullable = false, length = 500)
     private String fullImagePath;  // /storage/media/user_123/media_abc_full.webp
-    
-    @Column(name = "thumbnail_size", nullable = false)
-    private Long thumbnailSize;  // Bytes
     
     @Column(name = "full_image_size", nullable = false)
     private Long fullImageSize;  // Bytes
