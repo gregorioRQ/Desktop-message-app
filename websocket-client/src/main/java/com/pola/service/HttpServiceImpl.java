@@ -228,7 +228,7 @@ public class HttpServiceImpl implements HttpService{
             byte[] requestBody = request.toByteArray();
             
             HttpRequest httpRequest = HttpRequest.newBuilder()
-                    .uri(URI.create(baseUrl + "v1/media/upload"))
+                    .uri(URI.create(baseUrl + "media/upload"))
                     .header("Content-Type", "application/x-protobuf")
                     .header("Accept", "application/x-protobuf")
                     .header("Authorization", "Bearer " + accessToken)

@@ -705,11 +705,7 @@ public class ChatController {
             );
 
             sseClient.addMessageListener(message -> {
-                System.out.println("[ChatController] SSE notification received: " + message);
-
-                // Filtrar heartbeat
                 if (":ok".equals(message) || message.contains("heartbeat")) {
-                    System.out.println("[ChatController] Heartbeat recibido - ignorando");
                     return;
                 }
 

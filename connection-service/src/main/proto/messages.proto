@@ -171,6 +171,28 @@ message PendingClearHistoryList {
   repeated string users = 1;
 }
 
+// Estados del mensaje de imagen
+enum MessageStatus {
+  SENT = 0;
+  DELIVERED = 1;
+  READ = 2;
+  FAILED = 3;
+}
+
+// Mensaje de notificacion de imagen (enviado cuando se sube una imagen al media-service)
+// El cliente receptor recibe este mensaje para mostrar UI de descarga
+message ImageMessage {
+  string media_id = 1;           // ID del media en media-service
+  string sender_id = 2;          // ID del usuario que envio la imagen
+  string receiver_id = 3;        // ID del usuario que recibira la imagen
+  string full_image_url = 4;     // URL completa para descargar la imagen
+  int32 original_width = 5;      // Ancho original de la imagen
+  int32 original_height = 6;     // Alto original de la imagen
+  int64 file_size = 7;           // Tamano del archivo en bytes
+  int64 timestamp = 8;           // Timestamp del mensaje
+  MessageStatus status = 9;      // Estado del mensaje
+}
+
 // Wrapper para todos los mensajes
 message WsMessage {
   oneof payload {
@@ -196,5 +218,6 @@ message WsMessage {
     ContactIdentity contact_identity = 20;
     ClearHistoryResponse clear_history_response = 21;
     PendingClearHistoryList pending_clear_history_list = 22;
+    ImageMessage image_message = 23;  // Mensaje de notificacion de imagen
   }
 }

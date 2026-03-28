@@ -372,7 +372,7 @@ public class MediaService {
         
         if (success && mediaId != null && processingResult != null) {
             builder.setMediaId(mediaId)
-                   .setFullImageUrl(String.format("/api/media/download/%s", mediaId))
+                   .setFullImageUrl(String.format("http://localhost:8086/api/v1/media/download/%s", mediaId))
                    .setFullImageSize(processingResult.getFullImageSize());
         } else if (errorMessage != null) {
             builder.setErrorMessage(errorMessage);
@@ -432,7 +432,7 @@ public class MediaService {
             .mediaId(entity.getMediaId())
             .senderId(entity.getSenderId())
             .receiverId(entity.getReceiverId())
-            .fullImageUrl(String.format("/api/media/download/%s", entity.getMediaId()))
+            .fullImageUrl(String.format("http://localhost:8086/api/v1/media/download/%s", entity.getMediaId()))
             .fullImageSize(entity.getFullImageSize())
             .width(entity.getOriginalWidth())
             .height(entity.getOriginalHeight())

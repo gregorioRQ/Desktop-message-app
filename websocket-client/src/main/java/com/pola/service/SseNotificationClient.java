@@ -125,27 +125,27 @@ public class SseNotificationClient {
                 new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8))) {
 
             StringBuilder eventData = new StringBuilder();
+            String currentEvent = null;
             String line;
 
             while (!Thread.currentThread().isInterrupted() && isConnected) {
                 line = reader.readLine();
                 
-                System.out.println("[SseNotificationClient] Raw line received: '" + line + "'");
-                
                 if (line == null) {
                     break;
                 }
 
-                if (line.startsWith("data: ")) {
-                    // Formato con espacio: "data: mensaje"
+                if (line.startsWith("event:")) {
+                    currentEvent = line.substring(6).trim();
+                } else if (line.startsWith("data: ")) {
                     eventData.append(line.substring(6)).append("\n");
                 } else if (line.startsWith("data:") && !line.startsWith("data: ")) {
-                    // Formato sin espacio: "data:mensaje"
                     eventData.append(line.substring(5)).append("\n");
                 } else if (line.isEmpty() && eventData.length() > 0) {
                     String message = eventData.toString().trim();
                     eventData.setLength(0);
-                    processMessage(message);
+                    processMessage(message, "heartbeat".equals(currentEvent));
+                    currentEvent = null;
                 }
             }
 
@@ -161,12 +161,14 @@ public class SseNotificationClient {
         }
     }
 
-    private void processMessage(String message) {
+    private void processMessage(String message, boolean isHeartbeat) {
         if (message == null || message.isEmpty()) {
             return;
         }
 
-        System.out.println("[SseNotificationClient] Received message: " + message);
+        if (isHeartbeat) {
+            System.out.println("heartbeat");
+        }
 
         for (Consumer<String> listener : messageListeners) {
             try {

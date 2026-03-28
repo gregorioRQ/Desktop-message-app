@@ -77,6 +77,53 @@ public class MessageRouterService {
     }
 
     /**
+     * Enruta un mensaje de imagen al destinatario según su estado de conexión.
+     * 
+     * Este método tiene el mismo flujo que routeMessage pero específico para ImageMessage:
+     * 1. Usuario conectado en esta instancia → Envío directo por WebSocket
+     * 2. Usuario conectado en otra instancia → Encolar en RabbitMQ (message.sent.{instanceId})
+     * 3. Usuario offline → Encolar en cola offline (para guardar pending) + Notificar a notification-service
+     * 
+     * La diferencia con routeMessage es que cuando el receptor está offline, siempre se
+     * encola a chat-service (no se puede entregar directamente porque el cliente receptor
+     * necesita la info del ImageMessage para mostrar la UI de descarga).
+     * 
+     * @param sender Username del remitente
+     * @param receiverId UserId del destinatario
+     * @param messageData Datos binarios del mensaje (WsMessage protobuf con ImageMessage)
+     */
+    public void routeImageMessage(String sender, String receiverId, byte[] messageData) {
+        log.info("Enrutando mensaje de imagen de {} para receptor con userId: {}", sender, receiverId);
+        
+        // Obtener la instancia donde está conectado el destinatario
+        String recipientInstance = sessionRegistryService.getConnectionInstance(receiverId);
+
+        if (recipientInstance == null) {
+            // Usuario offline - no hay instancia registrada en Redis
+            log.info("Destinatario {} no está conectado, encolando mensaje de imagen en cola offline", receiverId);
+            // Encolar a chat-service para guardar como pending
+            rabbitMQProducerService.sendToOfflineQueue(new RoutedMessage(sender, receiverId, messageData, null));
+            // Publicar evento de notificación para notification-service
+            publishImageNotificationEvent(sender, receiverId, messageData);
+            return;
+        }
+
+        if (recipientInstance.equals(instanceId)) {
+            // Usuario conectado en esta instancia - envío directo por WebSocket
+            log.info("Destinatario {} está en esta instancia {}, enviando mensaje de imagen directamente", 
+                receiverId, instanceId);
+            // Usar userId directamente para enviar
+            sessionRegistryService.sendToUser(receiverId, messageData);
+        } else {
+            // Usuario conectado en otra instancia - enviar a esa instancia via RabbitMQ
+            log.info("Destinatario {} está en instancia {}, encolando mensaje de imagen", 
+                receiverId, recipientInstance);
+            rabbitMQProducerService.sendToQueue(recipientInstance, 
+                new RoutedMessage(sender, receiverId, messageData, recipientInstance));
+        }
+    }
+
+    /**
      * Publica un evento de notificación para notification-service.
      * 
      * Este método se llama cuando:
@@ -101,6 +148,30 @@ public class MessageRouterService {
                     recipient, recipientUserId, sender);
         } catch (Exception e) {
             log.error("Error al publicar evento de notificación para {}: {}", recipient, e.getMessage());
+        }
+    }
+
+    /**
+     * Publica un evento de notificación para notification-service cuando se envía una imagen.
+     * 
+     * Este método se llama cuando el destinatario está offline y se ha encolado
+     * el ImageMessage en la cola offline para guardarlo como pending.
+     * 
+     * Notifica al destinatario que tiene una nueva imagen pendiente de descargar.
+     * 
+     * @param sender Username del remitente
+     * @param receiverId UserId del destinatario
+     * @param imageMessageData Datos binarios del ImageMessage
+     */
+    private void publishImageNotificationEvent(String sender, String receiverId, byte[] imageMessageData) {
+        try {
+            NotificationEvent notificationEvent = NotificationEvent.createNewImageMessageEvent(
+                    sender, receiverId, imageMessageData);
+            rabbitMQProducerService.sendToNotificationQueue(notificationEvent);
+            log.info("Evento de notificación de imagen publicado para receptor: {}, remitente: {}", 
+                    receiverId, sender);
+        } catch (Exception e) {
+            log.error("Error al publicar evento de notificación de imagen para {}: {}", receiverId, e.getMessage());
         }
     }
 
