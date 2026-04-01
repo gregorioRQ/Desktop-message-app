@@ -4,6 +4,8 @@ import java.util.concurrent.CompletableFuture;
 
 import com.pola.proto.UploadImageRequest;
 import com.pola.proto.UploadImageResponse;
+import com.pola.proto.DownloadImageRequest;
+import com.pola.proto.DownloadImageResponse;
 
 /**
  * Interface para el servicio HTTP
@@ -76,7 +78,14 @@ public interface HttpService {
      * @return CompletableFuture con la respuesta del servidor (UploadImageResponse).
      */
     CompletableFuture<UploadImageResponse> uploadMedia(UploadImageRequest request, String accessToken);
-    // TODO: MEDIA - Reactivar cuando se implemente funcionalidad de envío de imágenes
+
+    /**
+     * Descarga una imagen del servidor usando el mediaId.
+     * @param request Petición con el mediaId y userId.
+     * @param accessToken Token de autorización.
+     * @return CompletableFuture con la respuesta conteniendo los bytes de la imagen.
+     */
+    CompletableFuture<DownloadImageResponse> downloadMedia(DownloadImageRequest request, String accessToken);
     // /**
     //  * Sube un archivo multimedia (imagen) al servidor usando Protobuf.
     //  * @param request Petición de subida con datos de imagen.

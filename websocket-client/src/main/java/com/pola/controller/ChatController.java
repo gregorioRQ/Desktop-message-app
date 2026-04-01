@@ -3,15 +3,19 @@ package com.pola.controller;
 import com.pola.database.DatabaseManager;
 import com.pola.model.ChatMessage;
 import com.pola.model.Contact;
+import com.pola.model.ImageChatMessage;
 import com.pola.model.Message;
 import com.pola.model.Notification;
 import com.pola.proto.MessagesProto.AuthMessage;
 import com.pola.proto.MessagesProto.WsMessage;
+import com.pola.proto.DownloadImageRequest;
+import com.pola.proto.DownloadImageResponse;
 import com.pola.service.ContactService;
 import com.pola.service.AuthService;
 import com.pola.service.HttpServiceImpl;
 import com.pola.service.ImageActionHelper;
 import com.pola.service.MessageService;
+import com.pola.database.DatabaseManager;
 // import com.pola.service.NotificationService;
 import com.pola.service.SseNotificationClient;
 import com.pola.service.WebSocketService;
@@ -25,6 +29,8 @@ import com.pola.view.ChatDialogs;
 import com.pola.view.SystemTrayManager;
 import com.pola.view.ViewManager;
 
+import java.io.File;
+import java.io.ByteArrayInputStream;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -40,12 +46,19 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.layout.StackPane;
 import javafx.geometry.Side;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Circle;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.scene.Scene;
 
 /**
  * Controlador para la vista de chat
@@ -393,7 +406,126 @@ public class ChatController {
     }
 
     private void setupMessageListView(){
-        messageListView.setCellFactory(lv -> new MessageListCell(currentUsername, messageActionHelper::handleDeleteMessage, messageActionHelper::handleEditMessage));
+        messageListView.setCellFactory(lv -> new MessageListCell(
+            currentUsername, 
+            messageActionHelper::handleDeleteMessage, 
+            messageActionHelper::handleEditMessage,
+            this::handleImageDownload,
+            this::handleViewImage
+        ));
+    }
+    
+    private void handleImageDownload(ImageChatMessage imageMessage) {
+        String mediaId = imageMessage.getMediaId();
+        String userId = authService.getUserId();
+        String accessToken = authService.getAccessToken();
+        
+        if (mediaId == null || userId == null || accessToken == null) {
+            System.err.println("No se puede descargar imagen: falta información de sesión");
+            return;
+        }
+        
+        if (DatabaseManager.getInstance().hasImage(mediaId)) {
+            System.out.println("Imagen ya descargada: " + mediaId);
+            imageMessage.setDownloaded(true);
+            Platform.runLater(() -> messageListView.refresh());
+            return;
+        }
+        
+        HttpServiceImpl httpService = new HttpServiceImpl();
+        DownloadImageRequest request = DownloadImageRequest.newBuilder()
+            .setMediaId(mediaId)
+            .setUserId(userId)
+            .build();
+        
+        httpService.downloadMedia(request, accessToken)
+            .thenAccept(response -> {
+                if (response.getSuccess()) {
+                    byte[] imageData = response.getImageData().toByteArray();
+                    String mimeType = response.getMimeType();
+                    int width = response.getWidth();
+                    int height = response.getHeight();
+                    
+                    DatabaseManager.getInstance().saveImage(
+                        mediaId, 
+                        imageMessage.getId(), 
+                        imageData, 
+                        mimeType, 
+                        width, 
+                        height
+                    );
+                    
+                    String localPath = saveImageToFile(mediaId, imageData, mimeType);
+                    if (localPath != null) {
+                        imageMessage.setFullImageUrl(localPath);
+                    }
+                    
+                    DatabaseManager.getInstance().updateDownloaded(imageMessage.getId(), true);
+                    imageMessage.setDownloaded(true);
+                    Platform.runLater(() -> messageListView.refresh());
+                    System.out.println("Imagen descargada y guardada: " + mediaId);
+                } else {
+                    System.err.println("Error al descargar imagen: " + response.getErrorMessage());
+                }
+            })
+            .exceptionally(ex -> {
+                System.err.println("Excepción al descargar imagen: " + ex.getMessage());
+                ex.printStackTrace();
+                return null;
+            });
+    }
+    
+    private String saveImageToFile(String mediaId, byte[] imageData, String mimeType) {
+        try {
+            String userHome = System.getProperty("user.home");
+            String imagesDir = userHome + File.separator + ".chat-client" + File.separator + "images";
+            File dir = new File(imagesDir);
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+            
+            String extension = mimeType.equals("image/webp") ? "webp" : 
+                              mimeType.equals("image/png") ? "png" : "jpg";
+            String fileName = mediaId + "." + extension;
+            File imageFile = new File(imagesDir, fileName);
+            
+            java.nio.file.Files.write(imageFile.toPath(), imageData);
+            System.out.println("Imagen guardada en archivo: " + imageFile.getAbsolutePath());
+            
+            return imageFile.toURI().toString();
+        } catch (Exception e) {
+            System.err.println("Error guardando imagen en archivo: " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
+    
+    private void handleViewImage(ImageChatMessage imageMessage) {
+        String imagePath = imageMessage.getFullImageUrl();
+        if (imagePath == null || imagePath.isEmpty()) {
+            System.err.println("No hay imagen para mostrar");
+            return;
+        }
+        
+        try {
+            java.net.URI uri = new java.net.URI(imagePath);
+            File imageFile = new File(uri);
+            
+            if (!imageFile.exists()) {
+                System.err.println("El archivo de imagen no existe: " + imageFile.getAbsolutePath());
+                return;
+            }
+            
+            if (java.awt.Desktop.isDesktopSupported()) {
+                java.awt.Desktop.getDesktop().open(imageFile);
+                System.out.println("Abriendo imagen con sistema: " + imageFile.getAbsolutePath());
+            } else {
+                System.err.println("Desktop no es compatible en este sistema");
+            }
+        } catch (Exception e) {
+            System.err.println("Error al abrir la imagen: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
     
     private void setupListeners() {

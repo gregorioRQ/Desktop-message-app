@@ -5,6 +5,9 @@ package com.pola;
 option java_package = "com.pola.proto";
 option java_outer_classname = "MessagesProto";
 
+import "image-data.proto";
+import "image-message.proto";
+
 // Tipo de mensaje
 enum MessageType {
   TEXT = 0;
@@ -15,6 +18,7 @@ enum MessageType {
   DELIVERY_RECEIPT = 5;
   ALERT = 6;
   CHAT = 7;
+  IMAGE = 8;  
 }
 
 // Mensaje de chat
@@ -185,6 +189,11 @@ message PendingClearHistoryList {
   repeated PendingClearHistory clear_histories = 1;
 }
 
+// Lista de mensajes de imagen pendientes para entregar cuando el receptor se conecte
+message UnreadImageMessagesList {
+  repeated ImageMessage messages = 1;
+}
+
 // Wrapper para todos los mensajes
 message WsMessage {
   oneof payload {
@@ -210,6 +219,8 @@ message WsMessage {
     ContactIdentity contact_identity = 20;
     ClearHistoryResponse clear_history_response = 21;
     PendingClearHistoryList pending_clear_history_list = 22;
+    ImageMessage image_message = 23;
+    UnreadImageMessagesList unread_image_messages_list = 24;
   }
 }
 

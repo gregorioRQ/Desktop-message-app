@@ -10,6 +10,8 @@ import java.util.concurrent.CompletableFuture;
 
 import com.google.protobuf.Message;
 import com.pola.config.HttpConfig;
+import com.pola.proto.DownloadImageRequest;
+import com.pola.proto.DownloadImageResponse;
 import com.pola.proto.UploadImageRequest;
 import com.pola.proto.UploadImageResponse;
 
@@ -238,6 +240,28 @@ public class HttpServiceImpl implements HttpService{
             
             return httpClient.sendAsync(httpRequest, HttpResponse.BodyHandlers.ofByteArray())
                     .thenApply(response -> handleResponse(response, UploadImageResponse.class));
+                    
+        } catch (Exception e) {
+            return CompletableFuture.failedFuture(e);
+        }
+    }
+
+    @Override
+    public CompletableFuture<DownloadImageResponse> downloadMedia(DownloadImageRequest request, String accessToken) {
+        try {
+            byte[] requestBody = request.toByteArray();
+            
+            HttpRequest httpRequest = HttpRequest.newBuilder()
+                    .uri(URI.create(HttpConfig.MEDIA_SERVICE_URL + "/download"))
+                    .header("Content-Type", "application/x-protobuf")
+                    .header("Accept", "application/x-protobuf")
+                    .header("Authorization", "Bearer " + accessToken)
+                    .POST(HttpRequest.BodyPublishers.ofByteArray(requestBody))
+                    .timeout(Duration.ofSeconds(60))
+                    .build();
+            
+            return httpClient.sendAsync(httpRequest, HttpResponse.BodyHandlers.ofByteArray())
+                    .thenApply(response -> handleResponse(response, DownloadImageResponse.class));
                     
         } catch (Exception e) {
             return CompletableFuture.failedFuture(e);

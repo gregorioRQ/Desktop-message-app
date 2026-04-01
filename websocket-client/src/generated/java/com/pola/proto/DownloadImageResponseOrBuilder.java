@@ -15,29 +15,17 @@ public interface DownloadImageResponseOrBuilder extends
   boolean getSuccess();
 
   /**
-   * <pre>
-   * Imagen en WebP
-   * </pre>
-   *
    * <code>bytes image_data = 2;</code>
    * @return The imageData.
    */
   com.google.protobuf.ByteString getImageData();
 
   /**
-   * <pre>
-   * "image/webp"
-   * </pre>
-   *
    * <code>string mime_type = 3;</code>
    * @return The mimeType.
    */
   java.lang.String getMimeType();
   /**
-   * <pre>
-   * "image/webp"
-   * </pre>
-   *
    * <code>string mime_type = 3;</code>
    * @return The bytes for mimeType.
    */

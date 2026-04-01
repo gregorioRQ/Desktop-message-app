@@ -56,10 +56,6 @@ private static final long serialVersionUID = 0L;
   public static final int IMAGE_DATA_FIELD_NUMBER = 2;
   private com.google.protobuf.ByteString imageData_ = com.google.protobuf.ByteString.EMPTY;
   /**
-   * <pre>
-   * Imagen en WebP
-   * </pre>
-   *
    * <code>bytes image_data = 2;</code>
    * @return The imageData.
    */
@@ -72,10 +68,6 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object mimeType_ = "";
   /**
-   * <pre>
-   * "image/webp"
-   * </pre>
-   *
    * <code>string mime_type = 3;</code>
    * @return The mimeType.
    */
@@ -93,10 +85,6 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
-   * <pre>
-   * "image/webp"
-   * </pre>
-   *
    * <code>string mime_type = 3;</code>
    * @return The bytes for mimeType.
    */
@@ -653,10 +641,6 @@ private static final long serialVersionUID = 0L;
 
     private com.google.protobuf.ByteString imageData_ = com.google.protobuf.ByteString.EMPTY;
     /**
-     * <pre>
-     * Imagen en WebP
-     * </pre>
-     *
      * <code>bytes image_data = 2;</code>
      * @return The imageData.
      */
@@ -665,10 +649,6 @@ private static final long serialVersionUID = 0L;
       return imageData_;
     }
     /**
-     * <pre>
-     * Imagen en WebP
-     * </pre>
-     *
      * <code>bytes image_data = 2;</code>
      * @param value The imageData to set.
      * @return This builder for chaining.
@@ -681,10 +661,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * Imagen en WebP
-     * </pre>
-     *
      * <code>bytes image_data = 2;</code>
      * @return This builder for chaining.
      */
@@ -697,10 +673,6 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object mimeType_ = "";
     /**
-     * <pre>
-     * "image/webp"
-     * </pre>
-     *
      * <code>string mime_type = 3;</code>
      * @return The mimeType.
      */
@@ -717,10 +689,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * "image/webp"
-     * </pre>
-     *
      * <code>string mime_type = 3;</code>
      * @return The bytes for mimeType.
      */
@@ -738,10 +706,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * "image/webp"
-     * </pre>
-     *
      * <code>string mime_type = 3;</code>
      * @param value The mimeType to set.
      * @return This builder for chaining.
@@ -755,10 +719,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * "image/webp"
-     * </pre>
-     *
      * <code>string mime_type = 3;</code>
      * @return This builder for chaining.
      */
@@ -769,10 +729,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * "image/webp"
-     * </pre>
-     *
      * <code>string mime_type = 3;</code>
      * @param value The bytes for mimeType to set.
      * @return This builder for chaining.

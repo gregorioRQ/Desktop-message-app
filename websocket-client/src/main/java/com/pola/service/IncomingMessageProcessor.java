@@ -3,9 +3,12 @@ package com.pola.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pola.model.ChatMessage;
 import com.pola.model.Contact;
+import com.pola.model.ImageChatMessage;
 import com.pola.model.Notification;
+import com.pola.proto.ImageMessage;
 import com.pola.proto.MessagesProto;
 import com.pola.proto.MessagesProto.WsMessage;
 import com.pola.proto.MessagesProto.PendingClearHistoryList;
@@ -65,6 +68,9 @@ public class IncomingMessageProcessor {
           // Handlers para solicitudes de bloqueo y desbloqueo de contactos
           handlers.put(WsMessage.PayloadCase.BLOCK_CONTACT_REQUEST, this::processBlockContactRequest);
           handlers.put(WsMessage.PayloadCase.UNBLOCK_CONTACT_REQUEST, this::processUnblockContactRequest);
+          handlers.put(WsMessage.PayloadCase.IMAGE_MESSAGE, this::handleImageMessage);
+          // Handler para lista de mensajes de imagen pendientes (recibidos al conectarse)
+          handlers.put(WsMessage.PayloadCase.UNREAD_IMAGE_MESSAGES_LIST, msg -> processUnreadImageMessages(msg.getUnreadImageMessagesList()));
       }
 
     public void process(WsMessage message) {
@@ -135,6 +141,69 @@ public class IncomingMessageProcessor {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void handleImageMessage(WsMessage wsMessage) {
+        ImageMessage protoImage = wsMessage.getImageMessage();
+        
+        String mediaId = protoImage.getMediaId();
+        String senderId = protoImage.getSenderId();
+        String receiverId = protoImage.getReceiverId();
+        String fullImageUrl = protoImage.getFullImageUrl();
+        int width = protoImage.getOriginalWidth();
+        int height = protoImage.getOriginalHeight();
+        long timestamp = protoImage.getTimestamp();
+        
+        System.out.println("Recibido ImageMessage - mediaId: " + mediaId + ", sender: " + senderId + ", url: " + fullImageUrl);
+        
+        try {
+            Contact contact = context.getContactService().findContactByUsername(context.getCurrentUserIdSupplier().get(), senderId)
+                .orElseGet(() -> context.getContactService().addContact(context.getCurrentUserIdSupplier().get(), senderId, false));
+            
+            if (contact == null) return;
+            
+            ImageChatMessage imageMessage = new ImageChatMessage(
+                contact.getContactUsername(),
+                senderId,
+                fullImageUrl,
+                mediaId,
+                width,
+                height
+            );
+            imageMessage.setId(timestamp);
+            imageMessage.setDownloaded(false);
+            
+            ObjectMapper mapper = new ObjectMapper();
+            String contentJson = mapper.writeValueAsString(new ImageContent(fullImageUrl, mediaId, width, height));
+            
+            context.getMessageRepository().create(imageMessage, "image", false, contentJson);
+            
+            Contact current = context.getCurrentContactSupplier().get();
+            if (current != null && current.getId() == contact.getId()) {
+                Platform.runLater(() -> context.getCurrentChatMessages().add(imageMessage));
+            } else {
+                updateNotification(senderId);
+            }
+        } catch (Exception e) {
+            System.err.println("Error al procesar ImageMessage: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    
+    private static class ImageContent {
+        public String imageUrl;
+        public String mediaId;
+        public int width;
+        public int height;
+        
+        public ImageContent() {}
+        
+        public ImageContent(String imageUrl, String mediaId, int width, int height) {
+            this.imageUrl = imageUrl;
+            this.mediaId = mediaId;
+            this.width = width;
+            this.height = height;
         }
     }
 
@@ -487,6 +556,58 @@ public class IncomingMessageProcessor {
         
         // Actualizar notificaciones si es necesario
         updateNotification(unblockerUsername);
+    }
+
+    /**
+     * Procesa la lista de mensajes de imagen pendientes recibida al conectarse.
+     * Cada imagen se procesa igual que un ImageMessage normal, creando el contacto
+     * si no existe y mostrando la notificación correspondiente.
+     *
+     * @param unreadImageMessagesList Lista de mensajes de imagen pendientes
+     */
+    private void processUnreadImageMessages(MessagesProto.UnreadImageMessagesList unreadImageMessagesList) {
+        System.out.println("Procesando lista de mensajes de imagen pendientes: " + unreadImageMessagesList.getMessagesCount() + " imágenes");
+        
+        for (ImageMessage protoImage : unreadImageMessagesList.getMessagesList()) {
+            String senderId = protoImage.getSenderId();
+            String mediaId = protoImage.getMediaId();
+            String fullImageUrl = protoImage.getFullImageUrl();
+            int width = protoImage.getOriginalWidth();
+            int height = protoImage.getOriginalHeight();
+            long timestamp = protoImage.getTimestamp();
+            
+            System.out.println("Procesando ImageMessage pendiente - mediaId: " + mediaId + ", sender: " + senderId);
+            
+            try {
+                Contact contact = context.getContactService().findContactByUsername(context.getCurrentUserIdSupplier().get(), senderId)
+                    .orElseGet(() -> context.getContactService().addContact(context.getCurrentUserIdSupplier().get(), senderId, false));
+                
+                if (contact == null) {
+                    System.out.println("No se pudo crear contacto para sender: " + senderId);
+                    continue;
+                }
+                
+                ImageChatMessage imageMessage = new ImageChatMessage(
+                    contact.getContactUsername(),
+                    senderId,
+                    fullImageUrl,
+                    mediaId,
+                    width,
+                    height
+                );
+                imageMessage.setId(timestamp);
+                
+                Contact current = context.getCurrentContactSupplier().get();
+                if (current != null && current.getId() == contact.getId()) {
+                    Platform.runLater(() -> context.getCurrentChatMessages().add(imageMessage));
+                } else {
+                    updateNotification(senderId);
+                }
+            } catch (Exception e) {
+                System.err.println("Error al procesar ImageMessage pendiente: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
     }
 
     private void updateNotification(String senderUsername) {

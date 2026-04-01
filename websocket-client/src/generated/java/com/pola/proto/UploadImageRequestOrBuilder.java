@@ -33,10 +33,6 @@ public interface UploadImageRequestOrBuilder extends
       getReceiverIdBytes();
 
   /**
-   * <pre>
-   * Imagen completa en WebP
-   * </pre>
-   *
    * <code>bytes image_data = 3;</code>
    * @return The imageData.
    */

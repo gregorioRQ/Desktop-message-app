@@ -57,10 +57,6 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object mediaId_ = "";
   /**
-   * <pre>
-   * UUID del media
-   * </pre>
-   *
    * <code>string media_id = 2;</code>
    * @return The mediaId.
    */
@@ -78,10 +74,6 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
-   * <pre>
-   * UUID del media
-   * </pre>
-   *
    * <code>string media_id = 2;</code>
    * @return The bytes for mediaId.
    */
@@ -104,10 +96,6 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object fullImageUrl_ = "";
   /**
-   * <pre>
-   * URL para descargar imagen completa
-   * </pre>
-   *
    * <code>string full_image_url = 3;</code>
    * @return The fullImageUrl.
    */
@@ -125,10 +113,6 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
-   * <pre>
-   * URL para descargar imagen completa
-   * </pre>
-   *
    * <code>string full_image_url = 3;</code>
    * @return The bytes for fullImageUrl.
    */
@@ -150,10 +134,6 @@ private static final long serialVersionUID = 0L;
   public static final int FULL_IMAGE_SIZE_FIELD_NUMBER = 4;
   private long fullImageSize_ = 0L;
   /**
-   * <pre>
-   * Tamaño en bytes
-   * </pre>
-   *
    * <code>int64 full_image_size = 4;</code>
    * @return The fullImageSize.
    */
@@ -166,10 +146,6 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object errorMessage_ = "";
   /**
-   * <pre>
-   * Si success=false
-   * </pre>
-   *
    * <code>string error_message = 5;</code>
    * @return The errorMessage.
    */
@@ -187,10 +163,6 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
-   * <pre>
-   * Si success=false
-   * </pre>
-   *
    * <code>string error_message = 5;</code>
    * @return The bytes for errorMessage.
    */
@@ -665,10 +637,6 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object mediaId_ = "";
     /**
-     * <pre>
-     * UUID del media
-     * </pre>
-     *
      * <code>string media_id = 2;</code>
      * @return The mediaId.
      */
@@ -685,10 +653,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * UUID del media
-     * </pre>
-     *
      * <code>string media_id = 2;</code>
      * @return The bytes for mediaId.
      */
@@ -706,10 +670,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * UUID del media
-     * </pre>
-     *
      * <code>string media_id = 2;</code>
      * @param value The mediaId to set.
      * @return This builder for chaining.
@@ -723,10 +683,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * UUID del media
-     * </pre>
-     *
      * <code>string media_id = 2;</code>
      * @return This builder for chaining.
      */
@@ -737,10 +693,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * UUID del media
-     * </pre>
-     *
      * <code>string media_id = 2;</code>
      * @param value The bytes for mediaId to set.
      * @return This builder for chaining.
@@ -757,10 +709,6 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object fullImageUrl_ = "";
     /**
-     * <pre>
-     * URL para descargar imagen completa
-     * </pre>
-     *
      * <code>string full_image_url = 3;</code>
      * @return The fullImageUrl.
      */
@@ -777,10 +725,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * URL para descargar imagen completa
-     * </pre>
-     *
      * <code>string full_image_url = 3;</code>
      * @return The bytes for fullImageUrl.
      */
@@ -798,10 +742,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * URL para descargar imagen completa
-     * </pre>
-     *
      * <code>string full_image_url = 3;</code>
      * @param value The fullImageUrl to set.
      * @return This builder for chaining.
@@ -815,10 +755,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * URL para descargar imagen completa
-     * </pre>
-     *
      * <code>string full_image_url = 3;</code>
      * @return This builder for chaining.
      */
@@ -829,10 +765,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * URL para descargar imagen completa
-     * </pre>
-     *
      * <code>string full_image_url = 3;</code>
      * @param value The bytes for fullImageUrl to set.
      * @return This builder for chaining.
@@ -849,10 +781,6 @@ private static final long serialVersionUID = 0L;
 
     private long fullImageSize_ ;
     /**
-     * <pre>
-     * Tamaño en bytes
-     * </pre>
-     *
      * <code>int64 full_image_size = 4;</code>
      * @return The fullImageSize.
      */
@@ -861,10 +789,6 @@ private static final long serialVersionUID = 0L;
       return fullImageSize_;
     }
     /**
-     * <pre>
-     * Tamaño en bytes
-     * </pre>
-     *
      * <code>int64 full_image_size = 4;</code>
      * @param value The fullImageSize to set.
      * @return This builder for chaining.
@@ -877,10 +801,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * Tamaño en bytes
-     * </pre>
-     *
      * <code>int64 full_image_size = 4;</code>
      * @return This builder for chaining.
      */
@@ -893,10 +813,6 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object errorMessage_ = "";
     /**
-     * <pre>
-     * Si success=false
-     * </pre>
-     *
      * <code>string error_message = 5;</code>
      * @return The errorMessage.
      */
@@ -913,10 +829,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * Si success=false
-     * </pre>
-     *
      * <code>string error_message = 5;</code>
      * @return The bytes for errorMessage.
      */
@@ -934,10 +846,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * Si success=false
-     * </pre>
-     *
      * <code>string error_message = 5;</code>
      * @param value The errorMessage to set.
      * @return This builder for chaining.
@@ -951,10 +859,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * Si success=false
-     * </pre>
-     *
      * <code>string error_message = 5;</code>
      * @return This builder for chaining.
      */
@@ -965,10 +869,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * Si success=false
-     * </pre>
-     *
      * <code>string error_message = 5;</code>
      * @param value The bytes for errorMessage to set.
      * @return This builder for chaining.

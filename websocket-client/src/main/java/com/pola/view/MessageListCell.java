@@ -9,6 +9,8 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.MenuItem;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -21,12 +23,18 @@ public class MessageListCell extends ListCell<ChatMessage> {
     private final String currentUsername;
     private final Consumer<ChatMessage> onDelete;
     private final Consumer<ChatMessage> onEdit;
+    private final Consumer<ImageChatMessage> onDownloadImage;
+    private final Consumer<ImageChatMessage> onViewImage;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
 
-    public MessageListCell(String currentUsername, Consumer<ChatMessage> onDelete, Consumer<ChatMessage> onEdit) {
+    public MessageListCell(String currentUsername, Consumer<ChatMessage> onDelete, 
+                          Consumer<ChatMessage> onEdit, Consumer<ImageChatMessage> onDownloadImage,
+                          Consumer<ImageChatMessage> onViewImage) {
         this.currentUsername = currentUsername;
         this.onDelete = onDelete;
         this.onEdit = onEdit;
+        this.onDownloadImage = onDownloadImage;
+        this.onViewImage = onViewImage;
     }
 
     @Override
@@ -38,7 +46,7 @@ public class MessageListCell extends ListCell<ChatMessage> {
             setGraphic(null);
             setStyle("-fx-background-color: transparent;");
         } else if (message instanceof ImageChatMessage imageMessage) {
-            setGraphic(createImageMessageNode(imageMessage));
+            setGraphic(createImageMessageNode(imageMessage, onDownloadImage, onViewImage));
             setStyle("-fx-background-color: transparent;");
         } else {
             setGraphic(createTextMessageNode(message));
@@ -46,7 +54,9 @@ public class MessageListCell extends ListCell<ChatMessage> {
         }
     }
 
-    private javafx.scene.Node createImageMessageNode(ImageChatMessage message) {
+    private javafx.scene.Node createImageMessageNode(ImageChatMessage message, 
+                                                      Consumer<ImageChatMessage> onDownload,
+                                                      Consumer<ImageChatMessage> onView) {
         HBox root = new HBox(10);
         VBox contentBox = new VBox(4);
         
@@ -60,25 +70,42 @@ public class MessageListCell extends ListCell<ChatMessage> {
             contentBox.setAlignment(Pos.CENTER_LEFT);
         }
         
-        Label iconLabel = new Label("🖼️");
-        iconLabel.setFont(new Font(24));
+        VBox imageContainer = new VBox(4);
         
-        Label photoLabel = new Label("[Foto]");
-        photoLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
-        
-        Label dimensionsLabel = new Label(message.getOriginalWidth() + "x" + message.getOriginalHeight());
-        dimensionsLabel.setStyle("-fx-font-size: 11px; -fx-text-fill: #666;");
+        if (message.isDownloaded()) {
+            Button viewButton = new Button("Ver");
+            viewButton.setStyle("-fx-background-color: #2196F3; -fx-text-fill: white; -fx-background-radius: 5; -fx-padding: 5 10;");
+            viewButton.setOnAction(e -> {
+                if (onView != null) {
+                    onView.accept(message);
+                }
+            });
+            imageContainer.getChildren().add(viewButton);
+        } else {
+            Label iconLabel = new Label("🖼️");
+            iconLabel.setFont(new Font(24));
+            
+            Label photoLabel = new Label("[Foto]");
+            photoLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
+            
+            Label dimensionsLabel = new Label(message.getOriginalWidth() + "x" + message.getOriginalHeight());
+            dimensionsLabel.setStyle("-fx-font-size: 11px; -fx-text-fill: #666;");
+            
+            Button downloadButton = new Button("Descargar");
+            downloadButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-background-radius: 5; -fx-padding: 5 10;");
+            downloadButton.setOnAction(e -> {
+                if (onDownload != null) {
+                    onDownload.accept(message);
+                }
+            });
+            
+            imageContainer.getChildren().addAll(iconLabel, photoLabel, dimensionsLabel, downloadButton);
+        }
         
         Label timeLabel = new Label(message.getTimestamp().format(formatter));
         timeLabel.setStyle("-fx-font-size: 10px; -fx-text-fill: gray;");
         
-        Button downloadButton = new Button("Descargar");
-        downloadButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-background-radius: 5; -fx-padding: 5 10;");
-        downloadButton.setOnAction(e -> {
-            System.out.println("Descargar imagen: " + message.getFullImageUrl());
-        });
-        
-        contentBox.getChildren().addAll(iconLabel, photoLabel, dimensionsLabel, downloadButton, timeLabel);
+        contentBox.getChildren().addAll(imageContainer, timeLabel);
         
         setupContextMenu(contentBox, message, isMe);
         

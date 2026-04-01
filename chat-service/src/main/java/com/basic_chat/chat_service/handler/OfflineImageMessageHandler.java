@@ -3,8 +3,8 @@ package com.basic_chat.chat_service.handler;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.basic_chat.chat_service.models.Message;
-import com.basic_chat.chat_service.repository.MessageRepository;
+import com.basic_chat.chat_service.models.ImageMessage;
+import com.basic_chat.chat_service.repository.ImageMessageRepository;
 import com.basic_chat.proto.MessagesProto;
 
 import lombok.extern.slf4j.Slf4j;
@@ -12,8 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * Handler offline para mensajes de imagen (ImageMessage).
  * 
- * Cuando el destinatario está offline, guarda el ImageMessage en la base de datos
- * con seen=false para ser entregado cuando se conecte. El cliente receptor podra
+ * Cuando el destinatario está offline, guarda el ImageMessage en la tabla image_messages
+ * con delivered=false para ser entregado cuando se conecte. El cliente receptor podra
  * usar la informacion del ImageMessage (especialmente la URL completa) para
  * mostrar la UI de descarga.
  * 
@@ -24,10 +24,10 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class OfflineImageMessageHandler implements OfflineMessageHandler {
 
-    private final MessageRepository messageRepository;
+    private final ImageMessageRepository imageMessageRepository;
 
-    public OfflineImageMessageHandler(MessageRepository messageRepository) {
-        this.messageRepository = messageRepository;
+    public OfflineImageMessageHandler(ImageMessageRepository imageMessageRepository) {
+        this.imageMessageRepository = imageMessageRepository;
     }
 
     /**
@@ -44,7 +44,7 @@ public class OfflineImageMessageHandler implements OfflineMessageHandler {
     /**
      * Procesa el mensaje de imagen cuando el destinatario esta offline.
      * 
-     * Guarda el ImageMessage completo (serializado como bytes) en la entidad Message.
+     * Guarda el ImageMessage en la tabla image_messages con delivered=false.
      * El cliente receptor recibira este mensaje cuando se conecte y podra usar
      * la URL completa para descargar la imagen.
      * 
@@ -54,20 +54,22 @@ public class OfflineImageMessageHandler implements OfflineMessageHandler {
     @Override
     @Transactional
     public void handleOffline(MessagesProto.WsMessage message, String recipient) throws Exception {
-        MessagesProto.ImageMessage imageMessage = message.getImageMessage();
+        MessagesProto.ImageMessage protoImageMessage = message.getImageMessage();
         
-        Message entity = new Message();
-        entity.setId(System.currentTimeMillis());
-        entity.setFromUserId(imageMessage.getSenderId());
-        entity.setToUserId(imageMessage.getReceiverId());
-        entity.setData(imageMessage.toByteArray());
-        entity.setTimestamp(java.time.LocalDateTime.now());
-        entity.setCreationTime(System.currentTimeMillis());
-        entity.setSeen(false);
+        ImageMessage entity = new ImageMessage();
+        entity.setMediaId(protoImageMessage.getMediaId());
+        entity.setSenderId(protoImageMessage.getSenderId());
+        entity.setReceiverId(protoImageMessage.getReceiverId());
+        entity.setFullImageUrl(protoImageMessage.getFullImageUrl());
+        entity.setOriginalWidth(protoImageMessage.getOriginalWidth());
+        entity.setOriginalHeight(protoImageMessage.getOriginalHeight());
+        entity.setFileSize(protoImageMessage.getFileSize());
+        entity.setTimestamp(protoImageMessage.getTimestamp());
+        entity.setDelivered(false);
         
-        messageRepository.save(entity);
+        imageMessageRepository.save(entity);
         
-        log.info("Mensaje de imagen offline guardado - de: {}, para: {}, mediaId: {}", 
-            imageMessage.getSenderId(), imageMessage.getReceiverId(), imageMessage.getMediaId());
+        log.info("Mensaje de imagen offline guardado en tabla image_messages - de: {}, para: {}, mediaId: {}", 
+            protoImageMessage.getSenderId(), protoImageMessage.getReceiverId(), protoImageMessage.getMediaId());
     }
 }

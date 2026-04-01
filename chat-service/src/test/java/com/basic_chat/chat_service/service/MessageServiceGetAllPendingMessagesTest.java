@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.basic_chat.chat_service.models.Message;
+import com.basic_chat.chat_service.repository.ImageMessageRepository;
 import com.basic_chat.chat_service.repository.MessageRepository;
 import com.basic_chat.chat_service.repository.PendingBlockRepository;
 import com.basic_chat.chat_service.repository.PendingClearHistoryRepository;
@@ -51,6 +52,9 @@ class MessageServiceGetAllPendingMessagesTest {
     private PendingContactIdentityRepository pendingContactIdentityRepository;
 
     @Mock
+    private ImageMessageRepository imageMessageRepository;
+
+    @Mock
     private MessageValidator messageValidator;
 
     private MessageService messageService;
@@ -65,6 +69,7 @@ class MessageServiceGetAllPendingMessagesTest {
                 pendingUnblockRepository,
                 pendingClearHistoryRepository,
                 pendingContactIdentityRepository,
+                imageMessageRepository,
                 messageValidator
         );
     }
@@ -72,7 +77,6 @@ class MessageServiceGetAllPendingMessagesTest {
     @Test
     @DisplayName("Debe eliminar mensajes de la BD después de retornarlos al cliente")
     void getAllPendingMessages_DebeEliminarMensajesDespuesDeEntregarlos() {
-        // Arrange
         String username = "testUser";
 
         Message messageEntity = new Message();
@@ -99,23 +103,20 @@ class MessageServiceGetAllPendingMessagesTest {
         lenient().when(pendingClearHistoryRepository.findByRecipient(username)).thenReturn(Collections.emptyList());
         lenient().when(pendingReadReceiptRepository.findByReceiptRecipient(username)).thenReturn(Collections.emptyList());
         lenient().when(pendingContactIdentityRepository.findByRecipient(username)).thenReturn(Collections.emptyList());
+        lenient().when(imageMessageRepository.findByReceiverIdAndDeliveredFalse(username)).thenReturn(Collections.emptyList());
 
-        // Act
         MessagesProto.WsMessage result = messageService.getAllPendingMessages(username);
 
-        // Assert
         assertNotNull(result);
         assertTrue(result.hasUnreadMessagesList());
         assertEquals(1, result.getUnreadMessagesList().getMessagesList().size());
 
-        // Verificar que se llamó al método de eliminación con los IDs correctos
         verify(messageRepository).deleteAllByIdIn(List.of(100L));
     }
 
     @Test
     @DisplayName("Debe continuar si la eliminación de mensajes falla")
     void getAllPendingMessages_DebeContinuarSiEliminacionFalla() {
-        // Arrange
         String username = "testUser";
 
         Message messageEntity = new Message();
@@ -136,7 +137,6 @@ class MessageServiceGetAllPendingMessagesTest {
         when(messageRepository.findByToUserIdAndSeenFalse(username))
                 .thenReturn(List.of(messageEntity));
 
-        // Simular que la eliminación falla
         doThrow(new RuntimeException("Database error"))
                 .when(messageRepository).deleteAllByIdIn(anyList());
 
@@ -146,11 +146,10 @@ class MessageServiceGetAllPendingMessagesTest {
         lenient().when(pendingClearHistoryRepository.findByRecipient(username)).thenReturn(Collections.emptyList());
         lenient().when(pendingReadReceiptRepository.findByReceiptRecipient(username)).thenReturn(Collections.emptyList());
         lenient().when(pendingContactIdentityRepository.findByRecipient(username)).thenReturn(Collections.emptyList());
+        lenient().when(imageMessageRepository.findByReceiverIdAndDeliveredFalse(username)).thenReturn(Collections.emptyList());
 
-        // Act - No debe lanzar excepción
         MessagesProto.WsMessage result = messageService.getAllPendingMessages(username);
 
-        // Assert - El resultado debe ser no null y contener los mensajes
         assertNotNull(result);
         assertTrue(result.hasUnreadMessagesList());
     }
@@ -158,7 +157,6 @@ class MessageServiceGetAllPendingMessagesTest {
     @Test
     @DisplayName("Debe retornar null cuando no hay mensajes pendientes")
     void getAllPendingMessages_DebeRetornarNullSinPendientes() {
-        // Arrange
         String username = "testUser";
 
         lenient().when(messageRepository.findByToUserIdAndSeenFalse(username)).thenReturn(Collections.emptyList());
@@ -168,18 +166,16 @@ class MessageServiceGetAllPendingMessagesTest {
         lenient().when(pendingClearHistoryRepository.findByRecipient(username)).thenReturn(Collections.emptyList());
         lenient().when(pendingReadReceiptRepository.findByReceiptRecipient(username)).thenReturn(Collections.emptyList());
         lenient().when(pendingContactIdentityRepository.findByRecipient(username)).thenReturn(Collections.emptyList());
+        lenient().when(imageMessageRepository.findByReceiverIdAndDeliveredFalse(username)).thenReturn(Collections.emptyList());
 
-        // Act
         MessagesProto.WsMessage result = messageService.getAllPendingMessages(username);
 
-        // Assert
         assertNull(result);
     }
 
     @Test
     @DisplayName("Debe eliminar múltiples mensajes correctamente")
     void getAllPendingMessages_DebeEliminarMultiplesMensajes() {
-        // Arrange
         String username = "testUser";
 
         Message msg1 = new Message();
@@ -220,16 +216,14 @@ class MessageServiceGetAllPendingMessagesTest {
         lenient().when(pendingClearHistoryRepository.findByRecipient(username)).thenReturn(Collections.emptyList());
         lenient().when(pendingReadReceiptRepository.findByReceiptRecipient(username)).thenReturn(Collections.emptyList());
         lenient().when(pendingContactIdentityRepository.findByRecipient(username)).thenReturn(Collections.emptyList());
+        lenient().when(imageMessageRepository.findByReceiverIdAndDeliveredFalse(username)).thenReturn(Collections.emptyList());
 
-        // Act
         MessagesProto.WsMessage result = messageService.getAllPendingMessages(username);
 
-        // Assert
         assertNotNull(result);
         assertTrue(result.hasUnreadMessagesList());
         assertEquals(2, result.getUnreadMessagesList().getMessagesList().size());
 
-        // Verificar que se eliminaron ambos mensajes
         verify(messageRepository).deleteAllByIdIn(List.of(100L, 200L));
     }
 }

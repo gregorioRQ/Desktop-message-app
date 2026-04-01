@@ -193,6 +193,11 @@ message ImageMessage {
   MessageStatus status = 9;      // Estado del mensaje
 }
 
+// Lista de mensajes de imagen pendientes para entregar cuando el receptor se conecte
+message UnreadImageMessagesList {
+  repeated ImageMessage messages = 1;
+}
+
 // Wrapper para todos los mensajes
 message WsMessage {
   oneof payload {
@@ -219,5 +224,6 @@ message WsMessage {
     ClearHistoryResponse clear_history_response = 21;
     PendingClearHistoryList pending_clear_history_list = 22;
     ImageMessage image_message = 23;  // Mensaje de notificacion de imagen
+    UnreadImageMessagesList unread_image_messages_list = 24;
   }
 }

@@ -21,19 +21,11 @@ public interface DownloadImageRequestOrBuilder extends
       getMediaIdBytes();
 
   /**
-   * <pre>
-   * Para validar permisos
-   * </pre>
-   *
    * <code>string user_id = 2;</code>
    * @return The userId.
    */
   java.lang.String getUserId();
   /**
-   * <pre>
-   * Para validar permisos
-   * </pre>
-   *
    * <code>string user_id = 2;</code>
    * @return The bytes for userId.
    */

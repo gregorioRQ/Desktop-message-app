@@ -1,6 +1,7 @@
 package com.pola.controller;
 
 import com.pola.model.ChatMessage;
+import com.pola.model.ImageChatMessage;
 import com.pola.model.ImageProcessingResult;
 import com.pola.proto.UploadImageResponse;
 import com.pola.service.ContactService;
@@ -50,7 +51,17 @@ public class MessageActionHelper {
     }
 
     public void handleDeleteMessage(ChatMessage message) {
-        messageService.deleteOneMessage(message);
+        if (message instanceof ImageChatMessage imgMsg && 
+            imgMsg.getMediaId() != null && 
+            !imgMsg.getMediaId().isEmpty() && 
+            imgMsg.isDownloaded()) {
+            ChatDialogs.showDeleteMediaDialog(
+                () -> messageService.deleteOneMessage(message, true),
+                () -> messageService.deleteOneMessage(message, false)
+            );
+        } else {
+            messageService.deleteOneMessage(message, false);
+        }
     }
 
     public void handleEditMessage(ChatMessage message) {

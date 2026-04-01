@@ -84,10 +84,6 @@ private static final long serialVersionUID = 0L;
   @SuppressWarnings("serial")
   private volatile java.lang.Object userId_ = "";
   /**
-   * <pre>
-   * Para validar permisos
-   * </pre>
-   *
    * <code>string user_id = 2;</code>
    * @return The userId.
    */
@@ -105,10 +101,6 @@ private static final long serialVersionUID = 0L;
     }
   }
   /**
-   * <pre>
-   * Para validar permisos
-   * </pre>
-   *
    * <code>string user_id = 2;</code>
    * @return The bytes for userId.
    */
@@ -551,10 +543,6 @@ private static final long serialVersionUID = 0L;
 
     private java.lang.Object userId_ = "";
     /**
-     * <pre>
-     * Para validar permisos
-     * </pre>
-     *
      * <code>string user_id = 2;</code>
      * @return The userId.
      */
@@ -571,10 +559,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * Para validar permisos
-     * </pre>
-     *
      * <code>string user_id = 2;</code>
      * @return The bytes for userId.
      */
@@ -592,10 +576,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * Para validar permisos
-     * </pre>
-     *
      * <code>string user_id = 2;</code>
      * @param value The userId to set.
      * @return This builder for chaining.
@@ -609,10 +589,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * Para validar permisos
-     * </pre>
-     *
      * <code>string user_id = 2;</code>
      * @return This builder for chaining.
      */
@@ -623,10 +599,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * Para validar permisos
-     * </pre>
-     *
      * <code>string user_id = 2;</code>
      * @param value The bytes for userId to set.
      * @return This builder for chaining.

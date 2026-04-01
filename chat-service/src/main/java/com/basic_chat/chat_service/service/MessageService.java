@@ -9,8 +9,10 @@ import java.util.concurrent.ExecutionException;
 
 import org.springframework.stereotype.Service;
 
+import com.basic_chat.chat_service.models.ImageMessage;
 import com.basic_chat.chat_service.models.Message;
 import com.basic_chat.chat_service.models.PendingBlock;
+import com.basic_chat.chat_service.repository.ImageMessageRepository;
 import com.basic_chat.chat_service.models.PendingClearHistory;
 import com.basic_chat.chat_service.models.PendingContactIdentity;
 import com.basic_chat.chat_service.models.PendingDeletion;
@@ -41,6 +43,7 @@ public class MessageService {
     private final PendingUnblockRepository pendingUnblockRepository;
     private final PendingClearHistoryRepository pendingClearHistoryRepository;
     private final PendingContactIdentityRepository pendingContactIdentityRepository;
+    private final ImageMessageRepository imageMessageRepository;
     private final MessageValidator messageValidator;
 
     public MessageService(
@@ -51,6 +54,7 @@ public class MessageService {
             PendingUnblockRepository pendingUnblockRepository,
             PendingClearHistoryRepository pendingClearHistoryRepository,
             PendingContactIdentityRepository pendingContactIdentityRepository,
+            ImageMessageRepository imageMessageRepository,
             MessageValidator messageValidator) {
         this.messageRepository = messageRepository;
         this.pendingDeletionRepository = pendingDeletionRepository;
@@ -59,6 +63,7 @@ public class MessageService {
         this.pendingUnblockRepository = pendingUnblockRepository;
         this.pendingClearHistoryRepository = pendingClearHistoryRepository;
         this.pendingContactIdentityRepository = pendingContactIdentityRepository;
+        this.imageMessageRepository = imageMessageRepository;
         this.messageValidator = messageValidator;
     }
 
@@ -473,6 +478,61 @@ public class MessageService {
     }
 
     /**
+     * Obtiene y elimina los mensajes de imagen pendientes para un usuario.
+     * Este método se utiliza cuando un usuario se conecta y solicita sus mensajes pendientes.
+     * Los mensajes de imagen se convierten a formato protobuf y se eliminan de la base de datos
+     * después de ser entregados al cliente.
+     *
+     * @param username Nombre del usuario (userId) que recibe los mensajes de imagen
+     * @return Lista de mensajes de imagen en formato protobuf
+     */
+    @Transactional
+    public List<MessagesProto.ImageMessage> getAndClearPendingImageMessages(String username) {
+        if (username == null) {
+            log.warn("Parámetro inválido: username es nulo");
+            return new ArrayList<>();
+        }
+
+        try {
+            log.debug("Obteniendo mensajes de imagen pendientes para usuario: {}", username);
+            List<ImageMessage> pendingImages = imageMessageRepository.findByReceiverIdAndDeliveredFalse(username);
+
+            if (pendingImages.isEmpty()) {
+                log.debug("No hay mensajes de imagen pendientes para usuario: {}", username);
+                return new ArrayList<>();
+            }
+
+            log.info("Encontrados {} mensajes de imagen pendientes para usuario: {}", 
+                    pendingImages.size(), username);
+
+            List<MessagesProto.ImageMessage> protoImages = new ArrayList<>();
+            for (ImageMessage img : pendingImages) {
+                MessagesProto.ImageMessage protoImage = MessagesProto.ImageMessage.newBuilder()
+                        .setMediaId(img.getMediaId())
+                        .setSenderId(img.getSenderId())
+                        .setReceiverId(img.getReceiverId())
+                        .setFullImageUrl(img.getFullImageUrl())
+                        .setOriginalWidth(img.getOriginalWidth() != null ? img.getOriginalWidth() : 0)
+                        .setOriginalHeight(img.getOriginalHeight() != null ? img.getOriginalHeight() : 0)
+                        .setFileSize(img.getFileSize() != null ? img.getFileSize() : 0)
+                        .setTimestamp(img.getTimestamp() != null ? img.getTimestamp() : 0)
+                        .setStatus(MessagesProto.ImageMessageStatus.SENT)
+                        .build();
+                protoImages.add(protoImage);
+            }
+
+            imageMessageRepository.deleteByReceiverId(username);
+            log.info("Mensajes de imagen eliminados después de entrega para usuario: {}", username);
+
+            return protoImages;
+        } catch (Exception ex) {
+            log.error("Error al obtener/limpiar mensajes de imagen pendientes para usuario {}: {}", 
+                    username, ex.getMessage(), ex);
+            throw new RuntimeException("Error al procesar mensajes de imagen pendientes", ex);
+        }
+    }
+
+    /**
      * Obtiene TODOS los mensajes pendientes para un usuario.
      * Este método es llamado por MessageController cuando un usuario se conecta.
      * Recopila todos los tipos de pendientes (mensajes no leídos, eliminaciones, bloqueos,
@@ -572,6 +632,20 @@ public class MessageService {
                 }
                 log.info("Agregadas {} identidades de contacto pendientes para usuario: {}", 
                          pendingIdentities.size(), username);
+                hasAnyPending = true;
+            }
+
+            // 7. Obtener mensajes de imagen pendientes
+            List<MessagesProto.ImageMessage> pendingImages = getAndClearPendingImageMessages(username);
+            if (!pendingImages.isEmpty()) {
+                MessagesProto.UnreadImageMessagesList.Builder imageListBuilder = 
+                    MessagesProto.UnreadImageMessagesList.newBuilder();
+                for (MessagesProto.ImageMessage img : pendingImages) {
+                    imageListBuilder.addMessages(img);
+                }
+                wsBuilder.setUnreadImageMessagesList(imageListBuilder.build());
+                log.info("Agregados {} mensajes de imagen pendientes para usuario: {}", 
+                         pendingImages.size(), username);
                 hasAnyPending = true;
             }
 

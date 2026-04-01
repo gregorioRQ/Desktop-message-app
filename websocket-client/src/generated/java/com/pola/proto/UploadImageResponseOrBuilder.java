@@ -15,19 +15,11 @@ public interface UploadImageResponseOrBuilder extends
   boolean getSuccess();
 
   /**
-   * <pre>
-   * UUID del media
-   * </pre>
-   *
    * <code>string media_id = 2;</code>
    * @return The mediaId.
    */
   java.lang.String getMediaId();
   /**
-   * <pre>
-   * UUID del media
-   * </pre>
-   *
    * <code>string media_id = 2;</code>
    * @return The bytes for mediaId.
    */
@@ -35,19 +27,11 @@ public interface UploadImageResponseOrBuilder extends
       getMediaIdBytes();
 
   /**
-   * <pre>
-   * URL para descargar imagen completa
-   * </pre>
-   *
    * <code>string full_image_url = 3;</code>
    * @return The fullImageUrl.
    */
   java.lang.String getFullImageUrl();
   /**
-   * <pre>
-   * URL para descargar imagen completa
-   * </pre>
-   *
    * <code>string full_image_url = 3;</code>
    * @return The bytes for fullImageUrl.
    */
@@ -55,29 +39,17 @@ public interface UploadImageResponseOrBuilder extends
       getFullImageUrlBytes();
 
   /**
-   * <pre>
-   * Tamaño en bytes
-   * </pre>
-   *
    * <code>int64 full_image_size = 4;</code>
    * @return The fullImageSize.
    */
   long getFullImageSize();
 
   /**
-   * <pre>
-   * Si success=false
-   * </pre>
-   *
    * <code>string error_message = 5;</code>
    * @return The errorMessage.
    */
   java.lang.String getErrorMessage();
   /**
-   * <pre>
-   * Si success=false
-   * </pre>
-   *
    * <code>string error_message = 5;</code>
    * @return The bytes for errorMessage.
    */

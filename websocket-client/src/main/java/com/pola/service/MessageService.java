@@ -8,6 +8,7 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.pola.database.DatabaseManager;
 import com.pola.model.ChatMessage;
 import com.pola.model.ImageChatMessage;
 import com.pola.model.ImageProcessingResult;
@@ -283,7 +284,20 @@ public class MessageService {
 
     // eliminar un mensaje del local como del servidor
     public void deleteOneMessage(ChatMessage message){
+        deleteOneMessage(message, false);
+    }
+    
+    // eliminar un mensaje del local como del servidor
+    public void deleteOneMessage(ChatMessage message, boolean deleteMedia){
         try {
+            if (deleteMedia && message instanceof ImageChatMessage imgMsg) {
+                String mediaId = imgMsg.getMediaId();
+                if (mediaId != null && !mediaId.isEmpty()) {
+                    DatabaseManager.getInstance().deleteImageFile(mediaId);
+                    DatabaseManager.getInstance().deleteImage(mediaId);
+                }
+            }
+            
             messageRepository.delete(message.getId());
             currentChatMessages.remove(message);
 

@@ -124,10 +124,6 @@ private static final long serialVersionUID = 0L;
   public static final int IMAGE_DATA_FIELD_NUMBER = 3;
   private com.google.protobuf.ByteString imageData_ = com.google.protobuf.ByteString.EMPTY;
   /**
-   * <pre>
-   * Imagen completa en WebP
-   * </pre>
-   *
    * <code>bytes image_data = 3;</code>
    * @return The imageData.
    */
@@ -786,10 +782,6 @@ private static final long serialVersionUID = 0L;
 
     private com.google.protobuf.ByteString imageData_ = com.google.protobuf.ByteString.EMPTY;
     /**
-     * <pre>
-     * Imagen completa en WebP
-     * </pre>
-     *
      * <code>bytes image_data = 3;</code>
      * @return The imageData.
      */
@@ -798,10 +790,6 @@ private static final long serialVersionUID = 0L;
       return imageData_;
     }
     /**
-     * <pre>
-     * Imagen completa en WebP
-     * </pre>
-     *
      * <code>bytes image_data = 3;</code>
      * @param value The imageData to set.
      * @return This builder for chaining.
@@ -814,10 +802,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * Imagen completa en WebP
-     * </pre>
-     *
      * <code>bytes image_data = 3;</code>
      * @return This builder for chaining.
      */

@@ -35,26 +35,6 @@ public final class ImageData {
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_com_pola_DownloadImageResponse_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_com_pola_ImageMessage_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_com_pola_ImageMessage_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_com_pola_ImageAck_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_com_pola_ImageAck_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_com_pola_DeleteMediaRequest_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_com_pola_DeleteMediaRequest_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_com_pola_DeleteMediaResponse_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_com_pola_DeleteMediaResponse_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -76,20 +56,8 @@ public final class ImageData {
       "\n\007user_id\030\002 \001(\t\"\205\001\n\025DownloadImageRespons" +
       "e\022\017\n\007success\030\001 \001(\010\022\022\n\nimage_data\030\002 \001(\014\022\021" +
       "\n\tmime_type\030\003 \001(\t\022\r\n\005width\030\004 \001(\005\022\016\n\006heig" +
-      "ht\030\005 \001(\005\022\025\n\rerror_message\030\006 \001(\t\"\340\001\n\014Imag" +
-      "eMessage\022\020\n\010media_id\030\001 \001(\t\022\021\n\tsender_id\030" +
-      "\002 \001(\t\022\023\n\013receiver_id\030\003 \001(\t\022\026\n\016full_image" +
-      "_url\030\004 \001(\t\022\026\n\016original_width\030\005 \001(\005\022\027\n\017or" +
-      "iginal_height\030\006 \001(\005\022\021\n\tfile_size\030\007 \001(\003\022\021" +
-      "\n\ttimestamp\030\010 \001(\003\022\'\n\006status\030\t \001(\0162\027.com." +
-      "pola.MessageStatus\"A\n\010ImageAck\022\020\n\010media_" +
-      "id\030\001 \001(\t\022\020\n\010received\030\002 \001(\010\022\021\n\ttimestamp\030" +
-      "\003 \001(\003\"7\n\022DeleteMediaRequest\022\020\n\010media_id\030" +
-      "\001 \001(\t\022\017\n\007user_id\030\002 \001(\t\"I\n\023DeleteMediaRes" +
-      "ponse\022\017\n\007success\030\001 \001(\010\022\020\n\010media_id\030\002 \001(\t" +
-      "\022\017\n\007message\030\003 \001(\t*>\n\rMessageStatus\022\010\n\004SE" +
-      "NT\020\000\022\r\n\tDELIVERED\020\001\022\010\n\004READ\020\002\022\n\n\006FAILED\020" +
-      "\003B\035\n\016com.pola.protoB\tImageDataP\001b\006proto3"
+      "ht\030\005 \001(\005\022\025\n\rerror_message\030\006 \001(\tB\035\n\016com.p" +
+      "ola.protoB\tImageDataP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -119,30 +87,6 @@ public final class ImageData {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_pola_DownloadImageResponse_descriptor,
         new java.lang.String[] { "Success", "ImageData", "MimeType", "Width", "Height", "ErrorMessage", });
-    internal_static_com_pola_ImageMessage_descriptor =
-      getDescriptor().getMessageTypes().get(4);
-    internal_static_com_pola_ImageMessage_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_com_pola_ImageMessage_descriptor,
-        new java.lang.String[] { "MediaId", "SenderId", "ReceiverId", "FullImageUrl", "OriginalWidth", "OriginalHeight", "FileSize", "Timestamp", "Status", });
-    internal_static_com_pola_ImageAck_descriptor =
-      getDescriptor().getMessageTypes().get(5);
-    internal_static_com_pola_ImageAck_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_com_pola_ImageAck_descriptor,
-        new java.lang.String[] { "MediaId", "Received", "Timestamp", });
-    internal_static_com_pola_DeleteMediaRequest_descriptor =
-      getDescriptor().getMessageTypes().get(6);
-    internal_static_com_pola_DeleteMediaRequest_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_com_pola_DeleteMediaRequest_descriptor,
-        new java.lang.String[] { "MediaId", "UserId", });
-    internal_static_com_pola_DeleteMediaResponse_descriptor =
-      getDescriptor().getMessageTypes().get(7);
-    internal_static_com_pola_DeleteMediaResponse_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_com_pola_DeleteMediaResponse_descriptor,
-        new java.lang.String[] { "Success", "MediaId", "Message", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

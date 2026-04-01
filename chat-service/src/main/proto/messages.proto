@@ -177,6 +177,33 @@ message PendingClearHistoryList {
   repeated PendingClearHistory pendingClearHistory = 1;
 }
 
+// Estados del mensaje de imagen
+enum ImageMessageStatus {
+  SENT = 0;
+  DELIVERED = 1;
+  READ = 2;
+  FAILED = 3;
+}
+
+
+// Se guarda en la entidad Message cuando el receptor esta offline
+message ImageMessage {
+  string media_id = 1;
+  string sender_id = 2;
+  string receiver_id = 3;
+  string full_image_url = 4;
+  int32 original_width = 5;
+  int32 original_height = 6;
+  int64 file_size = 7;
+  int64 timestamp = 8;
+  ImageMessageStatus status = 9;
+}
+
+// Lista de mensajes de imagen pendientes para entregar cuando el receptor se conecte
+message UnreadImageMessagesList {
+  repeated ImageMessage messages = 1;
+}
+
 // Wrapper para todos los mensajes
 message WsMessage {
   oneof payload {
@@ -202,29 +229,9 @@ message WsMessage {
     ContactIdentity contact_identity = 20;
     ClearHistoryResponse clear_history_response = 21;
     PendingClearHistoryList pending_clear_history_list = 22;
-    PendingClearHistory pending_clear_history = 23;
-    ImageMessage image_message = 24;
+    ImageMessage image_message = 23;
+    PendingClearHistory pending_clear_history = 24;
+    UnreadImageMessagesList unread_image_messages_list = 25;
       }
 }
 
-// Estados del mensaje de imagen
-enum ImageMessageStatus {
-  SENT = 0;
-  DELIVERED = 1;
-  READ = 2;
-  FAILED = 3;
-}
-
-// Mensaje de notificacion de imagen
-// Se guarda en la entidad Message cuando el receptor esta offline
-message ImageMessage {
-  string media_id = 1;
-  string sender_id = 2;
-  string receiver_id = 3;
-  string full_image_url = 4;
-  int32 original_width = 5;
-  int32 original_height = 6;
-  int64 file_size = 7;
-  int64 timestamp = 8;
-  ImageMessageStatus status = 9;
-}

@@ -93,10 +93,21 @@ public class MessageRouterService {
      * @param messageData Datos binarios del mensaje (WsMessage protobuf con ImageMessage)
      */
     public void routeImageMessage(String sender, String receiverId, byte[] messageData) {
-        log.info("Enrutando mensaje de imagen de {} para receptor con userId: {}", sender, receiverId);
+        log.info("Enrutando mensaje de imagen de {} para receptor: {}", sender, receiverId);
+        
+        // Convertir username a userId para consultar Redis correctamente
+        // El receiverId en ImageMessage contiene el username, pero Redis usa userId
+        String recipientUserId = sessionRegistryService.getUserIdByUsername(receiverId);
+        
+        if (recipientUserId == null) {
+            // El usuario no existe o no está registrado en el sistema
+            log.info("Usuario {} no encontrado en el sistema, enviando a cola offline", receiverId);
+            rabbitMQProducerService.sendToOfflineQueue(new RoutedMessage(sender, receiverId, messageData, null));
+            return;
+        }
         
         // Obtener la instancia donde está conectado el destinatario
-        String recipientInstance = sessionRegistryService.getConnectionInstance(receiverId);
+        String recipientInstance = sessionRegistryService.getConnectionInstance(recipientUserId);
 
         if (recipientInstance == null) {
             // Usuario offline - no hay instancia registrada en Redis
@@ -113,7 +124,7 @@ public class MessageRouterService {
             log.info("Destinatario {} está en esta instancia {}, enviando mensaje de imagen directamente", 
                 receiverId, instanceId);
             // Usar userId directamente para enviar
-            sessionRegistryService.sendToUser(receiverId, messageData);
+            sessionRegistryService.sendToUser(recipientUserId, messageData);
         } else {
             // Usuario conectado en otra instancia - enviar a esa instancia via RabbitMQ
             log.info("Destinatario {} está en instancia {}, encolando mensaje de imagen", 

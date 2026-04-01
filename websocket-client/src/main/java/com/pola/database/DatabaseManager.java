@@ -3,6 +3,8 @@ package com.pola.database;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -122,6 +124,14 @@ public class DatabaseManager {
                 ALTER TABLE messages ADD COLUMN sender_username TEXT NOT NULL DEFAULT ''
                 """;
             
+            String migrateType = """
+                ALTER TABLE messages ADD COLUMN type TEXT DEFAULT 'text'
+                """;
+            
+            String migrateDownloaded = """
+                ALTER TABLE messages ADD COLUMN downloaded INTEGER DEFAULT 0
+                """;
+            
             // Índices para mejorar rendimiento
             String createContactsIndex = """
                 CREATE INDEX IF NOT EXISTS idx_contacts_user_id 
@@ -145,9 +155,29 @@ public class DatabaseManager {
                 )
                 """;
             
+            // Tabla de imágenes descargadas
+            String createImagesTable = """
+                CREATE TABLE IF NOT EXISTS images (
+                    media_id TEXT PRIMARY KEY,
+                    message_id INTEGER,
+                    image_data BLOB,
+                    mime_type TEXT,
+                    width INTEGER,
+                    height INTEGER,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                )
+                """;
+            
+            String createImagesMessageIdIndex = """
+                CREATE INDEX IF NOT EXISTS idx_images_message_id
+                ON images(message_id)
+                """;
+            
             stmt.execute(createContactsTable);
             stmt.execute(createMessagesTable);
             stmt.execute(createBlockedByUsersTable);
+            stmt.execute(createImagesTable);
+            stmt.execute(createImagesMessageIdIndex);
             stmt.execute(createContactsIndex);
             stmt.execute(createMessagesIndex);
             stmt.execute(createMessagesSenderIndex);
@@ -157,8 +187,21 @@ public class DatabaseManager {
                 stmt.execute(migrateSenderUsername);
                 System.out.println("Migración sender_username aplicada");
             } catch (SQLException e) {
-                // La columna ya existe, ignoramos
                 System.out.println("Columna sender_username ya existe o índice ya creado");
+            }
+            
+            try {
+                stmt.execute(migrateType);
+                System.out.println("Migración type aplicada");
+            } catch (SQLException e) {
+                System.out.println("Columna type ya existe");
+            }
+            
+            try {
+                stmt.execute(migrateDownloaded);
+                System.out.println("Migración downloaded aplicada");
+            } catch (SQLException e) {
+                System.out.println("Columna downloaded ya existe");
             }
             
             System.out.println("Base de datos inicializada correctamente");
@@ -189,6 +232,107 @@ public class DatabaseManager {
             }
         }catch (SQLException e){
             System.err.println("Error cerrando la conexion: " + e.getMessage());
+        }
+    }
+    
+    public void saveImage(String mediaId, long messageId, byte[] imageData, String mimeType, int width, int height) {
+        String sql = """
+            INSERT OR REPLACE INTO images (media_id, message_id, image_data, mime_type, width, height, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, datetime('now'))
+            """;
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, mediaId);
+            pstmt.setLong(2, messageId);
+            pstmt.setBytes(3, imageData);
+            pstmt.setString(4, mimeType);
+            pstmt.setInt(5, width);
+            pstmt.setInt(6, height);
+            pstmt.executeUpdate();
+            System.out.println("Imagen guardada en DB local: " + mediaId);
+        } catch (SQLException e) {
+            System.err.println("Error guardando imagen: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    
+    public byte[] getImageData(String mediaId) {
+        String sql = "SELECT image_data FROM images WHERE media_id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, mediaId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getBytes("image_data");
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error recuperando imagen: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return null;
+    }
+    
+    public boolean hasImage(String mediaId) {
+        String sql = "SELECT 1 FROM images WHERE media_id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, mediaId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                return rs.next();
+            }
+        } catch (SQLException e) {
+            System.err.println("Error verificando imagen: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return false;
+    }
+    
+    public void updateDownloaded(long messageId, boolean downloaded) {
+        String sql = "UPDATE messages SET downloaded = ? WHERE id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, downloaded ? 1 : 0);
+            pstmt.setLong(2, messageId);
+            pstmt.executeUpdate();
+            System.out.println("Actualizado downloaded=" + downloaded + " para mensaje " + messageId);
+        } catch (SQLException e) {
+            System.err.println("Error actualizando downloaded: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    
+    public void deleteImageFile(String mediaId) {
+        try {
+            String userHome = System.getProperty("user.home");
+            String imagesDir = userHome + File.separator + ".chat-client" + File.separator + "images";
+            File dir = new File(imagesDir);
+            if (dir.exists() && dir.isDirectory()) {
+                File[] files = dir.listFiles((d, name) -> name.startsWith(mediaId));
+                if (files != null) {
+                    for (File f : files) {
+                        if (f.delete()) {
+                            System.out.println("Imagen eliminada: " + f.getName());
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Error al eliminar archivo de imagen: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    
+    public void deleteImage(String mediaId) {
+        String sql = "DELETE FROM images WHERE media_id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, mediaId);
+            pstmt.executeUpdate();
+            System.out.println("Registro de imagen eliminado: " + mediaId);
+        } catch (SQLException e) {
+            System.err.println("Error eliminando imagen de BD: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 

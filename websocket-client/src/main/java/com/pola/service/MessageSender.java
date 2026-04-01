@@ -99,8 +99,13 @@ public class MessageSender {
             .setStatus(MessageStatus.SENT)
             .build();
 
+        // Envolver ImageMessage en WsMessage para que CS pueda parsearlo correctamente
+        WsMessage wsMessage = WsMessage.newBuilder()
+            .setImageMessage(imageMessage)
+            .build();
+
         if (webSocketService.isConnected()) {
-            webSocketService.sendMessage(imageMessage);
+            webSocketService.sendMessage(wsMessage);
         }
     }
 
