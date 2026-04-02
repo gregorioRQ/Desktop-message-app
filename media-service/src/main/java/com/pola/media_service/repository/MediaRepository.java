@@ -20,6 +20,9 @@ public interface MediaRepository extends JpaRepository<MediaEntity, Long>{
     @Query("SELECT m FROM MediaEntity m WHERE m.deliveredAt < :date AND m.delivered = true")
     List<MediaEntity> findDeliveredMediaOlderThan(@Param("date") LocalDateTime date);
     
+    @Query("SELECT m FROM MediaEntity m WHERE m.delivered = true AND m.deleted = false AND m.deliveredAt < :cutoffTime")
+    List<MediaEntity> findPendingDeletion(@Param("cutoffTime") LocalDateTime cutoffTime);
+    
     void deleteByMediaId(String mediaId);
     
     @Query("SELECT m FROM MediaEntity m WHERE m.senderId = :userId OR m.receiverId = :userId")

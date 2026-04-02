@@ -1,9 +1,11 @@
 package com.pola.media_service.service;
 
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.google.protobuf.ByteString;
+import com.pola.media_service.config.MediaServiceProperties;
 import com.pola.media_service.dto.ImageProcessingResult;
 import com.pola.media_service.dto.MediaMetadataDto;
 import com.pola.media_service.exception.MediaException;
@@ -42,6 +44,7 @@ public class MediaService {
     private final ImageProcessingService imageProcessingService;
     private final FileStorageService fileStorageService;
     private final MetadataService metadataService;
+    private final MediaServiceProperties properties;
     
     /**
      * Procesa y almacena una nueva imagen.
@@ -170,8 +173,6 @@ public class MediaService {
             if (request.getUserId().equals(mediaEntity.getReceiverId())) {
                 metadataService.markAsDelivered(request.getMediaId());
                 log.debug("Media marked as delivered: mediaId={}", request.getMediaId());
-                
-                // TODO: Programar eliminación automática según configuración
             }
             
             // PASO 6: Construir response
@@ -275,7 +276,7 @@ public class MediaService {
     }
 
     /**
-     * Limpia medias antiguos ya entregados.
+     * Limpia medios antiguos ya entregados.
      * Ejecutado por scheduled task automáticamente.
      * 
      * @param daysAfterDelivery Días después de entrega para eliminar
@@ -315,7 +316,51 @@ public class MediaService {
             throw new MediaException("Cleanup task failed", e);
         }
     }
-
+    
+    /**
+     * Limpia medios que fueron descargados y esperan eliminación tras el período de gracia.
+     * Ejecutado por scheduled task.
+     * 
+     * @return Cantidad de medios eliminados
+     */
+    @Transactional
+    public int cleanupPendingDeletion() {
+        int delayMinutes = properties.getDeletion().getDelayMinutes();
+        log.info("Starting cleanup of pending deletion media (delay={} minutes)", delayMinutes);
+        
+        try {
+            List<MediaEntity> pendingDeletion = metadataService.findPendingDeletion(delayMinutes);
+            
+            int deletedCount = 0;
+            
+            for (MediaEntity media : pendingDeletion) {
+                try {
+                    // Eliminar archivo del disco
+                    if (fileStorageService.fileExists(media.getFullImagePath())) {
+                        fileStorageService.deleteMedia(media.getFullImagePath());
+                    }
+                    
+                    // Marcar como eliminado en BD (no borramos metadata para auditoría)
+                    metadataService.markAsDeleted(media.getMediaId());
+                    
+                    deletedCount++;
+                    log.debug("Deleted pending media: mediaId={}", media.getMediaId());
+                    
+                } catch (Exception e) {
+                    log.error("Failed to delete pending media: mediaId={}", media.getMediaId(), e);
+                    // Continuar con los demás
+                }
+            }
+            
+            log.info("Pending deletion cleanup completed: {} files deleted", deletedCount);
+            return deletedCount;
+            
+        } catch (Exception e) {
+            log.error("Pending deletion cleanup failed", e);
+            throw new MediaException("Pending deletion cleanup failed", e);
+        }
+    }
+    
     // ==================== MÉTODOS PRIVADOS (Helpers) ====================
     
     /**

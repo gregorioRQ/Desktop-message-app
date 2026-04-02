@@ -19,7 +19,9 @@ import lombok.NoArgsConstructor;
 @Table(name = "media", indexes = {
     @Index(name = "idx_media_id", columnList = "media_id"),
     @Index(name = "idx_sender_receiver", columnList = "sender_id, receiver_id"),
-    @Index(name = "idx_created_at", columnList = "created_at")
+    @Index(name = "idx_created_at", columnList = "created_at"),
+    @Index(name = "idx_delivered_deleted", columnList = "delivered, deleted"),
+    @Index(name = "idx_delivered_at", columnList = "delivered_at")
 })
 @Data
 @NoArgsConstructor
@@ -63,6 +65,10 @@ public class MediaEntity {
     
     @Column(name = "delivered_at")
     private LocalDateTime deliveredAt;
+    
+    @Column(name = "deleted", nullable = false)
+    @Builder.Default
+    private Boolean deleted = false;
     
     @Column(name = "created_at", nullable = false, updatable = false)
     @Builder.Default

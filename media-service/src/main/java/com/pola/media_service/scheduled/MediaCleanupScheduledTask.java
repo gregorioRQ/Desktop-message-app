@@ -11,8 +11,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Tarea programada para limpieza automática de medias antiguos.
- * Se ejecuta según la configuración en application.yml
+ * Tarea programada para limpieza automática de medios.
+ * Se ejecuta según la configuración en application.properties
+ * 
+ * Funciones:
+ * 1. cleanupOldMedia: Elimina imágenes nunca descargadas después de X días
+ * 2. cleanupPendingDeletion: Elimina imágenes descargadas después del período de gracia
  */
 @Slf4j
 @Component
@@ -23,12 +27,12 @@ public class MediaCleanupScheduledTask {
     private final MediaServiceProperties properties;
     
     /**
-     * Ejecuta limpieza de medias entregados hace más de X días.
-     * Por defecto se ejecuta todos los días a las 2 AM.
+     * Limpia medios nunca descargados después de X días.
+     * Ejecución: según cron-expression (por defecto cada 3 horas)
      */
-    @Scheduled(cron = "${media.cleanup.cron-expression:0 0 2 * * *}")
+    @Scheduled(cron = "${media.cleanup.cron-expression:0 0 */3 * * *}")
     public void cleanupOldMedia() {
-        log.info("Starting scheduled media cleanup task");
+        log.info("Starting scheduled media cleanup (never downloaded)");
         
         try {
             int daysAfterDelivery = properties.getCleanup().getDaysAfterDelivery();
@@ -38,6 +42,24 @@ public class MediaCleanupScheduledTask {
             
         } catch (Exception e) {
             log.error("Scheduled media cleanup failed", e);
+        }
+    }
+    
+    /**
+     * Limpia medios pendientes de eliminación tras el período de gracia.
+     * Se ejecuta cada hora para verificar si hay medios listos para borrar.
+     */
+    @Scheduled(cron = "0 0 * * * *")
+    public void cleanupPendingDeletion() {
+        log.info("Starting pending deletion cleanup");
+        
+        try {
+            int deletedCount = mediaService.cleanupPendingDeletion();
+            
+            log.info("Pending deletion cleanup completed: {} files deleted", deletedCount);
+            
+        } catch (Exception e) {
+            log.error("Pending deletion cleanup failed", e);
         }
     }
 }

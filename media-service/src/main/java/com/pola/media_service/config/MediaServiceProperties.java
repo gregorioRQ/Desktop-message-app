@@ -35,6 +35,11 @@ public class MediaServiceProperties {
      */
     private Cleanup cleanup = new Cleanup();
     
+    /**
+     * Configuración de eliminación de archivos descargados
+     */
+    private Deletion deletion = new Deletion();
+    
     @Data
     public static class Storage {
         /**
@@ -109,15 +114,25 @@ public class MediaServiceProperties {
         private boolean enabled = true;
         
         /**
-         * Días después de entrega para eliminar archivos
+         * Días después de entrega para eliminar archivos que nunca fueron descargados
          */
         @Min(1)
         private int daysAfterDelivery = 7;
         
         /**
          * Expresión cron para ejecutar limpieza
-         * Por defecto: todos los días a las 2 AM
+         * Por defecto: cada 3 horas
          */
-        private String cronExpression = "0 0 2 * * *";
+        private String cronExpression = "0 0 */3 * * *";
+    }
+    
+    @Data
+    public static class Deletion {
+        /**
+         * Minutos de espera tras descargar una imagen antes de eliminarla
+         * Permite reintentar si la descarga falla o se interrumpe
+         */
+        @Min(1)
+        private int delayMinutes = 2;
     }
 }

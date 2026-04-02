@@ -135,6 +135,40 @@ public class MetadataService {
         
         return oldMedia;
     }
+    
+    /**
+     * Busca medios pendientes de eliminación tras el período de gracia.
+     * 
+     * @param minutesDelay Minutos de espera tras entrega
+     * @return Lista de medios listos para eliminar
+     */
+    @Transactional(readOnly = true)
+    public List<MediaEntity> findPendingDeletion(int minutesDelay) {
+        LocalDateTime cutoffTime = LocalDateTime.now().minusMinutes(minutesDelay);
+        
+        log.debug("Finding media pending deletion (delivered before {})", cutoffTime);
+        
+        List<MediaEntity> pendingDeletion = mediaRepository.findPendingDeletion(cutoffTime);
+        log.debug("Found {} media pending deletion", pendingDeletion.size());
+        
+        return pendingDeletion;
+    }
+    
+    /**
+     * Marca un media como eliminado (archivo borrado del disco).
+     * 
+     * @param mediaId ID del media
+     */
+    @Transactional
+    public void markAsDeleted(String mediaId) {
+        log.info("Marking media as deleted: mediaId={}", mediaId);
+        
+        MediaEntity media = findByMediaId(mediaId);
+        media.setDeleted(true);
+        
+        mediaRepository.save(media);
+        log.debug("Media marked as deleted: mediaId={}", mediaId);
+    }
 
     /**
      * Elimina un media de la base de datos.
