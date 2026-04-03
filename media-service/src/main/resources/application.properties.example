@@ -1,18 +1,37 @@
+# Spring Boot
 spring.application.name=media-service
-server.port=8089
 
 # Database
-spring.datasource.url=${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/media_db}
-spring.datasource.username=${SPRING_DATASOURCE_USERNAME:root}
-spring.datasource.password=${SPRING_DATASOURCE_PASSWORD:YOUR_PASSWORD_HERE}
+spring.datasource.url=jdbc:mysql://localhost:3306/database_name
+spring.datasource.username=
+spring.datasource.password=
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+
+# JPA/Hibernate
 spring.jpa.hibernate.ddl-auto=update
 spring.jpa.show-sql=false
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQLDialect
+spring.jpa.properties.hibernate.format_sql=true
 
-# Logging
-logging.level.org.hibernate.SQL=OFF
-logging.level.org.hibernate.type.descriptor.sql.BasicBinder=OFF
+# Server
+server.port=8086
 
-# Redis
-spring.redis.host=${REDIS_HOST:localhost}
-spring.redis.port=${REDIS_PORT:6379}
-spring.redis.password=${REDIS_PASSWORD:}
+# Media Service Config
+media.storage.base-path=/storage/media
+media.storage.max-size-mb=28
+media.storage.max-image-width=1920
+media.storage.max-image-height=1920
+media.storage.webp-quality=0.85
+
+# Tiempo de espera tras descargar una imagen antes de eliminarla (en minutos)
+# Si el usuario corta la descarga o hay error, tiene este tiempo para reintentar
+media.deletion.delay-minutes=2
+
+# Frecuencia de ejecución del scheduler de limpieza (expresión cron)
+# Cada 3 horas verifica: (a) imágenes descargadas pendientes de eliminación
+#                      + (b) imágenes nunca descargadas > 7 días
+media.cleanup.cron-expression=0 0 */3 * * *
+
+# Días de espera para eliminar imágenes que nunca fueron descargadas
+# El scheduler las eliminará automáticamente después de este tiempo
+media.cleanup.days-after-delivery=7

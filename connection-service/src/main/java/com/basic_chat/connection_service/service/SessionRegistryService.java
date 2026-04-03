@@ -117,10 +117,17 @@ public class SessionRegistryService {
      * @param sessionId ID de la sesión
      */
     private void cleanupSessionFromRedis(String userId, String sessionId) {
+        String username = redisTemplate.opsForValue().get("session:" + sessionId + ":username");
+        
         redisTemplate.delete(SESSION_USER_PREFIX + sessionId + SESSION_USER_SUFFIX);
         redisTemplate.delete("session:" + sessionId + ":username");
         redisTemplate.delete(USER_INSTANCE_PREFIX + userId + USER_INSTANCE_SUFFIX);
         redisTemplate.delete(USER_SESSION_ID_PREFIX + userId + USER_SESSION_ID_SUFFIX);
+        
+        if (username != null) {
+            redisTemplate.delete(USER_NAME_PREFIX + username);
+        }
+        
         redisTemplate.opsForList().remove(INSTANCE_SESSIONS_PREFIX + instanceId + INSTANCE_SESSIONS_SUFFIX, 1, sessionId);
         log.debug("Limpieza de Redis completada para userId: {}, sessionId: {}", userId, sessionId);
     }

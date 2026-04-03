@@ -541,6 +541,18 @@ public class MessageService {
      * @param username Nombre del usuario que solicita sus pendientes
      * @return WsMessage conteniendo todos los pendientes, o null si no hay ninguno
      */
+    /**
+     * Retrieves all pending messages for a user and deletes them from the database after delivery.
+     * This includes text messages, image messages, blocks, unblocks, clear history requests,
+     * read receipts, and contact identities.
+     *
+     * IMPORTANT: Text messages are deleted from the database after being retrieved to prevent
+     * duplicate delivery on subsequent connections. Image messages are handled separately
+     * in getAndClearPendingImageMessages() which already deletes them.
+     *
+     * @param username The username requesting their pending messages
+     * @return WsMessage containing all pending items, or null if none exist
+     */
     public MessagesProto.WsMessage getAllPendingMessages(String username) {
         log.info("Obteniendo todos los mensajes pendientes para usuario: {}", username);
 
@@ -548,15 +560,43 @@ public class MessageService {
             MessagesProto.WsMessage.Builder wsBuilder = MessagesProto.WsMessage.newBuilder();
             boolean hasAnyPending = false;
 
-            // 1. Obtener mensajes de chat no leídos
-            List<ChatMessage> unreadMessages = getUnreadMessages(username);
-            if (!unreadMessages.isEmpty()) {
-                MessagesProto.UnreadMessagesList unreadList = MessagesProto.UnreadMessagesList.newBuilder()
-                        .addAllMessages(unreadMessages)
-                        .build();
-                wsBuilder.setUnreadMessagesList(unreadList);
-                log.info("Agregados {} mensajes no leídos para usuario: {}", unreadMessages.size(), username);
-                hasAnyPending = true;
+            // 1. Obtener mensajes de chat no leídos Y ELIMINARLOS de la BD después de retrieve
+            List<Message> unreadMessageEntities = messageRepository.findByToUserIdAndSeenFalse(username);
+            List<Long> unreadMessageIds = new ArrayList<>();
+            List<ChatMessage> unreadChatMessages = new ArrayList<>();
+
+            if (!unreadMessageEntities.isEmpty()) {
+                log.info("Found {} unread text messages for user: {}", unreadMessageEntities.size(), username);
+
+                for (Message m : unreadMessageEntities) {
+                    unreadMessageIds.add(m.getId());
+                    try {
+                        unreadChatMessages.add(ChatMessage.parseFrom(m.getData()));
+                    } catch (Exception ex) {
+                        log.error("Failed to deserialize message ID {}: {}", m.getId(), ex.getMessage());
+                    }
+                }
+
+                if (!unreadChatMessages.isEmpty()) {
+                    MessagesProto.UnreadMessagesList unreadList = MessagesProto.UnreadMessagesList.newBuilder()
+                            .addAllMessages(unreadChatMessages)
+                            .build();
+                    wsBuilder.setUnreadMessagesList(unreadList);
+                    log.info("Agregados {} mensajes no leídos para usuario: {}", unreadChatMessages.size(), username);
+                    hasAnyPending = true;
+                }
+
+                // CRITICAL: Delete delivered messages from database to prevent duplicate delivery
+                if (!unreadMessageIds.isEmpty()) {
+                    try {
+                        messageRepository.deleteAllByIdIn(unreadMessageIds);
+                        log.info("Deleted {} delivered text messages from database for user: {}",
+                                unreadMessageIds.size(), username);
+                    } catch (Exception e) {
+                        log.error("Failed to delete delivered text messages for user {}: {}",
+                                username, e.getMessage());
+                    }
+                }
             }
 
             // 2. Obtener bloqueos pendientes

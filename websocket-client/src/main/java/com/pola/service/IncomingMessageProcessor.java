@@ -559,14 +559,18 @@ public class IncomingMessageProcessor {
     }
 
     /**
-     * Procesa la lista de mensajes de imagen pendientes recibida al conectarse.
-     * Cada imagen se procesa igual que un ImageMessage normal, creando el contacto
-     * si no existe y mostrando la notificación correspondiente.
+     * Processes the list of pending image messages received upon connection.
+     * Each image is processed similar to a regular ImageMessage, creating the contact
+     * if it doesn't exist and showing the corresponding notification.
+     * Additionally, each image message is persisted to the local database with
+     * type='image' and the content stored as JSON containing the URL and media ID.
      *
-     * @param unreadImageMessagesList Lista de mensajes de imagen pendientes
+     * @param unreadImageMessagesList List of pending image messages
      */
     private void processUnreadImageMessages(MessagesProto.UnreadImageMessagesList unreadImageMessagesList) {
         System.out.println("Procesando lista de mensajes de imagen pendientes: " + unreadImageMessagesList.getMessagesCount() + " imágenes");
+        
+        ObjectMapper mapper = new ObjectMapper();
         
         for (ImageMessage protoImage : unreadImageMessagesList.getMessagesList()) {
             String senderId = protoImage.getSenderId();
@@ -596,6 +600,12 @@ public class IncomingMessageProcessor {
                     height
                 );
                 imageMessage.setId(timestamp);
+                imageMessage.setDownloaded(false);
+                
+                // Store image metadata as JSON in content column with type='image'
+                String contentJson = mapper.writeValueAsString(new ImageContent(fullImageUrl, mediaId, width, height));
+                context.getMessageRepository().create(imageMessage, "image", false, contentJson);
+                System.out.println("Saved pending image message to local database - mediaId: " + mediaId + ", type: image");
                 
                 Contact current = context.getCurrentContactSupplier().get();
                 if (current != null && current.getId() == contact.getId()) {

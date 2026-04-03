@@ -115,22 +115,21 @@ public class DatabaseManager {
                     sender_id TEXT NOT NULL,
                     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     is_read INTEGER DEFAULT 0,
+                    type TEXT DEFAULT 'text',
+                    downloaded INTEGER DEFAULT 0,
                     FOREIGN KEY (contact_username) REFERENCES contacts(id) ON DELETE CASCADE
                 )
                 """;
             
-            // Migración: agregar columna sender_username si no existe (para DBs existentes)
+            // Migration: add sender_username column if not exists (for existing DBs)
             String migrateSenderUsername = """
                 ALTER TABLE messages ADD COLUMN sender_username TEXT NOT NULL DEFAULT ''
                 """;
             
-            String migrateType = """
-                ALTER TABLE messages ADD COLUMN type TEXT DEFAULT 'text'
-                """;
-            
-            String migrateDownloaded = """
-                ALTER TABLE messages ADD COLUMN downloaded INTEGER DEFAULT 0
-                """;
+            // OBSOLETE: These columns are now included in CREATE TABLE above
+            // Keeping as no-ops for backward compatibility with existing installations
+            // String migrateType = "ALTER TABLE messages ADD COLUMN type TEXT DEFAULT 'text'";
+            // String migrateDownloaded = "ALTER TABLE messages ADD COLUMN downloaded INTEGER DEFAULT 0";
             
             // Índices para mejorar rendimiento
             String createContactsIndex = """
@@ -182,27 +181,29 @@ public class DatabaseManager {
             stmt.execute(createMessagesIndex);
             stmt.execute(createMessagesSenderIndex);
             
-            // Ejecutar migración si es necesario
+            // Execute migration if needed - only sender_username is still needed
             try {
                 stmt.execute(migrateSenderUsername);
-                System.out.println("Migración sender_username aplicada");
+                System.out.println("Migration sender_username applied");
             } catch (SQLException e) {
-                System.out.println("Columna sender_username ya existe o índice ya creado");
+                System.out.println("Column sender_username already exists or index already created");
             }
             
-            try {
-                stmt.execute(migrateType);
-                System.out.println("Migración type aplicada");
-            } catch (SQLException e) {
-                System.out.println("Columna type ya existe");
-            }
-            
-            try {
-                stmt.execute(migrateDownloaded);
-                System.out.println("Migración downloaded aplicada");
-            } catch (SQLException e) {
-                System.out.println("Columna downloaded ya existe");
-            }
+            // OBSOLETE: type and downloaded columns are now included in CREATE TABLE
+            // Keeping these as no-ops for backward compatibility with existing installations
+            // try {
+            //     stmt.execute(migrateType);
+            //     System.out.println("Migration type applied");
+            // } catch (SQLException e) {
+            //     System.out.println("Column type already exists");
+            // }
+            // 
+            // try {
+            //     stmt.execute(migrateDownloaded);
+            //     System.out.println("Migration downloaded applied");
+            // } catch (SQLException e) {
+            //     System.out.println("Column downloaded already exists");
+            // }
             
             System.out.println("Base de datos inicializada correctamente");
             
