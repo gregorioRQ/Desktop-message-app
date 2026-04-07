@@ -18,6 +18,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.basic_chat.profile_service.models.User;
@@ -47,6 +48,9 @@ class ProfileServiceImplTest {
 
     @Mock
     private CredentialsValidator credentialsValidator;
+
+    @Mock
+    private RabbitTemplate rabbitTemplate;
 
     @InjectMocks
     private ProfileServiceImpl profileService;
@@ -262,19 +266,26 @@ class ProfileServiceImplTest {
     @DisplayName("Logout Happy Path: Debería eliminar el token y retornar éxito")
     void logout_HappyPath() {
         String token = "refresh-token-123";
-        LogoutRequest request = LogoutRequest.newBuilder().setRefreshToken(token).build();
+        String username = "mika";
+        LogoutRequest request = LogoutRequest.newBuilder()
+            .setRefreshToken(token)
+            .setUsername(username)
+            .build();
 
         LogoutResponse response = profileService.logout(request);
 
         assertTrue(response.getSuccess());
-        assertEquals("RefreshToken eliminado", response.getMessage());
+        assertEquals("Logout exitoso", response.getMessage());
         verify(jwtService).deleteRefreshToken(token);
     }
 
     @Test
     @DisplayName("Logout Edge Case: Debería fallar si el token está vacío")
     void logout_EmptyToken() {
-        LogoutRequest request = LogoutRequest.newBuilder().setRefreshToken("").build();
+        LogoutRequest request = LogoutRequest.newBuilder()
+            .setRefreshToken("")
+            .setUsername("mika")
+            .build();
 
         LogoutResponse response = profileService.logout(request);
 
@@ -284,16 +295,35 @@ class ProfileServiceImplTest {
     }
 
     @Test
+    @DisplayName("Logout Edge Case: Debería fallar si el username está vacío")
+    void logout_EmptyUsername() {
+        LogoutRequest request = LogoutRequest.newBuilder()
+            .setRefreshToken("token-123")
+            .setUsername("")
+            .build();
+
+        LogoutResponse response = profileService.logout(request);
+
+        assertFalse(response.getSuccess());
+        assertEquals("Username no enviado", response.getMessage());
+        verifyNoInteractions(jwtService);
+    }
+
+    @Test
     @DisplayName("Logout Edge Case: Debería manejar excepciones al eliminar")
     void logout_Exception() {
         String token = "token-error";
-        LogoutRequest request = LogoutRequest.newBuilder().setRefreshToken(token).build();
+        String username = "mika";
+        LogoutRequest request = LogoutRequest.newBuilder()
+            .setRefreshToken(token)
+            .setUsername(username)
+            .build();
 
         doThrow(new RuntimeException("DB Error")).when(jwtService).deleteRefreshToken(token);
 
         LogoutResponse response = profileService.logout(request);
 
         assertFalse(response.getSuccess());
-        assertEquals("No se pudo eliminar el refreshToken", response.getMessage());
+        assertEquals("Error durante el logout", response.getMessage());
     }
 }

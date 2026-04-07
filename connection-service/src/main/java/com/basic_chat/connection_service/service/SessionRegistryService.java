@@ -123,11 +123,11 @@ public class SessionRegistryService {
         redisTemplate.delete("session:" + sessionId + ":username");
         redisTemplate.delete(USER_INSTANCE_PREFIX + userId + USER_INSTANCE_SUFFIX);
         redisTemplate.delete(USER_SESSION_ID_PREFIX + userId + USER_SESSION_ID_SUFFIX);
-        
-        if (username != null) {
-            redisTemplate.delete(USER_NAME_PREFIX + username);
-        }
-        
+
+        // No se borra USER_NAME_PREFIX + username para mantener el mapeo username->userId
+        // Esto permite verificar existencia del usuario en Redis sin consultar profile-service
+        // y mejora el rendimiento evitando HTTP calls por cada mensaje
+
         redisTemplate.opsForList().remove(INSTANCE_SESSIONS_PREFIX + instanceId + INSTANCE_SESSIONS_SUFFIX, 1, sessionId);
         log.debug("Limpieza de Redis completada para userId: {}, sessionId: {}", userId, sessionId);
     }

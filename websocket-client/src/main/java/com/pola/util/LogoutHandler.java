@@ -31,8 +31,9 @@ public class LogoutHandler {
 
         Session session = logoutContext.getTokenRepository().loadSession();
         String refreshToken = (session != null) ? session.getRefreshToken() : "";
+        String username = (session != null) ? session.getUsername() : "";
 
-        authService.logout(refreshToken)
+        authService.logout(refreshToken, username)
             .thenAccept(response -> {
                 Platform.runLater(() -> {
                     if (response.getSuccess()) {

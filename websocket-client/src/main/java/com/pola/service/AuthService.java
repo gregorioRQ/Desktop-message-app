@@ -80,7 +80,7 @@ public class AuthService {
         tokenRepository.clearSession();
     }
 
-    public CompletableFuture<LogoutResponse> logout(String refreshToken) {
+    public CompletableFuture<LogoutResponse> logout(String refreshToken, String username) {
         String accessToken = "";
         Session session = tokenRepository.loadSession();
         if (session != null) {
@@ -89,6 +89,7 @@ public class AuthService {
 
         LogoutRequest request = LogoutRequest.newBuilder()
                 .setRefreshToken(refreshToken)
+                .setUsername(username)
                 .build();
 
         return httpService.logout(request, accessToken, LogoutResponse.class);

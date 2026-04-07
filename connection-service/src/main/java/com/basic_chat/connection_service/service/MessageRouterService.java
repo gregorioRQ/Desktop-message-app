@@ -43,13 +43,14 @@ public class MessageRouterService {
         // Convertir username a userId para consultar Redis correctamente
         // Redis guarda: user:name:{username} -> userId
         // Y también: user:{userId}:connectionInstance -> instanceId
+        // La verificación se hace en Redis para evitar HTTP calls a profile-service por cada mensaje
         String recipientUserId = sessionRegistryService.getUserIdByUsername(recipient);
 
         if (recipientUserId == null) {
-            // El usuario no existe o no está registrado en el sistema
-            log.info("Usuario {} no encontrado en el sistema, enviando a cola offline", recipient);
-            rabbitMQProducerService.sendToOfflineQueue(new RoutedMessage(sender, recipient, messageData, null));
-            // No hay userId disponible, no se puede notificar
+            // El usuario no existe en el sistema (no está registrado en Redis)
+            // Verificamos en Redis (no en profile-service por temas de rendimiento)
+            log.info("Usuario {} no existe en el sistema, no se procesa el mensaje", recipient);
+            // No se encola a offline ni se notifica porque el usuario no existe
             return;
         }
 
@@ -60,7 +61,7 @@ public class MessageRouterService {
             // Usuario offline - no hay instancia registrada en Redis
             log.info("Destinatario {} no está conectado, encolando mensaje en cola offline", recipient);
             rabbitMQProducerService.sendToOfflineQueue(new RoutedMessage(sender, recipient, messageData, null));
-            // Publicar evento de notificación para notification-service (con userId)
+            // Siempre encolar evento de notificación para notification-service
             publishNotificationEvent(sender, recipient, recipientUserId, null, messageData);
             return;
         }
@@ -97,12 +98,12 @@ public class MessageRouterService {
         
         // Convertir username a userId para consultar Redis correctamente
         // El receiverId en ImageMessage contiene el username, pero Redis usa userId
+        // La verificación se hace en Redis para evitar HTTP calls a profile-service por temas de rendimiento
         String recipientUserId = sessionRegistryService.getUserIdByUsername(receiverId);
         
         if (recipientUserId == null) {
-            // El usuario no existe o no está registrado en el sistema
-            log.info("Usuario {} no encontrado en el sistema, enviando a cola offline", receiverId);
-            rabbitMQProducerService.sendToOfflineQueue(new RoutedMessage(sender, receiverId, messageData, null));
+            // El usuario no existe en el sistema (no está registrado en Redis)
+            log.info("Usuario {} no existe en el sistema, no se procesa el mensaje de imagen", receiverId);
             return;
         }
         
@@ -114,7 +115,7 @@ public class MessageRouterService {
             log.info("Destinatario {} no está conectado, encolando mensaje de imagen en cola offline", receiverId);
             // Encolar a chat-service para guardar como pending
             rabbitMQProducerService.sendToOfflineQueue(new RoutedMessage(sender, receiverId, messageData, null));
-            // Publicar evento de notificación para notification-service
+            // Siempre publicar evento de notificación para notification-service
             publishImageNotificationEvent(sender, receiverId, messageData);
             return;
         }
