@@ -6,60 +6,64 @@ Este documento describe el flujo de comunicación entre el cliente y el servidor
 
 ---
 
-## Mensajes
+## Mensajes Enviados por el Cliente
 
-### **Datos Enviados por el Cliente**
-
-#### **Bloqueo de Contacto (`BlockContactRequest`)**
+### Solicitud de Bloqueo de Contacto (`BlockContactRequest`)
+- **Campo**: `blocker` (string)  
+  **Descripción**: Nombre del usuario que envía la solicitud de bloqueo (quien bloquea).  
+  **Obligatorio**: Sí.
 - **Campo**: `recipient` (string)  
-  **Descripción**: Nombre del usuario que se desea bloquear.  
+  **Descripción**: Nombre del usuario que serábloqueado.  
   **Obligatorio**: Sí.
 
-#### **Desbloqueo de Contacto (`UnblockContactRequest`)**
+### Solicitud de Desbloqueo de Contacto (`UnblockContactRequest`)
+- **Campo**: `blocker` (string)  
+  **Descripción**: Nombre del usuario que envía la solicitud de desbloqueo (quien desbloquea).  
+  **Obligatorio**: Sí.
 - **Campo**: `recipient` (string)  
-  **Descripción**: Nombre del usuario que se desea desbloquear.  
+  **Descripción**: Nombre del usuario que será desbloqueado.  
   **Obligatorio**: Sí.
 
 ---
 
-### **Datos Recibidos por el Cliente**
+## Mensajes Recibidos por el Cliente
 
-#### **Respuesta de Bloqueo (`BlockContactResponse`)**
+### Respuesta de Bloqueo de Contacto (`BlockContactResponse`)
 - **Campo**: `success` (bool)  
   **Descripción**: Indica si la operación de bloqueo fue exitosa.  
   **Valores posibles**: `true` o `false`.
-
 - **Campo**: `message` (string)  
   **Descripción**: Mensaje descriptivo del resultado de la operación.
 
-#### **Respuesta de Desbloqueo (`UnblockContactResponse`)**
+### Respuesta de Desbloqueo de Contacto (`UnblockContactResponse`)
 - **Campo**: `success` (bool)  
   **Descripción**: Indica si la operación de desbloqueo fue exitosa.  
   **Valores posibles**: `true` o `false`.
-
 - **Campo**: `message` (string)  
   **Descripción**: Mensaje descriptivo del resultado de la operación.
 
 ---
 
-## Protocolos y Medios
+## Medio de Comunicación
 
-### **Medio de Comunicación**
-- **Protocolo**: WebSocket  
+- **Protocolo**: WebSocket
 - **Formato de Mensajes**: Protobuf (`WsMessage`)
 
-### **Estructura del Mensaje WebSocket**
-Todos los mensajes enviados y recibidos están encapsulados en un mensaje de tipo `WsMessage`.
+---
 
-#### **Ejemplo de Mensaje de Bloqueo**
+## Estructura del Mensaje WebSocket
+
+Todos los mensajes se encapsulan en un `WsMessage`:
+
 ```json
 {
   "blockContactRequest": {
-    "recipient": "user_to_block"
+    "blocker": "juan",
+    "recipient": "pedro"
   }
 }
 ```
-#### **Ejemplo de respuesta de Bloqueo**
+
 ```json
 {
   "blockContactResponse": {
@@ -69,15 +73,15 @@ Todos los mensajes enviados y recibidos están encapsulados en un mensaje de tip
 }
 ```
 
-#### **Ejemplo de Mensaje de Desbloqueo**
 ```json
 {
   "unblockContactRequest": {
-    "recipient": "user_to_unblock"
+    "blocker": "juan",
+    "recipient": "pedro"
   }
 }
 ```
-#### **Ejemplo de respuesta de Desbloqueo**
+
 ```json
 {
   "unblockContactResponse": {
@@ -86,46 +90,27 @@ Todos los mensajes enviados y recibidos están encapsulados en un mensaje de tip
   }
 }
 ```
+
 ---
 
-## ***Flujos de Comunicación***
+## Flujo de Comunicación
 
-**Flujo de Bloqueo de Contacto**
+### Flujo de Bloqueo de Contacto
 
-Solicitud del Cliente:
+El cliente envía un mensaje `BlockContactRequest` con el nombre del usuario que bloquea (`blocker`) y el usuario a bloquear (`recipient`). El servidor valida que el usuario autenticado tenga una sesión activa y que el usuario a bloquear exista en el sistema. Si el usuario a bloquear está conectado, se envía una notificación en tiempo real. Si está desconectado, se guarda una notificación pendientes. El servidor envía un `BlockContactResponse` al cliente indicando el resultado.
 
-El cliente envía un mensaje BlockContactRequest con el nombre del usuario a bloquear (recipient).
-Validación del Servidor:
+### Flujo de Desbloqueo de Contacto
 
-El servidor valida que:
-El usuario autenticado tiene una sesión activa.
-El usuario a bloquear existe en el sistema.
-Ejecución del Bloqueo:
+El cliente envía un mensaje `UnblockContactRequest` con el nombre del usuario que desbloquea (`blocker`) y el usuario a desbloquear (`recipient`). El servidor valida que el usuario autenticado tenga una sesión activa y que el usuario a desbloquear exista en el sistema. Si el usuario estaba bloqueado, se elimina el registro de bloqueo. Si había notificaciones pendientes, se eliminan. El servidor envía un `UnblockContactResponse` al cliente indicando el resultado.
 
-Si el usuario a bloquear está conectado:
-Se envía una notificación en tiempo real al usuario bloqueado.
-Si el usuario está desconectado:
-Se guarda una notificación pendiente en la base de datos (PendingBlock).
-Respuesta del Servidor:
+---
 
-El servidor envía un mensaje BlockContactResponse al cliente indicando el resultado de la operación.
+## Listas de Contactos (Mensajes Adicionales)
 
-**Flujo de Desbloqueo de Contacto**
+### Lista de Usuarios Bloqueados (`BlockedUsersList`)
+- **Campo**: `users` (string[])  
+  **Descripción**: Lista de nombres de usuarios bloqueados por el usuario.
 
-Solicitud del Cliente:
-
-El cliente envía un mensaje UnblockContactRequest con el nombre del usuario a desbloquear (recipient).
-Validación del Servidor:
-
-El servidor valida que:
-El usuario autenticado tiene una sesión activa.
-El usuario a desbloquear existe en el sistema.
-Ejecución del Desbloqueo:
-
-Si el usuario estaba bloqueado, se elimina el registro de bloqueo.
-Si había notificaciones pendientes, se eliminan (PendingBlock).
-Respuesta del Servidor:
-
-El servidor envía un mensaje UnblockContactResponse al cliente indicando el resultado de la operación.
-
-
+### Lista de Usuarios Desbloqueados (`UnblockedUsersList`)
+- **Campo**: `users` (string[])  
+  **Descripción**: Lista de nombres de usuarios que fueron desbloqueados (disponibles para comunicar nuevamente).
