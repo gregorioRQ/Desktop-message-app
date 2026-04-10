@@ -34,14 +34,14 @@ public class UserLogoutRabbitConfig {
     }
 
     @Bean
-    public MessageConverter jsonMessageConverter() {
+    public MessageConverter userLogoutJsonMessageConverter() {
         return new Jackson2JsonMessageConverter();
     }
 
     @Bean
-    public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
+    public RabbitTemplate userLogoutRabbitTemplate(ConnectionFactory connectionFactory) {
         RabbitTemplate template = new RabbitTemplate(connectionFactory);
-        template.setMessageConverter(jsonMessageConverter());
+        template.setMessageConverter(userLogoutJsonMessageConverter());
         return template;
     }
 }
