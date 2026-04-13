@@ -8,8 +8,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import com.basic_chat.profile_service.config.UserCreatedRabbitConfig;
 import com.basic_chat.profile_service.config.UserLogoutRabbitConfig;
-import com.basic_chat.profile_service.models.RefreshToken;
+import com.basic_chat.profile_service.dto.UserCreatedEvent;
 import com.basic_chat.profile_service.models.User;
 import com.basic_chat.profile_service.repository.UserRepository;
 import com.basic_chat.proto.LoginProto.LoginRequest;
@@ -79,6 +80,9 @@ public class ProfileServiceImpl implements ProfileService{
             User savedUser = userRepository.save(user);
             
             log.info("Usuario registrado exitosamente: {} con ID: {}", username, savedUser.getId());
+
+            // Publicar evento para notification-service
+            publishUserCreatedEvent(savedUser.getId(), username);
             
             return RegisterResponse.newBuilder()
                     .setSuccess(true)
@@ -233,6 +237,31 @@ public class ProfileServiceImpl implements ProfileService{
             log.info("Evento de logout publicado para usuario: {}", username);
         } catch (Exception e) {
             log.error("Error al publicar evento de logout para usuario {}: {}", username, e.getMessage());
+            throw e;
+        }
+    }
+
+    /**
+     * Publica un evento de usuario creado a RabbitMQ para que notification-service
+     * cree el registro en su tabla de usuarios.
+     * 
+     * Este método envía un evento con userId y username a la cola 'user.created' 
+     * donde notification-service está escuchando para crear el usuario en su base de datos.
+     * 
+     * @param userId ID del usuario creado en profile-service
+     * @param username Nombre del usuario creado
+     */
+    private void publishUserCreatedEvent(String userId, String username) {
+        try {
+            UserCreatedEvent event = new UserCreatedEvent(userId, username);
+            rabbitTemplate.convertAndSend(
+                UserLogoutRabbitConfig.USER_LOGOUT_EXCHANGE,
+                UserCreatedRabbitConfig.USER_CREATED_ROUTING_KEY,
+                event
+            );
+            log.info("Evento de usuario creado publicado para userId: {}, username: {}", userId, username);
+        } catch (Exception e) {
+            log.error("Error al publicar evento de usuario creado para userId {}: {}", userId, e.getMessage());
             throw e;
         }
     }
