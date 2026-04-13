@@ -109,6 +109,16 @@ public class MessageSender {
         }
     }
 
+    public void sendContactPresenceRequest(String userId) {
+        MessagesProto.ContactPresenceRequest request = MessagesProto.ContactPresenceRequest.newBuilder()
+            .setUserId(userId)
+            .build();
+        MessagesProto.ContactPresenceMessage message = MessagesProto.ContactPresenceMessage.newBuilder()
+            .setRequest(request)
+            .build();
+        sendMessage(WsMessage.newBuilder().setContactPresenceMessage(message).build());
+    }
+
     private void sendMessage(Message message) {
         if (webSocketService.isConnected()) {
             webSocketService.sendMessage(message);

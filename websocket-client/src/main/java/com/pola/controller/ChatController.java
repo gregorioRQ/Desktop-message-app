@@ -658,11 +658,27 @@ public class ChatController {
 
         // Listener de autenticación exitosa
         webSocketService.setAuthSuccessListener(userId -> {
-            // El servicio de notificaciones STOMP fue comentado
-            // if (notificationService != null) {
-            //     notificationService.sendUserOnlineNotification(userId);
-            // }
+            requestContactsPresence(userId);
         });
+    }
+
+    private void requestContactsPresence(String userId) {
+        if (webSocketService != null && webSocketService.isConnected()) {
+            com.pola.proto.MessagesProto.ContactPresenceRequest request = 
+                com.pola.proto.MessagesProto.ContactPresenceRequest.newBuilder()
+                    .setUserId(userId)
+                    .build();
+            com.pola.proto.MessagesProto.ContactPresenceMessage message = 
+                com.pola.proto.MessagesProto.ContactPresenceMessage.newBuilder()
+                    .setRequest(request)
+                    .build();
+            com.pola.proto.MessagesProto.WsMessage wsMessage = 
+                com.pola.proto.MessagesProto.WsMessage.newBuilder()
+                    .setContactPresenceMessage(message)
+                    .build();
+            webSocketService.sendMessage(wsMessage);
+            System.out.println("[ChatController] Solicitando presencia de contactos para: " + userId);
+        }
     }
 
     private void loadContacts() {
@@ -841,6 +857,12 @@ public class ChatController {
                     return;
                 }
 
+                // Process presence events (format: {"type":"ONLINE|OFFLINE","userId":"...","username":"..."})
+                if (message.contains("\"type\":\"ONLINE\"") || message.contains("\"type\":\"OFFLINE\"")) {
+                    handlePresenceEvent(message);
+                    return;
+                }
+
                 Platform.runLater(() -> {
                     if (viewManager.isWindowVisible()) {
                         System.out.println("[ChatController] Ventana visible - actualizando lista de notificaciones");
@@ -914,5 +936,63 @@ public class ChatController {
      */
     public boolean isSseConnected() {
         return sseClient != null && sseClient.isConnected();
+    }
+
+    /**
+     * Maneja eventos de presencia recibidos via SSE.
+     * 
+     * Este método procesa los eventos de presencia (ONLINE/OFFLINE) recibidos
+     * del notification-service y actualiza el estado online del contacto
+     * en ContactService para reflejarlo en la UI.
+     * 
+     * El flujo de privacidad implementado:
+     * - Solo los contactos confirmados reciben notificaciones de presencia
+     * - El mensaje tiene formato: {"type":"ONLINE|OFFLINE","userId":"...","username":"..."}
+     * 
+     * @param message El mensaje JSON del evento de presencia
+     */
+    private void handlePresenceEvent(String message) {
+        try {
+            String type = extractJsonField(message, "type");
+            String userId = extractJsonField(message, "userId");
+            String username = extractJsonField(message, "username");
+
+            if (type == null || userId == null) {
+                System.err.println("[ChatController] Evento de presencia inválido: " + message);
+                return;
+            }
+
+            boolean isOnline = "ONLINE".equals(type);
+
+            System.out.println("[ChatController] Evento de presencia recibido: " + type + " para usuario: " + username + " (id: " + userId + ")");
+
+            // Actualizar el estado online del contacto en ContactService
+            if (contactService != null) {
+                contactService.setContactOnline(userId, isOnline);
+                System.out.println("[ChatController] Contacto " + (isOnline ? "conectado" : "desconectado") + ": " + username);
+            }
+
+        } catch (Exception e) {
+            System.err.println("[ChatController] Error procesando evento de presencia: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Extrae un campo de un string JSON simple.
+     * 
+     * @param json El string JSON
+     * @param field El nombre del campo a extraer
+     * @return El valor del campo o null si no se encuentra
+     */
+    private String extractJsonField(String json, String field) {
+        String searchKey = "\"" + field + "\":\"";
+        int keyIndex = json.indexOf(searchKey);
+        if (keyIndex == -1) {
+            return null;
+        }
+        int start = keyIndex + searchKey.length();
+        int end = json.indexOf("\"", start);
+        return end > start ? json.substring(start, end) : null;
     }
 }

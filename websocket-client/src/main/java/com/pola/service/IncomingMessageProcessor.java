@@ -71,6 +71,8 @@ public class IncomingMessageProcessor {
           handlers.put(WsMessage.PayloadCase.IMAGE_MESSAGE, this::handleImageMessage);
           // Handler para lista de mensajes de imagen pendientes (recibidos al conectarse)
           handlers.put(WsMessage.PayloadCase.UNREAD_IMAGE_MESSAGES_LIST, msg -> processUnreadImageMessages(msg.getUnreadImageMessagesList()));
+          // Handler para respuesta de presencia de contactos
+          handlers.put(WsMessage.PayloadCase.CONTACT_PRESENCE_MESSAGE, msg -> processContactPresenceMessage(msg.getContactPresenceMessage()));
       }
 
     public void process(WsMessage message) {
@@ -617,6 +619,20 @@ public class IncomingMessageProcessor {
                 System.err.println("Error al procesar ImageMessage pendiente: " + e.getMessage());
                 e.printStackTrace();
             }
+        }
+    }
+
+    private void processContactPresenceMessage(MessagesProto.ContactPresenceMessage message) {
+        if (message.hasResponse()) {
+            MessagesProto.ContactPresenceResponse response = message.getResponse();
+            log.info("Recibida respuesta de presencia con {} contactos", response.getContactsCount());
+            
+            Platform.runLater(() -> {
+                for (MessagesProto.ContactPresence contact : response.getContactsList()) {
+                    context.getContactService().setContactOnline(contact.getUserId(), contact.getOnline());
+                    log.debug("Contacto {}: {}", contact.getUsername(), contact.getOnline() ? "ONLINE" : "OFFLINE");
+                }
+            });
         }
     }
 

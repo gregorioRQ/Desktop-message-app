@@ -177,6 +177,27 @@ message PendingClearHistoryList {
   repeated string users = 1;
 }
 
+message ContactPresenceMessage {
+  oneof payload {
+    ContactPresenceRequest request = 1;
+    ContactPresenceResponse response = 2;
+  }
+}
+
+message ContactPresenceRequest {
+  string user_id = 1;
+}
+
+message ContactPresenceResponse {
+  repeated ContactPresence contacts = 1;
+}
+
+message ContactPresence {
+  string username = 1;
+  string user_id = 2;
+  bool online = 3;
+}
+
 // Solicitud de eliminación de clave user:name:{username} de Redis
 message DeleteUserNameKeyRequest {
   string username = 1;
@@ -243,5 +264,6 @@ message WsMessage {
     ImageMessage image_message = 23;
     PendingClearHistory pending_clear_history = 24;
     UnreadImageMessagesList unread_image_messages_list = 25;
+    ContactPresenceMessage contact_presence_message = 26;
   }
 }

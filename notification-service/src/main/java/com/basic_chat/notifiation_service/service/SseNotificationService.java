@@ -108,6 +108,17 @@ public class SseNotificationService {
     }
 
     /**
+     * Obtiene el emitter para un usuario específico.
+     * Útil para enviar eventos SSE con nombre de evento específico.
+     * 
+     * @param userId El ID del usuario
+     * @return El SseEmitter o null si no existe
+     */
+    public SseEmitter getEmitter(String userId) {
+        return emitters.get(userId);
+    }
+
+    /**
      * Removes all clients. Useful for shutdown or cleanup operations.
      */
     public void unregisterAll() {
