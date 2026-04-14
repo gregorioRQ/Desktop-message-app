@@ -324,35 +324,15 @@ public class ChatController {
         if (attachButton != null) attachButton.setDisable(true);
 
         // Configurar celdas para contactos (Botón Bloquear)
-        contactsListView.setCellFactory(param -> new ContactListCell(false, contactActionHelper::confirmBlockContact, contactActionHelper::confirmUnblockContact, contactActionHelper::confirmAddContact) {
+        contactsListView.setCellFactory(param -> new ContactListCell(false, contactActionHelper::confirmBlockContact, contactActionHelper::confirmUnblockContact, contactActionHelper::confirmAddContact, contactService) {
             @Override
             protected void updateItem(Contact contact, boolean empty) {
                 super.updateItem(contact, empty);
                 if (contact != null && !empty) {
-                    // Añadir indicador de estado
                     if (getGraphic() instanceof HBox) {
                         HBox hbox = (HBox) getGraphic();
-                        Node indicator = null;
-                        for (Node n : hbox.getChildren()) {
-                            if ("statusIndicator".equals(n.getId())) {
-                                indicator = n;
-                                break;
-                            }
-                        }
-                        if (indicator == null) {
-                            Label statusLabel = new Label();
-                            statusLabel.setId("statusIndicator");
-                            statusLabel.setStyle("-fx-font-size: 10px; -fx-padding: 0 5 0 0;");
-                            hbox.getChildren().add(0, statusLabel);
-                            indicator = statusLabel;
-                        }
                         
-                        boolean isOnline = contact.getContactUserId() != null && contactService.isContactOnline(contact.getContactUserId());
-                        ((Label) indicator).setText(isOnline ? "Conectado" : "Desconectado");
-                        ((Label) indicator).setTextFill(isOnline ? Color.GREEN : Color.GRAY);
-
                         // Ocultar icono de handshake si el contacto ya está confirmado
-                        // Se asume que el botón de handshake tiene el ID "handshakeButton" en ContactListCell
                         for (Node n : hbox.getChildren()) {
                             if ("handshakeButton".equals(n.getId())) {
                                 boolean showHandshake = !contact.isConfirmed();
@@ -402,7 +382,7 @@ public class ChatController {
         }
         
         // Configurar celdas para contactos bloqueados (Botón Desbloquear)
-        blockedContactsListView.setCellFactory(param -> new ContactListCell(true, contactActionHelper::confirmBlockContact, contactActionHelper::confirmUnblockContact, contactActionHelper::confirmAddContact));
+        blockedContactsListView.setCellFactory(param -> new ContactListCell(true, contactActionHelper::confirmBlockContact, contactActionHelper::confirmUnblockContact, contactActionHelper::confirmAddContact, contactService));
     }
 
     private void setupMessageListView(){
@@ -966,9 +946,9 @@ public class ChatController {
 
             System.out.println("[ChatController] Evento de presencia recibido: " + type + " para usuario: " + username + " (id: " + userId + ")");
 
-            // Actualizar el estado online del contacto en ContactService
+            // Actualizar el estado online del contacto en ContactService usando username
             if (contactService != null) {
-                contactService.setContactOnline(userId, isOnline);
+                contactService.setContactOnlineByUsername(username, isOnline);
                 System.out.println("[ChatController] Contacto " + (isOnline ? "conectado" : "desconectado") + ": " + username);
             }
 

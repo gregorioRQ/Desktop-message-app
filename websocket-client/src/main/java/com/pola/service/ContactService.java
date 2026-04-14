@@ -320,13 +320,66 @@ public class ContactService {
             changed = onlineUsers.remove(contactUserId);
         }
         
-        if (changed && onOnlineStatusChanged != null) {
-            onOnlineStatusChanged.run();
+        if (changed) {
+            // Actualizar en memoria
+            contacts.stream()
+                .filter(c -> contactUserId.equals(c.getContactUserId()))
+                .findFirst()
+                .ifPresent(c -> {
+                    c.setOnline(online);
+                    try {
+                        contactRepository.update(c);
+                    } catch (SQLException e) {
+                        System.err.println("Error actualizando estado online en DB: " + e.getMessage());
+                    }
+                });
+            
+            if (onOnlineStatusChanged != null) {
+                onOnlineStatusChanged.run();
+            }
         }
     }
 
     public boolean isContactOnline(String contactUserId) {
         return onlineUsers.contains(contactUserId);
+    }
+
+    public void setContactOnlineByUsername(String contactUsername, boolean online) {
+        contacts.stream()
+            .filter(c -> contactUsername.equals(c.getContactUsername()))
+            .findFirst()
+            .ifPresent(c -> {
+                boolean changed = c.isOnline() != online;
+                c.setOnline(online);
+                try {
+                    contactRepository.update(c);
+                } catch (SQLException e) {
+                    System.err.println("Error actualizando estado online en DB: " + e.getMessage());
+                }
+                if (changed && onOnlineStatusChanged != null) {
+                    onOnlineStatusChanged.run();
+                }
+            });
+        blockedContacts.stream()
+            .filter(c -> contactUsername.equals(c.getContactUsername()))
+            .findFirst()
+            .ifPresent(c -> {
+                boolean changed = c.isOnline() != online;
+                c.setOnline(online);
+                try {
+                    contactRepository.update(c);
+                } catch (SQLException e) {
+                    System.err.println("Error actualizando estado online en DB: " + e.getMessage());
+                }
+                if (changed && onOnlineStatusChanged != null) {
+                    onOnlineStatusChanged.run();
+                }
+            });
+    }
+
+    public boolean isContactOnlineByUsername(String contactUsername) {
+        return contacts.stream()
+            .anyMatch(c -> contactUsername.equals(c.getContactUsername()) && c.isOnline());
     }
 
     public void clearOnlineUsers() {
