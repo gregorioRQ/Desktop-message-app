@@ -24,9 +24,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import com.basic_chat.notifiation_service.model.ContactUser;
 import com.basic_chat.notifiation_service.model.User;
-import com.basic_chat.notifiation_service.model.UserContact;
-import com.basic_chat.notifiation_service.repository.UserContactRepository;
+import com.basic_chat.notifiation_service.repository.ContactUserRepository;
 import com.basic_chat.notifiation_service.repository.UserRepository;
 import com.basic_chat.notifiation_service.service.SseNotificationService;
 import com.basic_chat.proto.MessagesProto;
@@ -40,7 +40,7 @@ import com.basic_chat.proto.MessagesProto;
  * - Notificar cuando un usuario se desconecta (POST /offline)
  * 
  * El sistema de presencia usa la tabla 'users' con campo 'online' boolean
- * para almacenar el estado. Los contactos se filtran usando 'user_contacts'
+ * para almacenar el estado. Los contactos se filtran usando 'contact_users'.
  * donde solo se consideran los contactos mutuamente confirmados.
  */
 @RestController
@@ -55,16 +55,16 @@ public class PresenceController {
 
     private final SseNotificationService sseNotificationService;
     private final UserRepository userRepository;
-    private final UserContactRepository userContactRepository;
+    private final ContactUserRepository contactUserRepository;
     private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
     public PresenceController(
             SseNotificationService sseNotificationService,
             UserRepository userRepository,
-            UserContactRepository userContactRepository) {
+            ContactUserRepository contactUserRepository) {
         this.sseNotificationService = sseNotificationService;
         this.userRepository = userRepository;
-        this.userContactRepository = userContactRepository;
+        this.contactUserRepository = contactUserRepository;
     }
 
     /**
@@ -155,12 +155,12 @@ public class PresenceController {
         log.info("Solicitud de contactos confirmados para usuario: {}", userId);
 
         try {
-            List<UserContact> contacts = userContactRepository.findByUserIdAndIsConfirmedTrue(userId);
+            List<ContactUser> contacts = contactUserRepository.findByUserId(userId);
             
             MessagesProto.ContactPresenceResponse.Builder responseBuilder = MessagesProto.ContactPresenceResponse.newBuilder();
             
-            for (UserContact contact : contacts) {
-                Optional<User> contactUserOpt = userRepository.findById(contact.getContact().getId());
+            for (ContactUser contact : contacts) {
+                Optional<User> contactUserOpt = userRepository.findByUsername(contact.getContactUsername());
                 
                 if (contactUserOpt.isPresent()) {
                     User contactUser = contactUserOpt.get();
@@ -193,14 +193,14 @@ public class PresenceController {
      * @param username Username del usuario
      */
     private void notifyInterestedContacts(String userId, String type, String username) {
-        // Buscar usuarios que tienen a este contacto
-        List<UserContact> interestedUsers = userContactRepository.findByContactIdAndIsConfirmedTrue(userId);
+        // Buscar usuarios que tienen a este username como contacto
+        List<ContactUser> interestedUsers = contactUserRepository.findByContactUsername(username);
 
         log.info("Notificando a {} usuarios interesados sobre {} de {}", 
                 interestedUsers.size(), type, username);
 
-        for (UserContact contact : interestedUsers) {
-            String interestedUserId = contact.getUser().getId();
+        for (ContactUser contact : interestedUsers) {
+            String interestedUserId = contact.getUserId();
             
             if (sseNotificationService.hasActiveConnection(interestedUserId)) {
                 String eventJson = String.format(

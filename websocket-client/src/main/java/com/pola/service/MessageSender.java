@@ -75,14 +75,13 @@ public class MessageSender {
         sendMessage(WsMessage.newBuilder().setMarkMessagesAsReadRequest(builder.build()).build());
     }
 
-    public void sendContactIdentity(String myUserId, String myUsername, String contactUsername) {
-        MessagesProto.ContactIdentity identity = MessagesProto.ContactIdentity.newBuilder()
-            .setSenderId(myUserId)
-            .setSenderUsername(myUsername)
+    public void sendAddContactRequest(String myUserId, String myUsername, String contactUsername) {
+        MessagesProto.AddContactRequest request = MessagesProto.AddContactRequest.newBuilder()
+            .setSender(myUsername)
             .setContactUsername(contactUsername)
             .build();
         
-        sendMessage(WsMessage.newBuilder().setContactIdentity(identity).build());
+        sendMessage(WsMessage.newBuilder().setAddContactRequest(request).build());
     }
 
     public void sendImageMessage(String mediaId, String fullImageUrl, String sender, String recipient, 

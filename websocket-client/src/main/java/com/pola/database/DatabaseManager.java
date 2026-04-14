@@ -96,9 +96,8 @@ public class DatabaseManager {
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     user_id TEXT NOT NULL,
                     contact_username TEXT NOT NULL,
-                contact_user_id TEXT,
                     is_blocked INTEGER DEFAULT 0,
-                    is_confirmed INTEGER DEFAULT 0,
+                    is_online INTEGER DEFAULT 0,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     UNIQUE(user_id, contact_username)
@@ -124,6 +123,11 @@ public class DatabaseManager {
             // Migration: add sender_username column if not exists (for existing DBs)
             String migrateSenderUsername = """
                 ALTER TABLE messages ADD COLUMN sender_username TEXT NOT NULL DEFAULT ''
+                """;
+            
+            // Migration: add is_online column if not exists (for existing DBs)
+            String migrateOnlineColumn = """
+                ALTER TABLE contacts ADD COLUMN is_online INTEGER DEFAULT 0
                 """;
             
             // OBSOLETE: These columns are now included in CREATE TABLE above
@@ -187,6 +191,14 @@ public class DatabaseManager {
                 System.out.println("Migration sender_username applied");
             } catch (SQLException e) {
                 System.out.println("Column sender_username already exists or index already created");
+            }
+            
+            // Execute migration for is_online column if needed
+            try {
+                stmt.execute(migrateOnlineColumn);
+                System.out.println("Migration is_online applied");
+            } catch (SQLException e) {
+                System.out.println("Column is_online already exists");
             }
             
             // OBSOLETE: type and downloaded columns are now included in CREATE TABLE

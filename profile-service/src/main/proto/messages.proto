@@ -166,6 +166,11 @@ message ContactIdentity {
   string contact_username = 3; // El username del contacto parcial
 }
 
+message AddContactRequest {
+  string sender = 1;
+  string contact_username = 2;
+}
+
 // Solicitud de limpieza de historial pendientes (para entregar al conectarse)
 message PendingClearHistory {
   string sender = 1;
@@ -243,5 +248,6 @@ message WsMessage {
     ImageMessage image_message = 23;
     PendingClearHistory pending_clear_history = 24;
     UnreadImageMessagesList unread_image_messages_list = 25;
+    AddContactRequest add_contact_request = 26;
   }
 }

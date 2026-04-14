@@ -216,6 +216,12 @@ message ContactPresence {
   bool online = 3;
 }
 
+// Solicitud para agregar un contacto
+message AddContactRequest {
+  string sender = 1;
+  string contact_username = 2;
+}
+
 // Wrapper para todos los mensajes
 message WsMessage {
   oneof payload {
@@ -238,13 +244,13 @@ message WsMessage {
     BlockedUsersList blocked_users_list = 17;
     MarkMessagesAsReadRequest mark_messages_as_read_request = 18;
     MessagesReadUpdate messages_read_update = 19;
-    ContactIdentity contact_identity = 20;
     ClearHistoryResponse clear_history_response = 21;
     PendingClearHistoryList pending_clear_history_list = 22;
     ImageMessage image_message = 23;
     PendingClearHistory pending_clear_history = 24;
     UnreadImageMessagesList unread_image_messages_list = 25;
     ContactPresenceMessage contact_presence_message = 26;
+    AddContactRequest add_contact_request = 27;
   }
 }
 

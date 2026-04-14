@@ -15,32 +15,28 @@ public class Contact {
     private final IntegerProperty id;
     private final StringProperty userId;
     private final StringProperty contactUsername;
-    private final StringProperty contactUserId;
     private final BooleanProperty blocked;
-    private final BooleanProperty confirmed;
+    private final BooleanProperty online;
     private final ObjectProperty<LocalDateTime> createdAt;
     private final ObjectProperty<LocalDateTime> updatedAt;
     
     public Contact(int id, String userId, 
-                   String contactUsername, String contactUserId, boolean blocked, boolean confirmed,
+                   String contactUsername, boolean blocked, boolean online,
                    LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = new SimpleIntegerProperty(id);
         this.userId = new SimpleStringProperty(userId);
         this.contactUsername = new SimpleStringProperty(contactUsername);
-        this.contactUserId = new SimpleStringProperty(contactUserId);
         this.blocked = new SimpleBooleanProperty(blocked);
-        this.confirmed = new SimpleBooleanProperty(confirmed);
+        this.online = new SimpleBooleanProperty(online);
         this.createdAt = new SimpleObjectProperty<>(createdAt);
         this.updatedAt = new SimpleObjectProperty<>(updatedAt);
     }
     
-    // Constructor simplificado para crear nuevos contactos
-    public Contact(String userId, String contactUsername, String contactUserId) {
-        this(0, userId, contactUsername, contactUserId, false, false,
+    public Contact(String userId, String contactUsername) {
+        this(0, userId, contactUsername, false, false,
              LocalDateTime.now(), LocalDateTime.now());
     }
     
-    // Getters y setters
     public int getId() {
         return id.get();
     }
@@ -77,18 +73,6 @@ public class Contact {
         this.contactUsername.set(contactUsername);
     }
     
-    public String getContactUserId() {
-        return contactUserId.get();
-    }
-
-    public StringProperty contactUserIdProperty() {
-        return contactUserId;
-    }
-
-    public void setContactUserId(String contactUserId) {
-        this.contactUserId.set(contactUserId);
-    }
-
     public boolean isBlocked() {
         return blocked.get();
     }
@@ -101,18 +85,18 @@ public class Contact {
         this.blocked.set(blocked);
     }
     
-    public boolean isConfirmed() {
-        return confirmed.get();
+    public boolean isOnline() {
+        return online.get();
     }
-
-    public BooleanProperty confirmedProperty() {
-        return confirmed;
+    
+    public BooleanProperty onlineProperty() {
+        return online;
     }
-
-    public void setConfirmed(boolean confirmed) {
-        this.confirmed.set(confirmed);
+    
+    public void setOnline(boolean online) {
+        this.online.set(online);
     }
-
+    
     public LocalDateTime getCreatedAt() {
         return createdAt.get();
     }
@@ -137,5 +121,4 @@ public class Contact {
     public String toString() {
         return contactUsername.get();
     }
-
 }

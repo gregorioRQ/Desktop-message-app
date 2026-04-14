@@ -19,7 +19,10 @@ public class ContactActionHelper {
 
     public void handleAddContact() {
         ChatDialogs.showAddContactDialog(chatController.getCurrentUsername(), (username) -> {
-            Contact contact = contactService.addContact(chatController.getCurrentUserId(), username, true);
+            Contact contact = contactService.addContact(chatController.getCurrentUserId(), username);
+            if (contact != null) {
+                contactService.sendAddContactRequest(username);
+            }
             return contact != null;
         });
     }
@@ -28,9 +31,9 @@ public class ContactActionHelper {
         ChatDialogs.showConfirmation(
             "Añadir Contacto", 
             null, 
-            "¿Quieres añadir este usuario a tu lista de contactos?", 
+            "¿Quieres añadir este usuario a tu lista de contactos y notificar al servidor?", 
             () -> {
-                contactService.confirmContact(contact);
+                contactService.sendAddContactRequest(contact.getContactUsername());
                 chatController.refreshContactsList();
             }
         );
