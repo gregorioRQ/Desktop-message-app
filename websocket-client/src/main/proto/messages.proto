@@ -165,9 +165,9 @@ message MessagesReadUpdate {
 }
 
 message ContactIdentity {
-  string sender_id = 1;      // El ID real (UUID) del remitente
-  string sender_username = 2; // El username del remitente
-  string contact_username = 3; // El username del contacto parcial
+  string sender_id = 1;
+  string sender_username = 2;
+  string contact_username = 3;
 }
 
 /**

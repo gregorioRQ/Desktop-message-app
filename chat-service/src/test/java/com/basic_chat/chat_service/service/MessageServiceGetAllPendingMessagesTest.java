@@ -19,7 +19,6 @@ import com.basic_chat.chat_service.repository.ImageMessageRepository;
 import com.basic_chat.chat_service.repository.MessageRepository;
 import com.basic_chat.chat_service.repository.PendingBlockRepository;
 import com.basic_chat.chat_service.repository.PendingClearHistoryRepository;
-import com.basic_chat.chat_service.repository.PendingContactIdentityRepository;
 import com.basic_chat.chat_service.repository.PendingDeletionRepository;
 import com.basic_chat.chat_service.repository.PendingReadReceiptRepository;
 import com.basic_chat.chat_service.repository.PendingUnblockRepository;
@@ -49,9 +48,6 @@ class MessageServiceGetAllPendingMessagesTest {
     private PendingClearHistoryRepository pendingClearHistoryRepository;
 
     @Mock
-    private PendingContactIdentityRepository pendingContactIdentityRepository;
-
-    @Mock
     private ImageMessageRepository imageMessageRepository;
 
     @Mock
@@ -68,7 +64,6 @@ class MessageServiceGetAllPendingMessagesTest {
                 pendingBlockRepository,
                 pendingUnblockRepository,
                 pendingClearHistoryRepository,
-                pendingContactIdentityRepository,
                 imageMessageRepository,
                 messageValidator
         );
@@ -102,7 +97,6 @@ class MessageServiceGetAllPendingMessagesTest {
         lenient().when(pendingUnblockRepository.findByUnblockedUser(username)).thenReturn(Collections.emptyList());
         lenient().when(pendingClearHistoryRepository.findByRecipient(username)).thenReturn(Collections.emptyList());
         lenient().when(pendingReadReceiptRepository.findByReceiptRecipient(username)).thenReturn(Collections.emptyList());
-        lenient().when(pendingContactIdentityRepository.findByRecipient(username)).thenReturn(Collections.emptyList());
         lenient().when(imageMessageRepository.findByReceiverIdAndDeliveredFalse(username)).thenReturn(Collections.emptyList());
 
         MessagesProto.WsMessage result = messageService.getAllPendingMessages(username);
@@ -145,7 +139,6 @@ class MessageServiceGetAllPendingMessagesTest {
         lenient().when(pendingUnblockRepository.findByUnblockedUser(username)).thenReturn(Collections.emptyList());
         lenient().when(pendingClearHistoryRepository.findByRecipient(username)).thenReturn(Collections.emptyList());
         lenient().when(pendingReadReceiptRepository.findByReceiptRecipient(username)).thenReturn(Collections.emptyList());
-        lenient().when(pendingContactIdentityRepository.findByRecipient(username)).thenReturn(Collections.emptyList());
         lenient().when(imageMessageRepository.findByReceiverIdAndDeliveredFalse(username)).thenReturn(Collections.emptyList());
 
         MessagesProto.WsMessage result = messageService.getAllPendingMessages(username);
@@ -165,7 +158,6 @@ class MessageServiceGetAllPendingMessagesTest {
         lenient().when(pendingUnblockRepository.findByUnblockedUser(username)).thenReturn(Collections.emptyList());
         lenient().when(pendingClearHistoryRepository.findByRecipient(username)).thenReturn(Collections.emptyList());
         lenient().when(pendingReadReceiptRepository.findByReceiptRecipient(username)).thenReturn(Collections.emptyList());
-        lenient().when(pendingContactIdentityRepository.findByRecipient(username)).thenReturn(Collections.emptyList());
         lenient().when(imageMessageRepository.findByReceiverIdAndDeliveredFalse(username)).thenReturn(Collections.emptyList());
 
         MessagesProto.WsMessage result = messageService.getAllPendingMessages(username);
@@ -215,7 +207,6 @@ class MessageServiceGetAllPendingMessagesTest {
         lenient().when(pendingUnblockRepository.findByUnblockedUser(username)).thenReturn(Collections.emptyList());
         lenient().when(pendingClearHistoryRepository.findByRecipient(username)).thenReturn(Collections.emptyList());
         lenient().when(pendingReadReceiptRepository.findByReceiptRecipient(username)).thenReturn(Collections.emptyList());
-        lenient().when(pendingContactIdentityRepository.findByRecipient(username)).thenReturn(Collections.emptyList());
         lenient().when(imageMessageRepository.findByReceiverIdAndDeliveredFalse(username)).thenReturn(Collections.emptyList());
 
         MessagesProto.WsMessage result = messageService.getAllPendingMessages(username);

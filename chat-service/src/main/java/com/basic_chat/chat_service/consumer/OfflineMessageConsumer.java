@@ -23,7 +23,7 @@ import org.springframework.stereotype.Component;
  * - Solicitudes de bloqueo (BlockContactRequest)
  * - Solicitudes de desbloqueo (UnblockContactRequest)
  * - Actualizaciones de mensajes leídos (MessagesReadUpdate)
- * - Actualizaciones de identidad de contacto (ContactIdentity)
+ * - Actualizaciones de mensajes leídos (MessagesReadUpdate)
  * 
  * El patrón de dispatcher permite agregar nuevos tipos de mensajes sin modificar
  * este consumidor, simplemente agregando nuevos handlers que implementen

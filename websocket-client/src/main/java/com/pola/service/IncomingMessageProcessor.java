@@ -412,19 +412,6 @@ public class IncomingMessageProcessor {
     private void processUnblockedUsersList(MessagesProto.UnblockedUsersList list) {
         processUserStatusChange(list.getUsersList(), "Este usuario te ha desbloqueado.", context.getContactService()::markUserAsUnblockingMe);
     }
-    /**
-     * Actualizara el id temporal por el id oficial del remitente.
-     * @param identity El .proto con el id del remitente y su username
-     */
-    private void processContactIdentity(MessagesProto.ContactIdentity identity) {
-        // Ya no se usa - el flujo de confirmación de contacto fue eliminado
-        String senderUsername = identity.getSenderUsername();
-        String remoteUserId = identity.getSenderId();
-        
-        System.out.println("[DEBUG] ContactIdentity recibido (no usado) - senderUsername: " + senderUsername + ", remoteUserId: " + remoteUserId);
-        
-        // Ya no procesamos nada - el registro de contacto se crea cuando el usuario presiona "agregar"
-    }
 
     private void processUserStatusChange(List<String> users, String systemMsg, Consumer<String> action) {
         for (String username : users) {

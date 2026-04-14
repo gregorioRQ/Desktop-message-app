@@ -28,7 +28,6 @@ import java.util.Map;
  * - Lista de desbloqueos (UnblockedUsersList)
  * - Historial limpiado (PendingClearHistoryList)
  * - Confirmaciones de lectura (MessagesReadUpdate)
- * - Identidades de contacto (ContactIdentity)
  */
 @RestController
 @RequestMapping("/api/v1/messages")

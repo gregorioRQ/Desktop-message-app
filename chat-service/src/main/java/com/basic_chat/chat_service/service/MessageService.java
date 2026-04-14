@@ -14,14 +14,12 @@ import com.basic_chat.chat_service.models.Message;
 import com.basic_chat.chat_service.models.PendingBlock;
 import com.basic_chat.chat_service.repository.ImageMessageRepository;
 import com.basic_chat.chat_service.models.PendingClearHistory;
-import com.basic_chat.chat_service.models.PendingContactIdentity;
 import com.basic_chat.chat_service.models.PendingDeletion;
 import com.basic_chat.chat_service.models.PendingReadReceipt;
 import com.basic_chat.chat_service.models.PendingUnblock;
 import com.basic_chat.chat_service.repository.MessageRepository;
 import com.basic_chat.chat_service.repository.PendingBlockRepository;
 import com.basic_chat.chat_service.repository.PendingClearHistoryRepository;
-import com.basic_chat.chat_service.repository.PendingContactIdentityRepository;
 import com.basic_chat.chat_service.repository.PendingDeletionRepository;
 import com.basic_chat.chat_service.repository.PendingReadReceiptRepository;
 import com.basic_chat.chat_service.repository.PendingUnblockRepository;
@@ -42,7 +40,6 @@ public class MessageService {
     private final PendingBlockRepository pendingBlockRepository;
     private final PendingUnblockRepository pendingUnblockRepository;
     private final PendingClearHistoryRepository pendingClearHistoryRepository;
-    private final PendingContactIdentityRepository pendingContactIdentityRepository;
     private final ImageMessageRepository imageMessageRepository;
     private final MessageValidator messageValidator;
 
@@ -53,7 +50,6 @@ public class MessageService {
             PendingBlockRepository pendingBlockRepository,
             PendingUnblockRepository pendingUnblockRepository,
             PendingClearHistoryRepository pendingClearHistoryRepository,
-            PendingContactIdentityRepository pendingContactIdentityRepository,
             ImageMessageRepository imageMessageRepository,
             MessageValidator messageValidator) {
         this.messageRepository = messageRepository;
@@ -62,7 +58,6 @@ public class MessageService {
         this.pendingBlockRepository = pendingBlockRepository;
         this.pendingUnblockRepository = pendingUnblockRepository;
         this.pendingClearHistoryRepository = pendingClearHistoryRepository;
-        this.pendingContactIdentityRepository = pendingContactIdentityRepository;
         this.imageMessageRepository = imageMessageRepository;
         this.messageValidator = messageValidator;
     }
@@ -444,40 +439,6 @@ public class MessageService {
     }
 
     /**
-     * Obtiene y elimina las identidades de contacto pendientes para un usuario.
-     *
-     * @param recipientUsername Nombre del usuario que recibe las actualizaciones de identidad
-     * @return Lista de entidades PendingContactIdentity
-     */
-    @Transactional
-    public List<PendingContactIdentity> getAndClearPendingContactIdentities(String recipientUsername) {
-        if (recipientUsername == null) {
-            log.warn("Parámetro inválido: recipientUsername es nulo");
-            return new ArrayList<>();
-        }
-
-        try {
-            log.debug("Obteniendo identidades de contacto pendientes para usuario: {}", recipientUsername);
-            List<PendingContactIdentity> pending = pendingContactIdentityRepository.findByRecipient(recipientUsername);
-
-            if (!pending.isEmpty()) {
-                log.info("Encontradas {} identidades de contacto pendientes para usuario: {}", 
-                        pending.size(), recipientUsername);
-                pendingContactIdentityRepository.deleteAll(pending);
-                log.info("Identidades de contacto eliminadas después de entrega para usuario: {}", recipientUsername);
-            } else {
-                log.debug("No hay identidades de contacto pendientes para usuario: {}", recipientUsername);
-            }
-
-            return pending;
-        } catch (Exception ex) {
-            log.error("Error al obtener/limpiar identidades de contacto pendientes para usuario {}: {}", 
-                    recipientUsername, ex.getMessage(), ex);
-            throw new RuntimeException("Error al procesar identidades de contacto pendientes", ex);
-        }
-    }
-
-    /**
      * Obtiene y elimina los mensajes de imagen pendientes para un usuario.
      * Este método se utiliza cuando un usuario se conecta y solicita sus mensajes pendientes.
      * Los mensajes de imagen se convierten a formato protobuf y se eliminan de la base de datos
@@ -660,22 +621,7 @@ public class MessageService {
                 hasAnyPending = true;
             }
 
-            // 6. Obtener identidades de contacto pendientes
-            List<PendingContactIdentity> pendingIdentities = getAndClearPendingContactIdentities(username);
-            if (!pendingIdentities.isEmpty()) {
-                for (PendingContactIdentity pci : pendingIdentities) {
-                    MessagesProto.ContactIdentity identity = MessagesProto.ContactIdentity.newBuilder()
-                            .setSenderId(pci.getSenderId())
-                            .setSenderUsername(pci.getSenderUsername())
-                            .build();
-                    wsBuilder.setContactIdentity(identity);
-                }
-                log.info("Agregadas {} identidades de contacto pendientes para usuario: {}", 
-                         pendingIdentities.size(), username);
-                hasAnyPending = true;
-            }
-
-            // 7. Obtener mensajes de imagen pendientes
+            // 6. Obtener mensajes de imagen pendientes
             List<MessagesProto.ImageMessage> pendingImages = getAndClearPendingImageMessages(username);
             if (!pendingImages.isEmpty()) {
                 MessagesProto.UnreadImageMessagesList.Builder imageListBuilder = 

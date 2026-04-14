@@ -161,18 +161,23 @@ message MessagesReadUpdate {
 }
 
 message ContactIdentity {
-  string sender_id = 1;      // El ID real (UUID) del remitente
-  string sender_username = 2; // El username del remitente
-  string contact_username = 3; // El username del contacto parcial
+  string sender_id = 1;
+  string sender_username = 2;
+  string contact_username = 3;
 }
 
-// Solicitud de limpieza de historial pendientes (para entregar al conectarse)
+message AddContactRequest {
+  string sender = 1;
+  string contact_username = 2;
+}
+
+// Solicitud de limpieza de historial pendientes
 message PendingClearHistory {
   string sender = 1;
   string recipient = 2;
 }
 
-// Lista de usernames cuyo historial fue eliminado (pendiente para entregar al conectarse)
+// Lista de usernames cuyo historial fue eliminado
 message PendingClearHistoryList {
   repeated string users = 1;
 }
@@ -196,12 +201,6 @@ message ContactPresence {
   string username = 1;
   string user_id = 2;
   bool online = 3;
-}
-
-// Solicitud para agregar un contacto
-message AddContactRequest {
-  string sender = 1;           // username de quien envía la solicitud
-  string contact_username = 2; // username del contacto a agregar
 }
 
 // Solicitud de eliminación de clave user:name:{username} de Redis
@@ -264,13 +263,12 @@ message WsMessage {
     BlockedUsersList blocked_users_list = 17;
     MarkMessagesAsReadRequest mark_messages_as_read_request = 18;
     MessagesReadUpdate messages_read_update = 19;
-    ContactIdentity contact_identity = 20;
-    ClearHistoryResponse clear_history_response = 21;
-    PendingClearHistoryList pending_clear_history_list = 22;
-    ImageMessage image_message = 23;
-    PendingClearHistory pending_clear_history = 24;
-    UnreadImageMessagesList unread_image_messages_list = 25;
-    ContactPresenceMessage contact_presence_message = 26;
-    AddContactRequest add_contact_request = 27;
+    ClearHistoryResponse clear_history_response = 20;
+    PendingClearHistoryList pending_clear_history_list = 21;
+    ImageMessage image_message = 22;
+    PendingClearHistory pending_clear_history = 23;
+    UnreadImageMessagesList unread_image_messages_list = 24;
+    ContactPresenceMessage contact_presence_message = 25;
+    AddContactRequest add_contact_request = 26;
   }
 }
