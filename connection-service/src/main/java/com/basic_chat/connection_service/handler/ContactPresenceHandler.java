@@ -20,14 +20,12 @@ import java.util.List;
 @Slf4j
 public class ContactPresenceHandler implements ConnectionWsMessageHandler {
 
-    private final SessionRegistryService sessionRegistryService;
     private final RestTemplate restTemplate;
 
     @Value("${notification.service.url:http://localhost:8084}")
     private String notificationServiceUrl;
 
-    public ContactPresenceHandler(SessionRegistryService sessionRegistryService) {
-        this.sessionRegistryService = sessionRegistryService;
+    public ContactPresenceHandler() {
         this.restTemplate = new RestTemplate();
     }
 
@@ -39,7 +37,7 @@ public class ContactPresenceHandler implements ConnectionWsMessageHandler {
     @Override
     public void handle(String sender, MessagesProto.WsMessage message) {
         MessagesProto.ContactPresenceMessage contactPresenceMessage = message.getContactPresenceMessage();
-        
+
         if (!contactPresenceMessage.hasRequest()) {
             log.warn(" Mensaje ContactPresence sin request de: {}", sender);
             return;
@@ -47,36 +45,42 @@ public class ContactPresenceHandler implements ConnectionWsMessageHandler {
 
         MessagesProto.ContactPresenceRequest request = contactPresenceMessage.getRequest();
         String userId = request.getUserId();
-        
-        log.info("Solicitando presencia de contactos para userId: {}", userId);
 
+        log.info("Solicitando presencia de contactos para userId: {}", userId);
+        // Este método ya no hace nada - la lógica se movió a sendContactsPresenceToUser
+    }
+
+    /**
+     * Obtiene y envía la presencia de contactos a un usuario específico.
+     * Este método es llamado automáticamente cuando un usuario se conecta.
+     *
+     * @param userId ID del usuario
+     * @param session Sesión WebSocket del usuario
+     */
+    public void sendContactsPresenceToUser(String userId, WebSocketSession session) {
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.parseMediaType("application/x-protobuf"));
             headers.set("X-User-Id", userId);
-            
+
             HttpEntity<byte[]> requestEntity = new HttpEntity<>(new byte[0], headers);
-            
+
             org.springframework.http.ResponseEntity<byte[]> response = restTemplate.exchange(
                 notificationServiceUrl + "/api/presence/contacts",
                 org.springframework.http.HttpMethod.GET,
                 requestEntity,
                 byte[].class
             );
-            
+
             MessagesProto.ContactPresenceResponse presenceResponse = MessagesProto.ContactPresenceResponse.parseFrom(response.getBody());
-            
-            SessionRegistryService.SessionInfo sessionInfo = sessionRegistryService.getSessionByUserId(userId);
-            if (sessionInfo != null) {
-                WebSocketSession session = sessionInfo.getSession();
-                MessagesProto.ContactPresenceMessage responseMessage = MessagesProto.ContactPresenceMessage.newBuilder()
-                    .setResponse(presenceResponse)
-                    .build();
-                
-                session.sendMessage(new org.springframework.web.socket.BinaryMessage(responseMessage.toByteArray()));
-                log.info("Respuesta de presencia enviada a userId: {}", userId);
-            }
-            
+
+            MessagesProto.ContactPresenceMessage responseMessage = MessagesProto.ContactPresenceMessage.newBuilder()
+                .setResponse(presenceResponse)
+                .build();
+
+            session.sendMessage(new org.springframework.web.socket.BinaryMessage(responseMessage.toByteArray()));
+            log.info("Respuesta de presencia enviada automáticamente a userId: {}", userId);
+
         } catch (Exception e) {
             log.error("Error al obtener presencia de contactos: {}", e.getMessage());
         }

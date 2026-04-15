@@ -28,6 +28,12 @@ import com.pola.view.ContactListCell;
 import com.pola.view.ChatDialogs;
 import com.pola.view.SystemTrayManager;
 import com.pola.view.ViewManager;
+import com.pola.event.SseEventBus;
+import com.pola.event.SseEventType;
+import com.pola.event.handler.ContactListEventHandler;
+import com.pola.event.handler.HeartbeatEventHandler;
+import com.pola.event.handler.NotificationEventHandler;
+import com.pola.event.handler.PresenceEventHandler;
 
 import java.io.File;
 import java.io.ByteArrayInputStream;
@@ -224,6 +230,10 @@ public class ChatController {
     
     public void setMessageService(MessageService messageService) {
         this.messageService = messageService;
+        
+        messageService.setOnMessagesUpdatedListener(() -> {
+            Platform.runLater(() -> messageListView.refresh());
+        });
     }
     
     public void setContactService(ContactService contactService) {
@@ -332,15 +342,6 @@ public class ChatController {
                     if (getGraphic() instanceof HBox) {
                         HBox hbox = (HBox) getGraphic();
                         
-                        // Ocultar icono de handshake si el contacto ya está confirmado
-                        for (Node n : hbox.getChildren()) {
-                            if ("handshakeButton".equals(n.getId())) {
-                                boolean showHandshake = !contact.isConfirmed();
-                                n.setVisible(showHandshake);
-                                n.setManaged(showHandshake);
-                            }
-                        }
-
                         // Menú desplegable de opciones (Eliminar)
                         Node optionsNode = null;
                         for (Node n : hbox.getChildren()) {
@@ -581,7 +582,7 @@ public class ChatController {
         });
 
         // Listener para refrescar la lista cuando cambia el estado online/offline
-        contactService.setOnOnlineStatusChanged(() -> {
+        contactService.setOnOnlineStatusChangedListener(() -> {
             Platform.runLater(() -> contactsListView.refresh());
         });
     }
@@ -638,7 +639,8 @@ public class ChatController {
 
         // Listener de autenticación exitosa
         webSocketService.setAuthSuccessListener(userId -> {
-            requestContactsPresence(userId);
+            // La solicitud de contactos online ahora es automática desde connection-service
+            // No es necesario enviar ContactPresenceRequest manualmente
         });
     }
 
@@ -832,32 +834,27 @@ public class ChatController {
                 }
             );
 
-            sseClient.addMessageListener(message -> {
-                if (":ok".equals(message) || message.contains("heartbeat")) {
-                    return;
-                }
-
-                // Process presence events (format: {"type":"ONLINE|OFFLINE","userId":"...","username":"..."})
-                if (message.contains("\"type\":\"ONLINE\"") || message.contains("\"type\":\"OFFLINE\"")) {
-                    handlePresenceEvent(message);
-                    return;
-                }
-
-                Platform.runLater(() -> {
-                    if (viewManager.isWindowVisible()) {
-                        System.out.println("[ChatController] Ventana visible - actualizando lista de notificaciones");
-                    } else {
-                        System.out.println("[ChatController] Ventana oculta - intentando mostrar notificación");
-                        if (systemTrayManager != null) {
-                            System.out.println("[ChatController] systemTrayManager no es null - llamando showNotification()");
-                            systemTrayManager.showNotification("MSG Desktop", message);
-                        } else {
-                            System.err.println("[ChatController] ERROR - systemTrayManager es null!");
-                        }
-                    }
-                });
-            });
+            // Registrar handlers del EventBus para procesar eventos SSE
+            SseEventBus eventBus = SseEventBus.getInstance();
             
+            // Handler para lista de contactos online (se recibe al conectar)
+            eventBus.registerHandler(SseEventType.CONTACT_LIST,
+                new ContactListEventHandler(contactService));
+            
+            // Handler para eventos de presencia (ONLINE/OFFLINE)
+            eventBus.registerHandler(SseEventType.PRESENCE,
+                new PresenceEventHandler(contactService));
+            
+            // Handler para heartbeats
+            eventBus.registerHandler(SseEventType.HEARTBEAT,
+                new HeartbeatEventHandler());
+            
+            // Handler para notificaciones generales
+            eventBus.registerHandler(SseEventType.NOTIFICATION,
+                new NotificationEventHandler(viewManager, systemTrayManager));
+            eventBus.registerHandler(SseEventType.MESSAGE,
+                new NotificationEventHandler(viewManager, systemTrayManager));
+
             sseClient.addErrorListener(error -> {
                 System.err.println("[ChatController] SSE error: " + error.getMessage());
                 error.printStackTrace();

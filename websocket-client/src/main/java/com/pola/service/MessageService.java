@@ -68,6 +68,13 @@ public class MessageService {
         this.messageProcessor = new IncomingMessageProcessor(context);
     }
 
+    public void setOnMessagesUpdatedListener(Runnable listener) {
+        MessageProcessingContext ctx = messageProcessor.getContext();
+        if (ctx != null) {
+            ctx.setOnMessagesUpdated(listener);
+        }
+    }
+
     public void setMediaWebSocketService(WebSocketService mediaWebSocketService) {
         this.messageSender.setMediaWebSocketService(mediaWebSocketService);
     }
@@ -150,6 +157,7 @@ public class MessageService {
             // generar un id aleatorio para el mensaje local y del servidor
             long id = Math.abs(UUID.randomUUID().getLeastSignificantBits());
             localMessage.setId(id);
+            localMessage.setStatus(ChatMessage.MessageStatus.PENDING);
             
             ChatMessage saved = messageRepository.create(localMessage);
 

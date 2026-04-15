@@ -1,7 +1,10 @@
 package com.basic_chat.chat_service.service;
 
+import com.basic_chat.chat_service.config.RabbitMQconfig;
+import com.basic_chat.chat_service.models.DeliveryStatusEvent;
 import com.basic_chat.proto.MessagesProto;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -10,10 +13,12 @@ public class DeliveryService {
 
     private final MessageService messageService;
     private final BlockService blockService;
+    private final RabbitTemplate rabbitTemplate;
 
-    public DeliveryService(MessageService messageService, BlockService blockService) {
+    public DeliveryService(MessageService messageService, BlockService blockService, RabbitTemplate rabbitTemplate) {
         this.messageService = messageService;
         this.blockService = blockService;
+        this.rabbitTemplate = rabbitTemplate;
     }
 
     /**
@@ -24,9 +29,6 @@ public class DeliveryService {
      * 2. Guarda el mensaje en la base de datos
      * 3. Notifica a connection-service sobre el estado de entrega
      * 
-     * Nota: La notificación de entrega ahora se maneja en connection-service
-     * cuando el mensaje se encola para un usuario offline.
-     * 
      * @param wsMessage Mensaje completo WsMessage
      * @param chatMessage Mensaje de chat parsed
      */
@@ -36,13 +38,32 @@ public class DeliveryService {
 
         if (isBlocked(sender, recipient)) {
             log.warn("Blocked message from {} to {}", sender, recipient);
-            // El mensaje bloqueado se notifica via connection-service
             return;
         }
 
         saveMessage(chatMessage);
+        sendDeliveryStatus(wsMessage, chatMessage.getId(), recipient, "DELIVERED");
         log.debug("Message processed and saved: ID={}, from={}, to={}", 
                 chatMessage.getId(), sender, recipient);
+    }
+
+    private void sendDeliveryStatus(MessagesProto.WsMessage wsMessage, String messageId, String recipient, String type) {
+        try {
+            DeliveryStatusEvent event = new DeliveryStatusEvent();
+            event.setType(type);
+            event.setMessageId(messageId);
+            event.setRecipient(recipient);
+            event.setData(wsMessage.toByteArray());
+            
+            rabbitTemplate.convertAndSend(
+                RabbitMQconfig.MESSAGE_EXCHANGE,
+                "delivery",
+                event
+            );
+            log.info("Delivery status {} sent for message {} to {}", type, messageId, recipient);
+        } catch (Exception e) {
+            log.error("Failed to send delivery status for message {}: {}", messageId, e.getMessage());
+        }
     }
 
     private boolean isBlocked(String sender, String recipient) {

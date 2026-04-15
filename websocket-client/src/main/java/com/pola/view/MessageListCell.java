@@ -57,68 +57,62 @@ public class MessageListCell extends ListCell<ChatMessage> {
     private javafx.scene.Node createImageMessageNode(ImageChatMessage message, 
                                                       Consumer<ImageChatMessage> onDownload,
                                                       Consumer<ImageChatMessage> onView) {
-        HBox root = new HBox(10);
-        VBox contentBox = new VBox(4);
-        
-        boolean isMe = message.getSenderId().equals(currentUsername);
-        
-        if (isMe) {
-            root.setAlignment(Pos.CENTER_RIGHT);
-            contentBox.setAlignment(Pos.CENTER_RIGHT);
-        } else {
-            root.setAlignment(Pos.CENTER_LEFT);
-            contentBox.setAlignment(Pos.CENTER_LEFT);
+        VBox vbox = new VBox(5);
+        vbox.setAlignment(Pos.CENTER_LEFT);
+        vbox.setPadding(new Insets(5));
+
+        String imageUrl = message.getFullImageUrl();
+        if (imageUrl == null || imageUrl.isEmpty()) {
+            imageUrl = "https://via.placeholder.com/150?text=No+Image";
         }
-        
-        VBox imageContainer = new VBox(4);
-        
-        if (message.isDownloaded()) {
-            Button viewButton = new Button("Ver");
-            viewButton.setStyle("-fx-background-color: #2196F3; -fx-text-fill: white; -fx-background-radius: 5; -fx-padding: 5 10;");
-            viewButton.setOnAction(e -> {
-                if (onView != null) {
+
+        try {
+            Image image = new Image(imageUrl, 150, 100, true, true);
+            ImageView imageView = new ImageView(image);
+            imageView.setFitWidth(150);
+            imageView.setFitHeight(100);
+            imageView.setPreserveRatio(true);
+
+            imageView.setOnMouseClicked(e -> {
+                if (e.getClickCount() == 2 && onView != null) {
                     onView.accept(message);
                 }
             });
-            imageContainer.getChildren().add(viewButton);
-        } else {
-            Label iconLabel = new Label("🖼️");
-            iconLabel.setFont(new Font(24));
-            
-            Label photoLabel = new Label("[Foto]");
-            photoLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
-            
-            Label dimensionsLabel = new Label(message.getOriginalWidth() + "x" + message.getOriginalHeight());
-            dimensionsLabel.setStyle("-fx-font-size: 11px; -fx-text-fill: #666;");
-            
-            Button downloadButton = new Button("Descargar");
-            downloadButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-background-radius: 5; -fx-padding: 5 10;");
-            downloadButton.setOnAction(e -> {
+            imageView.setCursor(javafx.scene.Cursor.HAND);
+
+            Label timestampLabel = new Label(message.getTimestamp().format(formatter));
+            timestampLabel.setStyle("-fx-font-size: 10px; -fx-text-fill: gray;");
+
+            Button downloadBtn = new Button("Descargar");
+            downloadBtn.setStyle("-fx-font-size: 10px;");
+            downloadBtn.setOnAction(e -> {
                 if (onDownload != null) {
                     onDownload.accept(message);
                 }
             });
-            
-            imageContainer.getChildren().addAll(iconLabel, photoLabel, dimensionsLabel, downloadButton);
+
+            HBox buttonBox = new HBox(10, timestampLabel, downloadBtn);
+            buttonBox.setAlignment(Pos.CENTER_LEFT);
+
+            vbox.getChildren().addAll(imageView, buttonBox);
+        } catch (Exception e) {
+            System.err.println("Error loading image: " + e.getMessage());
+            Label errorLabel = new Label("Imagen no disponible");
+            errorLabel.setStyle("-fx-text-fill: gray; -fx-font-style: italic;");
+            vbox.getChildren().add(errorLabel);
         }
-        
-        Label timeLabel = new Label(message.getTimestamp().format(formatter));
-        timeLabel.setStyle("-fx-font-size: 10px; -fx-text-fill: gray;");
-        
-        contentBox.getChildren().addAll(imageContainer, timeLabel);
-        
-        setupContextMenu(contentBox, message, isMe);
-        
-        root.getChildren().add(contentBox);
-        
-        return root;
+
+        return vbox;
     }
 
     private javafx.scene.Node createTextMessageNode(ChatMessage message) {
         HBox root = new HBox(10);
+        root.setPadding(new Insets(5));
+        
         VBox contentBox = new VBox(2);
         
         Label msgLabel = new Label(message.getContent());
+        msgLabel.setFont(new Font(13));
         msgLabel.setWrapText(true);
         msgLabel.setMaxWidth(300);
         
@@ -141,10 +135,16 @@ public class MessageListCell extends ListCell<ChatMessage> {
             contentBox.setAlignment(Pos.CENTER_RIGHT);
             msgLabel.setStyle("-fx-background-color: #DCF8C6; -fx-padding: 8; -fx-background-radius: 10;");
             
-            if (message.isRead()) {
+            ChatMessage.MessageStatus status = message.getStatus();
+            
+            if (status == ChatMessage.MessageStatus.READ) {
+                statusCircle.setFill(Color.GREEN);
+            } else if (status == ChatMessage.MessageStatus.FAILED) {
+                statusCircle.setFill(Color.RED);
+            } else if (status == ChatMessage.MessageStatus.DELIVERED) {
                 statusCircle.setFill(Color.GREEN);
             } else {
-                statusCircle.setFill(Color.RED);
+                statusCircle.setFill(Color.GOLD);
             }
             
             setupContextMenu(root, message, true);

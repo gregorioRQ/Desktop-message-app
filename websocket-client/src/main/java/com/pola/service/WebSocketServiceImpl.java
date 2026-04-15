@@ -146,6 +146,9 @@ public class WebSocketServiceImpl extends Endpoint implements WebSocketService {
             buffer.get(data);
             WsMessage message = WsMessage.parseFrom(data);
             
+            // LOG TEMPORAL: Ver qué tipo de mensaje llega
+            System.out.println("[DEBUG] WebSocket recibió mensaje tipo: " + message.getPayloadCase());
+            
             // CRÍTICO: Verificar si es respuesta de autenticación del servidor
             // El servidor responde exitosamente si los headers X-User-ID y X-Username son válidos
             if(message.hasAuthResponse()){

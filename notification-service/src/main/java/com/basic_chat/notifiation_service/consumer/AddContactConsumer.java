@@ -7,6 +7,8 @@ import org.springframework.stereotype.Component;
 
 import com.basic_chat.notifiation_service.model.ContactUser;
 import com.basic_chat.notifiation_service.repository.ContactUserRepository;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Component
 public class AddContactConsumer {
@@ -14,9 +16,11 @@ public class AddContactConsumer {
     private static final Logger log = LoggerFactory.getLogger(AddContactConsumer.class);
 
     private final ContactUserRepository contactUserRepository;
+    private final ObjectMapper objectMapper;
 
     public AddContactConsumer(ContactUserRepository contactUserRepository) {
         this.contactUserRepository = contactUserRepository;
+        this.objectMapper = new ObjectMapper();
         log.info("AddContactConsumer inicializado");
     }
 
@@ -25,22 +29,21 @@ public class AddContactConsumer {
         log.info("[ADD_CONTACT] Mensaje recibido: {}", message);
 
         try {
-            String sender = extractJsonField(message, "sender");
-            String contactUsername = extractJsonField(message, "contact_username");
+            JsonNode jsonNode = objectMapper.readTree(message);
+            String sender = jsonNode.has("sender") ? jsonNode.get("sender").asText() : null;
+            String contactUsername = jsonNode.has("contact_username") ? jsonNode.get("contact_username").asText() : null;
 
             if (sender == null || contactUsername == null) {
-                log.error("[ADD_CONTACT] Mensaje inválido: campos faltantes");
+                log.error("[ADD_CONTACT] Mensaje inválido: campos faltantes. sender={}, contactUsername={}", sender, contactUsername);
                 return;
             }
 
             log.info("[ADD_CONTACT] Procesando: {} agrega a {}", sender, contactUsername);
 
-            // Crear registro sender -> contactUsername
             ContactUser contact1 = new ContactUser(sender, contactUsername);
             contactUserRepository.save(contact1);
             log.info("[ADD_CONTACT] Registro creado: {} -> {}", sender, contactUsername);
 
-            // Crear registro bidireccional contactUsername -> sender
             ContactUser contact2 = new ContactUser(contactUsername, sender);
             contactUserRepository.save(contact2);
             log.info("[ADD_CONTACT] Registro creado: {} -> {}", contactUsername, sender);
@@ -48,16 +51,5 @@ public class AddContactConsumer {
         } catch (Exception e) {
             log.error("[ADD_CONTACT_ERROR] Error procesando: {}", e.getMessage(), e);
         }
-    }
-
-    private String extractJsonField(String json, String field) {
-        String searchKey = "\"" + field + "\":\"";
-        int keyIndex = json.indexOf(searchKey);
-        if (keyIndex == -1) {
-            return null;
-        }
-        int start = keyIndex + searchKey.length();
-        int end = json.indexOf("\"", start);
-        return end > start ? json.substring(start, end) : null;
     }
 }

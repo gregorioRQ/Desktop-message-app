@@ -38,6 +38,10 @@ public class IncomingMessageProcessor {
         initializeHandlers();
     }
 
+    public MessageProcessingContext getContext() {
+        return context;
+    }
+
     public void setErrorListener(Consumer<String> listener) {
         this.errorListener = listener;
     }
@@ -352,6 +356,10 @@ public class IncomingMessageProcessor {
 
     private void processMessagesReadUpdate(MessagesProto.MessagesReadUpdate update) {
         List<String> idsStr = update.getMessageIdsList();
+        String readerUsername = update.getReaderUsername();
+        
+        log.info("=== RECIBIDO MessagesReadUpdate === Reader: {}, IDs: {}", readerUsername, idsStr);
+        
         if (idsStr.isEmpty()) return;
 
         List<Long> ids = new java.util.ArrayList<>();
@@ -368,9 +376,14 @@ public class IncomingMessageProcessor {
                         msg.setRead(true);
                         msg.setStatus(ChatMessage.MessageStatus.READ);
                         context.getCurrentChatMessages().set(i, msg);
+                        log.info("Mensaje {} marcado como leido en UI", msg.getId());
                     }
                 }
+                if (context.getOnMessagesUpdated() != null) {
+                    context.getOnMessagesUpdated().run();
+                }
             });
+            log.info("Procesado MessagesReadUpdate para {} mensajes", ids.size());
         } catch (SQLException e) {
             e.printStackTrace();
         }

@@ -247,6 +247,6 @@ message WsMessage {
     ImageMessage image_message = 22;
     PendingClearHistory pending_clear_history = 23;
     UnreadImageMessagesList unread_image_messages_list = 24;
-    AddContactRequest add_contact_request = 25;
+    AddContactRequest add_contact_request = 27;
   }
 }

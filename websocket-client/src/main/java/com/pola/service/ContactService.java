@@ -98,9 +98,16 @@ public class ContactService {
     }
 
     public void sendAddContactRequest(String contactUsername) {
+        if (currentUserId == null || currentUsername == null) {
+            System.err.println("ERROR: currentUserId o currentUsername son null. No se puede enviar AddContactRequest.");
+            return;
+        }
+        
         if (webSocketService != null && webSocketService.isConnected() && messageSender != null) {
             messageSender.sendAddContactRequest(currentUserId, currentUsername, contactUsername);
             System.out.println("AddContactRequest enviado para: " + contactUsername);
+        } else {
+            System.err.println("ERROR: WebSocket no conectado o messageSender null. No se puede enviar AddContactRequest.");
         }
     }
 
@@ -287,5 +294,108 @@ public class ContactService {
     public void onConnectionEstablished() {
         // Notificar a los contactos que estamos online - ya no se hace aquí
         // El notification-service maneja esto internamente
+    }
+
+    /**
+     * Marca todos los contactos como offline.
+     * 
+     * Este método se llama cuando el usuario se conecta al SSE para
+     * resetear el estado de todos los contactos antes de recibir
+     * la lista actualizada de contactos online.
+     */
+    public void resetAllContactsOffline() {
+        boolean changed = false;
+        
+        // Marcar contactos normales como offline
+        for (Contact contact : contacts) {
+            if (contact.isOnline()) {
+                contact.setOnline(false);
+                try {
+                    contactRepository.update(contact);
+                    changed = true;
+                } catch (SQLException e) {
+                    System.err.println("[ContactService] Error actualizando contacto a offline: " + e.getMessage());
+                }
+            }
+        }
+        
+        // Marcar contactos bloqueados como offline
+        for (Contact contact : blockedContacts) {
+            if (contact.isOnline()) {
+                contact.setOnline(false);
+                try {
+                    contactRepository.update(contact);
+                    changed = true;
+                } catch (SQLException e) {
+                    System.err.println("[ContactService] Error actualizando contacto bloqueado a offline: " + e.getMessage());
+                }
+            }
+        }
+        
+        // Limpiar la lista de usuarios online
+        onlineUsers.clear();
+        
+        if (changed && onOnlineStatusChanged != null) {
+            onOnlineStatusChanged.run();
+        }
+        
+        System.out.println("[ContactService] Todos los contactos marcados como offline");
+    }
+
+    /**
+     * Marca una lista de contactos como online.
+     * 
+     * Este método se llama cuando se recibe la lista de contactos online
+     * desde el notification-service vía SSE.
+     * 
+     * @param usernames Lista de usernames de contactos que están online
+     */
+    public void setContactsOnline(List<String> usernames) {
+        if (usernames == null || usernames.isEmpty()) {
+            return;
+        }
+        
+        boolean changed = false;
+        
+        for (String username : usernames) {
+            // Buscar en contactos normales
+            contacts.stream()
+                .filter(c -> username.equals(c.getContactUsername()))
+                .findFirst()
+                .ifPresent(c -> {
+                    if (!c.isOnline()) {
+                        c.setOnline(true);
+                        onlineUsers.add(username);
+                        try {
+                            contactRepository.update(c);
+                        } catch (SQLException e) {
+                            System.err.println("[ContactService] Error actualizando contacto a online: " + e.getMessage());
+                        }
+                        if (onOnlineStatusChanged != null) {
+                            onOnlineStatusChanged.run();
+                        }
+                    }
+                });
+            
+            // Buscar en contactos bloqueados
+            blockedContacts.stream()
+                .filter(c -> username.equals(c.getContactUsername()))
+                .findFirst()
+                .ifPresent(c -> {
+                    if (!c.isOnline()) {
+                        c.setOnline(true);
+                        try {
+                            contactRepository.update(c);
+                        } catch (SQLException e) {
+                            System.err.println("[ContactService] Error actualizando contacto bloqueado a online: " + e.getMessage());
+                        }
+                        if (onOnlineStatusChanged != null) {
+                            onOnlineStatusChanged.run();
+                        }
+                    }
+                });
+        }
+        
+        System.out.println("[ContactService] " + usernames.size() + " contactos marcados como online");
     }
 }

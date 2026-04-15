@@ -28,6 +28,8 @@
 	</scm>
 	<properties>
 		<java.version>21</java.version>
+		<protobuf.version>3.25.1</protobuf.version>
+		<os.detected.classifier>windows-x86_64</os.detected.classifier>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -72,12 +74,17 @@
 			<artifactId>spring-boot-starter-data-redis</artifactId>
 		</dependency>
 		<!-- Para que spring lea las variables de entorno -->
-		<dependency>
-    		<groupId>me.paulschwarz</groupId>
-    		<artifactId>spring-dotenv</artifactId>
-    		<version>4.0.0</version>
+<dependency>
+     		<groupId>me.paulschwarz</groupId>
+     		<artifactId>spring-dotenv</artifactId>
+     		<version>4.0.0</version>
+ 		</dependency>
+ 		<dependency>
+			<groupId>com.google.protobuf</groupId>
+			<artifactId>protobuf-java</artifactId>
+			<version>${protobuf.version}</version>
 		</dependency>
-	</dependencies>
+ 	</dependencies>
 
 	<build>
 		<plugins>
@@ -104,6 +111,44 @@
 						</exclude>
 					</excludes>
 				</configuration>
+			</plugin>
+			
+			<plugin>
+				<groupId>org.xolstice.maven.plugins</groupId>
+				<artifactId>protobuf-maven-plugin</artifactId>
+				<version>0.6.1</version>
+				<configuration>
+					<protocArtifact>com.google.protobuf:protoc:${protobuf.version}:exe:${os.detected.classifier}</protocArtifact>
+					<outputDirectory>${project.basedir}/src/generated/java</outputDirectory>
+					<clearOutputDirectory>false</clearOutputDirectory>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>3.4.0</version>
+				<executions>
+					<execution>
+						<id>add-source</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>add-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>${project.basedir}/src/generated/java</source>
+							</sources>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

@@ -16,6 +16,15 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 public class ChatMessage {
+    
+    public enum MessageStatus {
+        PENDING,
+        SENT,
+        FAILED,
+        DELIVERED,
+        READ
+    }
+    
     private final LongProperty id;
     private final StringProperty contactUsername;
     private final StringProperty senderUsername;
@@ -23,12 +32,18 @@ public class ChatMessage {
     private final StringProperty senderId;
     private final ObjectProperty<LocalDateTime> timestamp;
     private final BooleanProperty read;
+    private final ObjectProperty<MessageStatus> status;
     
     private static final DateTimeFormatter TIME_FORMATTER = 
             DateTimeFormatter.ofPattern("HH:mm");
     
     public ChatMessage(Long id, String contactUsername, String senderUsername, String content, String senderId,
                       LocalDateTime timestamp, boolean read) {
+        this(id, contactUsername, senderUsername, content, senderId, timestamp, read, MessageStatus.PENDING);
+    }
+    
+    public ChatMessage(Long id, String contactUsername, String senderUsername, String content, String senderId,
+                      LocalDateTime timestamp, boolean read, MessageStatus status) {
         this.id = new SimpleLongProperty(id);
         this.contactUsername = new SimpleStringProperty(contactUsername);
         this.senderUsername = new SimpleStringProperty(senderUsername);
@@ -36,6 +51,7 @@ public class ChatMessage {
         this.senderId = new SimpleStringProperty(senderId);
         this.timestamp = new SimpleObjectProperty<>(timestamp);
         this.read = new SimpleBooleanProperty(read);
+        this.status = new SimpleObjectProperty<>(status);
     }
     
     // Constructor simplificado para nuevos mensajes
@@ -114,6 +130,18 @@ public class ChatMessage {
 
     public void setContent(String content){
         this.content.set(content);
+    }
+    
+    public MessageStatus getStatus() {
+        return status.get();
+    }
+    
+    public ObjectProperty<MessageStatus> statusProperty() {
+        return status;
+    }
+    
+    public void setStatus(MessageStatus status) {
+        this.status.set(status);
     }
     
     /**
