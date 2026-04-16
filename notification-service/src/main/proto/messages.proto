@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package com.basic_chat;
+
+option java_package = "com.basic_chat.proto";
+option java_outer_classname = "MessagesProto";
+
+message ContactPresenceMessage {
+  oneof payload {
+    ContactPresenceRequest request = 1;
+    ContactPresenceResponse response = 2;
+  }
+}
+
+message ContactPresenceRequest {
+  string user_id = 1;
+}
+
+message ContactPresenceResponse {
+  repeated ContactPresence contacts = 1;
+}
+
+message ContactPresence {
+  string username = 1;
+  string user_id = 2;
+  bool online = 3;
+}
+
+message AddContactRequest {
+  string sender = 1;
+  string contact_username = 2;
+}

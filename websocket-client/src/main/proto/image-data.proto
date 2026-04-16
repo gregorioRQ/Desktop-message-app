@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package com.pola;
+
+option java_multiple_files = true;
+option java_package = "com.pola.proto";
+option java_outer_classname = "ImageData";
+
+// ===== MENSAJES PARA HTTP (Imagen Completa) =====
+
+message UploadImageRequest {
+    string user_id = 1;
+    string receiver_id = 2;
+    bytes image_data = 3;
+    string original_filename = 4;
+    int32 original_width = 5;
+    int32 original_height = 6;
+}
+
+message UploadImageResponse {
+    bool success = 1;
+    string media_id = 2;
+    string full_image_url = 3;
+    int64 full_image_size = 4;
+    string error_message = 5;
+}
+
+message DownloadImageRequest {
+    string media_id = 1;
+    string user_id = 2;
+}
+
+message DownloadImageResponse {
+    bool success = 1;
+    bytes image_data = 2;
+    string mime_type = 3;
+    int32 width = 4;
+    int32 height = 5;
+    string error_message = 6;
+}

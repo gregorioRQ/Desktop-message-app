@@ -43,13 +43,14 @@ public class MessageRouterService {
         // Convertir username a userId para consultar Redis correctamente
         // Redis guarda: user:name:{username} -> userId
         // Y también: user:{userId}:connectionInstance -> instanceId
+        // La verificación se hace en Redis para evitar HTTP calls a profile-service por cada mensaje
         String recipientUserId = sessionRegistryService.getUserIdByUsername(recipient);
 
         if (recipientUserId == null) {
-            // El usuario no existe o no está registrado en el sistema
-            log.info("Usuario {} no encontrado en el sistema, enviando a cola offline", recipient);
-            rabbitMQProducerService.sendToOfflineQueue(new RoutedMessage(sender, recipient, messageData, null));
-            // No hay userId disponible, no se puede notificar
+            // El usuario no existe en el sistema (no está registrado en Redis)
+            // Verificamos en Redis (no en profile-service por temas de rendimiento)
+            log.info("Usuario {} no existe en el sistema, no se procesa el mensaje", recipient);
+            // No se encola a offline ni se notifica porque el usuario no existe
             return;
         }
 
@@ -60,7 +61,7 @@ public class MessageRouterService {
             // Usuario offline - no hay instancia registrada en Redis
             log.info("Destinatario {} no está conectado, encolando mensaje en cola offline", recipient);
             rabbitMQProducerService.sendToOfflineQueue(new RoutedMessage(sender, recipient, messageData, null));
-            // Publicar evento de notificación para notification-service (con userId)
+            // Siempre encolar evento de notificación para notification-service
             publishNotificationEvent(sender, recipient, recipientUserId, null, messageData);
             return;
         }
@@ -73,6 +74,64 @@ public class MessageRouterService {
             // Usuario conectado en otra instancia - enviar a esa instancia via RabbitMQ
             log.info("Destinatario {} está en instancia {}, encolando mensaje", recipient, recipientInstance);
             rabbitMQProducerService.sendToQueue(recipientInstance, new RoutedMessage(sender, recipient, messageData, recipientInstance));
+        }
+    }
+
+    /**
+     * Enruta un mensaje de imagen al destinatario según su estado de conexión.
+     * 
+     * Este método tiene el mismo flujo que routeMessage pero específico para ImageMessage:
+     * 1. Usuario conectado en esta instancia → Envío directo por WebSocket
+     * 2. Usuario conectado en otra instancia → Encolar en RabbitMQ (message.sent.{instanceId})
+     * 3. Usuario offline → Encolar en cola offline (para guardar pending) + Notificar a notification-service
+     * 
+     * La diferencia con routeMessage es que cuando el receptor está offline, siempre se
+     * encola a chat-service (no se puede entregar directamente porque el cliente receptor
+     * necesita la info del ImageMessage para mostrar la UI de descarga).
+     * 
+     * @param sender Username del remitente
+     * @param receiverId UserId del destinatario
+     * @param messageData Datos binarios del mensaje (WsMessage protobuf con ImageMessage)
+     */
+    public void routeImageMessage(String sender, String receiverId, byte[] messageData) {
+        log.info("Enrutando mensaje de imagen de {} para receptor: {}", sender, receiverId);
+        
+        // Convertir username a userId para consultar Redis correctamente
+        // El receiverId en ImageMessage contiene el username, pero Redis usa userId
+        // La verificación se hace en Redis para evitar HTTP calls a profile-service por temas de rendimiento
+        String recipientUserId = sessionRegistryService.getUserIdByUsername(receiverId);
+        
+        if (recipientUserId == null) {
+            // El usuario no existe en el sistema (no está registrado en Redis)
+            log.info("Usuario {} no existe en el sistema, no se procesa el mensaje de imagen", receiverId);
+            return;
+        }
+        
+        // Obtener la instancia donde está conectado el destinatario
+        String recipientInstance = sessionRegistryService.getConnectionInstance(recipientUserId);
+
+        if (recipientInstance == null) {
+            // Usuario offline - no hay instancia registrada en Redis
+            log.info("Destinatario {} no está conectado, encolando mensaje de imagen en cola offline", receiverId);
+            // Encolar a chat-service para guardar como pending
+            rabbitMQProducerService.sendToOfflineQueue(new RoutedMessage(sender, receiverId, messageData, null));
+            // Siempre publicar evento de notificación para notification-service
+            publishImageNotificationEvent(sender, receiverId, messageData);
+            return;
+        }
+
+        if (recipientInstance.equals(instanceId)) {
+            // Usuario conectado en esta instancia - envío directo por WebSocket
+            log.info("Destinatario {} está en esta instancia {}, enviando mensaje de imagen directamente", 
+                receiverId, instanceId);
+            // Usar userId directamente para enviar
+            sessionRegistryService.sendToUser(recipientUserId, messageData);
+        } else {
+            // Usuario conectado en otra instancia - enviar a esa instancia via RabbitMQ
+            log.info("Destinatario {} está en instancia {}, encolando mensaje de imagen", 
+                receiverId, recipientInstance);
+            rabbitMQProducerService.sendToQueue(recipientInstance, 
+                new RoutedMessage(sender, receiverId, messageData, recipientInstance));
         }
     }
 
@@ -101,6 +160,30 @@ public class MessageRouterService {
                     recipient, recipientUserId, sender);
         } catch (Exception e) {
             log.error("Error al publicar evento de notificación para {}: {}", recipient, e.getMessage());
+        }
+    }
+
+    /**
+     * Publica un evento de notificación para notification-service cuando se envía una imagen.
+     * 
+     * Este método se llama cuando el destinatario está offline y se ha encolado
+     * el ImageMessage en la cola offline para guardarlo como pending.
+     * 
+     * Notifica al destinatario que tiene una nueva imagen pendiente de descargar.
+     * 
+     * @param sender Username del remitente
+     * @param receiverId UserId del destinatario
+     * @param imageMessageData Datos binarios del ImageMessage
+     */
+    private void publishImageNotificationEvent(String sender, String receiverId, byte[] imageMessageData) {
+        try {
+            NotificationEvent notificationEvent = NotificationEvent.createNewImageMessageEvent(
+                    sender, receiverId, imageMessageData);
+            rabbitMQProducerService.sendToNotificationQueue(notificationEvent);
+            log.info("Evento de notificación de imagen publicado para receptor: {}, remitente: {}", 
+                    receiverId, sender);
+        } catch (Exception e) {
+            log.error("Error al publicar evento de notificación de imagen para {}: {}", receiverId, e.getMessage());
         }
     }
 

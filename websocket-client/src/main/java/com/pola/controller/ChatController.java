@@ -3,17 +3,23 @@ package com.pola.controller;
 import com.pola.database.DatabaseManager;
 import com.pola.model.ChatMessage;
 import com.pola.model.Contact;
+import com.pola.model.ImageChatMessage;
 import com.pola.model.Message;
 import com.pola.model.Notification;
 import com.pola.proto.MessagesProto.AuthMessage;
 import com.pola.proto.MessagesProto.WsMessage;
+import com.pola.proto.DownloadImageRequest;
+import com.pola.proto.DownloadImageResponse;
 import com.pola.service.ContactService;
 import com.pola.service.AuthService;
 import com.pola.service.HttpServiceImpl;
+import com.pola.service.ImageActionHelper;
 import com.pola.service.MessageService;
+import com.pola.database.DatabaseManager;
 // import com.pola.service.NotificationService;
 import com.pola.service.SseNotificationClient;
 import com.pola.service.WebSocketService;
+import com.pola.service.WebSocketServiceImpl;
 import com.pola.util.LogoutContext;
 import com.pola.util.LogoutHandler;
 import com.pola.repository.TokenRepository;
@@ -22,7 +28,15 @@ import com.pola.view.ContactListCell;
 import com.pola.view.ChatDialogs;
 import com.pola.view.SystemTrayManager;
 import com.pola.view.ViewManager;
+import com.pola.event.SseEventBus;
+import com.pola.event.SseEventType;
+import com.pola.event.handler.ContactListEventHandler;
+import com.pola.event.handler.HeartbeatEventHandler;
+import com.pola.event.handler.NotificationEventHandler;
+import com.pola.event.handler.PresenceEventHandler;
 
+import java.io.File;
+import java.io.ByteArrayInputStream;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -32,16 +46,25 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.layout.StackPane;
+import javafx.geometry.Side;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Circle;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.scene.Scene;
 
 /**
  * Controlador para la vista de chat
@@ -68,6 +91,9 @@ public class ChatController {
     
     @FXML
     private Button sendButton;
+
+    @FXML
+    private Button attachButton;
     
     @FXML
     private Button connectButton;
@@ -119,6 +145,7 @@ public class ChatController {
     // controller's lifecycle events to call scheduler.shutdown()
 
     private WebSocketService webSocketService;
+    private WebSocketService mediaWebSocketService;
     private MessageService messageService;
     private ContactService contactService;
     // private NotificationService notificationService;
@@ -133,6 +160,7 @@ public class ChatController {
     private ContactActionHelper contactActionHelper;
     private MessageActionHelper messageActionHelper;
     private ConnectionActionHelper connectionActionHelper;
+    private ImageActionHelper imageActionHelper;
     private LogoutHandler logoutHandler;
     private AuthService authService;
     private ScheduledExecutorService heartbeatExecutor;
@@ -164,6 +192,7 @@ public class ChatController {
         this.contactActionHelper = new ContactActionHelper(contactService, this);
         this.messageActionHelper = new MessageActionHelper(messageService, webSocketService, contactService, this);
         this.connectionActionHelper = new ConnectionActionHelper(webSocketService, contactService, this);
+        this.imageActionHelper = new ImageActionHelper(this, new HttpServiceImpl());
 
         // 1. Crear el objeto de contexto con las dependencias
         LogoutContext logoutCtx = new LogoutContext(
@@ -201,6 +230,10 @@ public class ChatController {
     
     public void setMessageService(MessageService messageService) {
         this.messageService = messageService;
+        
+        messageService.setOnMessagesUpdatedListener(() -> {
+            Platform.runLater(() -> messageListView.refresh());
+        });
     }
     
     public void setContactService(ContactService contactService) {
@@ -259,6 +292,16 @@ public class ChatController {
         // Configurar botones
         sendButton.setOnAction(event -> messageActionHelper.handleSendMessage());
         
+        if (attachButton != null) {
+            ContextMenu attachMenu = new ContextMenu();
+            MenuItem imageItem = new MenuItem("Enviar Imagen");
+            imageItem.setOnAction(event -> imageActionHelper.handleAttachImage());
+            attachMenu.getItems().add(imageItem);
+
+            // Mostrar el menú al hacer clic en el botón
+            attachButton.setOnAction(event -> attachMenu.show(attachButton, Side.TOP, 0, 0));
+        }
+        
         // El botón de conectar ya no es necesario en la UI (conexión automática)
         if (connectButton != null) {
             connectButton.setVisible(false);
@@ -288,45 +331,17 @@ public class ChatController {
         // Deshabilitar envío si no está conectado
         sendButton.setDisable(true);
         messageInput.setDisable(true);
+        if (attachButton != null) attachButton.setDisable(true);
 
         // Configurar celdas para contactos (Botón Bloquear)
-        contactsListView.setCellFactory(param -> new ContactListCell(false, contactActionHelper::confirmBlockContact, contactActionHelper::confirmUnblockContact, contactActionHelper::confirmAddContact) {
+        contactsListView.setCellFactory(param -> new ContactListCell(false, contactActionHelper::confirmBlockContact, contactActionHelper::confirmUnblockContact, contactActionHelper::confirmAddContact, contactService) {
             @Override
             protected void updateItem(Contact contact, boolean empty) {
                 super.updateItem(contact, empty);
                 if (contact != null && !empty) {
-                    // Añadir indicador de estado
                     if (getGraphic() instanceof HBox) {
                         HBox hbox = (HBox) getGraphic();
-                        Node indicator = null;
-                        for (Node n : hbox.getChildren()) {
-                            if ("statusIndicator".equals(n.getId())) {
-                                indicator = n;
-                                break;
-                            }
-                        }
-                        if (indicator == null) {
-                            Label statusLabel = new Label();
-                            statusLabel.setId("statusIndicator");
-                            statusLabel.setStyle("-fx-font-size: 10px; -fx-padding: 0 5 0 0;");
-                            hbox.getChildren().add(0, statusLabel);
-                            indicator = statusLabel;
-                        }
                         
-                        boolean isOnline = contact.getContactUserId() != null && contactService.isContactOnline(contact.getContactUserId());
-                        ((Label) indicator).setText(isOnline ? "Conectado" : "Desconectado");
-                        ((Label) indicator).setTextFill(isOnline ? Color.GREEN : Color.GRAY);
-
-                        // Ocultar icono de handshake si el contacto ya está confirmado
-                        // Se asume que el botón de handshake tiene el ID "handshakeButton" en ContactListCell
-                        for (Node n : hbox.getChildren()) {
-                            if ("handshakeButton".equals(n.getId())) {
-                                boolean showHandshake = !contact.isConfirmed();
-                                n.setVisible(showHandshake);
-                                n.setManaged(showHandshake);
-                            }
-                        }
-
                         // Menú desplegable de opciones (Eliminar)
                         Node optionsNode = null;
                         for (Node n : hbox.getChildren()) {
@@ -368,11 +383,130 @@ public class ChatController {
         }
         
         // Configurar celdas para contactos bloqueados (Botón Desbloquear)
-        blockedContactsListView.setCellFactory(param -> new ContactListCell(true, contactActionHelper::confirmBlockContact, contactActionHelper::confirmUnblockContact, contactActionHelper::confirmAddContact));
+        blockedContactsListView.setCellFactory(param -> new ContactListCell(true, contactActionHelper::confirmBlockContact, contactActionHelper::confirmUnblockContact, contactActionHelper::confirmAddContact, contactService));
     }
 
     private void setupMessageListView(){
-        messageListView.setCellFactory(lv -> new MessageListCell(currentUsername, messageActionHelper::handleDeleteMessage, messageActionHelper::handleEditMessage));
+        messageListView.setCellFactory(lv -> new MessageListCell(
+            currentUsername, 
+            messageActionHelper::handleDeleteMessage, 
+            messageActionHelper::handleEditMessage,
+            this::handleImageDownload,
+            this::handleViewImage
+        ));
+    }
+    
+    private void handleImageDownload(ImageChatMessage imageMessage) {
+        String mediaId = imageMessage.getMediaId();
+        String userId = authService.getUserId();
+        String accessToken = authService.getAccessToken();
+        
+        if (mediaId == null || userId == null || accessToken == null) {
+            System.err.println("No se puede descargar imagen: falta información de sesión");
+            return;
+        }
+        
+        if (DatabaseManager.getInstance().hasImage(mediaId)) {
+            System.out.println("Imagen ya descargada: " + mediaId);
+            imageMessage.setDownloaded(true);
+            Platform.runLater(() -> messageListView.refresh());
+            return;
+        }
+        
+        HttpServiceImpl httpService = new HttpServiceImpl();
+        DownloadImageRequest request = DownloadImageRequest.newBuilder()
+            .setMediaId(mediaId)
+            .setUserId(userId)
+            .build();
+        
+        httpService.downloadMedia(request, accessToken)
+            .thenAccept(response -> {
+                if (response.getSuccess()) {
+                    byte[] imageData = response.getImageData().toByteArray();
+                    String mimeType = response.getMimeType();
+                    int width = response.getWidth();
+                    int height = response.getHeight();
+                    
+                    DatabaseManager.getInstance().saveImage(
+                        mediaId, 
+                        imageMessage.getId(), 
+                        imageData, 
+                        mimeType, 
+                        width, 
+                        height
+                    );
+                    
+                    String localPath = saveImageToFile(mediaId, imageData, mimeType);
+                    if (localPath != null) {
+                        imageMessage.setFullImageUrl(localPath);
+                    }
+                    
+                    DatabaseManager.getInstance().updateDownloaded(imageMessage.getId(), true);
+                    imageMessage.setDownloaded(true);
+                    Platform.runLater(() -> messageListView.refresh());
+                    System.out.println("Imagen descargada y guardada: " + mediaId);
+                } else {
+                    System.err.println("Error al descargar imagen: " + response.getErrorMessage());
+                }
+            })
+            .exceptionally(ex -> {
+                System.err.println("Excepción al descargar imagen: " + ex.getMessage());
+                ex.printStackTrace();
+                return null;
+            });
+    }
+    
+    private String saveImageToFile(String mediaId, byte[] imageData, String mimeType) {
+        try {
+            String userHome = System.getProperty("user.home");
+            String imagesDir = userHome + File.separator + ".chat-client" + File.separator + "images";
+            File dir = new File(imagesDir);
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+            
+            String extension = mimeType.equals("image/webp") ? "webp" : 
+                              mimeType.equals("image/png") ? "png" : "jpg";
+            String fileName = mediaId + "." + extension;
+            File imageFile = new File(imagesDir, fileName);
+            
+            java.nio.file.Files.write(imageFile.toPath(), imageData);
+            System.out.println("Imagen guardada en archivo: " + imageFile.getAbsolutePath());
+            
+            return imageFile.toURI().toString();
+        } catch (Exception e) {
+            System.err.println("Error guardando imagen en archivo: " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
+    
+    private void handleViewImage(ImageChatMessage imageMessage) {
+        String imagePath = imageMessage.getFullImageUrl();
+        if (imagePath == null || imagePath.isEmpty()) {
+            System.err.println("No hay imagen para mostrar");
+            return;
+        }
+        
+        try {
+            java.net.URI uri = new java.net.URI(imagePath);
+            File imageFile = new File(uri);
+            
+            if (!imageFile.exists()) {
+                System.err.println("El archivo de imagen no existe: " + imageFile.getAbsolutePath());
+                return;
+            }
+            
+            if (java.awt.Desktop.isDesktopSupported()) {
+                java.awt.Desktop.getDesktop().open(imageFile);
+                System.out.println("Abriendo imagen con sistema: " + imageFile.getAbsolutePath());
+            } else {
+                System.err.println("Desktop no es compatible en este sistema");
+            }
+        } catch (Exception e) {
+            System.err.println("Error al abrir la imagen: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
     
     private void setupListeners() {
@@ -448,7 +582,7 @@ public class ChatController {
         });
 
         // Listener para refrescar la lista cuando cambia el estado online/offline
-        contactService.setOnOnlineStatusChanged(() -> {
+        contactService.setOnOnlineStatusChangedListener(() -> {
             Platform.runLater(() -> contactsListView.refresh());
         });
     }
@@ -458,6 +592,14 @@ public class ChatController {
         webSocketService.setMessageListener(wsMessage -> {
             messageService.processReceivedMessage(wsMessage);
         });
+
+        // Listener de mensajes Media (si recibimos confirmaciones o thumbnails por aquí)
+        if (mediaWebSocketService != null) {
+            mediaWebSocketService.setConnectionListener(connected -> {
+                System.out.println("Media WebSocket " + (connected ? "Conectado" : "Desconectado"));
+            });
+            // Aquí podrías añadir un listener de mensajes si el servidor envía respuestas por este canal
+        }
         
         // Listener de conexión
         webSocketService.setConnectionListener(connected -> {
@@ -497,11 +639,28 @@ public class ChatController {
 
         // Listener de autenticación exitosa
         webSocketService.setAuthSuccessListener(userId -> {
-            // El servicio de notificaciones STOMP fue comentado
-            // if (notificationService != null) {
-            //     notificationService.sendUserOnlineNotification(userId);
-            // }
+            // La solicitud de contactos online ahora es automática desde connection-service
+            // No es necesario enviar ContactPresenceRequest manualmente
         });
+    }
+
+    private void requestContactsPresence(String userId) {
+        if (webSocketService != null && webSocketService.isConnected()) {
+            com.pola.proto.MessagesProto.ContactPresenceRequest request = 
+                com.pola.proto.MessagesProto.ContactPresenceRequest.newBuilder()
+                    .setUserId(userId)
+                    .build();
+            com.pola.proto.MessagesProto.ContactPresenceMessage message = 
+                com.pola.proto.MessagesProto.ContactPresenceMessage.newBuilder()
+                    .setRequest(request)
+                    .build();
+            com.pola.proto.MessagesProto.WsMessage wsMessage = 
+                com.pola.proto.MessagesProto.WsMessage.newBuilder()
+                    .setContactPresenceMessage(message)
+                    .build();
+            webSocketService.sendMessage(wsMessage);
+            System.out.println("[ChatController] Solicitando presencia de contactos para: " + userId);
+        }
     }
 
     private void loadContacts() {
@@ -581,6 +740,7 @@ public class ChatController {
         
         sendButton.setDisable(!canSend);
         messageInput.setDisable(!canSend);
+        if (attachButton != null) attachButton.setDisable(!canSend);
         
         if (isBlocked) {
             messageInput.setPromptText("No puedes enviar mensajes a este usuario.");
@@ -600,6 +760,7 @@ public class ChatController {
             chatTitleLabel.setText("");
             sendButton.setDisable(true);
             messageInput.setDisable(true);
+            if (attachButton != null) attachButton.setDisable(true);
             if (blockButton != null) blockButton.setDisable(true);
             if (clearChatButton != null) clearChatButton.setDisable(true);
         }
@@ -613,6 +774,10 @@ public class ChatController {
 
     public TextArea getMessageInput() {
         return messageInput;
+    }
+
+    public MessageActionHelper getMessageActionHelper() {
+        return messageActionHelper;
     }
 
     public String getCurrentUsername() {
@@ -655,7 +820,7 @@ public class ChatController {
     public void connectSse() {
         if (sseClient == null) {
             sseClient = new SseNotificationClient(
-                currentUserId,
+                currentUsername,
                 authToken,
                 () -> {
                     Platform.runLater(() -> {
@@ -669,30 +834,27 @@ public class ChatController {
                 }
             );
 
-            sseClient.addMessageListener(message -> {
-                System.out.println("[ChatController] SSE notification received: " + message);
-
-                // Filtrar heartbeat
-                if (":ok".equals(message) || message.contains("heartbeat")) {
-                    System.out.println("[ChatController] Heartbeat recibido - ignorando");
-                    return;
-                }
-
-                Platform.runLater(() -> {
-                    if (viewManager.isWindowVisible()) {
-                        System.out.println("[ChatController] Ventana visible - actualizando lista de notificaciones");
-                    } else {
-                        System.out.println("[ChatController] Ventana oculta - intentando mostrar notificación");
-                        if (systemTrayManager != null) {
-                            System.out.println("[ChatController] systemTrayManager no es null - llamando showNotification()");
-                            systemTrayManager.showNotification("MSG Desktop", message);
-                        } else {
-                            System.err.println("[ChatController] ERROR - systemTrayManager es null!");
-                        }
-                    }
-                });
-            });
+            // Registrar handlers del EventBus para procesar eventos SSE
+            SseEventBus eventBus = SseEventBus.getInstance();
             
+            // Handler para lista de contactos online (se recibe al conectar)
+            eventBus.registerHandler(SseEventType.CONTACT_LIST,
+                new ContactListEventHandler(contactService));
+            
+            // Handler para eventos de presencia (ONLINE/OFFLINE)
+            eventBus.registerHandler(SseEventType.PRESENCE,
+                new PresenceEventHandler(contactService));
+            
+            // Handler para heartbeats
+            eventBus.registerHandler(SseEventType.HEARTBEAT,
+                new HeartbeatEventHandler());
+            
+            // Handler para notificaciones generales
+            eventBus.registerHandler(SseEventType.NOTIFICATION,
+                new NotificationEventHandler(viewManager, systemTrayManager));
+            eventBus.registerHandler(SseEventType.MESSAGE,
+                new NotificationEventHandler(viewManager, systemTrayManager));
+
             sseClient.addErrorListener(error -> {
                 System.err.println("[ChatController] SSE error: " + error.getMessage());
                 error.printStackTrace();
@@ -751,5 +913,63 @@ public class ChatController {
      */
     public boolean isSseConnected() {
         return sseClient != null && sseClient.isConnected();
+    }
+
+    /**
+     * Maneja eventos de presencia recibidos via SSE.
+     * 
+     * Este método procesa los eventos de presencia (ONLINE/OFFLINE) recibidos
+     * del notification-service y actualiza el estado online del contacto
+     * en ContactService para reflejarlo en la UI.
+     * 
+     * El flujo de privacidad implementado:
+     * - Solo los contactos confirmados reciben notificaciones de presencia
+     * - El mensaje tiene formato: {"type":"ONLINE|OFFLINE","userId":"...","username":"..."}
+     * 
+     * @param message El mensaje JSON del evento de presencia
+     */
+    private void handlePresenceEvent(String message) {
+        try {
+            String type = extractJsonField(message, "type");
+            String userId = extractJsonField(message, "userId");
+            String username = extractJsonField(message, "username");
+
+            if (type == null || userId == null) {
+                System.err.println("[ChatController] Evento de presencia inválido: " + message);
+                return;
+            }
+
+            boolean isOnline = "ONLINE".equals(type);
+
+            System.out.println("[ChatController] Evento de presencia recibido: " + type + " para usuario: " + username + " (id: " + userId + ")");
+
+            // Actualizar el estado online del contacto en ContactService usando username
+            if (contactService != null) {
+                contactService.setContactOnlineByUsername(username, isOnline);
+                System.out.println("[ChatController] Contacto " + (isOnline ? "conectado" : "desconectado") + ": " + username);
+            }
+
+        } catch (Exception e) {
+            System.err.println("[ChatController] Error procesando evento de presencia: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Extrae un campo de un string JSON simple.
+     * 
+     * @param json El string JSON
+     * @param field El nombre del campo a extraer
+     * @return El valor del campo o null si no se encuentra
+     */
+    private String extractJsonField(String json, String field) {
+        String searchKey = "\"" + field + "\":\"";
+        int keyIndex = json.indexOf(searchKey);
+        if (keyIndex == -1) {
+            return null;
+        }
+        int start = keyIndex + searchKey.length();
+        int end = json.indexOf("\"", start);
+        return end > start ? json.substring(start, end) : null;
     }
 }

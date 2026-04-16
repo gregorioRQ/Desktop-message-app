@@ -1,6 +1,5 @@
 package com.pola.repository;
 
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,7 +12,6 @@ import java.util.Optional;
 import com.pola.database.DatabaseManager;
 import com.pola.model.Contact;
 
-// Repositorio para la gestion de contactos
 public class ContactRepository {
     private final DatabaseManager dbManager;
 
@@ -21,70 +19,59 @@ public class ContactRepository {
         this.dbManager = DatabaseManager.getInstance();
     }
 
-    // Crear un nuevo contacto
     public Contact create(Contact contact) throws SQLException{
         String sql = """
-                INSERT INTO contacts (user_id, contact_username, contact_user_id, is_blocked, is_confirmed) VALUES (?, ?, ?, ?, ?)
+                INSERT INTO contacts (user_id, contact_username, is_blocked, is_online) VALUES (?, ?, ?, ?)
                 """;
 
         try(Connection conn = dbManager.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql)){
-                stmt.setString(1, contact.getUserId());
-                stmt.setString(2, contact.getContactUsername());
-                stmt.setString(3, contact.getContactUserId());
-                stmt.setInt(4, contact.isBlocked() ? 1 : 0);
-                stmt.setInt(5, contact.isConfirmed() ? 1 : 0);
+            stmt.setString(1, contact.getUserId());
+            stmt.setString(2, contact.getContactUsername());
+            stmt.setInt(3, contact.isBlocked() ? 1 : 0);
+            stmt.setInt(4, contact.isOnline() ? 1 : 0);
 
-                int affectedRows = stmt.executeUpdate();
+            int affectedRows = stmt.executeUpdate();
 
-                if (affectedRows == 0){
-                    throw new SQLException("Fallo al crear el contacto");
-                }
-
-                // Obtener el ID generado usando last_insert_rowid()
-                String idQuery = "SELECT last_insert_rowid() as id";
-                try(Statement idStmt = conn.createStatement();
-                    ResultSet rs = idStmt.executeQuery(idQuery)){
-                    if(rs.next()){
-                        contact.setId(rs.getInt("id"));
-                    }
-                }
-                System.out.println("Contacto creado");
-                return contact;
-
+            if (affectedRows == 0){
+                throw new SQLException("Fallo al crear el contacto");
             }
+
+            String idQuery = "SELECT last_insert_rowid() as id";
+            try(Statement idStmt = conn.createStatement();
+                ResultSet rs = idStmt.executeQuery(idQuery)){
+                if(rs.next()){
+                    contact.setId(rs.getInt("id"));
+                }
+            }
+            System.out.println("Contacto creado");
+            return contact;
+        }
     }
 
-    // Obtener todos los contactos de un usuario
     public List<Contact> findByUserId(String userId) throws SQLException{
         String sql = """
-                SELECT id, user_id, contact_username,
-                contact_user_id, is_blocked, is_confirmed, created_at, updated_at FROM contacts WHERE user_id = ?
-                AND is_blocked = 0 ORDER BY contact_username ASC
+                SELECT id, user_id, contact_username, is_blocked, is_online, created_at, updated_at 
+                FROM contacts WHERE user_id = ? AND is_blocked = 0 ORDER BY contact_username ASC
                 """;
         List<Contact> contacts = new ArrayList<>();
         try(Connection conn = dbManager.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql)){
-                stmt.setString(1, userId);
+            stmt.setString(1, userId);
 
-                try(ResultSet rs = stmt.executeQuery()){
-                    while (rs.next()){
-                        contacts.add(mapResultSetToContact(rs));
-                    }
+            try(ResultSet rs = stmt.executeQuery()){
+                while (rs.next()){
+                    contacts.add(mapResultSetToContact(rs));
                 }
             }
+        }
         return contacts;   
     }
 
-    /**
-     * Busca un contacto específico por ID
-     */
     public Optional<Contact> findById(int id) throws SQLException {
         String sql = """
-            SELECT id, user_id, contact_username, 
-                   contact_user_id, is_blocked, is_confirmed, created_at, updated_at
-            FROM contacts
-            WHERE id = ?
+            SELECT id, user_id, contact_username, is_blocked, is_online, created_at, updated_at
+            FROM contacts WHERE id = ?
             """;
         
         try (Connection conn = dbManager.getConnection();
@@ -102,16 +89,11 @@ public class ContactRepository {
         return Optional.empty();
     }
     
-    /**
-     * Busca un contacto por userId y contactUserId
-     */
     public Optional<Contact> findByUserIdAndContactUsername(String userId, String contactUsername) 
             throws SQLException {
         String sql = """
-            SELECT id, user_id, contact_username,
-                   contact_user_id, is_blocked, is_confirmed, created_at, updated_at
-            FROM contacts
-            WHERE user_id = ? AND contact_username = ?
+            SELECT id, user_id, contact_username, is_blocked, is_online, created_at, updated_at
+            FROM contacts WHERE user_id = ? AND contact_username = ?
             """;
         
         try (Connection conn = dbManager.getConnection();
@@ -130,13 +112,9 @@ public class ContactRepository {
         return Optional.empty();
     }
     
-    /**
-     * Actualiza un contacto
-     */
     public void update(Contact contact) throws SQLException {
         String sql = """
-            UPDATE contacts
-            SET contact_username = ?, contact_user_id = ?, is_blocked = ?, is_confirmed = ?, updated_at = CURRENT_TIMESTAMP
+            UPDATE contacts SET contact_username = ?, is_blocked = ?, is_online = ?, updated_at = CURRENT_TIMESTAMP
             WHERE id = ?
             """;
         
@@ -144,19 +122,15 @@ public class ContactRepository {
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setString(1, contact.getContactUsername());
-            stmt.setString(2, contact.getContactUserId());
-            stmt.setInt(3, contact.isBlocked() ? 1 : 0);
-            stmt.setInt(4, contact.isConfirmed() ? 1 : 0);
-            stmt.setInt(5, contact.getId());
+            stmt.setInt(2, contact.isBlocked() ? 1 : 0);
+            stmt.setInt(3, contact.isOnline() ? 1 : 0);
+            stmt.setInt(4, contact.getId());
             
             stmt.executeUpdate();
             System.out.println("Contacto actualizado: " + contact.getContactUsername());
         }
     }
     
-    /**
-     * Elimina un contacto
-     */
     public void delete(int id) throws SQLException {
         String sql = "DELETE FROM contacts WHERE id = ?";
         
@@ -168,21 +142,16 @@ public class ContactRepository {
             System.out.println("Contacto eliminado: " + id);
         }
     }
-    
-    /**
-     * Mapea un ResultSet a un objeto Contact
-     */
+
     private Contact mapResultSetToContact(ResultSet rs) throws SQLException {
         return new Contact(
             rs.getInt("id"),
             rs.getString("user_id"),
             rs.getString("contact_username"),
-            rs.getString("contact_user_id"),
             rs.getInt("is_blocked") == 1,
-            rs.getInt("is_confirmed") == 1,
+            rs.getInt("is_online") == 1,
             rs.getTimestamp("created_at").toLocalDateTime(),
             rs.getTimestamp("updated_at").toLocalDateTime()
         );
     }
-
 }

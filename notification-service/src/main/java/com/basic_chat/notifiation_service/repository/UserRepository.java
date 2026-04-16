@@ -9,4 +9,12 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, String> {
     Optional<User> findById(String id);
+    
+    /**
+     * Busca un usuario por su username.
+     * 
+     * @param username El nombre de usuario a buscar
+     * @return Optional con el usuario si existe
+     */
+    Optional<User> findByUsername(String username);
 }

@@ -3,9 +3,12 @@ package com.pola.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pola.model.ChatMessage;
 import com.pola.model.Contact;
+import com.pola.model.ImageChatMessage;
 import com.pola.model.Notification;
+import com.pola.proto.ImageMessage;
 import com.pola.proto.MessagesProto;
 import com.pola.proto.MessagesProto.WsMessage;
 import com.pola.proto.MessagesProto.PendingClearHistoryList;
@@ -35,6 +38,10 @@ public class IncomingMessageProcessor {
         initializeHandlers();
     }
 
+    public MessageProcessingContext getContext() {
+        return context;
+    }
+
     public void setErrorListener(Consumer<String> listener) {
         this.errorListener = listener;
     }
@@ -48,7 +55,7 @@ public class IncomingMessageProcessor {
      * El servidor envía MessageDeletedNotification cuando otro usuario elimina un mensaje.
      */
       private void initializeHandlers() {
-          handlers.put(WsMessage.PayloadCase.CHAT_MESSAGE_RESPONSE, this::handleMessageError);
+          handlers.put(WsMessage.PayloadCase.CHAT_MESSAGE_RESPONSE, this::handleChatMessageResponse);
           handlers.put(WsMessage.PayloadCase.UNREAD_MESSAGES_LIST, msg -> processUnreadMessages(msg.getUnreadMessagesList()));
           // MessageDeletedNotification: recibida cuando otro usuario elimina un mensaje "para todos"
           handlers.put(WsMessage.PayloadCase.MESSAGE_DELETE_NOTIFICATION, msg -> processMessageDeletedNotification(msg.getMessageDeleteNotification()));
@@ -61,10 +68,16 @@ public class IncomingMessageProcessor {
           handlers.put(WsMessage.PayloadCase.UNBLOCKED_USERS_LIST, msg -> processUnblockedUsersList(msg.getUnblockedUsersList()));
           handlers.put(WsMessage.PayloadCase.BLOCKED_USERS_LIST, msg -> processBlockedUsersList(msg.getBlockedUsersList()));
           handlers.put(WsMessage.PayloadCase.MESSAGES_READ_UPDATE, msg -> processMessagesReadUpdate(msg.getMessagesReadUpdate()));
-          handlers.put(WsMessage.PayloadCase.CONTACT_IDENTITY, msg -> processContactIdentity(msg.getContactIdentity()));
+          // Handler para solicitud de marcar mensajes como leídos (recibido cuando otro usuario lee nuestros mensajes)
+          handlers.put(WsMessage.PayloadCase.MARK_MESSAGES_AS_READ_REQUEST, msg -> processMarkMessagesAsReadRequest(msg.getMarkMessagesAsReadRequest()));
           // Handlers para solicitudes de bloqueo y desbloqueo de contactos
           handlers.put(WsMessage.PayloadCase.BLOCK_CONTACT_REQUEST, this::processBlockContactRequest);
           handlers.put(WsMessage.PayloadCase.UNBLOCK_CONTACT_REQUEST, this::processUnblockContactRequest);
+          handlers.put(WsMessage.PayloadCase.IMAGE_MESSAGE, this::handleImageMessage);
+          // Handler para lista de mensajes de imagen pendientes (recibidos al conectarse)
+          handlers.put(WsMessage.PayloadCase.UNREAD_IMAGE_MESSAGES_LIST, msg -> processUnreadImageMessages(msg.getUnreadImageMessagesList()));
+          // Handler para respuesta de presencia de contactos
+          handlers.put(WsMessage.PayloadCase.CONTACT_PRESENCE_MESSAGE, msg -> processContactPresenceMessage(msg.getContactPresenceMessage()));
       }
 
     public void process(WsMessage message) {
@@ -76,20 +89,28 @@ public class IncomingMessageProcessor {
         }
     }
 
-    private void handleMessageError(WsMessage wsMessage) {
+    private void handleChatMessageResponse(WsMessage wsMessage) {
         MessagesProto.ChatMessageResponse response = wsMessage.getChatMessageResponse();
-        String errorContent = response.getErrorMessage();
+        String messageIdStr = response.getMessageId();
+        
+        if (messageIdStr == null || messageIdStr.isEmpty()) {
+            return;
+        }
+        
+        long messageId;
+        try {
+            messageId = Long.parseLong(messageIdStr);
+        } catch (NumberFormatException e) {
+            return;
+        }
         
         if (response.getCause() == MessagesProto.FailureCause.BLOCKED) {
             String recipient = response.getRecipient();
             context.getContactService().markUserAsBlockingMe(recipient);
 
             try {
-                if (response.getMessageId() != null && !response.getMessageId().isEmpty()) {
-                    long msgId = Long.parseLong(response.getMessageId());
-                    context.getMessageRepository().delete(msgId);
-                    Platform.runLater(() -> context.getCurrentChatMessages().removeIf(m -> m.getId() == msgId));
-                }
+                context.getMessageRepository().delete(messageId);
+                Platform.runLater(() -> context.getCurrentChatMessages().removeIf(m -> m.getId() == messageId));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -97,14 +118,34 @@ public class IncomingMessageProcessor {
             Contact current = context.getCurrentContactSupplier().get();
             if (current != null && current.getContactUsername().equals(recipient)) {
                 Platform.runLater(() -> {
-                    ChatMessage systemMessage = new ChatMessage(recipient, "Sistema", errorContent, "Sistema");
+                    ChatMessage systemMessage = new ChatMessage(recipient, "Sistema", response.getErrorMessage(), "Sistema");
                     systemMessage.setId(System.currentTimeMillis());
                     context.getCurrentChatMessages().add(systemMessage);
                 });
             }
-        } else if (errorListener != null) {
-            Platform.runLater(() -> errorListener.accept(errorContent));
+            return;
         }
+        
+        final long msgId = messageId;
+        Platform.runLater(() -> {
+            for (int i = 0; i < context.getCurrentChatMessages().size(); i++) {
+                ChatMessage msg = context.getCurrentChatMessages().get(i);
+                if (msg.getId() == msgId) {
+                    if (response.getSuccess()) {
+                        msg.setStatus(ChatMessage.MessageStatus.SENT);
+                    } else {
+                        msg.setStatus(ChatMessage.MessageStatus.FAILED);
+                    }
+                    context.getCurrentChatMessages().set(i, msg);
+                    break;
+                }
+            }
+        });
+    }
+    
+    @Deprecated
+    private void handleMessageError(WsMessage wsMessage) {
+        handleChatMessageResponse(wsMessage);
     }
 
     private void handleChatMessage(WsMessage wsMessage) {
@@ -112,18 +153,29 @@ public class IncomingMessageProcessor {
         String senderId = protobufMessage.getSender();
         String content = protobufMessage.getContent();
         long messageId = Long.parseLong(protobufMessage.getId());
-      
+        
+        // LOG TEMPORAL: Ver si llegan mensajes de usuarios no registrados con su ID
+        System.out.println("[DEBUG] Mensaje recibido de senderId: " + senderId);
+        
+        String currentUserId = context.getCurrentUserIdSupplier().get();
+        boolean isOwnMessage = senderId.equals(currentUserId);
+        
         try {
             if (context.getMessageRepository().existsById(messageId)) return;
 
             Contact contact = context.getContactService().findContactByUsername(context.getCurrentUserIdSupplier().get(), senderId)
             //añade un contacto "improvisado" con un id no oficial
-                .orElseGet(() -> context.getContactService().addContact(context.getCurrentUserIdSupplier().get(), senderId, false));
+                .orElseGet(() -> context.getContactService().addContact(context.getCurrentUserIdSupplier().get(), senderId));
 
             if(contact == null) return;
 
             ChatMessage localMessage = new ChatMessage(contact.getContactUsername(), senderId, content, senderId);
             localMessage.setId(messageId);
+            
+            if (isOwnMessage) {
+                localMessage.setStatus(ChatMessage.MessageStatus.DELIVERED);
+            }
+            
             ChatMessage saved = context.getMessageRepository().create(localMessage);
 
             Contact current = context.getCurrentContactSupplier().get();
@@ -135,6 +187,69 @@ public class IncomingMessageProcessor {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void handleImageMessage(WsMessage wsMessage) {
+        ImageMessage protoImage = wsMessage.getImageMessage();
+        
+        String mediaId = protoImage.getMediaId();
+        String senderId = protoImage.getSenderId();
+        String receiverId = protoImage.getReceiverId();
+        String fullImageUrl = protoImage.getFullImageUrl();
+        int width = protoImage.getOriginalWidth();
+        int height = protoImage.getOriginalHeight();
+        long timestamp = protoImage.getTimestamp();
+        
+        System.out.println("Recibido ImageMessage - mediaId: " + mediaId + ", sender: " + senderId + ", url: " + fullImageUrl);
+        
+        try {
+            Contact contact = context.getContactService().findContactByUsername(context.getCurrentUserIdSupplier().get(), senderId)
+                .orElseGet(() -> context.getContactService().addContact(context.getCurrentUserIdSupplier().get(), senderId));
+            
+            if (contact == null) return;
+            
+            ImageChatMessage imageMessage = new ImageChatMessage(
+                contact.getContactUsername(),
+                senderId,
+                fullImageUrl,
+                mediaId,
+                width,
+                height
+            );
+            imageMessage.setId(timestamp);
+            imageMessage.setDownloaded(false);
+            
+            ObjectMapper mapper = new ObjectMapper();
+            String contentJson = mapper.writeValueAsString(new ImageContent(fullImageUrl, mediaId, width, height));
+            
+            context.getMessageRepository().create(imageMessage, "image", false, contentJson);
+            
+            Contact current = context.getCurrentContactSupplier().get();
+            if (current != null && current.getId() == contact.getId()) {
+                Platform.runLater(() -> context.getCurrentChatMessages().add(imageMessage));
+            } else {
+                updateNotification(senderId);
+            }
+        } catch (Exception e) {
+            System.err.println("Error al procesar ImageMessage: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    
+    private static class ImageContent {
+        public String imageUrl;
+        public String mediaId;
+        public int width;
+        public int height;
+        
+        public ImageContent() {}
+        
+        public ImageContent(String imageUrl, String mediaId, int width, int height) {
+            this.imageUrl = imageUrl;
+            this.mediaId = mediaId;
+            this.width = width;
+            this.height = height;
         }
     }
 
@@ -201,6 +316,7 @@ public class IncomingMessageProcessor {
             // Si estamos viendo el chat de este contacto, limpiar la UI
             Contact current = context.getCurrentContactSupplier().get();
             if (current != null && current.getContactUsername().equals(senderUsername)) {
+                // Limpia la ui de los mensajes.
                 Platform.runLater(() -> context.getCurrentChatMessages().clear());
                 log.debug("Vista de chat limpiada para contacto: {}", senderUsername);
             }
@@ -217,7 +333,7 @@ public class IncomingMessageProcessor {
 
             try {
                 Contact contact = context.getContactService().findContactByUsername(context.getCurrentUserIdSupplier().get(), senderUsername)
-                        .orElseGet(() -> context.getContactService().addContact(context.getCurrentUserIdSupplier().get(), senderUsername, false));
+                        .orElseGet(() -> context.getContactService().addContact(context.getCurrentUserIdSupplier().get(), senderUsername));
 
                 if (contact == null || context.getMessageRepository().existsById(messageId)) continue;
 
@@ -240,6 +356,10 @@ public class IncomingMessageProcessor {
 
     private void processMessagesReadUpdate(MessagesProto.MessagesReadUpdate update) {
         List<String> idsStr = update.getMessageIdsList();
+        String readerUsername = update.getReaderUsername();
+        
+        log.info("=== RECIBIDO MessagesReadUpdate === Reader: {}, IDs: {}", readerUsername, idsStr);
+        
         if (idsStr.isEmpty()) return;
 
         List<Long> ids = new java.util.ArrayList<>();
@@ -254,10 +374,45 @@ public class IncomingMessageProcessor {
                     ChatMessage msg = context.getCurrentChatMessages().get(i);
                     if (ids.contains(msg.getId())) {
                         msg.setRead(true);
+                        msg.setStatus(ChatMessage.MessageStatus.READ);
+                        context.getCurrentChatMessages().set(i, msg);
+                        log.info("Mensaje {} marcado como leido en UI", msg.getId());
+                    }
+                }
+                if (context.getOnMessagesUpdated() != null) {
+                    context.getOnMessagesUpdated().run();
+                }
+            });
+            log.info("Procesado MessagesReadUpdate para {} mensajes", ids.size());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void processMarkMessagesAsReadRequest(MessagesProto.MarkMessagesAsReadRequest request) {
+        String sender = request.getSender();
+        String recipient = request.getRecipient();
+        List<String> idsStr = request.getMessageIdsList();
+        
+        if (idsStr.isEmpty()) return;
+        
+        List<Long> ids = new java.util.ArrayList<>();
+        for (String s : idsStr) {
+            try { ids.add(Long.parseLong(s)); } catch (NumberFormatException e) {}
+        }
+        
+        try {
+            context.getMessageRepository().markMultipleAsRead(ids);
+            Platform.runLater(() -> {
+                for (int i = 0; i < context.getCurrentChatMessages().size(); i++) {
+                    ChatMessage msg = context.getCurrentChatMessages().get(i);
+                    if (ids.contains(msg.getId())) {
+                        msg.setRead(true);
                         context.getCurrentChatMessages().set(i, msg);
                     }
                 }
             });
+            log.info("Marked {} messages as read from {} to {}", ids.size(), sender, recipient);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -269,39 +424,6 @@ public class IncomingMessageProcessor {
 
     private void processUnblockedUsersList(MessagesProto.UnblockedUsersList list) {
         processUserStatusChange(list.getUsersList(), "Este usuario te ha desbloqueado.", context.getContactService()::markUserAsUnblockingMe);
-    }
-    /**
-     * Actualizara el id temporal por el id oficial del remitente.
-     * @param identity El .proto con el id del remitente y su username
-     */
-    private void processContactIdentity(MessagesProto.ContactIdentity identity) {
-        String remoteUserId = identity.getSenderId();
-        String senderUsername = identity.getSenderUsername();
-
-        if(senderUsername != null && !senderUsername.isEmpty()){
-            // Verificar si es la primera vez que obtenemos el ID de este contacto (era null o vacío)
-            boolean isFirstIdUpdate = context.getContactService().findContactByUsername(context.getCurrentUserIdSupplier().get(), senderUsername)
-                .map(c -> c.getContactUserId() == null || c.getContactUserId().isEmpty())
-                .orElse(true);
-
-            context.getContactService().updateContactId(senderUsername, remoteUserId);
-            
-            // Marcar como conectado inmediatamente ya que acabamos de recibir señal de vida
-            context.getContactService().setContactOnline(remoteUserId, true);
-
-            // Si es la primera vez que tenemos su ID, enviamos el nuestro de vuelta para completar el handshake
-            if (isFirstIdUpdate) {
-                context.getMessageSender().sendContactIdentity(context.getCurrentUserIdSupplier().get(), context.getCurrentUsernameSupplier().get(), senderUsername);
-            }
-
-            // Añadir notificación a la bandeja en lugar de mensaje de chat
-            updateNotification(senderUsername);
-        }
-        // Si el contacto era "improvisado" (sin ID), ahora tiene ID.
-        // Devolvemos nuestro ID para completar el handshake si es necesario.
-        // if (contactWasTemporary) {
-        //     messageSender.sendContactIdentity(senderUsername, currentUserIdSupplier.get());
-        // }
     }
 
     private void processUserStatusChange(List<String> users, String systemMsg, Consumer<String> action) {
@@ -486,6 +608,82 @@ public class IncomingMessageProcessor {
         
         // Actualizar notificaciones si es necesario
         updateNotification(unblockerUsername);
+    }
+
+    /**
+     * Processes the list of pending image messages received upon connection.
+     * Each image is processed similar to a regular ImageMessage, creating the contact
+     * if it doesn't exist and showing the corresponding notification.
+     * Additionally, each image message is persisted to the local database with
+     * type='image' and the content stored as JSON containing the URL and media ID.
+     *
+     * @param unreadImageMessagesList List of pending image messages
+     */
+    private void processUnreadImageMessages(MessagesProto.UnreadImageMessagesList unreadImageMessagesList) {
+        System.out.println("Procesando lista de mensajes de imagen pendientes: " + unreadImageMessagesList.getMessagesCount() + " imágenes");
+        
+        ObjectMapper mapper = new ObjectMapper();
+        
+        for (ImageMessage protoImage : unreadImageMessagesList.getMessagesList()) {
+            String senderId = protoImage.getSenderId();
+            String mediaId = protoImage.getMediaId();
+            String fullImageUrl = protoImage.getFullImageUrl();
+            int width = protoImage.getOriginalWidth();
+            int height = protoImage.getOriginalHeight();
+            long timestamp = protoImage.getTimestamp();
+            
+            System.out.println("Procesando ImageMessage pendiente - mediaId: " + mediaId + ", sender: " + senderId);
+            
+            try {
+                Contact contact = context.getContactService().findContactByUsername(context.getCurrentUserIdSupplier().get(), senderId)
+                    .orElseGet(() -> context.getContactService().addContact(context.getCurrentUserIdSupplier().get(), senderId));
+                
+                if (contact == null) {
+                    System.out.println("No se pudo crear contacto para sender: " + senderId);
+                    continue;
+                }
+                
+                ImageChatMessage imageMessage = new ImageChatMessage(
+                    contact.getContactUsername(),
+                    senderId,
+                    fullImageUrl,
+                    mediaId,
+                    width,
+                    height
+                );
+                imageMessage.setId(timestamp);
+                imageMessage.setDownloaded(false);
+                
+                // Store image metadata as JSON in content column with type='image'
+                String contentJson = mapper.writeValueAsString(new ImageContent(fullImageUrl, mediaId, width, height));
+                context.getMessageRepository().create(imageMessage, "image", false, contentJson);
+                System.out.println("Saved pending image message to local database - mediaId: " + mediaId + ", type: image");
+                
+                Contact current = context.getCurrentContactSupplier().get();
+                if (current != null && current.getId() == contact.getId()) {
+                    Platform.runLater(() -> context.getCurrentChatMessages().add(imageMessage));
+                } else {
+                    updateNotification(senderId);
+                }
+            } catch (Exception e) {
+                System.err.println("Error al procesar ImageMessage pendiente: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void processContactPresenceMessage(MessagesProto.ContactPresenceMessage message) {
+        if (message.hasResponse()) {
+            MessagesProto.ContactPresenceResponse response = message.getResponse();
+            log.info("Recibida respuesta de presencia con {} contactos", response.getContactsCount());
+            
+            Platform.runLater(() -> {
+                for (MessagesProto.ContactPresence contact : response.getContactsList()) {
+                    context.getContactService().setContactOnlineByUsername(contact.getUsername(), contact.getOnline());
+                    log.debug("Contacto {}: {}", contact.getUsername(), contact.getOnline() ? "ONLINE" : "OFFLINE");
+                }
+            });
+        }
     }
 
     private void updateNotification(String senderUsername) {

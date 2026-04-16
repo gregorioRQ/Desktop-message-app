@@ -28,7 +28,6 @@ import java.util.Map;
  * - Lista de desbloqueos (UnblockedUsersList)
  * - Historial limpiado (PendingClearHistoryList)
  * - Confirmaciones de lectura (MessagesReadUpdate)
- * - Identidades de contacto (ContactIdentity)
  */
 @RestController
 @RequestMapping("/api/v1/messages")
@@ -85,6 +84,9 @@ public class MessageController {
             }
             if (wsMessage.hasUnblockedUsersList()) {
                 count += wsMessage.getUnblockedUsersList().getUsersCount();
+            }
+            if (wsMessage.hasUnreadImageMessagesList()) {
+                count += wsMessage.getUnreadImageMessagesList().getMessagesCount();
             }
             
             log.info("Enviando {} elementos pendientes para usuario: {}", count, username);

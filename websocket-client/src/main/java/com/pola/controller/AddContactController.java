@@ -83,13 +83,11 @@ public class AddContactController {
         showInfo("Agregando contacto...");
         
         // Agregar contacto
-        Contact contact = contactService.addContact(
-            currentUserId, 
-            username,
-            true // isConfirmed = true (Yo lo agregué, no necesito confirmarlo)
-        );
+        Contact contact = contactService.addContact(currentUserId, username);
         
         if (contact != null) {
+            // Enviar solicitud al servidor
+            contactService.sendAddContactRequest(username);
             showSuccess("Contacto agregado: " + contact.getContactUsername());
             
             // Esperar un momento y volver al chat

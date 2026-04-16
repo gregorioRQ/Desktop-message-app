@@ -67,4 +67,22 @@ public class RabbitMQProducerService {
                 notificationEvent
         );
     }
+
+    /**
+     * Envía un evento de solicitud de agregar contacto a la cola de contactos.
+     * 
+     * Este método es llamado por AddContactHandler cuando un usuario
+     * presiona el botón "agregar" para crear el registro bidireccional
+     * en la tabla contact_users de notification-service.
+     * 
+     * @param eventJson El contenido JSON del evento como String
+     */
+    public void sendContactEventJson(String eventJson) {
+        log.info("Encolando evento de contacto: {}", eventJson);
+        rabbitTemplate.convertAndSend(
+                RabbitMQConfig.CONTACT_EXCHANGE,
+                RabbitMQConfig.CONTACT_ROUTING_KEY,
+                eventJson
+        );
+    }
 }

@@ -8,8 +8,10 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pola.database.DatabaseManager;
 import com.pola.model.ChatMessage;
+import com.pola.model.ImageChatMessage;
 
 /**
  * Repositorio para gestionar mensajes en la base de datos local.
@@ -39,13 +41,21 @@ public class MessageRepository {
      * @throws SQLException Si ocurre un error de base de datos
      */
     public ChatMessage create(ChatMessage message) throws SQLException {
+        return create(message, "text", false);
+    }
+    
+    public ChatMessage create(ChatMessage message, String type, boolean downloaded) throws SQLException {
+        return create(message, type, downloaded, message.getContent());
+    }
+    
+    public ChatMessage create(ChatMessage message, String type, boolean downloaded, String content) throws SQLException {
         String sql = """
-            INSERT INTO messages (id, contact_username, sender_username, content, sender_id, is_read)
-            VALUES (?, ?, ?, ?, ?, ?)
+            INSERT INTO messages (id, contact_username, sender_username, content, sender_id, is_read, type, downloaded)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             """;
         
-        log.debug("Creando mensaje - contact: {}, senderUsername: {}, content: {}", 
-            message.getContactUsername(), message.getSenderUsername(), message.getContent());
+        log.debug("Creando mensaje - contact: {}, senderUsername: {}, content: {}, type: {}", 
+            message.getContactUsername(), message.getSenderUsername(), content, type);
         
         try (Connection conn = dbManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -53,9 +63,11 @@ public class MessageRepository {
             stmt.setLong(1, message.getId());
             stmt.setString(2, message.getContactUsername());
             stmt.setString(3, message.getSenderUsername());
-            stmt.setString(4, message.getContent());
+            stmt.setString(4, content);
             stmt.setString(5, message.getSenderId());
             stmt.setInt(6, message.isRead() ? 1 : 0);
+            stmt.setString(7, type);
+            stmt.setInt(8, downloaded ? 1 : 0);
             
             int affectedRows = stmt.executeUpdate();
             
@@ -130,7 +142,7 @@ public class MessageRepository {
      */
     public List<ChatMessage> findByContactUsername(String username) throws SQLException {
         String sql = """
-            SELECT id, contact_username, sender_username, content, sender_id, timestamp, is_read
+            SELECT id, contact_username, sender_username, content, sender_id, timestamp, is_read, type, downloaded
             FROM messages
             WHERE contact_username = ?
             ORDER BY timestamp ASC
@@ -325,6 +337,39 @@ public class MessageRepository {
      * @throws SQLException Si ocurre un error al leer el ResultSet
      */
     private ChatMessage mapResultSetToMessage(ResultSet rs) throws SQLException {
+        String type = rs.getString("type");
+        boolean downloaded = rs.getInt("downloaded") == 1;
+        
+        if ("image".equals(type)) {
+            String content = rs.getString("content");
+            String imageUrl = "";
+            String mediaId = "";
+            int width = 0;
+            int height = 0;
+            
+            try {
+                ObjectMapper mapper = new ObjectMapper();
+                ImageJsonData jsonData = mapper.readValue(content, ImageJsonData.class);
+                imageUrl = jsonData.imageUrl;
+                mediaId = jsonData.mediaId;
+                width = jsonData.width;
+                height = jsonData.height;
+            } catch (Exception e) {
+                log.warn("Error al parsear content de imagen: {}", e.getMessage());
+            }
+            
+            ImageChatMessage imageMessage = new ImageChatMessage(
+                rs.getString("contact_username"),
+                rs.getString("sender_id"),
+                imageUrl,
+                mediaId,
+                width,
+                height
+            );
+            imageMessage.setDownloaded(downloaded);
+            return imageMessage;
+        }
+        
         ChatMessage message = new ChatMessage(
             rs.getLong("id"),
             rs.getString("contact_username"),
@@ -335,5 +380,12 @@ public class MessageRepository {
             rs.getInt("is_read") == 1
         );
         return message;
+    }
+    
+    private static class ImageJsonData {
+        public String imageUrl;
+        public String mediaId;
+        public int width;
+        public int height;
     }
 }

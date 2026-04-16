@@ -1,21 +1,25 @@
 package com.pola.service;
 
+import com.google.protobuf.Message;
 import com.pola.model.ChatMessage;
+import com.pola.proto.ImageMessage;
+import com.pola.proto.MessageStatus;
 import com.pola.proto.MessagesProto;
 import com.pola.proto.MessagesProto.MessageType;
 import com.pola.proto.MessagesProto.WsMessage;
 import java.time.Instant;
 import java.util.List;
 
-/**
- * Responsable de construir y enviar mensajes Protobuf.
- * Principio SOLID: Single Responsibility - Solo maneja el envío de mensajes.
- */
 public class MessageSender {
     private final WebSocketService webSocketService;
+    private WebSocketService mediaWebSocketService;
 
     public MessageSender(WebSocketService webSocketService) {
         this.webSocketService = webSocketService;
+    }
+
+    public void setMediaWebSocketService(WebSocketService mediaWebSocketService) {
+        this.mediaWebSocketService = mediaWebSocketService;
     }
 
     public void sendTextMessage(long id, String content, String sender, String recipient) {
@@ -71,17 +75,50 @@ public class MessageSender {
         sendMessage(WsMessage.newBuilder().setMarkMessagesAsReadRequest(builder.build()).build());
     }
 
-    public void sendContactIdentity(String myUserId, String myUsername, String contactUsername) {
-        MessagesProto.ContactIdentity identity = MessagesProto.ContactIdentity.newBuilder()
-            .setSenderId(myUserId)
-            .setSenderUsername(myUsername)
+    public void sendAddContactRequest(String myUserId, String myUsername, String contactUsername) {
+        MessagesProto.AddContactRequest request = MessagesProto.AddContactRequest.newBuilder()
+            .setSender(myUsername)
             .setContactUsername(contactUsername)
             .build();
         
-        sendMessage(WsMessage.newBuilder().setContactIdentity(identity).build());
+        sendMessage(WsMessage.newBuilder().setAddContactRequest(request).build());
     }
 
-    private void sendMessage(WsMessage message) {
+    public void sendImageMessage(String mediaId, String fullImageUrl, String sender, String recipient, 
+                                  int width, int height, long fileSize) {
+        ImageMessage imageMessage = ImageMessage.newBuilder()
+            .setMediaId(mediaId)
+            .setSenderId(sender)
+            .setReceiverId(recipient)
+            .setFullImageUrl(fullImageUrl)
+            .setOriginalWidth(width)
+            .setOriginalHeight(height)
+            .setFileSize(fileSize)
+            .setTimestamp(Instant.now().toEpochMilli())
+            .setStatus(MessageStatus.SENT)
+            .build();
+
+        // Envolver ImageMessage en WsMessage para que CS pueda parsearlo correctamente
+        WsMessage wsMessage = WsMessage.newBuilder()
+            .setImageMessage(imageMessage)
+            .build();
+
+        if (webSocketService.isConnected()) {
+            webSocketService.sendMessage(wsMessage);
+        }
+    }
+
+    public void sendContactPresenceRequest(String userId) {
+        MessagesProto.ContactPresenceRequest request = MessagesProto.ContactPresenceRequest.newBuilder()
+            .setUserId(userId)
+            .build();
+        MessagesProto.ContactPresenceMessage message = MessagesProto.ContactPresenceMessage.newBuilder()
+            .setRequest(request)
+            .build();
+        sendMessage(WsMessage.newBuilder().setContactPresenceMessage(message).build());
+    }
+
+    private void sendMessage(Message message) {
         if (webSocketService.isConnected()) {
             webSocketService.sendMessage(message);
         }

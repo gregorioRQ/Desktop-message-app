@@ -2,7 +2,9 @@
 .vscode/*
 .vscode
 websocket-client/session.db
+nul
 arranque
 arranque.bat
 nul
 AGENTS.md
+.env

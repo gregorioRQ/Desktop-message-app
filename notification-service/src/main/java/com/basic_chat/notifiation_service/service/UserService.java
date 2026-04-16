@@ -20,26 +20,27 @@ public class UserService {
         this.userRepository = userRepository;
    }
 
-   @Transactional
-   public void create(UserCreateEvent e){
-        if(e == null){
-            log.warn("Evento recibido fue nulo no se creara el contacto");
-            return;
-        }
-        try{
-            Optional<User> u = userRepository.findById(e.getUser_id());
-            if(u.isPresent()){
-                log.debug("El usuario: {} ya existe", e.getUser_id());
-                return;
-            }
-            log.debug("Registrando nuevo usuario en la db, userId: {}", e.getUser_id());
-            User user = new User();
-            user.setId(e.getUser_id());
-            userRepository.save(user);
-            log.info("Nuevo usuario registrado con exito");
-        }catch(Exception ex){
-            log.error("No se pudo registrar el usuario error: {}", ex);
-          
-        }    
-   }
+@Transactional
+    public void create(UserCreateEvent e){
+         if(e == null){
+             log.warn("Evento recibido fue nulo no se creara el contacto");
+             return;
+         }
+         try{
+             Optional<User> u = userRepository.findById(e.getUser_id());
+             if(u.isPresent()){
+                 log.debug("El usuario: {} ya existe", e.getUser_id());
+                 return;
+             }
+             log.debug("Registrando nuevo usuario en la db, userId: {}, username: {}", e.getUser_id(), e.getUsername());
+             User user = new User();
+             user.setId(e.getUser_id());
+             user.setUsername(e.getUsername());
+             userRepository.save(user);
+             log.info("Nuevo usuario registrado con exito");
+         }catch(Exception ex){
+             log.error("No se pudo registrar el usuario error: {}", ex);
+           
+         }    
+    }
 }
