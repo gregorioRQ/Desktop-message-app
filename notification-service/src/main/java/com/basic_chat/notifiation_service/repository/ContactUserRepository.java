@@ -13,39 +13,39 @@ import com.basic_chat.notifiation_service.model.ContactUser;
 public interface ContactUserRepository extends JpaRepository<ContactUser, String> {
 
     /**
-     * Busca todos los contactos de un usuario por su ID.
-     * @param userId ID del usuario propietario de los contactos
-     * @return Lista de contactos del usuario
-     */
-    List<ContactUser> findByUserId(String userId);
+    * Busca todos los contactos de un usuario por su username.
+    * @param username Username del usuario propietario de los contactos
+    * @return Lista de contactos del usuario
+    */
+    List<ContactUser> findByUsername(String username);
 
     /**
-     * Busca todos los usuarios que tienen a un username específico como contacto.
-     * Usado para notificar a los contactos sobre cambios de presencia.
-     * @param contactUsername username del contacto
-     * @return Lista de usuarios que tienen este contacto
-     */
+    * Busca todos los usuarios que tienen a un username específico como contacto.
+    * Usado para notificar a los contactos sobre cambios de presencia.
+    * @param contactUsername username del contacto
+    * @return Lista de usuarios que tienen este contacto
+    */
     List<ContactUser> findByContactUsername(String contactUsername);
 
     /**
-     * Verifica si existe una relación de contacto entre un usuario y un username.
-     * @param userId ID del usuario
-     * @param contactUsername username del contacto
-     * @return true si existe la relación
-     */
-    boolean existsByUserIdAndContactUsername(String userId, String contactUsername);
+    * Verifica si existe una relación de contacto entre dos usuarios.
+    * @param username Username del usuario
+    * @param contactUsername username del contacto
+    * @return true si existe la relación
+    */
+    boolean existsByUsernameAndContactUsername(String username, String contactUsername);
 
     /**
-     * Busca los contactos de un usuario que están actualmente online.
-     * Este método realiza un JOIN con la tabla de usuarios para filtrar
-     * solo aquellos contactos cuyo estado online sea true.
-     * 
-     * Nota: La consulta asume que existe una entidad User con campo online
-     * y que ContactUser tiene una relación o propiedad para obtener el username.
-     * 
-     * @param userId ID del usuario propietario
-     * @return Lista de usernames de contactos que están online
-     */
-    @Query("SELECT cu.contactUsername FROM ContactUser cu JOIN User u ON cu.contactUsername = u.username WHERE cu.userId = :userId AND u.online = true")
-    List<String> findOnlineContactUsernamesByUserId(@Param("userId") String userId);
+    * Busca los contactos de un usuario que están actualmente online.
+    * Este método realiza un JOIN con la tabla de usuarios para filtrar
+    * solo aquellos contactos cuyo estado online sea true.
+    *
+    * Nota: La consulta asume que existe una entidad User con campo online
+    * y que ContactUser tiene una relación o propiedad para obtener el username.
+    *
+    * @param username Username del usuario propietario
+    * @return Lista de usernames de contactos que están online
+    */
+    @Query("SELECT cu.contactUsername FROM ContactUser cu JOIN User u ON cu.contactUsername = u.username WHERE cu.username = :username AND u.online = true")
+    List<String> findOnlineContactUsernamesByUsername(@Param("username") String username);
 }

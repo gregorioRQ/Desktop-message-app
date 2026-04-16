@@ -1,3 +1,4 @@
+
 package com.pola.service;
 
 import java.io.BufferedReader;
@@ -17,10 +18,10 @@ import com.pola.event.SseEventBus;
 import com.pola.event.SseEventType;
 
 /**
- * Cliente SSE que se conecta al notification-service.
- * Parsea los eventos SSE y los publica en el SseEventBus para ser
- * procesados por los handlers registrados.
- */
+* Cliente SSE que se conecta al notification-service.
+* Parsea los eventos SSE y los publica en el SseEventBus para ser
+* procesados por los handlers registrados.
+*/
 public class SseNotificationClient {
 
     private static final String SSE_ENDPOINT = "http://localhost:8084/api/notifications/subscribe/";
@@ -28,7 +29,7 @@ public class SseNotificationClient {
     private static final long RETRY_TIME_MS = 30000;
     private static final long RECONNECT_DELAY_MS = 1000;
 
-    private final String userId;
+    private final String username;
     private final String token;
     private final CopyOnWriteArrayList<Consumer<Throwable>> errorListeners = new CopyOnWriteArrayList<>();
     private final Runnable onConnectCallback;
@@ -44,23 +45,23 @@ public class SseNotificationClient {
     private final Object lock = new Object();
 
     /**
-     * Crea un nuevo cliente SSE.
-     * @param userId ID único del usuario
-     * @param token Token de autenticación (puede ser null)
-     * @param onConnectCallback Callback cuando se establece la conexión
-     * @param onDisconnectCallback Callback cuando se pierde la conexión
-     */
-    public SseNotificationClient(String userId, String token,
-                                 Runnable onConnectCallback, Runnable onDisconnectCallback) {
-        this.userId = userId;
+    * Crea un nuevo cliente SSE.
+    * @param username Username del usuario
+    * @param token Token de autenticación (puede ser null)
+    * @param onConnectCallback Callback cuando se establece la conexión
+    * @param onDisconnectCallback Callback cuando se pierde la conexión
+    */
+    public SseNotificationClient(String username, String token,
+        Runnable onConnectCallback, Runnable onDisconnectCallback) {
+        this.username = username;
         this.token = token;
         this.onConnectCallback = onConnectCallback;
         this.onDisconnectCallback = onDisconnectCallback;
     }
 
     /**
-     * Establece la conexión SSE con el notification-service.
-     */
+    * Establece la conexión SSE con el notification-service.
+    */
     public void connect() {
         synchronized (lock) {
             if (isConnected || isConnecting) {
@@ -70,13 +71,13 @@ public class SseNotificationClient {
             isConnecting = true;
         }
 
-        System.out.println("[SseNotificationClient] Iniciando conexión SSE para usuario: " + userId);
+        System.out.println("[SseNotificationClient] Iniciando conexión SSE para usuario: " + username);
         startConnection();
     }
 
     private void startConnection() {
         try {
-            String endpoint = SSE_ENDPOINT + userId;
+            String endpoint = SSE_ENDPOINT + username;
             URL url = new URL(endpoint);
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
@@ -98,7 +99,7 @@ public class SseNotificationClient {
 
             System.out.println("[SseNotificationClient] Conexión SSE establecida");
 
-            readerThread = new Thread(this::readStream, "SSE-reader-" + userId);
+            readerThread = new Thread(this::readStream, "SSE-reader-" + username);
             readerThread.setDaemon(true);
             readerThread.start();
 
@@ -120,7 +121,7 @@ public class SseNotificationClient {
 
     private void readStream() {
         try (BufferedReader reader = new BufferedReader(
-                new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8))) {
+            new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8))) {
 
             StringBuilder eventData = new StringBuilder();
             String currentEventName = null;
@@ -168,41 +169,41 @@ public class SseNotificationClient {
     }
 
     /**
-     * Mapea el nombre del evento SSE al tipo de evento.
-     * @param eventName nombre del evento (presence, heartbeat, etc.)
-     * @return SseEventType correspondiente
-     */
+    * Mapea el nombre del evento SSE al tipo de evento.
+    * @param eventName nombre del evento (presence, heartbeat, etc.)
+    * @return SseEventType correspondiente
+    */
     private SseEventType mapEventNameToType(String eventName) {
         if (eventName == null || eventName.isEmpty()) {
             return SseEventType.UNKNOWN;
         }
 
         switch (eventName.toLowerCase()) {
-            case "presence":
-                return SseEventType.PRESENCE;
-            case "contact_list":
-                return SseEventType.CONTACT_LIST;
-            case "heartbeat":
-                return SseEventType.HEARTBEAT;
-            case "message":
-                return SseEventType.MESSAGE;
-            case "notification":
-                return SseEventType.NOTIFICATION;
-            default:
-                return SseEventType.UNKNOWN;
+        case "presence":
+            return SseEventType.PRESENCE;
+        case "contact_list":
+            return SseEventType.CONTACT_LIST;
+        case "heartbeat":
+            return SseEventType.HEARTBEAT;
+        case "message":
+            return SseEventType.MESSAGE;
+        case "notification":
+            return SseEventType.NOTIFICATION;
+        default:
+            return SseEventType.UNKNOWN;
         }
     }
 
     /**
-     * Publica el evento en el SseEventBus.
-     * @param type tipo de evento
-     * @param data datos del evento
-     */
+    * Publica el evento en el SseEventBus.
+    * @param type tipo de evento
+    * @param data datos del evento
+    */
     private void publishEvent(SseEventType type, String data) {
         SseEvent event = new SseEvent.Builder()
-                .type(type)
-                .data(data)
-                .build();
+            .type(type)
+            .data(data)
+            .build();
 
         SseEventBus.getInstance().publish(event);
     }
@@ -244,7 +245,7 @@ public class SseNotificationClient {
         long delay = RETRY_TIME_MS;
 
         System.out.println("[SseNotificationClient] Programando reintento " + retryCount + "/" + MAX_RETRY_ATTEMPTS
-                + " en " + (delay / 1000) + " segundos...");
+            + " en " + (delay / 1000) + " segundos...");
 
         retryScheduler = Executors.newSingleThreadScheduledExecutor();
         retryScheduler.schedule(() -> {
@@ -254,10 +255,10 @@ public class SseNotificationClient {
     }
 
     /**
-     * Desconecta el cliente SSE.
-     */
+    * Desconecta el cliente SSE.
+    */
     public void disconnect() {
-        System.out.println("[SseNotificationClient] Desconectando cliente SSE para usuario: " + userId);
+        System.out.println("[SseNotificationClient] Desconectando cliente SSE para usuario: " + username);
 
         synchronized (lock) {
             isConnected = false;
@@ -291,17 +292,17 @@ public class SseNotificationClient {
     }
 
     /**
-     * Registra un listener para errores de conexión.
-     * @param listener Consumer que procesará errores
-     */
+    * Registra un listener para errores de conexión.
+    * @param listener Consumer que procesará errores
+    */
     public void addErrorListener(Consumer<Throwable> listener) {
         errorListeners.add(listener);
     }
 
     /**
-     * Verifica si el cliente está conectado.
-     * @return true si está conectado
-     */
+    * Verifica si el cliente está conectado.
+    * @return true si está conectado
+    */
     public boolean isConnected() {
         return isConnected;
     }

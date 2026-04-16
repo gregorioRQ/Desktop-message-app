@@ -1,13 +1,14 @@
 
 /**
- * NotificationConsumer es responsable de recibir y procesar eventos provenientes de otros servicios
- * a través de RabbitMQ. Actúa como consumidor de eventos clave (mensajes enviados, mensajes leídos,
- * contactos añadidos, usuarios en línea) y delega la lógica correspondiente a los servicios de notificación
- * y presencia de usuario. De esta manera, integra el servicio de notificaciones con los flujos core de la aplicación.
- */
+* NotificationConsumer es responsable de recibir y procesar eventos provenientes de otros servicios
+* a través de RabbitMQ. Actúa como consumidor de eventos clave (mensajes enviados, mensajes leídos,
+* contactos añadidos, usuarios en línea) y delega la lógica correspondiente a los servicios de notificación
+* y presencia de usuario. De esta manera, integra el servicio de notificaciones con los flujos core de la aplicación.
+*/
 package com.basic_chat.notifiation_service.consumer;
 
 import com.basic_chat.notifiation_service.model.NotificationEvent;
+import com.basic_chat.notifiation_service.repository.UserRepository;
 import com.basic_chat.notifiation_service.service.SseNotificationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,13 +16,13 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
 /**
- * Consumidor de eventos de notificación desde RabbitMQ.
- * 
- * Este componente escucha la cola "message.notification" donde connection-service
- * publica eventos cuando un usuario recibe un mensaje mientras está offline.
- * 
- * La responsabilidad es enviar una notificación SSE al cliente destinatario.
- */
+* Consumidor de eventos de notificación desde RabbitMQ.
+*
+* Este componente escucha la cola "message.notification" donde connection-service
+* publica eventos cuando un usuario recibe un mensaje mientras está offline.
+*
+* La responsabilidad es enviar una notificación SSE al cliente destinatario.
+*/
 @Component
 public class NotificationConsumer {
 
@@ -30,36 +31,45 @@ public class NotificationConsumer {
     private static final String NEW_MESSAGE_NOTIFICATION = "nuevo mensaje";
 
     private final SseNotificationService sseNotificationService;
+    private final UserRepository userRepository;
 
-    public NotificationConsumer(SseNotificationService sseNotificationService) {
+    public NotificationConsumer(SseNotificationService sseNotificationService, UserRepository userRepository) {
         this.sseNotificationService = sseNotificationService;
+        this.userRepository = userRepository;
     }
 
     /**
-     * Procesa un evento de nuevo mensaje recibido desde connection-service.
-     * 
-     * Este método se ejecuta cuando connection-service publica un evento en la cola
-     * message.notification (cuando el destinatario está offline).
-     * 
-     * El evento contiene el recipientUserId que se usa directamente para enviar
-     * la notificación SSE al cliente.
-     * 
-     * @param event Evento de notificación contendo recipientUserId
-     */
+    * Procesa un evento de nuevo mensaje recibido desde connection-service.
+    *
+    * Este método se ejecuta cuando connection-service publica un evento en la cola
+    * message.notification (cuando el destinatario está offline).
+    *
+    * El evento contiene el recipientUserId que se usa para buscar el username
+    * y enviar la notificación SSE al cliente.
+    *
+    * @param event Evento de notificación contendo recipientUserId
+    */
     @RabbitListener(queues = "message.notification")
     public void handleNotificationEvent(NotificationEvent event) {
         logger.info("Received notification event: type={}, sender={}, recipient={}, recipientUserId={}",
-                event.getType(), event.getSender(), event.getRecipient(), event.getRecipientUserId());
-        
+            event.getType(), event.getSender(), event.getRecipient(), event.getRecipientUserId());
+
         String recipientUserId = event.getRecipientUserId();
-        
+
         if (recipientUserId != null && !recipientUserId.isEmpty()) {
-            boolean sentViaSse = sseNotificationService.sendNotification(recipientUserId, NEW_MESSAGE_NOTIFICATION);
-            
-            if (sentViaSse) {
-                logger.debug("Notification sent via SSE to userId: {}", recipientUserId);
+            // Buscar el username del destinatario usando el userId
+            var userOpt = userRepository.findById(recipientUserId);
+            if (userOpt.isPresent()) {
+                String recipientUsername = userOpt.get().getUsername();
+                boolean sentViaSse = sseNotificationService.sendNotification(recipientUsername, NEW_MESSAGE_NOTIFICATION);
+
+                if (sentViaSse) {
+                    logger.debug("Notification sent via SSE to user: {}", recipientUsername);
+                } else {
+                    logger.warn("No active SSE connection for user: {}. Notification not sent.", recipientUsername);
+                }
             } else {
-                logger.warn("No active SSE connection for userId: {}. Notification not sent.", recipientUserId);
+                logger.warn("User not found for userId: {}. Cannot send notification.", recipientUserId);
             }
         } else {
             logger.warn("Notification event missing recipientUserId. Cannot send notification.");

@@ -36,105 +36,105 @@ public class SseNotificationController {
     }
 
     /**
-     * Establishes an SSE (Server-Sent Events) connection for receiving notifications.
-     * 
-     * This endpoint allows clients to subscribe to real-time notifications via a
-     * long-lived HTTP connection. The connection remains open until the client
-     * disconnects, allowing the server to push notifications instantly.
-     * 
-     * The stream includes:
-     * - Heartbeat events every 30 seconds to keep the connection alive
-     * - Notification events when new messages arrive
-     * 
-     * @param userId The unique identifier of the user subscribing to notifications
-     * @return SseEmitter that provides the SSE stream to the client
-     */
-    @GetMapping(value = "/subscribe/{userId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public ResponseEntity<SseEmitter> subscribe(@PathVariable String userId) {
-        logger.info("SSE subscription request received for user: {}", userId);
+    * Establishes an SSE (Server-Sent Events) connection for receiving notifications.
+    *
+    * This endpoint allows clients to subscribe to real-time notifications via a
+    * long-lived HTTP connection. The connection remains open until the client
+    * disconnects, allowing the server to push notifications instantly.
+    *
+    * The stream includes:
+    * - Heartbeat events every 30 seconds to keep the connection alive
+    * - Notification events when new messages arrive
+    *
+    * @param username The username of the user subscribing to notifications
+    * @return SseEmitter that provides the SSE stream to the client
+    */
+    @GetMapping(value = "/subscribe/{username}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public ResponseEntity<SseEmitter> subscribe(@PathVariable String username) {
+        logger.info("SSE subscription request received for user: {}", username);
 
         SseEmitter emitter = new SseEmitter(TimeUnit.HOURS.toMillis(STREAM_TIMEOUT_HOURS));
 
         final SseEmitter.SseEventBuilder heartbeatBuilder = SseEmitter.event()
-                .id(String.valueOf(System.currentTimeMillis()))
-                .name("heartbeat")
-                .data(":ok\n\n");
+            .id(String.valueOf(System.currentTimeMillis()))
+            .name("heartbeat")
+            .data(":ok\n\n");
 
         final Runnable heartbeatTask = () -> {
             try {
                 emitter.send(heartbeatBuilder);
-                logger.debug("Heartbeat sent to user: {}", userId);
+                logger.debug("Heartbeat sent to user: {}", username);
             } catch (IOException e) {
-                logger.warn("Failed to send heartbeat to user: {}. Error: {}", userId, e.getMessage());
+                logger.warn("Failed to send heartbeat to user: {}. Error: {}", username, e.getMessage());
             }
         };
 
-        scheduler.scheduleAtFixedRate(heartbeatTask, HEARTBEAT_INTERVAL_SECONDS, 
-                HEARTBEAT_INTERVAL_SECONDS, TimeUnit.SECONDS);
+        scheduler.scheduleAtFixedRate(heartbeatTask, HEARTBEAT_INTERVAL_SECONDS,
+            HEARTBEAT_INTERVAL_SECONDS, TimeUnit.SECONDS);
 
-        sseNotificationService.registerClient(userId, emitter);
+        sseNotificationService.registerClient(username, emitter);
 
         emitter.onCompletion(() -> {
-            logger.info("SSE stream completed for user: {}", userId);
-            sseNotificationService.unregisterClient(userId);
+            logger.info("SSE stream completed for user: {}", username);
+            sseNotificationService.unregisterClient(username);
         });
 
         emitter.onError(e -> {
-            logger.error("SSE stream error for user: {}. Error: {}", userId, e.getMessage());
-            sseNotificationService.unregisterClient(userId);
+            logger.error("SSE stream error for user: {}. Error: {}", username, e.getMessage());
+            sseNotificationService.unregisterClient(username);
         });
 
         emitter.onTimeout(() -> {
-            logger.warn("SSE stream timeout for user: {}", userId);
-            sseNotificationService.unregisterClient(userId);
+            logger.warn("SSE stream timeout for user: {}", username);
+            sseNotificationService.unregisterClient(username);
         });
 
-        logger.info("SSE stream established for user: {}", userId);
+        logger.info("SSE stream established for user: {}", username);
         return ResponseEntity.ok(emitter);
     }
 
     /**
      * Sends a notification event to a specific user via SSE.
-     * 
+     *
      * This endpoint is called by internal services (like NotificationConsumer)
      * to push notifications to connected clients.
-     * 
-     * @param userId  The unique identifier of the recipient user
+     *
+     * @param username The username of the recipient user
      * @param message The notification message to send
      * @return ResponseEntity with success status
      */
-    @GetMapping("/send/{userId}/{message}")
-    public ResponseEntity<String> sendNotification(@PathVariable String userId, @PathVariable String message) {
-        logger.info("Sending notification to user: {}", userId);
+    @GetMapping("/send/{username}/{message}")
+    public ResponseEntity<String> sendNotification(@PathVariable String username, @PathVariable String message) {
+        logger.info("Sending notification to user: {}", username);
 
-        boolean success = sseNotificationService.sendNotification(userId, message);
+        boolean success = sseNotificationService.sendNotification(username, message);
 
         if (success) {
-            logger.debug("Notification sent successfully to user: {}", userId);
+            logger.debug("Notification sent successfully to user: {}", username);
             return ResponseEntity.ok("{\"status\": \"success\"}");
         } else {
-            logger.warn("Failed to send notification to user: {}. No active connection", userId);
+            logger.warn("Failed to send notification to user: {}. No active connection", username);
             return ResponseEntity.status(404).body("{\"status\": \"error\", \"message\": \"No active connection\"}");
         }
     }
 
     /**
      * Checks if a user has an active SSE connection.
-     * 
-     * @param userId The user ID to check
+     *
+     * @param username The username to check
      * @return ResponseEntity with status information
      */
-    @GetMapping("/status/{userId}")
-    public ResponseEntity<String> getConnectionStatus(@PathVariable String userId) {
-        boolean isConnected = sseNotificationService.hasActiveConnection(userId);
+    @GetMapping("/status/{username}")
+    public ResponseEntity<String> getConnectionStatus(@PathVariable String username) {
+        boolean isConnected = sseNotificationService.hasActiveConnection(username);
         int activeClients = sseNotificationService.getActiveClientCount();
 
         String status = String.format(
-                "{\"userId\": \"%s\", \"connected\": %b, \"activeClients\": %d, \"timestamp\": \"%s\"}",
-                userId, isConnected, activeClients, Instant.now()
+            "{\"username\": \"%s\", \"connected\": %b, \"activeClients\": %d, \"timestamp\": \"%s\"}",
+            username, isConnected, activeClients, Instant.now()
         );
 
-        logger.debug("Connection status request for user: {}. Connected: {}", userId, isConnected);
+        logger.debug("Connection status request for user: {}. Connected: {}", username, isConnected);
         return ResponseEntity.ok(status);
     }
 }

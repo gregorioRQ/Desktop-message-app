@@ -820,7 +820,7 @@ public class ChatController {
     public void connectSse() {
         if (sseClient == null) {
             sseClient = new SseNotificationClient(
-                currentUserId,
+                currentUsername,
                 authToken,
                 () -> {
                     Platform.runLater(() -> {

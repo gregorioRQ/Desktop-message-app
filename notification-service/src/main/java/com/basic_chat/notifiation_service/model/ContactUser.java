@@ -12,7 +12,7 @@ import java.io.Serializable;
 public class ContactUser {
 
     @Id
-    private String userId;
+    private String username;
 
     @Id
     private String contactUsername;
@@ -20,17 +20,17 @@ public class ContactUser {
     public ContactUser() {
     }
 
-    public ContactUser(String userId, String contactUsername) {
-        this.userId = userId;
+    public ContactUser(String username, String contactUsername) {
+        this.username = username;
         this.contactUsername = contactUsername;
     }
 
-    public String getUserId() {
-        return userId;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getContactUsername() {
@@ -43,14 +43,14 @@ public class ContactUser {
 }
 
 class ContactUserId implements Serializable {
-    private String userId;
+    private String username;
     private String contactUsername;
 
     public ContactUserId() {
     }
 
-    public ContactUserId(String userId, String contactUsername) {
-        this.userId = userId;
+    public ContactUserId(String username, String contactUsername) {
+        this.username = username;
         this.contactUsername = contactUsername;
     }
 
@@ -59,12 +59,12 @@ class ContactUserId implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ContactUserId that = (ContactUserId) o;
-        return userId.equals(that.userId) && contactUsername.equals(that.contactUsername);
+        return username.equals(that.username) && contactUsername.equals(that.contactUsername);
     }
 
     @Override
     public int hashCode() {
-        int result = userId.hashCode();
+        int result = username.hashCode();
         result = 31 * result + contactUsername.hashCode();
         return result;
     }
