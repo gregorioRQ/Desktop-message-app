@@ -2,6 +2,11 @@ package com.pola.service;
 
 import java.util.concurrent.CompletableFuture;
 
+import com.pola.proto.UploadImageRequest;
+import com.pola.proto.UploadImageResponse;
+import com.pola.proto.DownloadImageRequest;
+import com.pola.proto.DownloadImageResponse;
+
 /**
  * Interface para el servicio HTTP
  * Principio SOLID: Dependency Inversion - Los clientes dependen de esta abstracción
@@ -59,7 +64,28 @@ public interface HttpService {
      * Obtiene el contacto/lista de contactos del usuario
      */
 
-    // TODO: MEDIA - Reactivar cuando se implemente funcionalidad de envío de imágenes
+    /**
+     * Envía un latido al servidor para mantener la sesión activa.
+     * @param accessToken Token de acceso.
+     * @return CompletableFuture indicando si el latido fue exitoso.
+     */
+    CompletableFuture<Boolean> sendHeartbeat(String accessToken);
+
+    /**
+     * Sube un archivo multimedia (imagen) al servidor usando Protobuf.
+     * @param request Petición de subida con datos de imagen.
+     * @param accessToken Token de autorización.
+     * @return CompletableFuture con la respuesta del servidor (UploadImageResponse).
+     */
+    CompletableFuture<UploadImageResponse> uploadMedia(UploadImageRequest request, String accessToken);
+
+    /**
+     * Descarga una imagen del servidor usando el mediaId.
+     * @param request Petición con el mediaId y userId.
+     * @param accessToken Token de autorización.
+     * @return CompletableFuture con la respuesta conteniendo los bytes de la imagen.
+     */
+    CompletableFuture<DownloadImageResponse> downloadMedia(DownloadImageRequest request, String accessToken);
     // /**
     //  * Sube un archivo multimedia (imagen) al servidor usando Protobuf.
     //  * @param request Petición de subida con datos de imagen.

@@ -9,17 +9,17 @@ import java.util.concurrent.ExecutionException;
 
 import org.springframework.stereotype.Service;
 
+import com.basic_chat.chat_service.models.ImageMessage;
 import com.basic_chat.chat_service.models.Message;
 import com.basic_chat.chat_service.models.PendingBlock;
+import com.basic_chat.chat_service.repository.ImageMessageRepository;
 import com.basic_chat.chat_service.models.PendingClearHistory;
-import com.basic_chat.chat_service.models.PendingContactIdentity;
 import com.basic_chat.chat_service.models.PendingDeletion;
 import com.basic_chat.chat_service.models.PendingReadReceipt;
 import com.basic_chat.chat_service.models.PendingUnblock;
 import com.basic_chat.chat_service.repository.MessageRepository;
 import com.basic_chat.chat_service.repository.PendingBlockRepository;
 import com.basic_chat.chat_service.repository.PendingClearHistoryRepository;
-import com.basic_chat.chat_service.repository.PendingContactIdentityRepository;
 import com.basic_chat.chat_service.repository.PendingDeletionRepository;
 import com.basic_chat.chat_service.repository.PendingReadReceiptRepository;
 import com.basic_chat.chat_service.repository.PendingUnblockRepository;
@@ -40,7 +40,7 @@ public class MessageService {
     private final PendingBlockRepository pendingBlockRepository;
     private final PendingUnblockRepository pendingUnblockRepository;
     private final PendingClearHistoryRepository pendingClearHistoryRepository;
-    private final PendingContactIdentityRepository pendingContactIdentityRepository;
+    private final ImageMessageRepository imageMessageRepository;
     private final MessageValidator messageValidator;
 
     public MessageService(
@@ -50,7 +50,7 @@ public class MessageService {
             PendingBlockRepository pendingBlockRepository,
             PendingUnblockRepository pendingUnblockRepository,
             PendingClearHistoryRepository pendingClearHistoryRepository,
-            PendingContactIdentityRepository pendingContactIdentityRepository,
+            ImageMessageRepository imageMessageRepository,
             MessageValidator messageValidator) {
         this.messageRepository = messageRepository;
         this.pendingDeletionRepository = pendingDeletionRepository;
@@ -58,7 +58,7 @@ public class MessageService {
         this.pendingBlockRepository = pendingBlockRepository;
         this.pendingUnblockRepository = pendingUnblockRepository;
         this.pendingClearHistoryRepository = pendingClearHistoryRepository;
-        this.pendingContactIdentityRepository = pendingContactIdentityRepository;
+        this.imageMessageRepository = imageMessageRepository;
         this.messageValidator = messageValidator;
     }
 
@@ -439,36 +439,57 @@ public class MessageService {
     }
 
     /**
-     * Obtiene y elimina las identidades de contacto pendientes para un usuario.
+     * Obtiene y elimina los mensajes de imagen pendientes para un usuario.
+     * Este método se utiliza cuando un usuario se conecta y solicita sus mensajes pendientes.
+     * Los mensajes de imagen se convierten a formato protobuf y se eliminan de la base de datos
+     * después de ser entregados al cliente.
      *
-     * @param recipientUsername Nombre del usuario que recibe las actualizaciones de identidad
-     * @return Lista de entidades PendingContactIdentity
+     * @param username Nombre del usuario (userId) que recibe los mensajes de imagen
+     * @return Lista de mensajes de imagen en formato protobuf
      */
     @Transactional
-    public List<PendingContactIdentity> getAndClearPendingContactIdentities(String recipientUsername) {
-        if (recipientUsername == null) {
-            log.warn("Parámetro inválido: recipientUsername es nulo");
+    public List<MessagesProto.ImageMessage> getAndClearPendingImageMessages(String username) {
+        if (username == null) {
+            log.warn("Parámetro inválido: username es nulo");
             return new ArrayList<>();
         }
 
         try {
-            log.debug("Obteniendo identidades de contacto pendientes para usuario: {}", recipientUsername);
-            List<PendingContactIdentity> pending = pendingContactIdentityRepository.findByRecipient(recipientUsername);
+            log.debug("Obteniendo mensajes de imagen pendientes para usuario: {}", username);
+            List<ImageMessage> pendingImages = imageMessageRepository.findByReceiverIdAndDeliveredFalse(username);
 
-            if (!pending.isEmpty()) {
-                log.info("Encontradas {} identidades de contacto pendientes para usuario: {}", 
-                        pending.size(), recipientUsername);
-                pendingContactIdentityRepository.deleteAll(pending);
-                log.info("Identidades de contacto eliminadas después de entrega para usuario: {}", recipientUsername);
-            } else {
-                log.debug("No hay identidades de contacto pendientes para usuario: {}", recipientUsername);
+            if (pendingImages.isEmpty()) {
+                log.debug("No hay mensajes de imagen pendientes para usuario: {}", username);
+                return new ArrayList<>();
             }
 
-            return pending;
+            log.info("Encontrados {} mensajes de imagen pendientes para usuario: {}", 
+                    pendingImages.size(), username);
+
+            List<MessagesProto.ImageMessage> protoImages = new ArrayList<>();
+            for (ImageMessage img : pendingImages) {
+                MessagesProto.ImageMessage protoImage = MessagesProto.ImageMessage.newBuilder()
+                        .setMediaId(img.getMediaId())
+                        .setSenderId(img.getSenderId())
+                        .setReceiverId(img.getReceiverId())
+                        .setFullImageUrl(img.getFullImageUrl())
+                        .setOriginalWidth(img.getOriginalWidth() != null ? img.getOriginalWidth() : 0)
+                        .setOriginalHeight(img.getOriginalHeight() != null ? img.getOriginalHeight() : 0)
+                        .setFileSize(img.getFileSize() != null ? img.getFileSize() : 0)
+                        .setTimestamp(img.getTimestamp() != null ? img.getTimestamp() : 0)
+                        .setStatus(MessagesProto.ImageMessageStatus.SENT)
+                        .build();
+                protoImages.add(protoImage);
+            }
+
+            imageMessageRepository.deleteByReceiverId(username);
+            log.info("Mensajes de imagen eliminados después de entrega para usuario: {}", username);
+
+            return protoImages;
         } catch (Exception ex) {
-            log.error("Error al obtener/limpiar identidades de contacto pendientes para usuario {}: {}", 
-                    recipientUsername, ex.getMessage(), ex);
-            throw new RuntimeException("Error al procesar identidades de contacto pendientes", ex);
+            log.error("Error al obtener/limpiar mensajes de imagen pendientes para usuario {}: {}", 
+                    username, ex.getMessage(), ex);
+            throw new RuntimeException("Error al procesar mensajes de imagen pendientes", ex);
         }
     }
 
@@ -481,6 +502,18 @@ public class MessageService {
      * @param username Nombre del usuario que solicita sus pendientes
      * @return WsMessage conteniendo todos los pendientes, o null si no hay ninguno
      */
+    /**
+     * Retrieves all pending messages for a user and deletes them from the database after delivery.
+     * This includes text messages, image messages, blocks, unblocks, clear history requests,
+     * read receipts, and contact identities.
+     *
+     * IMPORTANT: Text messages are deleted from the database after being retrieved to prevent
+     * duplicate delivery on subsequent connections. Image messages are handled separately
+     * in getAndClearPendingImageMessages() which already deletes them.
+     *
+     * @param username The username requesting their pending messages
+     * @return WsMessage containing all pending items, or null if none exist
+     */
     public MessagesProto.WsMessage getAllPendingMessages(String username) {
         log.info("Obteniendo todos los mensajes pendientes para usuario: {}", username);
 
@@ -488,15 +521,43 @@ public class MessageService {
             MessagesProto.WsMessage.Builder wsBuilder = MessagesProto.WsMessage.newBuilder();
             boolean hasAnyPending = false;
 
-            // 1. Obtener mensajes de chat no leídos
-            List<ChatMessage> unreadMessages = getUnreadMessages(username);
-            if (!unreadMessages.isEmpty()) {
-                MessagesProto.UnreadMessagesList unreadList = MessagesProto.UnreadMessagesList.newBuilder()
-                        .addAllMessages(unreadMessages)
-                        .build();
-                wsBuilder.setUnreadMessagesList(unreadList);
-                log.info("Agregados {} mensajes no leídos para usuario: {}", unreadMessages.size(), username);
-                hasAnyPending = true;
+            // 1. Obtener mensajes de chat no leídos Y ELIMINARLOS de la BD después de retrieve
+            List<Message> unreadMessageEntities = messageRepository.findByToUserIdAndSeenFalse(username);
+            List<Long> unreadMessageIds = new ArrayList<>();
+            List<ChatMessage> unreadChatMessages = new ArrayList<>();
+
+            if (!unreadMessageEntities.isEmpty()) {
+                log.info("Found {} unread text messages for user: {}", unreadMessageEntities.size(), username);
+
+                for (Message m : unreadMessageEntities) {
+                    unreadMessageIds.add(m.getId());
+                    try {
+                        unreadChatMessages.add(ChatMessage.parseFrom(m.getData()));
+                    } catch (Exception ex) {
+                        log.error("Failed to deserialize message ID {}: {}", m.getId(), ex.getMessage());
+                    }
+                }
+
+                if (!unreadChatMessages.isEmpty()) {
+                    MessagesProto.UnreadMessagesList unreadList = MessagesProto.UnreadMessagesList.newBuilder()
+                            .addAllMessages(unreadChatMessages)
+                            .build();
+                    wsBuilder.setUnreadMessagesList(unreadList);
+                    log.info("Agregados {} mensajes no leídos para usuario: {}", unreadChatMessages.size(), username);
+                    hasAnyPending = true;
+                }
+
+                // CRITICAL: Delete delivered messages from database to prevent duplicate delivery
+                if (!unreadMessageIds.isEmpty()) {
+                    try {
+                        messageRepository.deleteAllByIdIn(unreadMessageIds);
+                        log.info("Deleted {} delivered text messages from database for user: {}",
+                                unreadMessageIds.size(), username);
+                    } catch (Exception e) {
+                        log.error("Failed to delete delivered text messages for user {}: {}",
+                                username, e.getMessage());
+                    }
+                }
             }
 
             // 2. Obtener bloqueos pendientes
@@ -560,18 +621,17 @@ public class MessageService {
                 hasAnyPending = true;
             }
 
-            // 6. Obtener identidades de contacto pendientes
-            List<PendingContactIdentity> pendingIdentities = getAndClearPendingContactIdentities(username);
-            if (!pendingIdentities.isEmpty()) {
-                for (PendingContactIdentity pci : pendingIdentities) {
-                    MessagesProto.ContactIdentity identity = MessagesProto.ContactIdentity.newBuilder()
-                            .setSenderId(pci.getSenderId())
-                            .setSenderUsername(pci.getSenderUsername())
-                            .build();
-                    wsBuilder.setContactIdentity(identity);
+            // 6. Obtener mensajes de imagen pendientes
+            List<MessagesProto.ImageMessage> pendingImages = getAndClearPendingImageMessages(username);
+            if (!pendingImages.isEmpty()) {
+                MessagesProto.UnreadImageMessagesList.Builder imageListBuilder = 
+                    MessagesProto.UnreadImageMessagesList.newBuilder();
+                for (MessagesProto.ImageMessage img : pendingImages) {
+                    imageListBuilder.addMessages(img);
                 }
-                log.info("Agregadas {} identidades de contacto pendientes para usuario: {}", 
-                         pendingIdentities.size(), username);
+                wsBuilder.setUnreadImageMessagesList(imageListBuilder.build());
+                log.info("Agregados {} mensajes de imagen pendientes para usuario: {}", 
+                         pendingImages.size(), username);
                 hasAnyPending = true;
             }
 

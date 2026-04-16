@@ -10,6 +10,10 @@ import java.util.concurrent.CompletableFuture;
 
 import com.google.protobuf.Message;
 import com.pola.config.HttpConfig;
+import com.pola.proto.DownloadImageRequest;
+import com.pola.proto.DownloadImageResponse;
+import com.pola.proto.UploadImageRequest;
+import com.pola.proto.UploadImageResponse;
 
 public class HttpServiceImpl implements HttpService{
 
@@ -56,6 +60,24 @@ public class HttpServiceImpl implements HttpService{
      * @param accessToken El token necesario para pasar el filtro del apigateya
      * @param responseClass La clase de respuesta a la que sera mapeada la respuesta obtenida
      */
+    @Override
+    public CompletableFuture<Boolean> sendHeartbeat(String accessToken) {
+        try {
+            HttpRequest httpRequest = HttpRequest.newBuilder()
+                    .uri(URI.create(baseUrl + "auth/heartbeat"))
+                    .header("Authorization", "Bearer " + accessToken)
+                    .GET()
+                    .timeout(Duration.ofSeconds(10))
+                    .build();
+            
+            return httpClient.sendAsync(httpRequest, HttpResponse.BodyHandlers.ofByteArray())
+                    .thenApply(response -> response.statusCode() >= 200 && response.statusCode() < 300);
+                    
+        } catch (Exception e) {
+            return CompletableFuture.completedFuture(false);
+        }
+    }
+
     @Override
     public <T, R> CompletableFuture<R> logout(T request, String accessToken, Class<R> responseClass) {
          try {
@@ -202,10 +224,47 @@ public class HttpServiceImpl implements HttpService{
         return responseClass.cast(parseFromMethod.invoke(null, (Object) data));
     }
 
-    // TODO: MEDIA - Reactivar cuando se implemente funcionalidad de envío de imágenes
-    // @Override
-    // public CompletableFuture<UploadImageResponse> uploadMedia(UploadImageRequest request, String accessToken) {
-    //     // TODO Auto-generated method stub
-    //     throw new UnsupportedOperationException("Unimplemented method 'uploadMedia'");
-    // }
+    @Override
+    public CompletableFuture<UploadImageResponse> uploadMedia(UploadImageRequest request, String accessToken) {
+        try {
+            byte[] requestBody = request.toByteArray();
+            
+            HttpRequest httpRequest = HttpRequest.newBuilder()
+                    .uri(URI.create(baseUrl + "media/upload"))
+                    .header("Content-Type", "application/x-protobuf")
+                    .header("Accept", "application/x-protobuf")
+                    .header("Authorization", "Bearer " + accessToken)
+                    .POST(HttpRequest.BodyPublishers.ofByteArray(requestBody))
+                    .timeout(Duration.ofSeconds(60))
+                    .build();
+            
+            return httpClient.sendAsync(httpRequest, HttpResponse.BodyHandlers.ofByteArray())
+                    .thenApply(response -> handleResponse(response, UploadImageResponse.class));
+                    
+        } catch (Exception e) {
+            return CompletableFuture.failedFuture(e);
+        }
+    }
+
+    @Override
+    public CompletableFuture<DownloadImageResponse> downloadMedia(DownloadImageRequest request, String accessToken) {
+        try {
+            byte[] requestBody = request.toByteArray();
+            
+            HttpRequest httpRequest = HttpRequest.newBuilder()
+                    .uri(URI.create(HttpConfig.MEDIA_SERVICE_URL + "/download"))
+                    .header("Content-Type", "application/x-protobuf")
+                    .header("Accept", "application/x-protobuf")
+                    .header("Authorization", "Bearer " + accessToken)
+                    .POST(HttpRequest.BodyPublishers.ofByteArray(requestBody))
+                    .timeout(Duration.ofSeconds(60))
+                    .build();
+            
+            return httpClient.sendAsync(httpRequest, HttpResponse.BodyHandlers.ofByteArray())
+                    .thenApply(response -> handleResponse(response, DownloadImageResponse.class));
+                    
+        } catch (Exception e) {
+            return CompletableFuture.failedFuture(e);
+        }
+    }
 }

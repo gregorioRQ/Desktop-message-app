@@ -8,7 +8,11 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.pola.database.DatabaseManager;
 import com.pola.model.ChatMessage;
+import com.pola.model.ImageChatMessage;
+import com.pola.model.ImageProcessingResult;
+import com.pola.proto.UploadImageResponse;
 import com.pola.model.Contact;
 import com.pola.model.Notification;
 import com.pola.proto.MessagesProto.WsMessage;
@@ -62,6 +66,17 @@ public class MessageService {
         );
 
         this.messageProcessor = new IncomingMessageProcessor(context);
+    }
+
+    public void setOnMessagesUpdatedListener(Runnable listener) {
+        MessageProcessingContext ctx = messageProcessor.getContext();
+        if (ctx != null) {
+            ctx.setOnMessagesUpdated(listener);
+        }
+    }
+
+    public void setMediaWebSocketService(WebSocketService mediaWebSocketService) {
+        this.messageSender.setMediaWebSocketService(mediaWebSocketService);
     }
 
     // Establece el usuario actual
@@ -142,6 +157,7 @@ public class MessageService {
             // generar un id aleatorio para el mensaje local y del servidor
             long id = Math.abs(UUID.randomUUID().getLeastSignificantBits());
             localMessage.setId(id);
+            localMessage.setStatus(ChatMessage.MessageStatus.PENDING);
             
             ChatMessage saved = messageRepository.create(localMessage);
 
@@ -152,6 +168,54 @@ public class MessageService {
             messageSender.sendTextMessage(id, content, username, currentContact.getContactUsername());
 
             System.out.println("Mensaje enviado a: " + currentContact.getContactUsername() + "id: " + localMessage.getId());
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Envía un mensaje de imagen
+     * Envía una notificación por WebSocket para que el receptor pueda descargar la imagen
+     */
+    public void sendImageMessage(ImageProcessingResult localResult, UploadImageResponse serverResponse, String username) {
+        if(currentContact == null){
+            System.out.println("No hay contacto seleccionado");
+            return;
+        }
+
+        if (contactService.isUserBlockingMe(currentContact.getContactUsername())) {
+            System.out.println("Intento de envío bloqueado: El destinatario te ha bloqueado.");
+            return;
+        }
+
+        try {
+            ImageChatMessage localMessage = new ImageChatMessage(
+                currentContact.getContactUsername(), 
+                username,
+                serverResponse.getFullImageUrl(),
+                serverResponse.getMediaId(),
+                localResult.getMetadata().getOriginalWidth(),
+                localResult.getMetadata().getOriginalHeight()
+            );
+            
+            localMessage.setId(Math.abs(UUID.randomUUID().getLeastSignificantBits()));
+            
+            ChatMessage saved = messageRepository.create(localMessage);
+
+            currentChatMessages.add(localMessage);
+
+            messageSender.sendImageMessage(
+                serverResponse.getMediaId(), 
+                serverResponse.getFullImageUrl(), 
+                username, 
+                currentContact.getContactUsername(), 
+                localResult.getMetadata().getOriginalWidth(), 
+                localResult.getMetadata().getOriginalHeight(), 
+                serverResponse.getFullImageSize()
+            );
+
+            System.out.println("Imagen enviada a: " + currentContact.getContactUsername() + " mediaId: " + serverResponse.getMediaId());
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -228,7 +292,20 @@ public class MessageService {
 
     // eliminar un mensaje del local como del servidor
     public void deleteOneMessage(ChatMessage message){
+        deleteOneMessage(message, false);
+    }
+    
+    // eliminar un mensaje del local como del servidor
+    public void deleteOneMessage(ChatMessage message, boolean deleteMedia){
         try {
+            if (deleteMedia && message instanceof ImageChatMessage imgMsg) {
+                String mediaId = imgMsg.getMediaId();
+                if (mediaId != null && !mediaId.isEmpty()) {
+                    DatabaseManager.getInstance().deleteImageFile(mediaId);
+                    DatabaseManager.getInstance().deleteImage(mediaId);
+                }
+            }
+            
             messageRepository.delete(message.getId());
             currentChatMessages.remove(message);
 

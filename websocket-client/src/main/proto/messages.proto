@@ -5,6 +5,9 @@ package com.pola;
 option java_package = "com.pola.proto";
 option java_outer_classname = "MessagesProto";
 
+import "image-data.proto";
+import "image-message.proto";
+
 // Tipo de mensaje
 enum MessageType {
   TEXT = 0;
@@ -15,6 +18,7 @@ enum MessageType {
   DELIVERY_RECEIPT = 5;
   ALERT = 6;
   CHAT = 7;
+  IMAGE = 8;  
 }
 
 // Mensaje de chat
@@ -161,9 +165,9 @@ message MessagesReadUpdate {
 }
 
 message ContactIdentity {
-  string sender_id = 1;      // El ID real (UUID) del remitente
-  string sender_username = 2; // El username del remitente
-  string contact_username = 3; // El username del contacto parcial
+  string sender_id = 1;
+  string sender_username = 2;
+  string contact_username = 3;
 }
 
 /**
@@ -183,6 +187,39 @@ message PendingClearHistory {
  */
 message PendingClearHistoryList {
   repeated PendingClearHistory clear_histories = 1;
+}
+
+// Lista de mensajes de imagen pendientes para entregar cuando el receptor se conecte
+message UnreadImageMessagesList {
+  repeated ImageMessage messages = 1;
+}
+
+// Mensaje para consultar estado de presencia de contactos
+message ContactPresenceMessage {
+  oneof payload {
+    ContactPresenceRequest request = 1;
+    ContactPresenceResponse response = 2;
+  }
+}
+
+message ContactPresenceRequest {
+  string user_id = 1;
+}
+
+message ContactPresenceResponse {
+  repeated ContactPresence contacts = 1;
+}
+
+message ContactPresence {
+  string username = 1;
+  string user_id = 2;
+  bool online = 3;
+}
+
+// Solicitud para agregar un contacto
+message AddContactRequest {
+  string sender = 1;
+  string contact_username = 2;
 }
 
 // Wrapper para todos los mensajes
@@ -207,9 +244,13 @@ message WsMessage {
     BlockedUsersList blocked_users_list = 17;
     MarkMessagesAsReadRequest mark_messages_as_read_request = 18;
     MessagesReadUpdate messages_read_update = 19;
-    ContactIdentity contact_identity = 20;
     ClearHistoryResponse clear_history_response = 21;
     PendingClearHistoryList pending_clear_history_list = 22;
+    ImageMessage image_message = 23;
+    PendingClearHistory pending_clear_history = 24;
+    UnreadImageMessagesList unread_image_messages_list = 25;
+    ContactPresenceMessage contact_presence_message = 26;
+    AddContactRequest add_contact_request = 27;
   }
 }
 

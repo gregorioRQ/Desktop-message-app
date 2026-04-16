@@ -7,11 +7,13 @@ option java_outer_classname = "LogoutProto";
 
 message LogoutRequest{
     string refreshToken = 1;
+    string username = 2;
 }
 
 message LogoutResponse {
     string message = 1;
     bool success = 2;
+    bool redisKeyDeleted = 3;
 }
 
 message LogoutUser{

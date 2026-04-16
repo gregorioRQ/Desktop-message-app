@@ -41,6 +41,16 @@ public class AuthService {
         return refreshSession(storedSession);
     }
 
+    public String getAccessToken() {
+        Session session = tokenRepository.loadSession();
+        return session != null ? session.getAccessToken() : null;
+    }
+    
+    public String getUserId() {
+        Session session = tokenRepository.loadSession();
+        return session != null ? session.getUserId() : null;
+    }
+
     public CompletableFuture<Session> login(String username, String password) {
         LoginRequest request = LoginRequest.newBuilder()
                 .setUsername(username)
@@ -70,7 +80,7 @@ public class AuthService {
         tokenRepository.clearSession();
     }
 
-    public CompletableFuture<LogoutResponse> logout(String refreshToken) {
+    public CompletableFuture<LogoutResponse> logout(String refreshToken, String username) {
         String accessToken = "";
         Session session = tokenRepository.loadSession();
         if (session != null) {
@@ -79,6 +89,7 @@ public class AuthService {
 
         LogoutRequest request = LogoutRequest.newBuilder()
                 .setRefreshToken(refreshToken)
+                .setUsername(username)
                 .build();
 
         return httpService.logout(request, accessToken, LogoutResponse.class);

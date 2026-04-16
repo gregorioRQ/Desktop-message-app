@@ -2,6 +2,7 @@ package com.pola.service;
 
 import java.util.function.Consumer;
 
+import com.google.protobuf.Message;
 import com.pola.proto.MessagesProto.WsMessage;
 
 
@@ -35,7 +36,7 @@ public interface WebSocketService {
      * Envía un mensaje al servidor
      * @param message Mensaje a enviar
      */
-    void sendMessage(WsMessage message);
+    void sendMessage(Message message);
     
     /**
      * Registra un listener para mensajes entrantes

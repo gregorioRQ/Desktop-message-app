@@ -5,6 +5,9 @@ public class HttpConfig {
     // URL del servicio de perfiles
     public static final String PROFILE_SERVICE_URL = "http://localhost:8080/api/v1/";
     
+    // URL del servicio de media
+    public static final String MEDIA_SERVICE_URL = "http://localhost:8086/api/v1/media";
+    
     // Timeouts (en segundos)
     public static final int CONNECT_TIMEOUT = 10;
     public static final int REQUEST_TIMEOUT = 30;

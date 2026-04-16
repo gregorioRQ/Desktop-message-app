@@ -23,6 +23,7 @@ public class MessageProcessingContext {
     private final Supplier<Contact> currentContactSupplier;
     private final Supplier<String> currentUserIdSupplier;
     private final Supplier<String> currentUsernameSupplier;
+    private Runnable onMessagesUpdated;
 
     public MessageProcessingContext(MessageRepository messageRepository,
                                     ContactService contactService,
@@ -40,6 +41,14 @@ public class MessageProcessingContext {
         this.currentContactSupplier = currentContactSupplier;
         this.currentUserIdSupplier = currentUserIdSupplier;
         this.currentUsernameSupplier = currentUsernameSupplier;
+    }
+
+    public void setOnMessagesUpdated(Runnable onMessagesUpdated) {
+        this.onMessagesUpdated = onMessagesUpdated;
+    }
+
+    public Runnable getOnMessagesUpdated() {
+        return onMessagesUpdated;
     }
 
     public MessageRepository getMessageRepository() {

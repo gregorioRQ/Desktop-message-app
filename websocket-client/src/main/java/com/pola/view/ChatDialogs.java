@@ -82,6 +82,29 @@ public class ChatDialogs {
             });
         });
     }
+    
+    public static void showDeleteMediaDialog(Runnable onDeleteWithMedia, Runnable onDeleteOnly) {
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Eliminar Mensaje");
+            alert.setHeaderText("¿Eliminar también el contenido multimedia?");
+            
+            ButtonType btnYes = new ButtonType("Sí");
+            ButtonType btnNo = new ButtonType("No");
+            ButtonType btnCancel = new ButtonType("Cancelar", ButtonBar.ButtonData.CANCEL_CLOSE);
+            
+            alert.getButtonTypes().setAll(btnYes, btnNo, btnCancel);
+            
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.isPresent()) {
+                if (result.get() == btnYes) {
+                    onDeleteWithMedia.run();
+                } else if (result.get() == btnNo) {
+                    onDeleteOnly.run();
+                }
+            }
+        });
+    }
 
     public static void showAddContactDialog(String currentUsername, Function<String, Boolean> onAdd) {
         Platform.runLater(() -> {
@@ -150,4 +173,3 @@ public class ChatDialogs {
         });
     }
 }
-
