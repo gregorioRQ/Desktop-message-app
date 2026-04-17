@@ -67,15 +67,15 @@ public class MessageServiceTest {
         void testLoadChatHistory_WithUnreadMessages() throws SQLException {
             // Arrange
             String contactUsername = "friendUser";
-            Contact contact = new Contact("friendId", contactUsername, null);
-            
+Contact contact = new Contact("friendId", contactUsername);
+
             // Mensaje 1: Ya leído
-            ChatMessage msg1 = new ChatMessage(contactUsername, "Hola", contactUsername);
+            ChatMessage msg1 = new ChatMessage(contactUsername, "currentUser", "Hola", "currentId");
             msg1.setId(100L);
             msg1.setRead(true);
             
             // Mensaje 2: No leído
-            ChatMessage msg2 = new ChatMessage(contactUsername, "Cómo estás?", contactUsername);
+            ChatMessage msg2 = new ChatMessage(contactUsername, "currentUser", "Cómo estás?", "currentId");
             msg2.setId(101L);
             msg2.setRead(false);
 
@@ -102,8 +102,8 @@ public class MessageServiceTest {
         void testLoadChatHistory_NoUnreadMessages() throws SQLException {
             // Arrange
             String contactUsername = "friendUser";
-            Contact contact = new Contact("friendId", contactUsername, null);
-            ChatMessage msg1 = new ChatMessage(contactUsername, "Hola", contactUsername);
+Contact contact = new Contact("friendId", contactUsername);
+        ChatMessage msg1 = new ChatMessage(contactUsername, "currentUser", "Hola", "currentId");
             msg1.setId(100L);
             
             when(messageRepository.findByContactUsername(contactUsername)).thenReturn(Collections.singletonList(msg1));
@@ -137,7 +137,7 @@ public class MessageServiceTest {
         void testSendTextMessage_InvalidContent() throws SQLException {
             // Arrange
             String contactUsername = "friend";
-            Contact contact = new Contact("id", contactUsername, null);
+            Contact contact = new Contact("id", contactUsername);
             
             // Mocks necesarios para loadChatHistory (que establece el contacto actual)
             when(messageRepository.findByContactUsername(contactUsername)).thenReturn(Collections.emptyList());
@@ -159,7 +159,7 @@ public class MessageServiceTest {
         void testSendTextMessage_BlockedUser() throws SQLException {
             // Arrange
             String contactUsername = "blocker";
-            Contact contact = new Contact("id", contactUsername, null);
+            Contact contact = new Contact("id", contactUsername);
             
             when(messageRepository.findByContactUsername(contactUsername)).thenReturn(Collections.emptyList());
             when(messageRepository.getUnreadMessageIds(contactUsername)).thenReturn(Collections.emptyList());
@@ -180,7 +180,7 @@ public class MessageServiceTest {
         void testSendTextMessage_Success() throws SQLException {
             // Arrange
             String contactUsername = "friend";
-            Contact contact = new Contact("id", contactUsername, null);
+            Contact contact = new Contact("id", contactUsername);
             String messageContent = "Hola Mundo";
             
             when(messageRepository.findByContactUsername(contactUsername)).thenReturn(Collections.emptyList());
@@ -217,7 +217,7 @@ public class MessageServiceTest {
         void testClearChatHistory_LocalOnly() throws SQLException {
             // Arrange
             String contactUsername = "friend";
-            Contact contact = new Contact("id1", contactUsername, null);
+            Contact contact = new Contact("id1", contactUsername);
             contact.setId(1);
             
             // Simular que este es el contacto actual
@@ -238,7 +238,7 @@ public class MessageServiceTest {
         void testClearChatHistory_Global() throws SQLException {
             // Arrange
             String contactUsername = "friend";
-            Contact contact = new Contact("id1", contactUsername, null);
+            Contact contact = new Contact("id1", contactUsername);
             contact.setId(1);
             
             when(messageRepository.findByContactUsername(contactUsername)).thenReturn(Collections.emptyList());
@@ -264,7 +264,7 @@ public class MessageServiceTest {
         @DisplayName("Debe eliminar mensaje localmente y notificar al servidor si está conectado")
         void testDeleteOneMessage_Connected() throws SQLException {
             // Arrange
-            ChatMessage msg = new ChatMessage("friend", "content", "me");
+            ChatMessage msg = new ChatMessage("friend", "currentUser", "content", "currentId");
             msg.setId(123L);
             
             // Añadimos el mensaje a la lista observable para verificar que se elimina
@@ -285,7 +285,7 @@ public class MessageServiceTest {
         @DisplayName("Debe eliminar mensaje localmente sin notificar si está desconectado")
         void testDeleteOneMessage_Disconnected() throws SQLException {
             // Arrange
-            ChatMessage msg = new ChatMessage("friend", "content", "me");
+            ChatMessage msg = new ChatMessage("friend", "currentUser", "content", "currentId");
             msg.setId(456L);
             messageService.getMessages().add(msg);
 

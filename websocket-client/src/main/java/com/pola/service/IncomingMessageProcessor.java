@@ -20,7 +20,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
+
+import com.pola.config.HttpConfig;
 
 /**
  * Procesa los mensajes entrantes del WebSocket.
@@ -32,10 +38,27 @@ public class IncomingMessageProcessor {
     private final MessageProcessingContext context;
     private final Map<WsMessage.PayloadCase, Consumer<WsMessage>> handlers = new HashMap<>();
     private Consumer<String> errorListener;
+    
+    // Debounce timers para confirmación de lectura
+    // Evita efecto rebote cuando llegan múltiples mensajes mientras el chat está abierto
+    // Cada contacto tiene su propio timer que se resetea con cada nuevo mensaje
+    private final Map<String, ScheduledFuture<?>> readReceiptTimers = new HashMap<>();
+    private final ScheduledExecutorService scheduler;
 
     public IncomingMessageProcessor(MessageProcessingContext context) {
+        this(context, Executors.newSingleThreadScheduledExecutor());
+    }
+
+    // Constructor para testing - permite inyectar scheduler mockeado
+    IncomingMessageProcessor(MessageProcessingContext context, ScheduledExecutorService scheduler) {
         this.context = context;
+        this.scheduler = scheduler;
         initializeHandlers();
+    }
+
+    // Getter para testing - permite verificar timers
+    Map<String, ScheduledFuture<?>> getReadReceiptTimers() {
+        return readReceiptTimers;
     }
 
     public MessageProcessingContext getContext() {
@@ -181,7 +204,7 @@ public class IncomingMessageProcessor {
             Contact current = context.getCurrentContactSupplier().get();
             if(current != null && current.getId() == contact.getId()){
                 Platform.runLater(() -> context.getCurrentChatMessages().add(saved));
-                context.getMessageRepository().markAsRead(saved.getId());
+                scheduleReadReceipt(senderId);
             } else {
                 updateNotification(senderId);
             }
@@ -688,5 +711,84 @@ public class IncomingMessageProcessor {
 
     private void updateNotification(String senderUsername) {
         Platform.runLater(() -> Notification.updateOrAdd(context.getNotifications(), senderUsername));
+    }
+
+    /**
+     * Programa el envío de confirmación de lectura con debounce.
+     * Evita efecto rebote cuando llegan múltiples mensajes mientras el chat está abierto.
+     * El timer se resetea con cada nuevo mensaje y solo envía la confirmación cuando expire.
+     * 
+     * Flujo: Llega mensaje → Resetear timer (3s) → Timer expira → 
+     *        Obtener IDs no leídos → Marcar local → Enviar al servidor
+     * 
+     * @param senderId ID del usuario que envió los mensajes a marcar como leídos
+     */
+    void scheduleReadReceipt(String senderId) {
+        log.info("[ReadReceipt] Mensaje recibido de {}, agendando confirmación de lectura con debounce", senderId);
+        
+        ScheduledFuture<?> existingTimer = readReceiptTimers.get(senderId);
+        if (existingTimer != null && !existingTimer.isCancelled()) {
+            existingTimer.cancel(false);
+            log.debug("[ReadReceipt] Timer anterior cancelado para contacto: {}", senderId);
+        }
+        
+        ScheduledFuture<?> newTimer = scheduler.schedule(() -> {
+            executeReadReceipt(senderId);
+        }, HttpConfig.READ_RECEIPT_DEBOUNCE_MS, TimeUnit.MILLISECONDS);
+        
+        readReceiptTimers.put(senderId, newTimer);
+        log.debug("[ReadReceipt] Timer de {}ms iniciado para contacto: {}", 
+                  HttpConfig.READ_RECEIPT_DEBOUNCE_MS, senderId);
+    }
+
+    /**
+     * Ejecuta la confirmación de lectura: obtiene IDs no leídos, marca localmente y envía al servidor.
+     * Se ejecuta cuando expira el timer de debounce.
+     * 
+     * @param senderId ID del usuario cuyos mensajes serán marcados como leídos
+     */
+    private void executeReadReceipt(String senderId) {
+        log.info("[ReadReceipt] Timer expirado, ejecutando confirmación de lectura para: {}", senderId);
+        
+        try {
+            List<Long> unreadIds = context.getMessageRepository().getUnreadMessageIds(senderId);
+            
+            if (unreadIds.isEmpty()) {
+                log.debug("[ReadReceipt] No hay mensajes sin leer para: {}", senderId);
+                readReceiptTimers.remove(senderId);
+                return;
+            }
+            
+            log.info("[ReadReceipt] {} mensajes sin leer encontrados para: {}", unreadIds.size(), senderId);
+            
+            context.getMessageRepository().markMultipleAsRead(unreadIds);
+            log.debug("[ReadReceipt] {} mensajes marcados como leídos localmente", unreadIds.size());
+            
+            String currentUserId = context.getCurrentUserIdSupplier().get();
+            context.getMessageSender().sendMarkAsRead(currentUserId, senderId, unreadIds);
+            
+            log.info("[ReadReceipt] Confirmación de lectura enviada al servidor para {} mensajes", unreadIds.size());
+            
+            final List<Long> idsToUpdate = unreadIds;
+            Platform.runLater(() -> {
+                for (int i = 0; i < context.getCurrentChatMessages().size(); i++) {
+                    ChatMessage msg = context.getCurrentChatMessages().get(i);
+                    if (idsToUpdate.contains(msg.getId())) {
+                        msg.setRead(true);
+                        msg.setStatus(ChatMessage.MessageStatus.READ);
+                        context.getCurrentChatMessages().set(i, msg);
+                    }
+                }
+                if (context.getOnMessagesUpdated() != null) {
+                    context.getOnMessagesUpdated().run();
+                }
+            });
+            
+        } catch (SQLException e) {
+            log.error("[ReadReceipt] Error al ejecutar confirmación de lectura para {}: {}", 
+                      senderId, e.getMessage(), e);
+        } finally {
+            readReceiptTimers.remove(senderId);
+        }
     }
 }
