@@ -17,9 +17,11 @@ import javafx.application.Platform;
 
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -350,13 +352,15 @@ public class IncomingMessageProcessor {
     }
 
     private void processUnreadMessages(MessagesProto.UnreadMessagesList unreadMessagesList) {
+        Set<String> sendersToNotify = new HashSet<>();
+
         for (MessagesProto.ChatMessage protoMessage : unreadMessagesList.getMessagesList()) {
             String senderUsername = protoMessage.getSender();
             long messageId = Long.parseLong(protoMessage.getId());
 
             try {
                 Contact contact = context.getContactService().findContactByUsername(context.getCurrentUserIdSupplier().get(), senderUsername)
-                        .orElseGet(() -> context.getContactService().addContact(context.getCurrentUserIdSupplier().get(), senderUsername));
+                    .orElseGet(() -> context.getContactService().addContact(context.getCurrentUserIdSupplier().get(), senderUsername));
 
                 if (contact == null || context.getMessageRepository().existsById(messageId)) continue;
 
@@ -367,13 +371,17 @@ public class IncomingMessageProcessor {
                 Contact current = context.getCurrentContactSupplier().get();
                 if (current != null && current.getId() == contact.getId()) {
                     Platform.runLater(() -> context.getCurrentChatMessages().add(saved));
-                    context.getMessageRepository().markAsRead(saved.getId());
                 } else {
                     updateNotification(senderUsername);
                 }
+                sendersToNotify.add(senderUsername);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
+        }
+
+        for (String senderUsername : sendersToNotify) {
+            scheduleReadReceipt(senderUsername);
         }
     }
 
@@ -431,8 +439,12 @@ public class IncomingMessageProcessor {
                     ChatMessage msg = context.getCurrentChatMessages().get(i);
                     if (ids.contains(msg.getId())) {
                         msg.setRead(true);
+                        msg.setStatus(ChatMessage.MessageStatus.READ);
                         context.getCurrentChatMessages().set(i, msg);
                     }
+                }
+                if (context.getOnMessagesUpdated() != null) {
+                    context.getOnMessagesUpdated().run();
                 }
             });
             log.info("Marked {} messages as read from {} to {}", ids.size(), sender, recipient);

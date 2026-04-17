@@ -124,6 +124,9 @@ public class ChatController {
 
     @FXML
     private Label noContactsLabel;
+
+    @FXML
+    private Label welcomeLabel;
     
     @FXML
     private VBox contactsPanel;
@@ -214,8 +217,12 @@ public class ChatController {
         setupListeners();
         setupWebSocketListeners();
         loadContacts();
-        
-        // Delegar la visualización de notificaciones al nuevo componente
+
+        if (welcomeLabel != null) {
+            welcomeLabel.setVisible(true);
+            welcomeLabel.setText("Bienvenido, " + currentUsername + ". Selecciona un contacto para chatear.");
+        }
+
         this.notificationUIController = new NotificationUIController(
             notificationsListView, notificationBadge, clearNotificationsButton, messageService.getNotifications());
             
@@ -689,16 +696,27 @@ public class ChatController {
     }
 
     private void handleContactSelected(Contact contact) {
+        if (contact == null) {
+            welcomeLabel.setVisible(true);
+            welcomeLabel.setText("Bienvenido, " + currentUsername + ". Selecciona un contacto para chatear.");
+            chatTitleLabel.setText("Selecciona un contacto");
+            messageListView.getItems().clear();
+            updateChatInputState(true);
+            if (clearChatButton != null) {
+                clearChatButton.setDisable(true);
+            }
+            selectedContact = null;
+            return;
+        }
+
+        welcomeLabel.setVisible(false);
         selectedContact = contact;
         chatTitleLabel.setText("Chat con: " + contact.getContactUsername());
-        
-        // Limpiar mensajes anteriores
+
         messageListView.getItems().clear();
-        
-        // Cargar historial del contacto
+
         messageService.loadChatHistory(contact);
-        
-        // Verificar estado de bloqueo y conexión para habilitar UI
+
         updateChatInputState(contactService.isUserBlockingMe(contact.getContactUsername()));
 
         if (!contactService.isUserBlockingMe(contact.getContactUsername()) && webSocketService.isConnected()) {
@@ -706,6 +724,9 @@ public class ChatController {
         }
         if (blockButton != null) {
             blockButton.setDisable(false);
+        }
+        if (clearChatButton != null) {
+            clearChatButton.setDisable(false);
         }
     }
     
