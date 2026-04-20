@@ -102,8 +102,12 @@ public class IncomingMessageProcessor {
           // Handler para lista de mensajes de imagen pendientes (recibidos al conectarse)
           handlers.put(WsMessage.PayloadCase.UNREAD_IMAGE_MESSAGES_LIST, msg -> processUnreadImageMessages(msg.getUnreadImageMessagesList()));
           // Handler para respuesta de presencia de contactos
-          handlers.put(WsMessage.PayloadCase.CONTACT_PRESENCE_MESSAGE, msg -> processContactPresenceMessage(msg.getContactPresenceMessage()));
-      }
+handlers.put(WsMessage.PayloadCase.CONTACT_PRESENCE_MESSAGE, msg -> processContactPresenceMessage(msg.getContactPresenceMessage()));
+        // Handler para notificación de mensajes entregados al destinatario
+        handlers.put(WsMessage.PayloadCase.MESSAGE_DELIVERED_UPDATE, msg -> processMessageDeliveredUpdate(msg.getMessageDeliveredUpdate()));
+        // Handler para lista de actualizaciones de lectura (múltiples readers)
+        handlers.put(WsMessage.PayloadCase.MESSAGES_READ_UPDATE_LIST, msg -> processMessagesReadUpdateList(msg.getMessagesReadUpdateList()));
+    }
 
     public void process(WsMessage message) {
         Consumer<WsMessage> handler = handlers.get(message.getPayloadCase());
@@ -152,15 +156,19 @@ public class IncomingMessageProcessor {
         }
         
         final long msgId = messageId;
+        ChatMessage.MessageStatus newStatus = response.getSuccess() ? ChatMessage.MessageStatus.SENT : ChatMessage.MessageStatus.FAILED;
+
+        try {
+            context.getMessageRepository().updateStatus(msgId, newStatus);
+        } catch (SQLException e) {
+            log.error("Error al actualizar estado del mensaje {}: {}", msgId, e.getMessage());
+        }
+
         Platform.runLater(() -> {
             for (int i = 0; i < context.getCurrentChatMessages().size(); i++) {
                 ChatMessage msg = context.getCurrentChatMessages().get(i);
                 if (msg.getId() == msgId) {
-                    if (response.getSuccess()) {
-                        msg.setStatus(ChatMessage.MessageStatus.SENT);
-                    } else {
-                        msg.setStatus(ChatMessage.MessageStatus.FAILED);
-                    }
+                    msg.setStatus(newStatus);
                     context.getCurrentChatMessages().set(i, msg);
                     break;
                 }
@@ -385,12 +393,12 @@ public class IncomingMessageProcessor {
         }
     }
 
-    private void processMessagesReadUpdate(MessagesProto.MessagesReadUpdate update) {
+private void processMessagesReadUpdate(MessagesProto.MessagesReadUpdate update) {
         List<String> idsStr = update.getMessageIdsList();
         String readerUsername = update.getReaderUsername();
-        
+
         log.info("=== RECIBIDO MessagesReadUpdate === Reader: {}, IDs: {}", readerUsername, idsStr);
-        
+
         if (idsStr.isEmpty()) return;
 
         List<Long> ids = new java.util.ArrayList<>();
@@ -399,7 +407,7 @@ public class IncomingMessageProcessor {
         }
 
         try {
-            context.getMessageRepository().markMultipleAsRead(ids);
+            context.getMessageRepository().updateMultipleStatus(ids, ChatMessage.MessageStatus.READ);
             Platform.runLater(() -> {
                 for (int i = 0; i < context.getCurrentChatMessages().size(); i++) {
                     ChatMessage msg = context.getCurrentChatMessages().get(i);
@@ -414,8 +422,52 @@ public class IncomingMessageProcessor {
                     context.getOnMessagesUpdated().run();
                 }
             });
-            log.info("Procesado MessagesReadUpdate para {} mensajes", ids.size());
+log.info("Procesado MessagesReadUpdate para {} mensajes", ids.size());
+    } catch (SQLException e) {
+        log.error("Error al procesar MessagesReadUpdate: {}", e.getMessage());
+        e.printStackTrace();
+    }
+    }
+
+    private void processMessagesReadUpdateList(MessagesProto.MessagesReadUpdateList updateList) {
+        log.info("=== RECIBIDO MessagesReadUpdateList === {} actualizaciones", updateList.getUpdatesCount());
+
+        for (MessagesProto.MessagesReadUpdate update : updateList.getUpdatesList()) {
+            processMessagesReadUpdate(update);
+        }
+    }
+
+    private void processMessageDeliveredUpdate(MessagesProto.MessageDeliveredUpdate update) {
+        List<String> idsStr = update.getMessageIdsList();
+        String deliveredTo = update.getDeliveredToUsername();
+
+        log.info("=== RECIBIDO MessageDeliveredUpdate === Entregado a: {}, IDs: {}", deliveredTo, idsStr);
+
+        if (idsStr.isEmpty()) return;
+
+        List<Long> ids = new java.util.ArrayList<>();
+        for (String s : idsStr) {
+            try { ids.add(Long.parseLong(s)); } catch (NumberFormatException e) {}
+        }
+
+        try {
+            context.getMessageRepository().updateMultipleStatus(ids, ChatMessage.MessageStatus.DELIVERED);
+            Platform.runLater(() -> {
+                for (int i = 0; i < context.getCurrentChatMessages().size(); i++) {
+                    ChatMessage msg = context.getCurrentChatMessages().get(i);
+                    if (ids.contains(msg.getId())) {
+                        msg.setStatus(ChatMessage.MessageStatus.DELIVERED);
+                        context.getCurrentChatMessages().set(i, msg);
+                        log.info("Mensaje {} actualizado a DELIVERED en UI", msg.getId());
+                    }
+                }
+                if (context.getOnMessagesUpdated() != null) {
+                    context.getOnMessagesUpdated().run();
+                }
+            });
+            log.info("Procesado MessageDeliveredUpdate para {} mensajes", ids.size());
         } catch (SQLException e) {
+            log.error("Error al procesar MessageDeliveredUpdate: {}", e.getMessage());
             e.printStackTrace();
         }
     }
@@ -433,7 +485,7 @@ public class IncomingMessageProcessor {
         }
         
         try {
-            context.getMessageRepository().markMultipleAsRead(ids);
+            context.getMessageRepository().updateMultipleStatus(ids, ChatMessage.MessageStatus.READ);
             Platform.runLater(() -> {
                 for (int i = 0; i < context.getCurrentChatMessages().size(); i++) {
                     ChatMessage msg = context.getCurrentChatMessages().get(i);
@@ -759,28 +811,29 @@ public class IncomingMessageProcessor {
      * 
      * @param senderId ID del usuario cuyos mensajes serán marcados como leídos
      */
-    private void executeReadReceipt(String senderId) {
+private void executeReadReceipt(String senderId) {
         log.info("[ReadReceipt] Timer expirado, ejecutando confirmación de lectura para: {}", senderId);
-        
+
         try {
-            List<Long> unreadIds = context.getMessageRepository().getUnreadMessageIds(senderId);
-            
+            List<Long> unreadIds = context.getMessageRepository().getMessageIdsByStatus(senderId,
+                    ChatMessage.MessageStatus.DELIVERED, ChatMessage.MessageStatus.SENT);
+
             if (unreadIds.isEmpty()) {
                 log.debug("[ReadReceipt] No hay mensajes sin leer para: {}", senderId);
                 readReceiptTimers.remove(senderId);
                 return;
             }
-            
+
             log.info("[ReadReceipt] {} mensajes sin leer encontrados para: {}", unreadIds.size(), senderId);
-            
-            context.getMessageRepository().markMultipleAsRead(unreadIds);
+
+            context.getMessageRepository().updateMultipleStatus(unreadIds, ChatMessage.MessageStatus.READ);
             log.debug("[ReadReceipt] {} mensajes marcados como leídos localmente", unreadIds.size());
-            
+
             String currentUserId = context.getCurrentUserIdSupplier().get();
             context.getMessageSender().sendMarkAsRead(currentUserId, senderId, unreadIds);
-            
+
             log.info("[ReadReceipt] Confirmación de lectura enviada al servidor para {} mensajes", unreadIds.size());
-            
+
             final List<Long> idsToUpdate = unreadIds;
             Platform.runLater(() -> {
                 for (int i = 0; i < context.getCurrentChatMessages().size(); i++) {
@@ -795,10 +848,10 @@ public class IncomingMessageProcessor {
                     context.getOnMessagesUpdated().run();
                 }
             });
-            
+
         } catch (SQLException e) {
-            log.error("[ReadReceipt] Error al ejecutar confirmación de lectura para {}: {}", 
-                      senderId, e.getMessage(), e);
+            log.error("[ReadReceipt] Error al ejecutar confirmación de lectura para {}: {}",
+                    senderId, e.getMessage(), e);
         } finally {
             readReceiptTimers.remove(senderId);
         }

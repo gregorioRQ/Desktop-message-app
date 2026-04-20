@@ -5,7 +5,9 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -607,19 +609,34 @@ public class MessageService {
                 hasAnyPending = true;
             }
 
-            // 5. Obtener confirmaciones de lectura pendientes
-            List<PendingReadReceipt> pendingReadReceipts = getAndClearPendingReadReceipts(username);
-            if (!pendingReadReceipts.isEmpty()) {
-                MessagesProto.MessagesReadUpdate.Builder readUpdateBuilder = MessagesProto.MessagesReadUpdate.newBuilder();
-                for (PendingReadReceipt prr : pendingReadReceipts) {
-                    readUpdateBuilder.addMessageIds(prr.getMessageId())
-                            .setReaderUsername(prr.getReader());
-                }
-                wsBuilder.setMessagesReadUpdate(readUpdateBuilder.build());
-                log.info("Agregadas {} confirmaciones de lectura pendientes para usuario: {}", 
-                         pendingReadReceipts.size(), username);
-                hasAnyPending = true;
-            }
+// 5. Obtener confirmaciones de lectura pendientes
+        List<PendingReadReceipt> pendingReadReceipts = getAndClearPendingReadReceipts(username);
+        if (!pendingReadReceipts.isEmpty()) {
+            // Agrupar por reader para crear múltiples MessagesReadUpdate si hay diferentes lectores
+            Map<String, List<String>> messagesByReader = pendingReadReceipts.stream()
+                    .collect(Collectors.groupingBy(
+                            PendingReadReceipt::getReader,
+                            Collectors.mapping(PendingReadReceipt::getMessageId, Collectors.toList())
+                    ));
+
+            // Crear un MessagesReadUpdate por cada reader
+            List<MessagesProto.MessagesReadUpdate> updates = messagesByReader.entrySet().stream()
+                    .map(entry -> MessagesProto.MessagesReadUpdate.newBuilder()
+                            .addAllMessageIds(entry.getValue())
+                            .setReaderUsername(entry.getKey())
+                            .build())
+                    .collect(Collectors.toList());
+
+            // Siempre usar MessagesReadUpdateList para consistencia
+            wsBuilder.setMessagesReadUpdateList(
+                    MessagesProto.MessagesReadUpdateList.newBuilder()
+                            .addAllUpdates(updates)
+                            .build()
+            );
+            log.info("Agregadas {} confirmaciones de lectura pendientes ({} readers) para usuario: {}",
+                    pendingReadReceipts.size(), updates.size(), username);
+            hasAnyPending = true;
+        }
 
             // 6. Obtener mensajes de imagen pendientes
             List<MessagesProto.ImageMessage> pendingImages = getAndClearPendingImageMessages(username);

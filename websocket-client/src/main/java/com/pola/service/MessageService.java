@@ -93,35 +93,42 @@ public class MessageService {
         messageProcessor.setErrorListener(listener);
     }
 
-    // Carga el historial de mensajes de un contacto
+// Carga el historial de mensajes de un contacto
     public void loadChatHistory(Contact contact){
         this.currentContact = contact;
-        
+
         // Limpiar notificaciones de este contacto al entrar al chat
         removeNotification(contact.getContactUsername());
 
         try{
-            
+
             List<ChatMessage> messages = messageRepository.findByContactUsername(contact.getContactUsername());
             currentChatMessages.setAll(messages);
 
-            // 1. Obtener solo los IDs que REALMENTE están sin leer
-            List<Long> unreadIds = messageRepository.getUnreadMessageIds(contact.getContactUsername());
-            
+            // Obtener mensajes con status DELIVERED o SENT (no READ) - son los "no leídos"
+            List<Long> unreadIds = messageRepository.getMessageIdsByStatus(contact.getContactUsername(),
+                    ChatMessage.MessageStatus.DELIVERED, ChatMessage.MessageStatus.SENT);
+
             if (!unreadIds.isEmpty()) {
-                // 2. Actualizar DB local (Batch)
-                messageRepository.markMultipleAsRead(unreadIds);
-                
-                // 3. Enviar al servidor SOLO los IDs nuevos
+                // Actualizar DB local (Batch)
+                messageRepository.updateMultipleStatus(unreadIds, ChatMessage.MessageStatus.READ);
+
+                // Enviar al servidor SOLO los IDs nuevos
                 if (webSocketService.isConnected()) {
                     messageSender.sendMarkAsRead(currentUsername, contact.getContactUsername(), unreadIds);
                 }
-                
-              
-                messages.forEach(m -> { if(unreadIds.contains(m.getId())) m.setRead(true); });
+
+                // Actualizar en memoria
+                messages.forEach(m -> {
+                    if(unreadIds.contains(m.getId())) {
+                        m.setRead(true);
+                        m.setStatus(ChatMessage.MessageStatus.READ);
+                    }
+                });
             }
-            System.out.println("Historial cargado: " + messages.size() + " mensajes");
+            log.info("Historial cargado: {} mensajes", messages.size());
         }catch(SQLException e){
+            log.error("Error al cargar historial: {}", e.getMessage());
             e.printStackTrace();
         }
     }

@@ -2,6 +2,7 @@ package com.pola.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 import java.sql.SQLException;
@@ -31,13 +32,13 @@ import javafx.collections.ObservableList;
 
 /**
  * Tests unitarios para IncomingMessageProcessor.processMessagesReadUpdate().
- * 
+ *
  * Este método se ejecuta cuando el emisor original recibe la confirmación
  * de que sus mensajes fueron leídos por el destinatario.
- * 
+ *
  * Flujo:
- * Cliente (uB) marca como leído → connection-service → connection-service → 
- * Cliente (uA) recibe MessagesReadUpdate → processMessagesReadUpdate() → 
+ * Cliente (uB) marca como leído → connection-service → connection-service →
+ * Cliente (uA) recibe MessagesReadUpdate → processMessagesReadUpdate() →
  * Marca mensajes como leídos en DB local y UI
  */
 @ExtendWith(MockitoExtension.class)
@@ -100,7 +101,7 @@ class IncomingMessageProcessorMessagesReadUpdateTest {
 
             processor.process(message);
 
-            verify(messageRepository).markMultipleAsRead(Arrays.asList(100L, 101L, 102L));
+            verify(messageRepository).updateMultipleStatus(Arrays.asList(100L, 101L, 102L), ChatMessage.MessageStatus.READ);
         }
 
         @Test
@@ -149,7 +150,7 @@ class IncomingMessageProcessorMessagesReadUpdateTest {
 
             processor.process(message);
 
-            verify(messageRepository, never()).markMultipleAsRead(anyList());
+            verify(messageRepository, never()).updateMultipleStatus(anyList(), any());
         }
 
         @Test
@@ -168,14 +169,14 @@ class IncomingMessageProcessorMessagesReadUpdateTest {
 
             processor.process(message);
 
-            verify(messageRepository).markMultipleAsRead(Arrays.asList(100L, 101L));
+            verify(messageRepository).updateMultipleStatus(Arrays.asList(100L, 101L), ChatMessage.MessageStatus.READ);
         }
 
         @Test
         @DisplayName("Debe manejar SQLException sin lanzar excepción")
         void testProcessMessagesReadUpdate_HandlesSQLException() throws SQLException {
             doThrow(new SQLException("DB Error"))
-                    .when(messageRepository).markMultipleAsRead(anyList());
+                    .when(messageRepository).updateMultipleStatus(anyList(), any());
 
             MessagesReadUpdate readUpdate = MessagesReadUpdate.newBuilder()
                     .addMessageIds("100")
@@ -225,7 +226,7 @@ class IncomingMessageProcessorMessagesReadUpdateTest {
 
             processor.process(message);
 
-            verify(messageRepository).markMultipleAsRead(Collections.singletonList(100L));
+            verify(messageRepository).updateMultipleStatus(Collections.singletonList(100L), ChatMessage.MessageStatus.READ);
         }
     }
 }

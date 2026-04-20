@@ -67,7 +67,7 @@ public class IncomingMessageProcessorReadReceiptTest {
         } catch (IllegalStateException e) {
             // Already started
         }
-        
+
         currentChatMessages = FXCollections.observableArrayList();
         notifications = FXCollections.observableArrayList();
 
@@ -145,7 +145,7 @@ public class IncomingMessageProcessorReadReceiptTest {
             String senderId = "friendUser";
             List<Long> unreadIds = Arrays.asList(100L, 101L, 102L);
 
-            when(messageRepository.getUnreadMessageIds(senderId)).thenReturn(unreadIds);
+            when(messageRepository.getMessageIdsByStatus(eq(senderId), any())).thenReturn(unreadIds);
             when(scheduler.schedule(any(Runnable.class), anyLong(), eq(TimeUnit.MILLISECONDS)))
                     .thenReturn(scheduledFuture);
 
@@ -158,8 +158,8 @@ public class IncomingMessageProcessorReadReceiptTest {
             assertNotNull(task);
             task.run();
 
-            verify(messageRepository).getUnreadMessageIds(senderId);
-            verify(messageRepository).markMultipleAsRead(unreadIds);
+            verify(messageRepository).getMessageIdsByStatus(eq(senderId), any());
+            verify(messageRepository).updateMultipleStatus(unreadIds, ChatMessage.MessageStatus.READ);
             verify(messageSender).sendMarkAsRead("currentUserId", senderId, unreadIds);
         }
 
@@ -169,7 +169,7 @@ public class IncomingMessageProcessorReadReceiptTest {
             String senderId = "friendUser";
             List<Long> unreadIds = Arrays.asList(100L);
 
-            when(messageRepository.getUnreadMessageIds(senderId)).thenReturn(unreadIds);
+            when(messageRepository.getMessageIdsByStatus(eq(senderId), any())).thenReturn(unreadIds);
             when(scheduler.schedule(any(Runnable.class), anyLong(), eq(TimeUnit.MILLISECONDS)))
                     .thenReturn(scheduledFuture);
 
@@ -187,7 +187,7 @@ public class IncomingMessageProcessorReadReceiptTest {
         void testExecuteReadReceipt_NoUnreadMessages() throws SQLException {
             String senderId = "friendUser";
 
-            when(messageRepository.getUnreadMessageIds(senderId)).thenReturn(Collections.emptyList());
+            when(messageRepository.getMessageIdsByStatus(eq(senderId), any())).thenReturn(Collections.emptyList());
             when(scheduler.schedule(any(Runnable.class), anyLong(), eq(TimeUnit.MILLISECONDS)))
                     .thenReturn(scheduledFuture);
 
@@ -197,7 +197,7 @@ public class IncomingMessageProcessorReadReceiptTest {
             verify(scheduler).schedule(runnableCaptor.capture(), eq(3000L), eq(TimeUnit.MILLISECONDS));
             runnableCaptor.getValue().run();
 
-            verify(messageRepository, never()).markMultipleAsRead(anyList());
+            verify(messageRepository, never()).updateMultipleStatus(anyList(), any());
             verify(messageSender, never()).sendMarkAsRead(any(), any(), anyList());
             assertFalse(processor.getReadReceiptTimers().containsKey(senderId));
         }
@@ -207,7 +207,7 @@ public class IncomingMessageProcessorReadReceiptTest {
         void testExecuteReadReceipt_SqlException() throws SQLException {
             String senderId = "friendUser";
 
-            when(messageRepository.getUnreadMessageIds(senderId)).thenThrow(new SQLException("DB Error"));
+            when(messageRepository.getMessageIdsByStatus(eq(senderId), any())).thenThrow(new SQLException("DB Error"));
             when(scheduler.schedule(any(Runnable.class), anyLong(), eq(TimeUnit.MILLISECONDS)))
                     .thenReturn(scheduledFuture);
 

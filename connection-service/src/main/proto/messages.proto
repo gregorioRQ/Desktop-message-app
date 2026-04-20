@@ -160,6 +160,17 @@ message MessagesReadUpdate {
   string reader_username = 2;
 }
 
+// Lista de actualizaciones de lectura (usada siempre, incluso con un solo reader)
+message MessagesReadUpdateList {
+  repeated MessagesReadUpdate updates = 1;
+}
+
+// Notificación enviada al remitente cuando sus mensajes son entregados al destinatario
+message MessageDeliveredUpdate {
+  repeated string message_ids = 1;
+  string delivered_to_username = 2; // Username de quien recibió los mensajes
+}
+
 message ContactIdentity {
   string sender_id = 1;
   string sender_username = 2;
@@ -268,7 +279,9 @@ message WsMessage {
     ImageMessage image_message = 22;
     PendingClearHistory pending_clear_history = 23;
     UnreadImageMessagesList unread_image_messages_list = 24;
-    ContactPresenceMessage contact_presence_message = 25;
-    AddContactRequest add_contact_request = 27;
-  }
+ContactPresenceMessage contact_presence_message = 25;
+  AddContactRequest add_contact_request = 27;
+  MessageDeliveredUpdate message_delivered_update = 28;
+  MessagesReadUpdateList messages_read_update_list = 29;
+}
 }
