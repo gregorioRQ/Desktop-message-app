@@ -35,24 +35,27 @@ public class OfflineMarkAsReadHandler implements OfflineMessageHandler {
 
     @Override
     public boolean supports(MessagesProto.WsMessage message) {
-        return message.hasMessagesReadUpdate();
+        return message.hasMarkMessagesAsReadRequest();
     }
 
     @Override
     @Transactional
     public void handleOffline(MessagesProto.WsMessage message, String recipient) throws Exception {
-        MessagesProto.MessagesReadUpdate readUpdate = message.getMessagesReadUpdate();
+        MessagesProto.MarkMessagesAsReadRequest request = message.getMarkMessagesAsReadRequest();
         
-        for (String messageId : readUpdate.getMessageIdsList()) {
+        String reader = request.getSender();
+        String receiptRecipient = request.getRecipient();
+        
+        for (String messageId : request.getMessageIdsList()) {
             PendingReadReceipt pendingReceipt = new PendingReadReceipt();
             pendingReceipt.setMessageId(messageId);
-            pendingReceipt.setReceiptRecipient(recipient);
-            pendingReceipt.setReader(readUpdate.getReaderUsername());
+            pendingReceipt.setReceiptRecipient(receiptRecipient);
+            pendingReceipt.setReader(reader);
             
             pendingReadReceiptRepository.save(pendingReceipt);
             
             log.info("Recibo de lectura pendiente guardado - mensaje: {}, leido por: {}, notificar a: {}", 
-                    messageId, readUpdate.getReaderUsername(), recipient);
+                    messageId, reader, receiptRecipient);
         }
     }
 }
