@@ -2,7 +2,7 @@
 
 ## Resumen
 
-Este documento describe el flujo simplificado mediante el cual un usuario agrega a otro como contacto en el sistema de mensajería. El flujo es **unidireccional y automático**: cuando un usuario presiona "agregar contacto", se crea la relación bidireccional inmediatamente sin necesidad de confirmación mutua.
+Este documento describe el flujo mediante el cual un usuario agrega a otro como contacto en el sistema de mensajería. El flujo es **unidireccional**: cada usuario debe agregar explícitamente a sus contactos.
 
 ## Precondiciones
 
@@ -107,17 +107,16 @@ El servicio de conexiones:
 
 El notification-service:
 1. Consume el mensaje de la cola `contact.events`
-2. Crea **DOS registros** en la tabla `contact_users`:
-   - Registro 1: `username="B", contact_username="A"`
-   - Registro 2: `username="A", contact_username="B"`
-3. La relación es inmediatamente bidireccional
+2. Crea **UN registro** en la tabla `contact_users`:
+   - Registro: `username="B", contact_username="A"`
+3. La relación es unidireccional - el usuario A debe agregar a B explícitamente cuando lo desee
 
-**Flujo simplificado - NO hay:**
+**Flujo - NO hay:**
+- Creación automática del contacto inverso
 - Confirmación mutua requerida
 - IDs temporales
 - Contactos "fantasma"
 - Estados de confirmación pendiente
-- Notificaciones de confirmación
 
 ## Componentes Participantes
 
@@ -164,11 +163,10 @@ El notification-service:
 
 ## Notas Adicionales
 
-- El flujo es **inmediato**: no hay estado de "pendiente"
-- Ambos usuarios se ven mutuamente como contactos inmediatamente
-- Las notificaciones de presencia (online/offline) funcionan para ambos lados
+- El flujo es **unidireccional**: cada usuario debe agregar a sus contactos explícitamente
+- El contacto inverso (A→B) se crea cuando A presiona "agregar contacto"
+- Las notificaciones de presencia (online/offline) funcionan para ambos lados una vez creada la relación
 - La tabla `contact_users` usa **usernames** como claves, no UUIDs
-- No se requiere confirmación mutua: el acto de agregar crea la relación bidireccional
 
 ## Casos Especiales
 

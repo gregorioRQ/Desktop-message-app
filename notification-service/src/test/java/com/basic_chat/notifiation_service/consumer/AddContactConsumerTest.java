@@ -43,49 +43,48 @@ class AddContactConsumerTest {
 
     // ==================== HAPPY PATH ====================
 
-    @Test
-    @DisplayName("Happy Path: Debe crear relación bidireccional cuando el mensaje es válido")
-    void shouldCreateBidirectionalRelationshipWhenMessageIsValid() {
-        // Arrange
-        String sender = "userA";
-        String contactUsername = "userB";
-        String jsonMessage = String.format("{\"sender\":\"%s\",\"contact_username\":\"%s\"}", sender, contactUsername);
+	@Test
+	@DisplayName("Happy Path: Debe crear registro unidireccional cuando el mensaje es válido")
+	void shouldCreateUnidirectionalRelationshipWhenMessageIsValid() {
+		// Arrange
+		String sender = "userA";
+		String contactUsername = "userB";
+		String jsonMessage = String.format("{\"sender\":\"%s\",\"contact_username\":\"%s\"}", sender, contactUsername);
 
-        // Act
-        addContactConsumer.handleAddContact(jsonMessage);
+		// Act
+		addContactConsumer.handleAddContact(jsonMessage);
 
-        // Assert
-        verify(contactUserRepository, times(1)).save(new ContactUser(sender, contactUsername));
-        verify(contactUserRepository, times(1)).save(new ContactUser(contactUsername, sender));
-    }
+		// Assert
+		verify(contactUserRepository, times(1)).save(any(ContactUser.class));
+	}
 
-    @Test
-    @DisplayName("Happy Path: Debe manejar usernames con caracteres especiales")
-    void shouldHandleUsernamesWithSpecialCharacters() {
-        // Arrange
-        String sender = "user_123-ABC";
-        String contactUsername = "user.test@email";
-        String jsonMessage = String.format("{\"sender\":\"%s\",\"contact_username\":\"%s\"}", sender, contactUsername);
+	@Test
+	@DisplayName("Happy Path: Debe manejar usernames con caracteres especiales")
+	void shouldHandleUsernamesWithSpecialCharacters() {
+		// Arrange
+		String sender = "user_123-ABC";
+		String contactUsername = "user.test@email";
+		String jsonMessage = String.format("{\"sender\":\"%s\",\"contact_username\":\"%s\"}", sender, contactUsername);
 
-        // Act
-        addContactConsumer.handleAddContact(jsonMessage);
+		// Act
+		addContactConsumer.handleAddContact(jsonMessage);
 
-        // Assert
-        verify(contactUserRepository, times(2)).save(any(ContactUser.class));
-    }
+		// Assert
+		verify(contactUserRepository, times(1)).save(any(ContactUser.class));
+	}
 
-    @Test
-    @DisplayName("Happy Path: Debe manejar mensaje JSON con espacios extra")
-    void shouldHandleJsonWithExtraWhitespace() {
-        // Arrange
-        String jsonMessage = "{ \"sender\" : \"userA\" , \"contact_username\" : \"userB\" }";
+	@Test
+	@DisplayName("Happy Path: Debe manejar mensaje JSON con espacios extra")
+	void shouldHandleJsonWithExtraWhitespace() {
+		// Arrange
+		String jsonMessage = "{ \"sender\" : \"userA\" , \"contact_username\" : \"userB\" }";
 
-        // Act
-        addContactConsumer.handleAddContact(jsonMessage);
+		// Act
+		addContactConsumer.handleAddContact(jsonMessage);
 
-        // Assert
-        verify(contactUserRepository, times(2)).save(any(ContactUser.class));
-    }
+		// Assert
+		verify(contactUserRepository, times(1)).save(any(ContactUser.class));
+	}
 
     // ==================== EDGE CASES - NULL/EMPTY FIELDS ====================
 
@@ -210,96 +209,71 @@ class AddContactConsumerTest {
 
     // ==================== EDGE CASES - SAME USER ====================
 
-    @Test
-    @DisplayName("Edge Case: Debe permitir que un usuario se agregue a sí mismo (aunque no tiene sentido de negocio)")
-    void shouldAllowSelfContactThoughNotRecommended() {
-        // Arrange
-        String username = "userA";
-        String jsonMessage = String.format("{\"sender\":\"%s\",\"contact_username\":\"%s\"}", username, username);
+	@Test
+	@DisplayName("Edge Case: Debe permitir que un usuario se agregue a sí mismo (aunque no tiene sentido de negocio)")
+	void shouldAllowSelfContactThoughNotRecommended() {
+		// Arrange
+		String username = "userA";
+		String jsonMessage = String.format("{\"sender\":\"%s\",\"contact_username\":\"%s\"}", username, username);
 
-        // Act
-        addContactConsumer.handleAddContact(jsonMessage);
+		// Act
+		addContactConsumer.handleAddContact(jsonMessage);
 
-        // Assert
-        verify(contactUserRepository, times(2)).save(any(ContactUser.class));
-    }
+		// Assert
+		verify(contactUserRepository, times(1)).save(any(ContactUser.class));
+	}
 
     // ==================== EDGE CASES - REPOSITORY EXCEPTIONS ====================
 
-    @Test
-    @DisplayName("Edge Case: Debe manejar excepción del repositorio en el primer save")
-    void shouldHandleRepositoryExceptionOnFirstSave() {
-        // Arrange
-        String sender = "userA";
-        String contactUsername = "userB";
-        String jsonMessage = String.format("{\"sender\":\"%s\",\"contact_username\":\"%s\"}", sender, contactUsername);
-        
-        // Usar doThrow para cualquier argumento
-        org.mockito.Mockito.doThrow(new RuntimeException("Database error"))
-            .when(contactUserRepository).save(any(ContactUser.class));
 
-        // Act - No debe lanzar excepción, solo loguear el error
-        addContactConsumer.handleAddContact(jsonMessage);
 
-        // Assert - El catch debe manejar la excepción
-        verify(contactUserRepository, times(1)).save(any(ContactUser.class));
-    }
+	@Test
+	@DisplayName("Edge Case: Debe manejar excepción del repositorio")
+	void shouldHandleRepositoryException() {
+		// Arrange
+		String sender = "userA";
+		String contactUsername = "userB";
+		String jsonMessage = String.format("{\"sender\":\"%s\",\"contact_username\":\"%s\"}", sender, contactUsername);
 
-    @Test
-    @DisplayName("Edge Case: Debe manejar excepción del repositorio en el segundo save")
-    void shouldHandleRepositoryExceptionOnSecondSave() {
-        // Arrange
-        String sender = "userA";
-        String contactUsername = "userB";
-        String jsonMessage = String.format("{\"sender\":\"%s\",\"contact_username\":\"%s\"}", sender, contactUsername);
-        
-        // Primero guarda OK, segundo falla - usar doAnswer para controlar
-        org.mockito.Mockito.doAnswer(invocation -> {
-            ContactUser contact = invocation.getArgument(0);
-            // Si es el primer contacto (sender -> contact), retornar OK
-            if (contact.getUsername().equals(sender) && contact.getContactUsername().equals(contactUsername)) {
-                return contact;
-            }
-            // Si es el segundo, lanzar excepción
-            throw new RuntimeException("Database error");
-        }).when(contactUserRepository).save(any(ContactUser.class));
+		org.mockito.Mockito.doThrow(new RuntimeException("Database error"))
+			.when(contactUserRepository).save(any(ContactUser.class));
 
-        // Act - No debe lanzar excepción
-        addContactConsumer.handleAddContact(jsonMessage);
+		// Act - No debe lanzar excepción, solo loguear el error
+		addContactConsumer.handleAddContact(jsonMessage);
 
-        // Assert - Debe intentar guardar ambos
-        verify(contactUserRepository, times(2)).save(any(ContactUser.class));
-    }
+		// Assert - El catch debe manejar la excepción
+		verify(contactUserRepository, times(1)).save(any(ContactUser.class));
+	}
 
     // ==================== EDGE CASES - UNICODE/USERNAMES ====================
 
-    @Test
-    @DisplayName("Edge Case: Debe manejar usernames con caracteres Unicode")
-    void shouldHandleUnicodeUsernames() {
-        // Arrange
-        String sender = "usuarioñ";
-        String contactUsername = "用户测试";
-        String jsonMessage = String.format("{\"sender\":\"%s\",\"contact_username\":\"%s\"}", sender, contactUsername);
+	@Test
+	@DisplayName("Edge Case: Debe manejar usernames con caracteres Unicode")
+	void shouldHandleUnicodeUsernames() {
+		// Arrange
+		String sender = "usuarioñ";
+		String contactUsername = "用户测试";
+		String jsonMessage = String.format("{\"sender\":\"%s\",\"contact_username\":\"%s\"}", sender, contactUsername);
 
-        // Act
-        addContactConsumer.handleAddContact(jsonMessage);
+		// Act
+		addContactConsumer.handleAddContact(jsonMessage);
 
-        // Assert
-        verify(contactUserRepository, times(2)).save(any(ContactUser.class));
-    }
+		// Assert
+		verify(contactUserRepository, times(1)).save(any(ContactUser.class));
+	}
 
-    @Test
-    @DisplayName("Edge Case: Debe manejar usernames muy largos")
-    void shouldHandleVeryLongUsernames() {
-        // Arrange
-        String sender = "a".repeat(255);
-        String contactUsername = "b".repeat(255);
-        String jsonMessage = String.format("{\"sender\":\"%s\",\"contact_username\":\"%s\"}", sender, contactUsername);
+	@Test
+	@DisplayName("Edge Case: Debe manejar usernames muy largos")
+	void shouldHandleVeryLongUsernames() {
+		// Arrange
+		String sender = "a".repeat(255);
+		String contactUsername = "b".repeat(255);
+		String jsonMessage = String.format("{\"sender\":\"%s\",\"contact_username\":\"%s\"}", sender, contactUsername);
 
-        // Act
-        addContactConsumer.handleAddContact(jsonMessage);
+		// Act
+		addContactConsumer.handleAddContact(jsonMessage);
 
-        // Assert
-        verify(contactUserRepository, times(2)).save(any(ContactUser.class));
-    }
+		// Assert
+		verify(contactUserRepository, times(1)).save(any(ContactUser.class));
+	}
 }

@@ -80,12 +80,13 @@
                         <Button fx:id="clearChatButton" mnemonicParsing="false" style="-fx-background-color: #ffdddd; -fx-text-fill: #cc0000; -fx-border-color: #cc0000; -fx-border-radius: 3; -fx-background-radius: 3;" text="Vaciar Chat" />
                      </children>
                   </HBox>
-                  <StackPane VBox.vgrow="ALWAYS">
-                     <children>
-                        <ListView fx:id="messageListView" />
-                        <Label fx:id="noContactsLabel" text="No tienes contactos. ¡Agrega uno!" visible="false" />
-                     </children>
-                  </StackPane>
+        <StackPane VBox.vgrow="ALWAYS">
+          <children>
+            <ListView fx:id="messageListView" />
+            <Label fx:id="noContactsLabel" text="No tienes contactos. ¡Agrega uno!" visible="false" />
+            <Label fx:id="welcomeLabel" text="Bienvenido. Selecciona un contacto para chatear." style="-fx-font-size: 16; -fx-text-fill: #666; -fx-font-style: italic;" />
+          </children>
+        </StackPane>
                   <HBox spacing="5.0">
                      <children>
                         <TextArea fx:id="messageInput" disable="true" prefHeight="60.0" prefRowCount="2" promptText="Escribe un mensaje..." wrapText="true" HBox.hgrow="ALWAYS" />

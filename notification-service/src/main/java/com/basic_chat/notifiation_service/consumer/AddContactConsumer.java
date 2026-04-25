@@ -24,32 +24,31 @@ public class AddContactConsumer {
         log.info("AddContactConsumer inicializado");
     }
 
-    @RabbitListener(queuesToDeclare = @org.springframework.amqp.rabbit.annotation.Queue("contact.events"))
-    public void handleAddContact(String message) {
-        log.info("[ADD_CONTACT] Mensaje recibido: {}", message);
+	@RabbitListener(queuesToDeclare = @org.springframework.amqp.rabbit.annotation.Queue("contact.events"))
+	public void handleAddContact(String message) {
+		log.info("[ADD_CONTACT] Mensaje recibido: {}", message);
 
-        try {
-            JsonNode jsonNode = objectMapper.readTree(message);
-            String sender = jsonNode.has("sender") ? jsonNode.get("sender").asText() : null;
-            String contactUsername = jsonNode.has("contact_username") ? jsonNode.get("contact_username").asText() : null;
+		try {
+			JsonNode jsonNode = objectMapper.readTree(message);
+			JsonNode senderNode = jsonNode.get("sender");
+			JsonNode contactUsernameNode = jsonNode.get("contact_username");
 
-            if (sender == null || contactUsername == null) {
-                log.error("[ADD_CONTACT] Mensaje inválido: campos faltantes. sender={}, contactUsername={}", sender, contactUsername);
-                return;
-            }
+			String sender = (senderNode != null && !senderNode.isNull()) ? senderNode.asText() : null;
+			String contactUsername = (contactUsernameNode != null && !contactUsernameNode.isNull()) ? contactUsernameNode.asText() : null;
 
-            log.info("[ADD_CONTACT] Procesando: {} agrega a {}", sender, contactUsername);
+			if (sender == null || sender.isEmpty() || contactUsername == null || contactUsername.isEmpty()) {
+				log.error("[ADD_CONTACT] Mensaje inválido: campos faltantes o vacíos. sender={}, contactUsername={}", sender, contactUsername);
+				return;
+			}
 
-            ContactUser contact1 = new ContactUser(sender, contactUsername);
-            contactUserRepository.save(contact1);
-            log.info("[ADD_CONTACT] Registro creado: {} -> {}", sender, contactUsername);
+			log.info("[ADD_CONTACT] Procesando: {} agrega a {}", sender, contactUsername);
 
-            ContactUser contact2 = new ContactUser(contactUsername, sender);
-            contactUserRepository.save(contact2);
-            log.info("[ADD_CONTACT] Registro creado: {} -> {}", contactUsername, sender);
+			ContactUser contact = new ContactUser(sender, contactUsername);
+			contactUserRepository.save(contact);
+			log.info("[ADD_CONTACT] Registro creado: {} -> {}", sender, contactUsername);
 
-        } catch (Exception e) {
-            log.error("[ADD_CONTACT_ERROR] Error procesando: {}", e.getMessage(), e);
-        }
-    }
+		} catch (Exception e) {
+			log.error("[ADD_CONTACT_ERROR] Error procesando: {}", e.getMessage(), e);
+		}
+	}
 }

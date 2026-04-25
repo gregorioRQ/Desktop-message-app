@@ -59,7 +59,8 @@ public class MessageRouterService {
 
         if (recipientInstance == null) {
             // Usuario offline - no hay instancia registrada en Redis
-            log.info("Destinatario {} no está conectado, encolando mensaje en cola offline", recipient);
+            log.info("=== ENVIANDO A COLA OFFLINE === Destinatario: {}, Sender: {}", recipient, sender);
+            log.debug("Mensaje será procesado por chat-service y guardado como pendiente");
             rabbitMQProducerService.sendToOfflineQueue(new RoutedMessage(sender, recipient, messageData, null));
             // Siempre encolar evento de notificación para notification-service
             publishNotificationEvent(sender, recipient, recipientUserId, null, messageData);

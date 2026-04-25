@@ -1,5 +1,7 @@
 package com.basic_chat.connection_service.handler;
 
+import java.util.List;
+
 import org.springframework.stereotype.Component;
 
 import com.basic_chat.connection_service.service.MessageRouterService;
@@ -26,12 +28,16 @@ public class MarkAsReadHandler implements ConnectionWsMessageHandler {
     public void handle(String sender, MessagesProto.WsMessage message) {
         MessagesProto.MarkMessagesAsReadRequest request = message.getMarkMessagesAsReadRequest();
         String recipient = request.getRecipient();
+        List<String> messageIds = request.getMessageIdsList();
 
-        log.info("Procesando mark as read de {} para destinatario {}", sender, recipient);
+        log.info("=== MarkAsReadHandler === Sender: {}, Recipient: {}, MessageIds: {}", 
+                sender, recipient, messageIds);
 
         try {
             byte[] messageData = message.toByteArray();
+            log.debug("MarkAsReadHandler: Mensaje serializado - {} bytes", messageData.length);
             messageRouterService.routeMessage(sender, recipient, messageData);
+            log.info("MarkAsReadHandler: Mensaje enrutado exitosamente");
         } catch (Exception e) {
             log.error("Error al procesar mark as read: {}", e.getMessage(), e);
         }

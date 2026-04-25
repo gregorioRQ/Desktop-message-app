@@ -104,26 +104,31 @@ public class DatabaseManager {
                 )
                 """;
             
-            // Tabla de mensajes
-            String createMessagesTable = """
-                CREATE TABLE IF NOT EXISTS messages (
-                    id INTEGER PRIMARY KEY,
-                    contact_username TEXT NOT NULL,
-                    sender_username TEXT NOT NULL,
-                    content TEXT NOT NULL,
-                    sender_id TEXT NOT NULL,
-                    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    is_read INTEGER DEFAULT 0,
-                    type TEXT DEFAULT 'text',
-                    downloaded INTEGER DEFAULT 0,
-                    FOREIGN KEY (contact_username) REFERENCES contacts(id) ON DELETE CASCADE
-                )
-                """;
+// Tabla de mensajes
+        String createMessagesTable = """
+            CREATE TABLE IF NOT EXISTS messages (
+                id INTEGER PRIMARY KEY,
+                contact_username TEXT NOT NULL,
+                sender_username TEXT NOT NULL,
+                content TEXT NOT NULL,
+                sender_id TEXT NOT NULL,
+                timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                status TEXT DEFAULT 'PENDING',
+                type TEXT DEFAULT 'text',
+                downloaded INTEGER DEFAULT 0,
+                FOREIGN KEY (contact_username) REFERENCES contacts(id) ON DELETE CASCADE
+            )
+            """;
             
-            // Migration: add sender_username column if not exists (for existing DBs)
-            String migrateSenderUsername = """
-                ALTER TABLE messages ADD COLUMN sender_username TEXT NOT NULL DEFAULT ''
-                """;
+// Migration: add sender_username column if not exists (for existing DBs)
+        String migrateSenderUsername = """
+            ALTER TABLE messages ADD COLUMN sender_username TEXT NOT NULL DEFAULT ''
+            """;
+
+        // Migration: add status column if not exists (replaces is_read)
+        String migrateStatusColumn = """
+            ALTER TABLE messages ADD COLUMN status TEXT DEFAULT 'PENDING'
+            """;
             
             // Migration: add is_online column if not exists (for existing DBs)
             String migrateOnlineColumn = """
@@ -193,13 +198,21 @@ public class DatabaseManager {
                 System.out.println("Column sender_username already exists or index already created");
             }
             
-            // Execute migration for is_online column if needed
-            try {
-                stmt.execute(migrateOnlineColumn);
-                System.out.println("Migration is_online applied");
-            } catch (SQLException e) {
-                System.out.println("Column is_online already exists");
-            }
+// Execute migration for is_online column if needed
+        try {
+            stmt.execute(migrateOnlineColumn);
+            System.out.println("Migration is_online applied");
+        } catch (SQLException e) {
+            System.out.println("Column is_online already exists");
+        }
+
+        // Execute migration for status column if needed (replaces is_read)
+        try {
+            stmt.execute(migrateStatusColumn);
+            System.out.println("Migration status applied");
+        } catch (SQLException e) {
+            System.out.println("Column status already exists");
+        }
             
             // OBSOLETE: type and downloaded columns are now included in CREATE TABLE
             // Keeping these as no-ops for backward compatibility with existing installations

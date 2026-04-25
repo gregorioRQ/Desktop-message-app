@@ -23,18 +23,19 @@ public class DeliveryService {
 
     /**
      * Procesa un mensaje de chat.
-     * 
+     *
      * Este método:
      * 1. Verifica si el remitente está bloqueado por el destinatario
      * 2. Guarda el mensaje en la base de datos
-     * 3. Notifica a connection-service sobre el estado de entrega
-     * 
+     * 3. Notifica al remitente que el mensaje fue entregado al destinatario
+     *
      * @param wsMessage Mensaje completo WsMessage
      * @param chatMessage Mensaje de chat parsed
      */
     public void processMessage(MessagesProto.WsMessage wsMessage, MessagesProto.ChatMessage chatMessage) {
         String sender = chatMessage.getSender();
         String recipient = chatMessage.getRecipient();
+        String messageId = chatMessage.getId();
 
         if (isBlocked(sender, recipient)) {
             log.warn("Blocked message from {} to {}", sender, recipient);
@@ -42,27 +43,49 @@ public class DeliveryService {
         }
 
         saveMessage(chatMessage);
-        sendDeliveryStatus(wsMessage, chatMessage.getId(), recipient, "DELIVERED");
-        log.debug("Message processed and saved: ID={}, from={}, to={}", 
-                chatMessage.getId(), sender, recipient);
+
+        // Enviar notificación de entrega al REMITENTE (no al destinatario)
+        sendDeliveredNotificationToSender(messageId, sender, recipient);
+
+        log.debug("Message processed and saved: ID={}, from={}, to={}", chatMessage.getId(), sender, recipient);
     }
 
-    private void sendDeliveryStatus(MessagesProto.WsMessage wsMessage, String messageId, String recipient, String type) {
+    /**
+     * Envía una notificación de entrega al remitente del mensaje.
+     *
+     * Cuando el mensaje es guardado exitosamente en la base de datos del chat-service,
+     * se notifica al remitente que su mensaje fue entregado al destinatario.
+     *
+     * @param messageId ID del mensaje entregado
+     * @param sender Username del remitente (quién envió el mensaje original)
+     * @param recipient Username del destinatario (quién recibió el mensaje)
+     */
+    private void sendDeliveredNotificationToSender(String messageId, String sender, String recipient) {
         try {
+            // Crear el mensaje de notificación de entrega
+            MessagesProto.MessageDeliveredUpdate deliveredUpdate = MessagesProto.MessageDeliveredUpdate.newBuilder()
+                    .addMessageIds(messageId)
+                    .setDeliveredToUsername(recipient)
+                    .build();
+
+            MessagesProto.WsMessage notificationMessage = MessagesProto.WsMessage.newBuilder()
+                    .setMessageDeliveredUpdate(deliveredUpdate)
+                    .build();
+
             DeliveryStatusEvent event = new DeliveryStatusEvent();
-            event.setType(type);
+            event.setType("DELIVERED");
             event.setMessageId(messageId);
-            event.setRecipient(recipient);
-            event.setData(wsMessage.toByteArray());
-            
+            event.setRecipient(sender); // El remitente recibe la notificación
+            event.setData(notificationMessage.toByteArray());
+
             rabbitTemplate.convertAndSend(
-                RabbitMQconfig.MESSAGE_EXCHANGE,
-                "delivery",
-                event
+                    RabbitMQconfig.MESSAGE_EXCHANGE,
+                    "delivery",
+                    event
             );
-            log.info("Delivery status {} sent for message {} to {}", type, messageId, recipient);
+            log.info("Delivered notification sent for message {} to sender {}", messageId, sender);
         } catch (Exception e) {
-            log.error("Failed to send delivery status for message {}: {}", messageId, e.getMessage());
+            log.error("Failed to send delivered notification for message {}: {}", messageId, e.getMessage());
         }
     }
 

@@ -20,9 +20,18 @@ public class ChatMessage {
     public enum MessageStatus {
         PENDING,
         SENT,
-        FAILED,
         DELIVERED,
-        READ
+        READ,
+        FAILED;
+
+        public static MessageStatus fromString(String status) {
+            if (status == null) return PENDING;
+            try {
+                return MessageStatus.valueOf(status.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                return PENDING;
+            }
+        }
     }
     
     private final LongProperty id;
